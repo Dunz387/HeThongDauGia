@@ -1,4 +1,6 @@
-package model;
+package model.Item;
+import model.Entity;
+import model.Seller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
