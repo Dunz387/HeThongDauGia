@@ -8,48 +8,44 @@
 
 **<ins> Base class </ins>**
 
-**Entity: Abtract class**
+### **Entity (Abstract Class)**
 
-***Thuộc tính: protected***
+| Loại | Tên | Access Modifier | Mô tả chi tiết |
+| :--- | :--- | :--- | :--- |
+| **Thuộc tính** | `ID` | `protected` | Tạo ID ngẫu nhiên. |
+| **Thuộc tính** | `Createdat` | `protected` | Lấy thời gian thực (thời điểm tạo). |
+| **Phương thức** | `getter` & `setter` | `public` *(mặc định)* | Các hàm get/set cho các thuộc tính tương ứng. |
 
-ID - Tạo ID ngẫu nhiên
-
-Createdat - Created at - Lấy thời gian thực
-
-***Phương thức:***
-
-getter và setter cho các thuộc tính
 
 <ins>**Item** </ins>
 
 ***Abtract class Item***
 
-***Thuộc tính:***
+### **Product / Auction Item**
 
-name: tên sản phẩm
+### **Bảng 1: Thuộc tính (Attributes)**
 
-description: mô tả sản phẩm
+| Tên thuộc tính    | Mô tả chi tiết                                                 |
+|:------------------|:---------------------------------------------------------------|
+| **name**          | Tên sản phẩm.                                                  |
+| **description**   | Mô tả chi tiết về sản phẩm.                                    |
+| **startPrice**    | Giá khởi điểm của sản phẩm.                                    |
+| **seller**        | Thông tin/đối tượng người bán.                                 |
+| **buyNowPrice**   | Giá mua ngay (dành cho người muốn mua luôn không cần đấu giá). |
+| **reversedPrice** | Giá tối thiểu để cuộc đấu giá được xem là thành công.          |
+| **condition**     | Tình trạng của mặt hàng: `mới` hoặc `cũ`.                      |
+| **quantity**      | Số lượng hàng hóa.                                             |
+| **imageUrls**     | Danh sách các đường dẫn ảnh của mặt hàng.                      |
 
-startPrice: giá khởi điểm
+<br>
 
-seller : gọi người bán
+### **Bảng 2: Phương thức (Methods)**
 
-buyNowPrice: giá mua ngay
-
-reversedPrice: giá tối thiểu để đấu giá thành công
-
-condition: điều kiện hàng - <ins> mới </ins> hoặc <ins>cũ</ins>
-
-quantity: số lượng hàng
-
-imageUrls: Ảnh của mặt hàng
-
-***Phương thức:***
-
-getter và setter cho các thuộc tính
-
-addImage và removeImage: thêm và xóa ảnh
-
+| Tên phương thức | Mô tả chi tiết |
+| :--- | :--- |
+| `getter` & `setter` | Các hàm lấy và gán dữ liệu cho các thuộc tính trên. |
+| `addImage` | Hàm dùng để thêm ảnh mới cho sản phẩm. |
+| `removeImage` | Hàm dùng để xóa ảnh của sản phẩm. |
 
 
 ***Art***
