@@ -1,8 +1,13 @@
-package model;
+package model.UserType;
+import model.BidTransaction;
+import model.BaseClass.Entity;
+import model.Item.Item;
+import model.Notification;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class User extends Entity{
+public abstract class User extends Entity {
     protected String username;
     protected String password;
     protected String email;

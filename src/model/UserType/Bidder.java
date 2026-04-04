@@ -1,4 +1,4 @@
-package model;
+package model.UserType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,23 +56,22 @@ public class Bidder extends User {
 
     public MembershipTier getTier() { return tier; }
 
-    public List<String> getBidHistory() { return bidHistory; }
+    public List<String> getBidderBidHistory() { return bidHistory; }
 
     // --- 4. Logic nghiệp vụ cốt lõi (Hành vi) ---
 
     /**
      * Nạp tiền vào tài khoản của người đấu giá.
+     *
      * @param amount Số tiền muốn nạp.
-     * @return true nếu nạp thành công, false nếu thất bại.
      */
-    public boolean deposit(double amount) {
+    public void deposit(double amount) {
         if (amount <= 0) {
             System.out.println("Error: Deposit amount must be strictly positive.");
-            return false;
+            return; // Chỉ dùng return để thoát hàm, không trả về giá trị
         }
         this.accountBalance += amount;
         System.out.println("Successfully deposited $" + amount + ". New balance: $" + this.accountBalance);
-        return true;
     }
 
     /**

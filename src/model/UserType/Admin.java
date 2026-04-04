@@ -1,7 +1,8 @@
-package model;
+package model.UserType;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Lớp Admin đại diện cho quản trị viên của hệ thống đấu giá.

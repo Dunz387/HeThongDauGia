@@ -1,4 +1,7 @@
-package model;
+package model.UserType;
+
+import model.Item.Item;
+import model.UserType.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,9 +74,9 @@ public class Seller extends User {
     }
 
     @Override
-    public void displayProfile() {
+    public void printInfo() {
         System.out.println(" SELLER PROFILE ");
-        super.displayProfile(); // Call User's display method
+        super.printInfo(); // Call User's display method
         System.out.println("Store Name: " + storeName);
         System.out.println("Description: " + storeDescription);
         System.out.println("Rating: " + String.format("%.1f", rating) + " (" + feedbackCount + " reviews)");

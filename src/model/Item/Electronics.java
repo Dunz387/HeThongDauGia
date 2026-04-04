@@ -1,4 +1,6 @@
-package model;
+package model.Item;
+
+import model.UserType.Seller;
 
 public class Electronics extends Item {
 
