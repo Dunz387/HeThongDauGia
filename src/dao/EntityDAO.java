@@ -1,6 +1,6 @@
 package dao;
 
-import model.Entity;
+import model.BaseClass.Entity;
 import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
