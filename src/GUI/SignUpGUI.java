@@ -50,7 +50,7 @@ public class SignUpGUI extends Application {
 
         // 3. Khởi tạo các trường nhập liệu theo thứ tự yêu cầu
         TextField userTextField = new TextField();
-        userTextField.setPromptText("Enter username");
+        userTextField.setPromptText("Enter username (request)");
         styleTextField(userTextField);
 
         TextField nameTextField = new TextField();
@@ -62,7 +62,7 @@ public class SignUpGUI extends Application {
         styleTextField(emailTextField);
 
         PasswordField pwBox = new PasswordField();
-        pwBox.setPromptText("Enter your password");
+        pwBox.setPromptText("Enter your password (request)");
         styleTextField(pwBox);
 
         // Xử lý riêng phần Address (Road - City - Country) trên cùng 1 hàng
