@@ -1,9 +1,9 @@
 package controller;
 
 import dao.UserDAO;
-import model.User;
-import model.Item;
 import model.BidTransaction;
+import model.UserType.User;
+import model.Item.Item;
 import model.Notification;
 
 public class UserController {

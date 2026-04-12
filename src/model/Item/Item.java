@@ -1,4 +1,6 @@
-package model;
+package model.Item;
+import model.BaseClass.Entity;
+import model.UserType.Seller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public abstract class Item extends Entity {
 
     // Getter
     public String getName() { return name; }
+    public String getId() { return id; }
     public String getDescription() { return description; }
     public double getStartPrice() { return startPrice; }
     public Seller getSeller() { return seller; }
@@ -111,4 +114,5 @@ public abstract class Item extends Entity {
         System.out.println("Status: " + status);
         System.out.println("Seller: " + seller.getUsername());
     }
+
 }

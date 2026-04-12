@@ -1,6 +1,7 @@
 package dao;
 
-import model.User;
+import model.UserType.User;
+
 public class UserDAO extends EntityDAO<User>{
     //Tìm theo tên
     public User findbyUsername (String username){

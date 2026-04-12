@@ -1,8 +1,13 @@
-package model;
+package model.UserType;
+import model.BidTransaction;
+import model.BaseClass.Entity;
+import model.Item.Item;
+import model.Notification;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class User extends Entity{
+public abstract class User extends Entity {
     protected String username;
     protected String password;
     protected String email;
@@ -39,22 +44,22 @@ public abstract class User extends Entity{
 // Getter
     public String getUsername(){
         return username;
-    }
+    } // lấy tên
     public String getPassword() {
         return password;
-    }
+    }// lấy password
     public String getEmail(){
         return email;
-    }
+    }// lấy email
     public String getFullName(){
         return fullName;
-    }
+    }// lấy full name
     public String getPhone(){
         return phone;
-    }
+    }// lấy sdt
     public String getAddress(){
         return address;
-    }
+    }// lấy địa chỉ
     public String getCity(){
         return city;
     }

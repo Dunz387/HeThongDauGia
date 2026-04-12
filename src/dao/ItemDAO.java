@@ -1,5 +1,5 @@
 package dao;
-import model.Item;
+import model.Item.Item;
 import java.util.ArrayList;
 import java.util.List;
 

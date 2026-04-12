@@ -1,4 +1,7 @@
-package model;
+package model.Item;
+
+import model.Item.Item;
+import model.UserType.Seller;
 
 public class Art extends Item {
 

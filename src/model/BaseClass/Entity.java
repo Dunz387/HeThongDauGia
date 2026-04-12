@@ -1,4 +1,4 @@
-package model;
+package model.BaseClass;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
