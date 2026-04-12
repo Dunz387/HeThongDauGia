@@ -44,22 +44,22 @@ public abstract class User extends Entity {
 // Getter
     public String getUsername(){
         return username;
-    }
+    } // lấy tên
     public String getPassword() {
         return password;
-    }
+    }// lấy password
     public String getEmail(){
         return email;
-    }
+    }// lấy email
     public String getFullName(){
         return fullName;
-    }
+    }// lấy full name
     public String getPhone(){
         return phone;
-    }
+    }// lấy sdt
     public String getAddress(){
         return address;
-    }
+    }// lấy địa chỉ
     public String getCity(){
         return city;
     }
