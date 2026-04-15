@@ -1,3 +1,5 @@
+package GUI;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -6,7 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class LoginApp extends Application {
+public class LoginGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {

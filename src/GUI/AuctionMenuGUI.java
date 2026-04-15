@@ -1,3 +1,5 @@
+package GUI;
+
 import javafx.animation.Animation;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
@@ -13,7 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-public class AuctionMenuApp extends Application {
+public class AuctionMenuGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
