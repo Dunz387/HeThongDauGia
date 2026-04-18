@@ -1,38 +1,36 @@
-package model.Item;
-
-import model.UserType.Seller;
+package model.item;
+import model.user.Seller;
 
 public class Electronics extends Item {
 
     private String brand;
     private int warrantyMonths;
 
-    public Electronics(String name, String description, double startPrice,
-                       Seller seller,
-                       double buyNowPrice, double reservePrice,
-                       String condition, int quantity,
-                       String brand, int warrantyMonths) {
 
-        super(name, description, startPrice, seller,
-              buyNowPrice, reservePrice,
-              condition, quantity);
-
+    public Electronics(String id, String name, String description, Seller owner, String brand, int warrantyMonths) {
+        super(id, name, description, owner);
         this.brand = brand;
         this.warrantyMonths = warrantyMonths;
     }
 
-    public String getBrand() { return brand; }
-    public int getWarrantyMonths() { return warrantyMonths; }
+    public String getBrand() {
+        return brand;
+    }
 
-    @Override
-    public String getItemType() {
-        return "ELECTRONICS";
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public int getWarrantyMonths() {
+        return warrantyMonths;
+    }
+
+    public void setWarrantyMonths(int warrantyMonths) {
+        this.warrantyMonths = warrantyMonths;
     }
 
     @Override
-    public void printInfo() {
-        super.printInfo();
-        System.out.println("Brand: " + brand);
-        System.out.println("Warranty: " + warrantyMonths + " months");
+    public String getDetails() {
+        return String.format("[Điện tử] Hãng: %s | Bảo hành: %d tháng", brand, warrantyMonths);
     }
 }

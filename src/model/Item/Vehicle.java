@@ -1,38 +1,34 @@
-package model.Item;
-
-import model.UserType.Seller;
+package model.item;
+import model.user.Seller;
 
 public class Vehicle extends Item {
 
-    private String brand;
+    private String engineType;
     private int mileage;
 
-    public Vehicle(String name, String description, double startPrice,
-                   Seller seller,
-                   double buyNowPrice, double reservePrice,
-                   String condition, int quantity,
-                   String brand, int mileage) {
+    private boolean hasServiceHistory;
 
-        super(name, description, startPrice, seller,
-              buyNowPrice, reservePrice,
-              condition, quantity);
-
-        this.brand = brand;
+    public Vehicle(String id, String name, String description, Seller owner, String engineType, int mileage) {
+        super(id, name, description, owner);
+        this.engineType = engineType;
         this.mileage = mileage;
+        this.hasServiceHistory = false; // Chuẩn YAGNI: Mặc định chưa xác nhận
     }
 
-    public String getBrand() { return brand; }
+
+    public String getEngineType() { return engineType; }
+    public void setEngineType(String engineType) { this.engineType = engineType; }
+
     public int getMileage() { return mileage; }
+    public void setMileage(int mileage) { this.mileage = mileage; }
+
+    public boolean hasServiceHistory() { return hasServiceHistory; }
+    public void setHasServiceHistory(boolean hasServiceHistory) { this.hasServiceHistory = hasServiceHistory; }
+
 
     @Override
-    public String getItemType() {
-        return "VEHICLE";
-    }
-
-    @Override
-    public void printInfo() {
-        super.printInfo();
-        System.out.println("Brand: " + brand);
-        System.out.println("Mileage: " + mileage);
+    public String getDetails() {
+        String serviceInfo = hasServiceHistory ? "[Full lịch sử hãng]" : "";
+        return String.format("[Phương tiện] Động cơ: %s | ODO: %d km %s", engineType, mileage, serviceInfo);
     }
 }
