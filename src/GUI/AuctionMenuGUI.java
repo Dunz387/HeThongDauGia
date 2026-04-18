@@ -73,6 +73,10 @@ public class AuctionMenuGUI extends Application {
 
         Button loginBtn = new Button("Đăng nhập");
         loginBtn.getStyleClass().add("btn-login");
+        loginBtn.setOnAction(e -> {
+            LoginGUI loginGUI = new LoginGUI();
+            loginGUI.start(primaryStage);
+        });
 
         actions.getChildren().addAll(searchBar, loginBtn);
 
