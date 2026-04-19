@@ -5,36 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/view/LoginUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/GUI/AuctionMenuGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/GUI/LoginGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/GUI/SignUpGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/controller/UserController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/controller/auction/Auction.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/controller/auction/AuctionStatus.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/dao/EntityDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/dao/ItemDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/dao/UserDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/BaseClass/Entity.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/BidTransaction.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Item/Art.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Item/Electronics.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Item/Electronics.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Item/Item.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Item/Item.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Item/Vehicle.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Item/Vehicle.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/Notification.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/UserType/Admin$AdminLevel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/UserType/Admin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/UserType/Bidder$MembershipTier.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/UserType/Bidder.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/UserType/Seller.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/UserType/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AuctionMenuGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/LoginGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/SignUpGUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/view/AuctionMenuGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/AuctionMenuGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +94,7 @@
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.view.SignUpGUI">
+  <component name="RunManager">
     <configuration name="view.AuctionMenuGUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
