@@ -27,7 +27,7 @@ public class AuctionMenuGUI extends Application {
         Scene scene = new Scene(root, 1100, 600);
         loadInlineCSS(scene);
 
-        primaryStage.setTitle("Hệ Thống Đấu Giá - BúaVàng.vn");
+        primaryStage.setTitle("Hệ Thống Đấu Giá");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -37,9 +37,6 @@ public class AuctionMenuGUI extends Application {
     private HBox createNavbar(Stage primaryStage) {
         HBox navbar = new HBox();
         navbar.getStyleClass().add("auction-navbar");
-
-        Label logo = new Label("BúaVàng.vn");
-        logo.getStyleClass().add("logo");
 
         HBox navLinks = createNavLinks();
 
