@@ -1,20 +1,5 @@
-package GUI;
+package view;
 
-//import javafx.application.Application;
-//import javafx.scene.control.Button;
-//import javafx.stage.Stage;
-//
-//public class SignUpGUI extends Application {
-//
-//    @Override
-//    public void start(Stage stage) throws Exception {
-//        Button sign_up_button = new Button("Login");
-//        Button cancel_button = new Button("Cancel");
-//        sign_up_button.setOnAction(event -> {
-//
-//        })
-//    }
-//}
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -137,7 +122,8 @@ public class SignUpGUI extends Application {
         // Sự kiện khi nhấn vào link "Đã có tài khoản?"
         loginLink.setOnAction(e -> {
             System.out.println("Chuyển hướng sang giao diện Login...");
-            // TODO: Khởi tạo scene Login và setScene(loginScene) tại đây
+            LoginUI loginUI = new LoginUI();
+            loginUI.start(primaryStage);
         });
 
         // 6. Hiển thị Scene

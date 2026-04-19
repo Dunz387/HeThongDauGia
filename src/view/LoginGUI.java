@@ -1,4 +1,4 @@
-package GUI;
+package view;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -34,11 +34,14 @@ public class LoginGUI extends Application {
         PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
 
-        Button btn = new Button("Sign in");
-        grid.add(btn, 1, 4);
+        Button btnLogin = new Button("Log in");
+        grid.add(btnLogin, 1, 3);
+//        btnLogin.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 5px;");
+//        btnLogin.setPrefWidth(Double.MAX_VALUE);
+//        btnLogin.setPrefHeight(35);
 
         // Xử lý sự kiện
-        btn.setOnAction(e -> {
+        btnLogin.setOnAction(e -> {
             if ("admin".equals(txtUser.getText()) && "12345".equals(pwBox.getText())) {
                 System.out.println("Đăng nhập thành công!");
             } else {
@@ -46,7 +49,7 @@ public class LoginGUI extends Application {
             }
         });
 
-        Scene scene = new Scene(grid, 350, 250);
+        Scene scene = new Scene(grid, 800, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

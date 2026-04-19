@@ -1,4 +1,4 @@
-package GUI;
+package view;
 
 import javafx.animation.Animation;
 import javafx.animation.ScaleTransition;
