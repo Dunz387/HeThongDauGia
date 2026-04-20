@@ -1,5 +1,5 @@
 package service;
-
+import dao.DatabaseManager;
 import exception.AuctionClosedException;
 import exception.AuthenticationException;
 import exception.InvalidBidException;
@@ -32,6 +32,7 @@ public class AuctionManager {
 
     // Khóa Constructor: Cấm mọi hành vi tạo mới từ bên ngoài
     private AuctionManager() {
+        this.users = DatabaseManager.loadUsers();
         this.users = new ArrayList<>();
         this.auctions = new ArrayList<>();
 
@@ -194,5 +195,10 @@ public class AuctionManager {
             }
         }
         return running;
+    }
+    public void saveSystemData() {
+        System.out.println("Đang tiến hành lưu toàn bộ dữ liệu hệ thống...");
+        DatabaseManager.saveUsers(this.users);
+        DatabaseManager.saveAuctions(this.auctions);
     }
 }
