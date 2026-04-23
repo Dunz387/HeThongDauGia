@@ -63,6 +63,7 @@ public class AuctionManager {
     public void registerUser(User user) {
         if (user != null) {
             users.add(user);
+            saveSystemData();
         }
     }
 
@@ -92,6 +93,7 @@ public class AuctionManager {
     public boolean banUser(Admin admin, User targetUser) {
         if (admin != null && targetUser != null && targetUser.getRole() != Role.ADMIN) {
             targetUser.setActive(false);
+            saveSystemData();
             return true;
         }
         return false;
@@ -101,6 +103,7 @@ public class AuctionManager {
         if (admin != null && admin.getRole() == Role.ADMIN) {
             if (auction != null && auction.getStatus() == AuctionStatus.OPEN) {
                 auction.setStatus(AuctionStatus.RUNNING);
+                saveSystemData();
                 return true;
             }
         }
@@ -111,6 +114,7 @@ public class AuctionManager {
         if (admin != null && auction != null && auction.getStatus() == AuctionStatus.OPEN) {
             auction.setStatus(AuctionStatus.CANCELED);
             auction.setReason(reason); //
+            saveSystemData();
             return true;
         }
         return false;
@@ -123,6 +127,7 @@ public class AuctionManager {
             // NÂNG CẤP: Khóa list lại để thêm an toàn, tránh đụng chạm với Robot quét
             synchronized (auctions) {
                 auctions.add(auction); // Trạng thái mặc định từ Constructor Auction là OPEN
+                saveSystemData();
             }
         }
     }
@@ -134,6 +139,7 @@ public class AuctionManager {
 
         if (LocalDateTime.now().isAfter(auction.getEndTime())) {
             auction.setStatus(AuctionStatus.FINISHED);
+            saveSystemData();
             return "Lỗi: Phiên đấu giá này vừa mới hết thời gian!";
         }
 
@@ -143,6 +149,7 @@ public class AuctionManager {
 
         try {
             auction.placeBid(bidder, bidAmount);
+            saveSystemData();
             return "Thành công: Bạn đang là người trả giá cao nhất!";
         } catch (AuctionClosedException | InvalidBidException e) {
             return "Thất bại: " + e.getMessage();
@@ -162,6 +169,7 @@ public class AuctionManager {
         if (winner == null) {
             auction.setStatus(AuctionStatus.CANCELED);
             auction.setReason("Hết giờ - Không có người tham gia đặt giá.");
+            saveSystemData();
             return true;
         }
 
@@ -171,11 +179,13 @@ public class AuctionManager {
         if (winner.deductBalance(finalPrice)) { // Hàm này tự động check số dư một lần nữa
             seller.receivePayment(finalPrice);
             auction.setStatus(AuctionStatus.PAID);
+            saveSystemData();
             return true;
         } else {
             // Lỗi hiếm: Người thắng rút hết tiền khỏi ví trước khi kết thúc
             auction.setStatus(AuctionStatus.CANCELED);
             auction.setReason("Hủy: Người thắng cuộc không đủ số dư để thanh toán.");
+            saveSystemData();
             return false;
         }
     }
