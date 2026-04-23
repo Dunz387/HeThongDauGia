@@ -33,8 +33,7 @@ public class AuctionManager {
     // Khóa Constructor: Cấm mọi hành vi tạo mới từ bên ngoài
     private AuctionManager() {
         this.users = DatabaseManager.loadUsers();
-        this.users = new ArrayList<>();
-        this.auctions = new ArrayList<>();
+        this.auctions = DatabaseManager.loadAuctions();
 
         // Khởi động Robot đi tuần khi hệ thống bật
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
