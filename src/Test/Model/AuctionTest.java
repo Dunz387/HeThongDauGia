@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AutionTest { // Khớp với tên file hiện tại của bạn (không có chữ c)
+public class AuctionTest {
 
     private Auction auction;
     private Bidder bidder1;

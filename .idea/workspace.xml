@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="chỉnh database sửa trong aution entity đổi tên item">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="chỉnh database sửa trong aution entity đổi tên item, và sửa 1 lỗi ở AuctionManager.java">
+      <change beforePath="$PROJECT_DIR$/src/Test/Model/AutionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/Model/AuctionTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,12 +31,12 @@
     &quot;assignee&quot;: &quot;Dunz387&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Dunz387/HeThongDauGia.git",
-    "accountId": "ff1da139-feb7-4b08-939d-8a1875aced7e"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Dunz387/HeThongDauGia.git&quot;,
+    &quot;accountId&quot;: &quot;ff1da139-feb7-4b08-939d-8a1875aced7e&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -151,6 +149,15 @@
       <option name="presentableId" value="Default" />
       <updated>1775321227134</updated>
     </task>
+    <task id="LOCAL-00001" summary="chỉnh database sửa trong aution entity đổi tên item, và sửa 1 lỗi ở AuctionManager.java">
+      <option name="closed" value="true" />
+      <created>1776961678763</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1776961678763</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -166,6 +173,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="chỉnh database sửa trong aution entity đổi tên item, và sửa 1 lỗi ở AuctionManager.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="chỉnh database sửa trong aution entity đổi tên item, và sửa 1 lỗi ở AuctionManager.java" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
