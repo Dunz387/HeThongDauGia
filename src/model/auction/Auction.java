@@ -29,7 +29,7 @@ public class Auction extends Entity implements AuctionSubject {
     // Thêm danh sách Observer (dùng transient để bỏ qua khi lưu file sau này)
     private transient List<AuctionObserver> observers;
 
-    private final transient ReentrantLock lock = new ReentrantLock();
+    private transient ReentrantLock lock = new ReentrantLock();
 
     public Auction(String id, Item item, double startingPrice, double bidIncrement, LocalDateTime endTime) {
         super(id);
@@ -117,5 +117,11 @@ public class Auction extends Entity implements AuctionSubject {
         } finally {
             lock.unlock();
         }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.lock = new ReentrantLock();
+        this.observers = new ArrayList<>();
     }
 }
