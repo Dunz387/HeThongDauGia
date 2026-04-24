@@ -14,6 +14,9 @@
       <root url="jar://$PROJECT_DIR$/../../../../openjfx-26_windows-x64_bin-sdk/javafx-sdk-26/lib/jfx.incubator.richtext.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../javafx-sdk-26.0.1" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../javafx-sdk-26.0.1" recursive="false" type="SOURCES" />
   </library>
 </component>
