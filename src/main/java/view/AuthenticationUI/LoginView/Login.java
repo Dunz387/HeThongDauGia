@@ -17,4 +17,7 @@ public class Login extends Application {
         LoginStage.show();
 
     }
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
