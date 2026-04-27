@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "view.Main",
+            "projectName": "HeThongDauGia"
+        },
+        {
+            "type": "java",
             "name": "Login",
             "request": "launch",
             "mainClass": "view.AuthenticationUI.LoginView.Login",
