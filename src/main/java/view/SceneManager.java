@@ -12,18 +12,14 @@ import java.io.IOException;
 public class SceneManager {
 
     /**
-     * Phương thức dùng chung để chuyển đổi màn hình (Scene)
-     *
-     * @param event    Sự kiện click (từ Button, Hyperlink,...) để lấy ra cửa sổ hiện tại
+     * @param stage    Cửa sổ hiện tại
      * @param fxmlPath Đường dẫn tuyệt đối đến file FXML mới
-     * @param title    Tiêu đề mới cho cửa sổ (có thể truyền null nếu không muốn đổi)
+     * @param title    Tiêu đề mới cho cửa sổ
      */
-    public static void switchScene(ActionEvent event, String fxmlPath, String title) {
+    public static void switchScene(Stage stage, String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -38,5 +34,18 @@ public class SceneManager {
             System.err.println("Không thể tải màn hình từ đường dẫn: " + fxmlPath);
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @param event    Sự kiện click để lấy ra cửa sổ hiện tại
+     * @param fxmlPath Đường dẫn tuyệt đối đến file FXML mới
+     * @param title    Tiêu đề mới cho cửa sổ
+     */
+    public static void switchScene(ActionEvent event, String fxmlPath, String title) {
+        // Lấy Stage từ sự kiện của Nút bấm
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        
+        // Gọi lại Phương thức 1 ở trên để thực hiện việc chuyển cảnh
+        switchScene(stage, fxmlPath, title);
     }
 }
