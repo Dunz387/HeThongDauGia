@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "BaseMenu",
+            "request": "launch",
+            "mainClass": "view.BaseMenuUI.BaseMenu",
+            "projectName": "HeThongDauGia"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "view.Main",

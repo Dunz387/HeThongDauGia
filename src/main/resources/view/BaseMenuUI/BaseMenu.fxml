@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.BaseMenuController">
+   <children>
+      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="494.0" prefWidth="757.0">
+         <content>
+            <HBox prefHeight="50.0" prefWidth="760.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="126.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="TRANG CHỦ" textAlignment="CENTER" textFill="#c7611d" wrapText="true">
+                     <font>
+                        <Font name="Segoe UI Black Italic" size="14.0" />
+                     </font>
+                  </Button>
+                  <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="111.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài sản" textAlignment="CENTER" textFill="#c7611d" wrapText="true">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                     <font>
+                        <Font name="Segoe UI Black Italic" size="14.0" />
+                     </font>
+                  </MenuButton>
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="126.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Hướng dẫn" textAlignment="CENTER" textFill="#c7611d" wrapText="true">
+                     <font>
+                        <Font name="Segoe UI Black Italic" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="126.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Lịch sử đấu giá" textAlignment="CENTER" textFill="#c7611d" wrapText="true">
+                     <font>
+                        <Font name="Segoe UI Black Italic" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="126.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textAlignment="CENTER" textFill="#c7611d" wrapText="true">
+                     <font>
+                        <Font name="Segoe UI Black Italic" size="14.0" />
+                     </font>
+                  </Button>
+                  <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="137.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài khoản" textAlignment="CENTER" textFill="#c7611d" wrapText="true">
+                     <items>
+                        <MenuItem mnemonicParsing="false">
+                           <graphic>
+                              <Button mnemonicParsing="false" onAction="#backToLoiginButtonClicked" style="-fx-background-color: #c7611d;" text="Đăng nhập">
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false">
+                           <graphic>
+                              <Button mnemonicParsing="false" onAction="#backToRegisterButtonClicked" style="-fx-background-color: #c7611d;" text="Đăng kí">
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                           </graphic></MenuItem>
+                     </items>
+                     <font>
+                        <Font name="Segoe UI Black Italic" size="14.0" />
+                     </font>
+                  </MenuButton>
+               </children>
+            </HBox>
+         </content></ScrollPane>
+   </children>
+</StackPane>

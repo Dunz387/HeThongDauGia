@@ -1,7 +1,8 @@
 package view;
 
 // import view.AuthenticationUI.LoginView.Login;
-import view.AuthenticationUI.RegisterView.Register;
+// import view.AuthenticationUI.RegisterView.Register;
+import view.BaseMenuUI.BaseMenu;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,6 +10,10 @@ public class Main {
         // Login.main(args); 
 
         // Run Register:
-        Register.main(args); 
+        // Register.main(args);
+
+        // Run BaseMenu:
+        BaseMenu.main(args);
+    
     }
 }
