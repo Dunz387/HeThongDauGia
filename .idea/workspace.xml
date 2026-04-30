@@ -4,22 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="sửa lại từ autiontest sang auctiontest, và thêm saveSystemdata">
-      <change afterPath="$PROJECT_DIR$/src/client/AuctionClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/server/AuctionServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/javafx_base.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/javafx_base.xml" afterDir="false" />
+    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="sửa pom.xml thêm sqlite vào trong pom.xml">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HeThongDauGia.iml" beforeDir="false" afterPath="$PROJECT_DIR$/HeThongDauGia.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/auction/Auction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HeThongDauGia/model/auction/Auction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/model/base/Entity.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HeThongDauGia/model/base/Entity.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/service/AuctionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HeThongDauGia/service/AuctionManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/view/AuctionMenuGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/view/LoginGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/view/LoginUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HeThongDauGia/view/SignUpGUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,9 +46,9 @@
     <commands />
     <urls />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="3BtvXyeuSVovVaATK3HURELC32y" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -66,49 +57,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Application.Admin.executor": "Run",
-    "Application.AuctionClient.executor": "Run",
-    "Application.AuctionMenuGUI.executor": "Run",
-    "Application.AuctionServer.executor": "Run",
-    "Application.FX.executor": "Run",
-    "Application.HelloFX.executor": "Run",
-    "Application.LoginGUI.executor": "Run",
-    "Application.LoginUI.executor": "Run",
-    "Application.SignUpGUI.executor": "Run",
-    "Application.view.SignUpGUI.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "setup-server-client",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/java/HeThongDauGia",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "D:/1 Dung/LapTrinhNangCao/BaiTapLon/HeThongDauGia/src/Main.java",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.JavaFX",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Application.Admin.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AuctionClient.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AuctionMenuGUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AuctionServer.executor&quot;: &quot;Run&quot;,
+    &quot;Application.FX.executor&quot;: &quot;Run&quot;,
+    &quot;Application.HelloFX.executor&quot;: &quot;Run&quot;,
+    &quot;Application.LoginGUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.LoginUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SignUpGUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.view.SignUpGUI.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/java/HeThongDauGia&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/1 Dung/LapTrinhNangCao/BaiTapLon/HeThongDauGia/src/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.JavaFX&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.AuctionClient">
     <configuration name="AuctionClient" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
@@ -173,10 +164,10 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.view.SignUpGUI" />
       <item itemvalue="Application.AuctionClient" />
       <item itemvalue="Application.AuctionServer" />
       <item itemvalue="Application.view.AuctionMenuGUI" />
+      <item itemvalue="Application.view.SignUpGUI" />
     </list>
     <recent_temporary>
       <list>
@@ -246,7 +237,8 @@
     <MESSAGE value="chỉnh database sửa trong aution entity đổi tên item, và sửa 1 lỗi ở AuctionManager.java" />
     <MESSAGE value="sửa lại từ autiontest sang auctiontest" />
     <MESSAGE value="sửa lại từ autiontest sang auctiontest, và thêm saveSystemdata" />
-    <option name="LAST_COMMIT_MESSAGE" value="sửa lại từ autiontest sang auctiontest, và thêm saveSystemdata" />
+    <MESSAGE value="sửa pom.xml thêm sqlite vào trong pom.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="sửa pom.xml thêm sqlite vào trong pom.xml" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
