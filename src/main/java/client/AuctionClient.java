@@ -1,9 +1,8 @@
 package client;
 
-import model.auction.Auction;
-import model.item.Item;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -14,50 +13,25 @@ public class AuctionClient {
     public static void main(String[] args) {
         try {
             Socket socket = new Socket(SERVER_IP, PORT);
-            System.out.println("Đã kết nối thành công tới máy chủ đấu giá!");
+            System.out.println("✅ Đã kết nối thành công tới máy chủ đấu giá!");
 
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            // Dùng luồng Text
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             Scanner scanner = new Scanner(System.in);
             System.out.print("Nhập tên của bạn để tham gia đấu giá: ");
             String displayName = scanner.nextLine();
 
-            // Gửi tên này lên Server ngay lập tức
-            out.writeObject(displayName);
-            out.flush();
-            // LUỒNG 1: CHẠY NGẦM ĐỂ NHẬN DỮ LIỆU (Bao gồm Item tùy chọn)
+            // Gửi tên này lên Server
+            out.println(displayName);
+
+            // LUỒNG 1: CHẠY NGẦM ĐỂ NGHE SERVER NÓI
             Thread listenerThread = new Thread(() -> {
                 try {
-                    while (true) {
-                        Object data = in.readObject();
-
-                        if (data instanceof Auction) {
-                            Auction auc = (Auction) data;
-                            System.out.println(" THÔNG TIN PHIÊN ĐẤU GIÁ: " + auc.getId());
-
-                            // Client khui hộp và tự động lấy thông tin món đồ Server vừa tạo
-                            Item item = auc.getItem();
-                            if (item != null) {
-                                System.out.println(" Sản phẩm: " + item.getName());
-                                System.out.println(" Mô tả: " + item.getDescription());
-                                System.out.println(" Chi tiết: " + item.getDetails());
-                                System.out.println(" Người bán: " + item.getOwner().getUsername());
-                            }
-                            System.out.println(" Trạng thái: " + auc.getStatus());
-                            System.out.println(" Giá hiện tại: $" + auc.getCurrentPrice());
-                            if (auc.getHighestBidder() != null) {
-                                System.out.println(" Người dẫn đầu: " + auc.getHighestBidder().getUsername());
-                            } else {
-                                System.out.println(" Người dẫn đầu: Chưa có ai");
-                            }
-
-                            System.out.print("Nhập giá tiền bạn muốn đặt (VD: 36) hoặc 'exit': ");
-
-                        } else if (data instanceof String) {
-                            System.out.println((String) data);
-                            System.out.print("Nhập giá tiền bạn muốn đặt (VD: 36) hoặc 'exit': ");
-                        }
+                    String serverMessage;
+                    while ((serverMessage = in.readLine()) != null) {
+                        System.out.println(serverMessage);
                     }
                 } catch (Exception e) {
                     System.out.println("\nĐã ngắt kết nối khỏi máy chủ.");
@@ -65,20 +39,20 @@ public class AuctionClient {
                 }
             });
             listenerThread.start();
-            // LUỒNG 2: ĐỌC BÀN PHÍM VÀ GỬI LÊN SERVER
+
+            // LUỒNG 2: ĐỌC BÀN PHÍM VÀ GỬI GIÁ TIỀN LÊN SERVER
             while (true) {
                 String input = scanner.nextLine();
                 if (input.equalsIgnoreCase("exit")) {
+                    out.println("exit");
                     break;
                 }
-                // Gửi số lên cho Server xử lý
-                out.writeObject(input);
-                out.flush();
+                out.println(input);
             }
 
             socket.close();
         } catch (Exception e) {
-            System.err.println("Không thể kết nối. Vui lòng bật Server trước!");
+            System.err.println("❌ Không thể kết nối. Vui lòng bật Server trước!");
         }
     }
 }

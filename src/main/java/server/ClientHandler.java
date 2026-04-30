@@ -4,61 +4,81 @@ import exception.AuctionClosedException;
 import exception.InvalidBidException;
 import model.auction.Auction;
 import model.user.Bidder;
+import service.AuctionManager;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
     private AuctionServer server;
     private Auction currentAuction;
+    private AuctionManager manager;
     private Bidder myProfile;
-    private ObjectOutputStream out;
+    private PrintWriter out;
+    private BufferedReader in;
 
-    public ClientHandler(Socket socket, AuctionServer server, Auction auction) {
+    public ClientHandler(Socket socket, AuctionServer server, Auction auction, AuctionManager manager) {
         this.socket = socket;
         this.server = server;
         this.currentAuction = auction;
-        String id = "B" + (int)(Math.random() * 100);
-        this.myProfile = new Bidder(id, "User_" + id, "123", 5000.0);
+        this.manager = manager;
     }
 
     @Override
     public void run() {
         try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            Object firstData = in.readObject();
-            String playerName = "Người lạ";
-            if (firstData instanceof String) {
-                playerName = (String) firstData;
+            // Chuyển sang dùng PrintWriter và BufferedReader cho chuẩn chuỗi Text
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // 1. Nhận tên từ Client
+            String playerName = in.readLine();
+            if (playerName == null || playerName.trim().isEmpty()) {
+                playerName = "Người lạ " + (int)(Math.random() * 100);
             }
 
-            // Khởi tạo Bidder với tên thật vừa nhận được
+            // 2. Tạo profile và ném vào Database qua Manager
             this.myProfile = new Bidder("B-" + System.currentTimeMillis(), playerName, "123", 5000.0);
-            sendData(currentAuction);
+            manager.registerUser(myProfile);
 
-            while (true) {
-                Object request = in.readObject();
-                if (request instanceof String) {
-                    String input = ((String) request).trim();
-                    try {
-                        // TỰ ĐỘNG HIỂU LÀ TIỀN NẾU NHẬP SỐ
-                        double amount = Double.parseDouble(input);
-                        currentAuction.placeBid(myProfile, amount);
-                        sendData(" Đặt giá $" + amount + " thành công!");
-                    } catch (NumberFormatException e) {
-                        sendData(" LỖI: Vui lòng chỉ nhập con số (Ví dụ: 1600).");
-                    } catch (AuctionClosedException | InvalidBidException e) {
-                        sendData(" LỖI: " + e.getMessage());
-                    }
+            // 3. Gửi thông tin chào sân (Gửi dạng chuỗi Text thay vì gửi nguyên Object)
+            sendData("=== THÔNG TIN PHIÊN ĐẤU GIÁ ===");
+            sendData("Sản phẩm: " + currentAuction.getItem().getName());
+            sendData("Giá hiện tại: $" + currentAuction.getCurrentPrice());
+            sendData("Trạng thái: " + currentAuction.getStatus());
+            sendData("-------------------------------");
+            sendData("Nhập giá tiền bạn muốn đặt (VD: 36) hoặc 'exit': ");
+
+            // 4. Lắng nghe người dùng đặt giá
+            String input;
+            while ((input = in.readLine()) != null) {
+                input = input.trim();
+                if (input.equalsIgnoreCase("exit")) break;
+
+                try {
+                    double amount = Double.parseDouble(input);
+                    // Dùng Manager để xử lý Bid (nó sẽ lưu thẳng xuống Database)
+                    String result = manager.processBid(myProfile, currentAuction, amount);
+                    sendData(">> Kết quả: " + result);
+                } catch (NumberFormatException e) {
+                    sendData(" LỖI: Vui lòng chỉ nhập con số (Ví dụ: 1600).");
                 }
             }
-        } catch (Exception e) { server.removeClient(this); }
+        } catch (Exception e) {
+            server.removeClient(this);
+        } finally {
+            try { socket.close(); } catch (Exception e) {}
+            server.removeClient(this);
+        }
     }
 
-    public void sendData(Object data) {
-        try { out.reset(); out.writeObject(data); out.flush(); } catch (Exception e) {}
+    // Hàm gửi tin nhắn dạng Text
+    public void sendData(String message) {
+        if (out != null) {
+            out.println(message);
+        }
     }
 }

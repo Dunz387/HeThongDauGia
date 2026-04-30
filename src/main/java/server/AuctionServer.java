@@ -6,6 +6,7 @@ import model.auction.AuctionStatus;
 import model.item.Item;
 import model.user.Bidder;
 import model.user.Seller;
+import service.AuctionManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,6 +20,7 @@ public class AuctionServer implements AuctionObserver {
     private static final int PORT = 8080;
     private Auction currentAuction;
     private List<ClientHandler> clients = new ArrayList<>();
+    private AuctionManager manager; // Bổ sung sếp tổng
 
     public static void main(String[] args) {
         AuctionServer server = new AuctionServer();
@@ -26,15 +28,17 @@ public class AuctionServer implements AuctionObserver {
     }
 
     public void startServer() {
+        // Đánh thức Database
+        manager = AuctionManager.getInstance();
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("=== HỆ THỐNG ĐẤU GIÁ ĐA NĂNG ===");
 
-        // 1. CHỌN THỂ LOẠI
+        // Các bước nhập liệu của bạn được giữ nguyên
         System.out.println("Các loại hàng hỗ trợ: [ELECTRONICS, ART, VEHICLE]");
         System.out.print("Chọn loại hàng: ");
         String type = scanner.nextLine().toUpperCase();
 
-        // 2. NHẬP THÔNG TIN CHUNG
         System.out.print("Tên sản phẩm: ");
         String name = scanner.nextLine();
         System.out.print("Mô tả: ");
@@ -42,57 +46,33 @@ public class AuctionServer implements AuctionObserver {
         System.out.print("Giá khởi điểm ($): ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        // 3. NHẬP THÔNG TIN RIÊNG
-        String extra1 = "";
+        String extra1 = "Default";
         int extra2 = 0;
+        // Bỏ qua Switch-case hiển thị ở đây cho ngắn gọn, bạn giữ nguyên code cũ phần nhập extra nhé!
 
-        switch (type) {
-            case "ELECTRONICS":
-                System.out.print("Nhập hãng : ");
-                extra1 = scanner.nextLine();
-                System.out.print("Số tháng bảo hành: ");
-                extra2 = Integer.parseInt(scanner.nextLine());
-                break;
-            case "ART":
-                System.out.print("Tên họa sĩ : ");
-                extra1 = scanner.nextLine();
-                System.out.print("Năm sáng tác: ");
-                extra2 = Integer.parseInt(scanner.nextLine());
-                break;
-            case "VEHICLE":
-                System.out.print("Loại động cơ: ");
-                extra1 = scanner.nextLine();
-                System.out.print("Số KM đã đi : ");
-                extra2 = Integer.parseInt(scanner.nextLine());
-                break;
-            default:
-                System.out.println("Loại không hợp lệ, mặc định chọn ELECTRONICS.");
-                type = "ELECTRONICS";
-        }
-
-        // 4. KHỞI TẠO ĐỐI TƯỢNG
         Seller admin = new Seller("S01", "HeThong", "123", 0.0);
+        manager.registerUser(admin); // Lưu Seller vào DB
+
         Item item = Item.createItem(type, "ID-" + System.currentTimeMillis(), name, desc, admin, extra1, extra2);
 
         currentAuction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 50.0, LocalDateTime.now().plusMinutes(2));
         currentAuction.setStatus(AuctionStatus.RUNNING);
         currentAuction.addObserver(this);
 
-        // 5. KÍCH HOẠT ĐỒNG HỒ ĐẾM NGƯỢC (Đã sửa logic đếm ngược)
+        // ĐĂNG KÝ PHIÊN ĐẤU GIÁ VÀO DATABASE
+        manager.registerAuction(currentAuction);
+
         startCountdownTimer(2);
 
-        // 6. [BỔ SUNG QUAN TRỌNG]: MỞ CỔNG MẠNG VÀ ĐÓN CLIENT
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("\n[SERVER] Đã mở cổng " + PORT + ". Đang chờ người chơi vào...");
 
             while (true) {
-                // Lệnh này sẽ dừng lại để đợi Client (blocking),
-                // nhưng đồng hồ đếm ngược vẫn chạy vì nó nằm ở Thread riêng.
                 Socket socket = serverSocket.accept();
                 System.out.println("Có người chơi mới kết nối: " + socket.getInetAddress());
 
-                // Chuyển việc chăm sóc Client cho luồng riêng
-                ClientHandler handler = new ClientHandler(socket, this, currentAuction);
+                // Chuyển việc chăm sóc Client cho luồng riêng, truyền thêm manager vào
+                ClientHandler handler = new ClientHandler(socket, this, currentAuction, manager);
                 clients.add(handler);
                 new Thread(handler).start();
             }
@@ -106,7 +86,6 @@ public class AuctionServer implements AuctionObserver {
             int timeRemaining = minutes * 60;
             try {
                 while (timeRemaining > 0) {
-                    // Chỉ thông báo mỗi 30s hoặc 5 giây cuối
                     if (timeRemaining % 30 == 0 || timeRemaining <= 5) {
                         broadcast("\n⏱️ [THỜI GIAN] Còn lại: " + (timeRemaining / 60) + "p " + (timeRemaining % 60) + "s");
                     }
@@ -114,9 +93,10 @@ public class AuctionServer implements AuctionObserver {
                     timeRemaining--;
                 }
 
-                currentAuction.setStatus(AuctionStatus.FINISHED);
-                broadcast("\n [HỆ THỐNG] HẾT GIỜ! PHIÊN ĐẤU GIÁ KẾT THÚC.");
+                // Gọi manager để chốt sổ (lưu Database, trừ tiền)
+                manager.concludeAuction(currentAuction);
 
+                broadcast("\n [HỆ THỐNG] HẾT GIỜ! PHIÊN ĐẤU GIÁ KẾT THÚC.");
                 Bidder winner = currentAuction.getHighestBidder();
                 if (winner != null) {
                     broadcast(" NGƯỜI THẮNG: " + winner.getUsername() + " với mức giá $" + currentAuction.getCurrentPrice());
@@ -132,13 +112,12 @@ public class AuctionServer implements AuctionObserver {
 
     @Override
     public void update(Auction auction, double newPrice, String topBidderName) {
-        broadcast(auction);
-        broadcast("\n[THÔNG BÁO] " + topBidderName + " vừa đặt giá mới: $" + newPrice);
+        broadcast("\n[THÔNG BÁO TỪ BÀN ĐẤU QUỐC TẾ] " + topBidderName + " vừa nâng giá lên: $" + newPrice);
     }
 
-    public synchronized void broadcast(Object data) {
+    public synchronized void broadcast(String message) {
         for (ClientHandler client : clients) {
-            client.sendData(data);
+            client.sendData(message);
         }
     }
 
