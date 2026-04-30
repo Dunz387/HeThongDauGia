@@ -1,4 +1,5 @@
 package service;
+
 import dao.DatabaseManager;
 import exception.AuctionClosedException;
 import exception.AuthenticationException;
@@ -23,19 +24,23 @@ public class AuctionManager {
     // SINGLETON PATTERN: Early Initialization để thread-safe 100%
     private static final AuctionManager instance = new AuctionManager();
 
-    // KHO LƯU TRỮ TẠM THỜI (Chờ DAO)
+    // KHO LƯU TRỮ TRÊN RAM (Cache để tăng tốc độ đọc)
     private List<User> users;
     private List<Auction> auctions;
 
-    // Luồng chạy ngầm để quản lý thời gian (Mục 3)
+    // Luồng chạy ngầm để quản lý thời gian
     private ScheduledExecutorService scheduler;
 
     // Khóa Constructor: Cấm mọi hành vi tạo mới từ bên ngoài
     private AuctionManager() {
+        // 1. GỌI LỆNH TẠO BẢNG DATABASE ĐẦU TIÊN
+        DatabaseManager.initializeDatabase();
+
+        // 2. Kéo dữ liệu từ SQL lên RAM
         this.users = DatabaseManager.loadUsers();
         this.auctions = DatabaseManager.loadAuctions();
 
-        // Khởi động Robot đi tuần khi hệ thống bật
+        // 3. Khởi động Robot đi tuần khi hệ thống bật
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         startAuctionMonitor();
     }
@@ -58,12 +63,14 @@ public class AuctionManager {
         }, 0, 30, TimeUnit.SECONDS);
     }
 
+    // ==========================================
     // QUẢN LÝ TÀI KHOẢN
+    // ==========================================
 
     public void registerUser(User user) {
         if (user != null) {
             users.add(user);
-            saveSystemData();
+            DatabaseManager.saveUser(user); // Lưu thẳng User mới xuống SQL
         }
     }
 
@@ -83,17 +90,18 @@ public class AuctionManager {
                 }
             }
         }
-
         // Đi hết danh sách mà không thấy user nào khớp
         throw new AuthenticationException("Đăng nhập thất bại: Tên tài khoản không tồn tại.");
     }
 
+    // ==========================================
     // CHỨC NĂNG CỦA ADMIN
+    // ==========================================
 
     public boolean banUser(Admin admin, User targetUser) {
         if (admin != null && targetUser != null && targetUser.getRole() != Role.ADMIN) {
             targetUser.setActive(false);
-            saveSystemData();
+            DatabaseManager.updateUser(targetUser); // SQL: Cập nhật trạng thái User
             return true;
         }
         return false;
@@ -103,7 +111,7 @@ public class AuctionManager {
         if (admin != null && admin.getRole() == Role.ADMIN) {
             if (auction != null && auction.getStatus() == AuctionStatus.OPEN) {
                 auction.setStatus(AuctionStatus.RUNNING);
-                saveSystemData();
+                DatabaseManager.updateAuction(auction); // SQL: Cập nhật trạng thái Auction
                 return true;
             }
         }
@@ -113,33 +121,33 @@ public class AuctionManager {
     public boolean rejectAuction(Admin admin, Auction auction, String reason) {
         if (admin != null && auction != null && auction.getStatus() == AuctionStatus.OPEN) {
             auction.setStatus(AuctionStatus.CANCELED);
-            auction.setReason(reason); //
-            saveSystemData();
+            auction.setReason(reason);
+            DatabaseManager.updateAuction(auction); // SQL: Cập nhật Auction
             return true;
         }
         return false;
     }
 
+    // ==========================================
     // NGHIỆP VỤ ĐẤU GIÁ CORE
+    // ==========================================
 
     public void registerAuction(Auction auction) {
         if (auction != null) {
-            // NÂNG CẤP: Khóa list lại để thêm an toàn, tránh đụng chạm với Robot quét
             synchronized (auctions) {
                 auctions.add(auction); // Trạng thái mặc định từ Constructor Auction là OPEN
-                saveSystemData();
+                DatabaseManager.saveAuction(auction); // SQL: Chèn Auction mới
             }
         }
     }
 
-    // NÂNG CẤP: Đã bỏ chữ synchronized ở đây, đón lõng Exception bằng try-catch
     public String processBid(Bidder bidder, Auction auction, double bidAmount) {
         if (auction == null || bidder == null) return "Lỗi: Dữ liệu không hợp lệ.";
         if (auction.getStatus() != AuctionStatus.RUNNING) return "Lỗi: Phiên đấu giá chưa mở hoặc đã kết thúc.";
 
         if (LocalDateTime.now().isAfter(auction.getEndTime())) {
             auction.setStatus(AuctionStatus.FINISHED);
-            saveSystemData();
+            DatabaseManager.updateAuction(auction);
             return "Lỗi: Phiên đấu giá này vừa mới hết thời gian!";
         }
 
@@ -149,7 +157,7 @@ public class AuctionManager {
 
         try {
             auction.placeBid(bidder, bidAmount);
-            saveSystemData();
+            DatabaseManager.updateAuction(auction); // SQL: Lưu lại giá mới và người Bid cao nhất
             return "Thành công: Bạn đang là người trả giá cao nhất!";
         } catch (AuctionClosedException | InvalidBidException e) {
             return "Thất bại: " + e.getMessage();
@@ -169,28 +177,34 @@ public class AuctionManager {
         if (winner == null) {
             auction.setStatus(AuctionStatus.CANCELED);
             auction.setReason("Hết giờ - Không có người tham gia đặt giá.");
-            saveSystemData();
+            DatabaseManager.updateAuction(auction);
             return true;
         }
 
         // Trường hợp 2: Có người mua
         double finalPrice = auction.getCurrentPrice();
 
-        if (winner.deductBalance(finalPrice)) { // Hàm này tự động check số dư một lần nữa
+        if (winner.deductBalance(finalPrice)) {
             seller.receivePayment(finalPrice);
             auction.setStatus(AuctionStatus.PAID);
-            saveSystemData();
+
+            // Cập nhật cả 3 thực thể xuống Database
+            DatabaseManager.updateAuction(auction);
+            DatabaseManager.updateUser(winner);
+            DatabaseManager.updateUser(seller);
             return true;
         } else {
             // Lỗi hiếm: Người thắng rút hết tiền khỏi ví trước khi kết thúc
             auction.setStatus(AuctionStatus.CANCELED);
             auction.setReason("Hủy: Người thắng cuộc không đủ số dư để thanh toán.");
-            saveSystemData();
+            DatabaseManager.updateAuction(auction);
             return false;
         }
     }
 
+    // ==========================================
     // HỖ TRỢ VIEW (Lấy dữ liệu ra để in lên màn hình)
+    // ==========================================
 
     public List<Auction> getAllAuctions() {
         return auctions;
@@ -204,10 +218,5 @@ public class AuctionManager {
             }
         }
         return running;
-    }
-    public void saveSystemData() {
-        System.out.println("Đang tiến hành lưu toàn bộ dữ liệu hệ thống...");
-        DatabaseManager.saveUsers(this.users);
-        DatabaseManager.saveAuctions(this.auctions);
     }
 }
