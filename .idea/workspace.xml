@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="update database sqlite">
-      <change afterPath="$PROJECT_DIR$/src/main/java/client/ClientTest.java" afterDir="false" />
+    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="update client-socket">
+      <change afterPath="$PROJECT_DIR$/src/test/java/AuctionTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/client/AuctionClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/client/AuctionClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/test/AuctionTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,49 +55,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Application.Admin.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AuctionClient.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AuctionMenuGUI.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AuctionServer.executor&quot;: &quot;Run&quot;,
-    &quot;Application.FX.executor&quot;: &quot;Run&quot;,
-    &quot;Application.HelloFX.executor&quot;: &quot;Run&quot;,
-    &quot;Application.LoginGUI.executor&quot;: &quot;Run&quot;,
-    &quot;Application.LoginUI.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SignUpGUI.executor&quot;: &quot;Run&quot;,
-    &quot;Application.view.SignUpGUI.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/java/HeThongDauGia&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;D:/1 Dung/LapTrinhNangCao/BaiTapLon/HeThongDauGia/src/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.JavaFX&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.Admin.executor": "Run",
+    "Application.AuctionClient.executor": "Run",
+    "Application.AuctionMenuGUI.executor": "Run",
+    "Application.AuctionServer.executor": "Run",
+    "Application.FX.executor": "Run",
+    "Application.HelloFX.executor": "Run",
+    "Application.LoginGUI.executor": "Run",
+    "Application.LoginUI.executor": "Run",
+    "Application.SignUpGUI.executor": "Run",
+    "Application.view.SignUpGUI.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "deletionFromPopupRequiresConfirmation": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/java/HeThongDauGia",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "D:/1 Dung/LapTrinhNangCao/BaiTapLon/HeThongDauGia/src/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.JavaFX",
+    "to.speed.mode.migration.done": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.AuctionServer">
     <configuration name="AuctionClient" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
@@ -255,7 +254,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777572973153</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="update client-socket">
+      <option name="closed" value="true" />
+      <created>1777574222601</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1777574222601</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -278,7 +285,8 @@
     <MESSAGE value="sửa lại từ autiontest sang auctiontest, và thêm saveSystemdata" />
     <MESSAGE value="sửa pom.xml thêm sqlite vào trong pom.xml" />
     <MESSAGE value="update database sqlite" />
-    <option name="LAST_COMMIT_MESSAGE" value="update database sqlite" />
+    <MESSAGE value="update client-socket" />
+    <option name="LAST_COMMIT_MESSAGE" value="update client-socket" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

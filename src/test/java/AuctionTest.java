@@ -1,5 +1,3 @@
-package test;
-
 import exception.AuctionClosedException;
 import exception.InvalidBidException;
 import model.auction.Auction;
@@ -55,4 +53,3 @@ public class AuctionTest {
         });
     }
 }
-
