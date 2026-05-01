@@ -98,7 +98,7 @@ public class Auction extends Entity implements AuctionSubject {
             }
 
             // Kiểm tra giá đặt có hợp lệ không (Lớn hơn giá hiện tại + bước giá)
-            double minRequiredBid = (highestBidder == null) ? startingPrice : (currentPrice + bidIncrement);
+            double minRequiredBid = currentPrice + bidIncrement;
             if (bidAmount < minRequiredBid) {
                 throw new InvalidBidException(String.format("Giá đặt phải lớn hơn hoặc bằng $%.2f", minRequiredBid));
             }

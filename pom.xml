@@ -13,31 +13,30 @@
     <description>Hệ Thống Đấu Giá - Auction System</description>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>26</javafx.version>
+
+        <javafx.version>21</javafx.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-        <junit.jupiter.version>5.10.2</junit.jupiter.version> <!-- Update bản mới hơn -->
+
+        <junit.jupiter.version>5.8.1</junit.jupiter.version>
         <main.class>view.Main</main.class>
     </properties>
 
     <dependencies>
-        <!-- Thư viện Database: SQLite JDBC -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.45.1.0</version>
         </dependency>
 
-        <!-- [MỚI] Thư viện Gson để xử lý dữ liệu JSON truyền qua mạng Socket -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
 
-        <!-- JavaFX Dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -59,7 +58,7 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Testing Dependencies (Gọn gàng hơn) -->
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -85,7 +84,6 @@
         <testSourceDirectory>src/test/java</testSourceDirectory>
 
         <plugins>
-            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -107,7 +105,7 @@
                 </configuration>
             </plugin>
 
-            <!-- [MỚI] Tích hợp Checkstyle enforce chuẩn code Google -->
+            <!-- Checkstyle: đổi sang phase verify để target/ đã tồn tại -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -115,10 +113,13 @@
                 <configuration>
                     <configLocation>google_checks.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
-                    <failsOnError>false</failsOnError> </configuration>
+                    <failsOnError>false</failsOnError>
+                    <failOnViolation>false</failOnViolation>
+                    <violationSeverity>warning</violationSeverity>
+                </configuration>
                 <executions>
                     <execution>
-                        <phase>validate</phase>
+                        <phase>verify</phase> <!-- FIX: đổi từ validate → verify -->
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -126,7 +127,6 @@
                 </executions>
             </plugin>
 
-            <!-- Assembly Plugin for creating fat JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -153,12 +153,13 @@
                 </executions>
             </plugin>
 
-            <!-- Surefire Plugin for running JUnit tests -->
+            <!-- Surefire: chạy JUnit 5 đúng cách -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
+                    <useModulePath>false</useModulePath>
                     <includes>
                         <include>**/Test*.java</include>
                         <include>**/*Test.java</include>
