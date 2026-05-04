@@ -1,18 +1,21 @@
 package dao;
 
 import model.auction.Auction;
+import model.auction.AuctionStatus;
+import model.item.ItemFactory; // Import thêm ItemFactory mới tạo
 import model.user.Admin;
 import model.user.Bidder;
 import model.user.Seller;
 import model.user.User;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
 
-    // 1. Hàm tự động tạo bảng nếu chưa có (Đã bổ sung cột isActive cho Users)
+    // 1. Hàm tự động tạo bảng nếu chưa có
     public static void initializeDatabase() {
         String createUsersTable = """
             CREATE TABLE IF NOT EXISTS users (
@@ -38,6 +41,31 @@ public class DatabaseManager {
             );
         """;
 
+        String createItemsTable = """
+    CREATE TABLE IF NOT EXISTS items (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        type TEXT,
+        extra1 TEXT,
+        extra2 INTEGER,
+        owner_id TEXT,
+        FOREIGN KEY (owner_id) REFERENCES users(id)
+    );
+""";
+
+        String createTransactionsTable = """
+    CREATE TABLE IF NOT EXISTS bid_transactions (
+        id TEXT PRIMARY KEY,
+        auction_id TEXT,
+        bidder_id TEXT,
+        amount REAL,
+        timestamp TEXT,
+        FOREIGN KEY (auction_id) REFERENCES auctions(id),
+        FOREIGN KEY (bidder_id) REFERENCES users(id)
+    );
+""";
+
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
@@ -50,7 +78,7 @@ public class DatabaseManager {
         }
     }
 
-    // 2. Lưu User mới xuống DB (Đã thêm thông số isActive)
+    // 2. Lưu User mới xuống DB (Đã xóa Reflection, thay bằng getPassword chuẩn OOP)
     public static boolean saveUser(User user) {
         String sql = "INSERT INTO users(id, username, password, role, balance, isActive) VALUES(?,?,?,?,?,?)";
 
@@ -59,17 +87,7 @@ public class DatabaseManager {
 
             pstmt.setString(1, user.getId());
             pstmt.setString(2, user.getUsername());
-
-            String password = "";
-            try {
-                java.lang.reflect.Field passField = User.class.getDeclaredField("password");
-                passField.setAccessible(true);
-                password = (String) passField.get(user);
-            } catch (Exception e) {
-                System.err.println("Cảnh báo: Không thể bẻ khóa biến password - " + e.getMessage());
-            }
-            pstmt.setString(3, password);
-
+            pstmt.setString(3, user.getPassword()); // Gọi trực tiếp getter
             pstmt.setString(4, user.getRole().toString());
 
             double balance = 0.0;
@@ -91,7 +109,7 @@ public class DatabaseManager {
         }
     }
 
-    // 3. Tải toàn bộ danh sách User từ DB lên RAM (Đã cứu lại ông Admin)
+    // 3. Tải toàn bộ danh sách User từ DB lên RAM
     public static List<User> loadUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -145,7 +163,7 @@ public class DatabaseManager {
         }
     }
 
-    // 5. Cập nhật toàn bộ trạng thái User (Gồm cả tiền và khóa mồm)
+    // 5. Cập nhật toàn bộ trạng thái User (Gồm cả tiền và khóa account)
     public static boolean updateUser(User user) {
         String sql = "UPDATE users SET balance = ?, isActive = ? WHERE id = ?";
 
@@ -204,8 +222,54 @@ public class DatabaseManager {
         }
     }
 
-    // 8. Load danh sách đấu giá
-    public static List<Auction> loadAuctions() {
-        return new ArrayList<>();
+    // 8. Load danh sách đấu giá (Đã vá lỗi trắng dữ liệu và dùng ItemFactory)
+    public static List<Auction> loadAuctions(List<User> loadedUsers) {
+        List<Auction> list = new ArrayList<>();
+        String sql = "SELECT * FROM auctions";
+
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String itemName = rs.getString("item_name");
+                double startingPrice = rs.getDouble("starting_price");
+                double currentPrice = rs.getDouble("current_price");
+                String endTimeStr = rs.getString("end_time");
+                String statusStr = rs.getString("status");
+                String bidderId = rs.getString("highest_bidder_id");
+
+                // Tạo Seller tạm và sử dụng ItemFactory
+                Seller tempSeller = new Seller("S-TEMP", "System", "123", 0.0);
+                model.item.Item tempItem = ItemFactory.createItem(
+                        "ELECTRONICS", "ITEM-" + id, itemName, "Khôi phục từ DB", tempSeller, "Unknown", 0);
+
+                Auction auction = new Auction(
+                        id, tempItem, startingPrice, 50.0, LocalDateTime.parse(endTimeStr));
+                auction.setStatus(AuctionStatus.valueOf(statusStr));
+
+                // Dùng Reflection để khôi phục biến currentPrice mà không gọi hàm placeBid
+                java.lang.reflect.Field priceField = Auction.class.getDeclaredField("currentPrice");
+                priceField.setAccessible(true);
+                priceField.set(auction, currentPrice);
+
+                // Nối lại người dẫn đầu (Highest Bidder) nếu có
+                if (bidderId != null) {
+                    for (User u : loadedUsers) {
+                        if (u.getId().equals(bidderId) && u instanceof Bidder) {
+                            java.lang.reflect.Field bidderField = Auction.class.getDeclaredField("highestBidder");
+                            bidderField.setAccessible(true);
+                            bidderField.set(auction, u);
+                            break;
+                        }
+                    }
+                }
+                list.add(auction);
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi tải Auctions: " + e.getMessage());
+        }
+        return list;
     }
 }

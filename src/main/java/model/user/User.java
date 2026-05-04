@@ -31,6 +31,9 @@ public abstract class User extends Entity{
     public Role getRole(){
         return role;
     }
+    public String getPassword() {
+        return password;
+    }
     public boolean isActive(){
         return isActive;
     }

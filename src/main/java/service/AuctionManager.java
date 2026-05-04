@@ -38,7 +38,7 @@ public class AuctionManager {
 
         // 2. Kéo dữ liệu từ SQL lên RAM
         this.users = DatabaseManager.loadUsers();
-        this.auctions = DatabaseManager.loadAuctions();
+        this.auctions = DatabaseManager.loadAuctions(this.users);
 
         // 3. Khởi động Robot đi tuần khi hệ thống bật
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -67,7 +67,7 @@ public class AuctionManager {
     // QUẢN LÝ TÀI KHOẢN
     // ==========================================
 
-    public void registerUser(User user) {
+    public synchronized void registerUser(User user) {
         if (user != null) {
             users.add(user);
             DatabaseManager.saveUser(user); // Lưu thẳng User mới xuống SQL
@@ -151,8 +151,8 @@ public class AuctionManager {
             return "Lỗi: Phiên đấu giá này vừa mới hết thời gian!";
         }
 
-        if (bidder.getBalance() < bidAmount) {
-            return "Lỗi: Bạn không đủ tiền trong ví để đặt mức giá này.";
+        if (bidder.getAvailableBalance() < bidAmount) {
+            return "Lỗi: Bạn không đủ tiền khả dụng trong ví để đặt mức giá này.";
         }
 
         try {
@@ -212,9 +212,11 @@ public class AuctionManager {
 
     public List<Auction> getRunningAuctions() {
         List<Auction> running = new ArrayList<>();
-        for (Auction a : auctions) {
-            if (a.getStatus() == AuctionStatus.RUNNING) {
-                running.add(a);
+        synchronized (auctions) {
+            for (Auction a : auctions) {
+                if (a.getStatus() == AuctionStatus.RUNNING) {
+                    running.add(a);
+                }
             }
         }
         return running;

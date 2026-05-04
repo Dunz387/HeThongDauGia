@@ -89,7 +89,7 @@ public class Auction extends Entity implements AuctionSubject {
         this.reason = reason;
     }
 
-    // Logic ĐÃ ĐƯỢC NÂNG CẤP EXCEPTION (Mục 2)
+    // Logic EXCEPTION (Mục 2)
     public void placeBid(Bidder bidder, double bidAmount) throws AuctionClosedException, InvalidBidException {
         lock.lock();
         try {
@@ -97,21 +97,32 @@ public class Auction extends Entity implements AuctionSubject {
                 throw new AuctionClosedException("Phiên đấu giá chưa mở hoặc đã kết thúc.");
             }
 
-            // Kiểm tra giá đặt có hợp lệ không (Lớn hơn giá hiện tại + bước giá)
             double minRequiredBid = currentPrice + bidIncrement;
             if (bidAmount < minRequiredBid) {
                 throw new InvalidBidException(String.format("Giá đặt phải lớn hơn hoặc bằng $%.2f", minRequiredBid));
+            }
+
+            // Ghi nhớ người cũ trước khi cập nhật người mới
+            Bidder previousBidder = this.highestBidder;
+            double previousBidAmount = this.currentPrice;
+
+            // THỬ ĐÓNG BĂNG TIỀN CỦA NGƯỜI MỚI
+            if (!bidder.lockBalance(bidAmount)) {
+                throw new InvalidBidException("Không đủ số dư khả dụng (Tiền của bạn có thể đang bị giam ở phòng khác).");
+            }
+
+            // NẾU THÀNH CÔNG, HOÀN TRẢ TIỀN CHO NGƯỜI CŨ (NẾU CÓ)
+            if (previousBidder != null) {
+                previousBidder.unlockBalance(previousBidAmount);
             }
 
             // Cập nhật thông tin người thắng mới
             this.currentPrice = bidAmount;
             this.highestBidder = bidder;
 
-            // Tạo biên lai (Transaction) và lưu vào lịch sử
-            BidTransaction transaction = new BidTransaction("TX-" + System.currentTimeMillis(), this, bidder, bidAmount, LocalDateTime.now());
+            BidTransaction transaction = new BidTransaction("TX-" + System.currentTimeMillis(), this, bidder, bidAmount, java.time.LocalDateTime.now());
             bidHistory.add(transaction);
 
-            // BÁO ĐỘNG CHO TẤT CẢ OBSERVER (UI) NGAY KHI ĐẶT GIÁ THÀNH CÔNG
             notifyObservers();
 
         } finally {

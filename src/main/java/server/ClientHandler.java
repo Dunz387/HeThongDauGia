@@ -6,9 +6,8 @@ import model.auction.Auction;
 import model.user.Bidder;
 import service.AuctionManager;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
@@ -17,8 +16,10 @@ public class ClientHandler implements Runnable {
     private Auction currentAuction;
     private AuctionManager manager;
     private Bidder myProfile;
-    private PrintWriter out;
-    private BufferedReader in;
+
+    // ĐỔI SANG DÙNG OBJECT STREAMS
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     public ClientHandler(Socket socket, AuctionServer server, Auction auction, AuctionManager manager) {
         this.socket = socket;
@@ -30,55 +31,62 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            // Chuyển sang dùng PrintWriter và BufferedReader cho chuẩn chuỗi Text
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            // KHỞI TẠO LUỒNG OBJECT (Bắt buộc phải tạo Out trước và flush ngay)
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(socket.getInputStream());
 
-            // 1. Nhận tên từ Client
-            String playerName = in.readLine();
+            // 1. Nhận tên từ Client (Client giờ sẽ gửi String object)
+            String playerName = (String) in.readObject();
             if (playerName == null || playerName.trim().isEmpty()) {
                 playerName = "Người lạ " + (int)(Math.random() * 100);
             }
 
-            // 2. Tạo profile và ném vào Database qua Manager
+            // 2. Tạo profile và ném vào Database
             this.myProfile = new Bidder("B-" + System.currentTimeMillis(), playerName, "123", 5000.0);
             manager.registerUser(myProfile);
 
-            // 3. Gửi thông tin chào sân (Gửi dạng chuỗi Text thay vì gửi nguyên Object)
+            // 3. CHÀO SÂN BẰNG CÁCH GỬI NGUYÊN OBJECT AUCTION XUỐNG
             sendData("=== THÔNG TIN PHIÊN ĐẤU GIÁ ===");
-            sendData("Sản phẩm: " + currentAuction.getItem().getName());
-            sendData("Giá hiện tại: $" + currentAuction.getCurrentPrice());
-            sendData("Trạng thái: " + currentAuction.getStatus());
-            sendData("-------------------------------");
+            sendData(currentAuction); // Gửi thẳng object
             sendData("Nhập giá tiền bạn muốn đặt (VD: 36) hoặc 'exit': ");
 
             // 4. Lắng nghe người dùng đặt giá
-            String input;
-            while ((input = in.readLine()) != null) {
-                input = input.trim();
-                if (input.equalsIgnoreCase("exit")) break;
+            Object inputObj;
+            while ((inputObj = in.readObject()) != null) {
+                if (inputObj instanceof String) {
+                    String input = ((String) inputObj).trim();
+                    if (input.equalsIgnoreCase("exit")) break;
 
-                try {
-                    double amount = Double.parseDouble(input);
-                    // Dùng Manager để xử lý Bid (nó sẽ lưu thẳng xuống Database)
-                    String result = manager.processBid(myProfile, currentAuction, amount);
-                    sendData(">> Kết quả: " + result);
-                } catch (NumberFormatException e) {
-                    sendData(" LỖI: Vui lòng chỉ nhập con số (Ví dụ: 1600).");
+                    try {
+                        double amount = Double.parseDouble(input);
+                        String result = manager.processBid(myProfile, currentAuction, amount);
+                        sendData(">> Kết quả: " + result);
+                    } catch (NumberFormatException e) {
+                        sendData("LỖI: Vui lòng chỉ nhập con số.");
+                    }
                 }
             }
         } catch (Exception e) {
-            server.removeClient(this);
+            System.out.println("Client ngắt kết nối.");
         } finally {
             try { socket.close(); } catch (Exception e) {}
             server.removeClient(this);
         }
     }
 
-    // Hàm gửi tin nhắn dạng Text
-    public void sendData(String message) {
-        if (out != null) {
-            out.println(message);
+    // Hàm nhận mọi loại Object (String, Auction, ...) để gửi xuống Client
+    public void sendData(Object data) {
+        try {
+            if (out != null) {
+                out.writeObject(data);
+
+                // Cần thiết để xóa cache, đảm bảo giá trị mới nhất của Object được gửi đi thay vì bản cũ
+                out.reset();
+                out.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

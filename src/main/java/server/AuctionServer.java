@@ -4,6 +4,7 @@ import model.auction.Auction;
 import model.auction.AuctionObserver;
 import model.auction.AuctionStatus;
 import model.item.Item;
+import model.item.ItemFactory;
 import model.user.Bidder;
 import model.user.Seller;
 import service.AuctionManager;
@@ -15,11 +16,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AuctionServer implements AuctionObserver {
     private static final int PORT = 8080;
     private Auction currentAuction;
-    private List<ClientHandler> clients = new ArrayList<>();
+    private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private AuctionManager manager; // Bổ sung sếp tổng
 
     public static void main(String[] args) {
@@ -53,7 +55,7 @@ public class AuctionServer implements AuctionObserver {
         Seller admin = new Seller("S01", "HeThong", "123", 0.0);
         manager.registerUser(admin); // Lưu Seller vào DB
 
-        Item item = Item.createItem(type, "ID-" + System.currentTimeMillis(), name, desc, admin, extra1, extra2);
+        Item item = ItemFactory.createItem(type, "ID-" + System.currentTimeMillis(), name, desc, admin, extra1, extra2);
 
         currentAuction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 50.0, LocalDateTime.now().plusMinutes(2));
         currentAuction.setStatus(AuctionStatus.RUNNING);
