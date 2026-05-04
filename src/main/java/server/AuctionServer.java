@@ -10,10 +10,10 @@ import model.user.Seller;
 import service.AuctionManager;
 
 import java.io.IOException;
+import java.net.InetSocketAddress; // Cần thêm import này cho bind
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,25 +22,26 @@ public class AuctionServer implements AuctionObserver {
     private static final int PORT = 8080;
     private Auction currentAuction;
     private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
-    private AuctionManager manager; // Bổ sung sếp tổng
+    private AuctionManager manager;
 
     public static void main(String[] args) {
-        AuctionServer server = new AuctionServer();
-        server.startServer();
+        new AuctionServer().startServer();
     }
 
     public void startServer() {
-        // Đánh thức Database
-        manager = AuctionManager.getInstance();
+        // TỐI ƯU 1: Shutdown Hook để dọn dẹp dữ liệu khi tắt
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("\n[HỆ THỐNG] Đang đóng Server và giải phóng tài nguyên...");
+            if (manager != null) manager.stopManager();
+        }));
 
+        manager = AuctionManager.getInstance();
         Scanner scanner = new Scanner(System.in);
         System.out.println("=== HỆ THỐNG ĐẤU GIÁ ĐA NĂNG ===");
 
-        // Các bước nhập liệu của bạn được giữ nguyên
-        System.out.println("Các loại hàng hỗ trợ: [ELECTRONICS, ART, VEHICLE]");
-        System.out.print("Chọn loại hàng: ");
+        // --- Logic nhập liệu giữ nguyên ---
+        System.out.print("Chọn loại hàng [ELECTRONICS, ART, VEHICLE]: ");
         String type = scanner.nextLine().toUpperCase();
-
         System.out.print("Tên sản phẩm: ");
         String name = scanner.nextLine();
         System.out.print("Mô tả: ");
@@ -48,32 +49,39 @@ public class AuctionServer implements AuctionObserver {
         System.out.print("Giá khởi điểm ($): ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        String extra1 = "Default";
-        int extra2 = 0;
-        // Bỏ qua Switch-case hiển thị ở đây cho ngắn gọn, bạn giữ nguyên code cũ phần nhập extra nhé!
-
         Seller admin = new Seller("S01", "HeThong", "123", 0.0);
-        manager.registerUser(admin); // Lưu Seller vào DB
+        manager.registerUser(admin);
 
-        Item item = ItemFactory.createItem(type, "ID-" + System.currentTimeMillis(), name, desc, admin, extra1, extra2);
-
+        Item item = ItemFactory.createItem(type, "ID-" + System.currentTimeMillis(), name, desc, admin, "Default", 0);
         currentAuction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 50.0, LocalDateTime.now().plusMinutes(2));
         currentAuction.setStatus(AuctionStatus.RUNNING);
         currentAuction.addObserver(this);
-
-        // ĐĂNG KÝ PHIÊN ĐẤU GIÁ VÀO DATABASE
         manager.registerAuction(currentAuction);
 
+        // TỐI ƯU 2: Luồng đếm ngược là Daemon
         startCountdownTimer(2);
 
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("\n[SERVER] Đã mở cổng " + PORT + ". Đang chờ người chơi vào...");
+        // TỐI ƯU 3: NÚT TỰ HỦY NỘI BỘ - Gõ 'exit' để tắt Server sạch sẽ
+        new Thread(() -> {
+            Scanner cmdScanner = new Scanner(System.in);
+            while (cmdScanner.hasNextLine()) {
+                if ("exit".equalsIgnoreCase(cmdScanner.nextLine())) {
+                    System.out.println("[HỆ THỐNG] Nhận lệnh EXIT. Đang tự hủy an toàn...");
+                    System.exit(0); // Lệnh này sẽ kích hoạt Shutdown Hook ở trên
+                }
+            }
+        }).start();
+
+        // TỐI ƯU 4: SET REUSE ADDRESS - Chiếm lại cổng ngay lập tức dù tắt lỗi[cite: 2]
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.setReuseAddress(true); // Cho phép dùng lại Port 8080 ngay lập tức[cite: 2]
+            serverSocket.bind(new InetSocketAddress(PORT));
+
+            System.out.println("\n[SERVER] Đã mở cổng " + PORT + ". Gõ 'exit' để kết thúc.");
 
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Có người chơi mới kết nối: " + socket.getInetAddress());
-
-                // Chuyển việc chăm sóc Client cho luồng riêng, truyền thêm manager vào
                 ClientHandler handler = new ClientHandler(socket, this, currentAuction, manager);
                 clients.add(handler);
                 new Thread(handler).start();
@@ -94,33 +102,28 @@ public class AuctionServer implements AuctionObserver {
                     Thread.sleep(1000);
                     timeRemaining--;
                 }
-
-                // Gọi manager để chốt sổ (lưu Database, trừ tiền)
                 manager.concludeAuction(currentAuction);
-
                 broadcast("\n [HỆ THỐNG] HẾT GIỜ! PHIÊN ĐẤU GIÁ KẾT THÚC.");
+
                 Bidder winner = currentAuction.getHighestBidder();
                 if (winner != null) {
                     broadcast(" NGƯỜI THẮNG: " + winner.getUsername() + " với mức giá $" + currentAuction.getCurrentPrice());
                 } else {
                     broadcast(" Không có ai đặt giá. Đấu giá thất bại.");
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            } catch (InterruptedException e) { e.printStackTrace(); }
         });
+        timerThread.setDaemon(true); // Đảm bảo luồng đếm ngược tự tắt
         timerThread.start();
     }
 
     @Override
     public void update(Auction auction, double newPrice, String topBidderName) {
-        broadcast("\n[THÔNG BÁO TỪ BÀN ĐẤU QUỐC TẾ] " + topBidderName + " vừa nâng giá lên: $" + newPrice);
+        broadcast("\n[THÔNG BÁO] " + topBidderName + " vừa nâng giá lên: $" + newPrice);
     }
 
     public synchronized void broadcast(String message) {
-        for (ClientHandler client : clients) {
-            client.sendData(message);
-        }
+        for (ClientHandler client : clients) client.sendData(message);
     }
 
     public synchronized void removeClient(ClientHandler client) {

@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="update client-socket, sửa lỗi test và pom">
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/item/ItemFactory.java" afterDir="false" />
+    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/client/AuctionClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/client/AuctionClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/user/Bidder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/user/Bidder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/user/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +105,7 @@
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.AuctionClient">
+  <component name="RunManager" selected="Application.AuctionServer">
     <configuration name="AuctionClient" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -321,7 +314,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777854948111</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core">
+      <option name="closed" value="true" />
+      <created>1777875797530</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1777875797530</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -346,7 +347,8 @@
     <MESSAGE value="update database sqlite" />
     <MESSAGE value="update client-socket" />
     <MESSAGE value="update client-socket, sửa lỗi test và pom" />
-    <option name="LAST_COMMIT_MESSAGE" value="update client-socket, sửa lỗi test và pom" />
+    <MESSAGE value="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core" />
+    <option name="LAST_COMMIT_MESSAGE" value="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
