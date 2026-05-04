@@ -1,6 +1,7 @@
 package dao;
 
 import model.auction.Auction;
+import model.user.Admin;
 import model.user.Bidder;
 import model.user.Seller;
 import model.user.User;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class DatabaseManager {
 
-    // 1. Hàm tự động tạo bảng nếu chưa có (Chạy lúc khởi động hệ thống)
+    // 1. Hàm tự động tạo bảng nếu chưa có (Đã bổ sung cột isActive cho Users)
     public static void initializeDatabase() {
         String createUsersTable = """
             CREATE TABLE IF NOT EXISTS users (
@@ -19,7 +20,8 @@ public class DatabaseManager {
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT NOT NULL,
-                balance REAL DEFAULT 0.0
+                balance REAL DEFAULT 0.0,
+                isActive INTEGER DEFAULT 1
             );
         """;
 
@@ -48,24 +50,21 @@ public class DatabaseManager {
         }
     }
 
-    // 2. Lưu User mới xuống DB (Thay thế cho lưu ra file)
+    // 2. Lưu User mới xuống DB (Đã thêm thông số isActive)
     public static boolean saveUser(User user) {
-        String sql = "INSERT INTO users(id, username, password, role, balance) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO users(id, username, password, role, balance, isActive) VALUES(?,?,?,?,?,?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // 1. Lưu các thông tin cơ bản có sẵn getter
             pstmt.setString(1, user.getId());
             pstmt.setString(2, user.getUsername());
 
-            // 2. "Ma thuật" Java Reflection: Lấy password dù nó bị khóa private và không có getter
             String password = "";
             try {
-                // Nhắm thẳng vào biến 'password' trong class cha User
                 java.lang.reflect.Field passField = User.class.getDeclaredField("password");
-                passField.setAccessible(true); // Tạm thời phá vỡ lớp vỏ bọc private
-                password = (String) passField.get(user); // Lấy giá trị ra
+                passField.setAccessible(true);
+                password = (String) passField.get(user);
             } catch (Exception e) {
                 System.err.println("Cảnh báo: Không thể bẻ khóa biến password - " + e.getMessage());
             }
@@ -73,18 +72,16 @@ public class DatabaseManager {
 
             pstmt.setString(4, user.getRole().toString());
 
-            // 3. Phân luồng dòng tiền thông minh
             double balance = 0.0;
             if (user instanceof Bidder) {
-                balance = ((Bidder) user).getBalance(); // Ép kiểu sang Bidder để lấy tiền
+                balance = ((Bidder) user).getBalance();
             } else if (user instanceof Seller) {
-                balance = ((Seller) user).getBalance(); // Ép kiểu sang Seller để lấy tiền
+                balance = ((Seller) user).getBalance();
             }
-            // Nếu là Admin, code sẽ tự động lọt qua if-else này và giữ nguyên mức tiền = 0.0
 
             pstmt.setDouble(5, balance);
+            pstmt.setInt(6, user.isActive() ? 1 : 0);
 
-            // Thực thi lệnh SQL
             pstmt.executeUpdate();
             return true;
 
@@ -94,7 +91,7 @@ public class DatabaseManager {
         }
     }
 
-    // 3. Tải toàn bộ danh sách User từ DB lên RAM (Thay thế cho đọc file)
+    // 3. Tải toàn bộ danh sách User từ DB lên RAM (Đã cứu lại ông Admin)
     public static List<User> loadUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -109,12 +106,20 @@ public class DatabaseManager {
                 String password = rs.getString("password");
                 String roleStr = rs.getString("role");
                 double balance = rs.getDouble("balance");
+                boolean isActive = rs.getInt("isActive") == 1;
 
-                // Khôi phục lại Object chuẩn OOP dựa theo Role
+                User newUser = null;
                 if (roleStr.equals("BIDDER")) {
-                    users.add(new Bidder(id, username, password, balance));
+                    newUser = new Bidder(id, username, password, balance);
                 } else if (roleStr.equals("SELLER")) {
-                    users.add(new Seller(id, username, password, balance));
+                    newUser = new Seller(id, username, password, balance);
+                } else if (roleStr.equals("ADMIN")) {
+                    newUser = new Admin(id, username, password);
+                }
+
+                if (newUser != null) {
+                    newUser.setActive(isActive);
+                    users.add(newUser);
                 }
             }
         } catch (SQLException e) {
@@ -140,25 +145,67 @@ public class DatabaseManager {
         }
     }
 
-    // (Thêm vào DatabaseManager.java)
-
+    // 5. Cập nhật toàn bộ trạng thái User (Gồm cả tiền và khóa mồm)
     public static boolean updateUser(User user) {
-        // Code SQL UPDATE user sẽ viết sau
-        return true;
+        String sql = "UPDATE users SET balance = ?, isActive = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            double balance = 0.0;
+            if (user instanceof Bidder) balance = ((Bidder)user).getBalance();
+            else if (user instanceof Seller) balance = ((Seller)user).getBalance();
+
+            pstmt.setDouble(1, balance);
+            pstmt.setInt(2, user.isActive() ? 1 : 0);
+            pstmt.setString(3, user.getId());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
+    // 6. Lưu một phiên đấu giá mới vào DB
     public static boolean saveAuction(Auction auction) {
-        // Code SQL INSERT auction sẽ viết sau
-        return true;
+        String sql = "INSERT INTO auctions(id, item_name, starting_price, current_price, end_time, status) VALUES(?,?,?,?,?,?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, auction.getId());
+            pstmt.setString(2, auction.getItem().getName());
+            pstmt.setDouble(3, auction.getCurrentPrice());
+            pstmt.setDouble(4, auction.getCurrentPrice());
+            pstmt.setString(5, auction.getEndTime().toString());
+            pstmt.setString(6, auction.getStatus().toString());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
+    // 7. Cập nhật giá và người dẫn đầu khi đang đấu giá
     public static boolean updateAuction(Auction auction) {
-        // Code SQL UPDATE auction sẽ viết sau
-        return true;
+        String sql = "UPDATE auctions SET current_price = ?, status = ?, highest_bidder_id = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setDouble(1, auction.getCurrentPrice());
+            pstmt.setString(2, auction.getStatus().toString());
+            pstmt.setString(3, (auction.getHighestBidder() != null) ? auction.getHighestBidder().getId() : null);
+            pstmt.setString(4, auction.getId());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
+    // 8. Load danh sách đấu giá
     public static List<Auction> loadAuctions() {
-        // Code SQL SELECT auctions sẽ viết sau
         return new ArrayList<>();
     }
 }
