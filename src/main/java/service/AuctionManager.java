@@ -31,7 +31,7 @@ public class AuctionManager {
         this.users = DatabaseManager.loadUsers();
         this.auctions = DatabaseManager.loadAuctions(this.users);
 
-        // TỐI ƯU: Đảm bảo Robot đi tuần là Daemon Thread[cite: 27]
+        // TỐI ƯU: Đảm bảo Robot đi tuần là Daemon Thread[cite: 22]
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r);
             t.setDaemon(true);
@@ -44,7 +44,7 @@ public class AuctionManager {
         return instance;
     }
 
-    // THÊM MỚI: Hàm dừng chuyên nghiệp để giải phóng tài nguyên[cite: 27]
+    // Hàm dừng chuyên nghiệp để giải phóng tài nguyên[cite: 22]
     public void stopManager() {
         if (scheduler != null) {
             scheduler.shutdownNow();
@@ -65,12 +65,8 @@ public class AuctionManager {
         }, 0, 30, TimeUnit.SECONDS);
     }
 
-    // --- Các hàm registerUser, login, banUser, processBid... giữ nguyên từ Source 28 ---
-    // [Giữ nguyên logic của bạn để đảm bảo không sai lệch nghiệp vụ]
-
     public synchronized void registerUser(User user) {
         if (user != null) {
-            // Kiểm tra xem tên đăng nhập đã có trong RAM chưa
             for (User u : users) {
                 if (u.getUsername().equals(user.getUsername())) return;
             }
@@ -158,5 +154,34 @@ public class AuctionManager {
             }
         }
         return running;
+    }
+
+    // =========================================================================
+    // THÊM MỚI: 2 hàm hỗ trợ trực tiếp cho ClientHandler xử lý Protocol
+    // =========================================================================
+
+    public User authenticateUser(String username, String password) {
+        try {
+            // Tận dụng luôn hàm login đã có sẵn logic kiểm tra active và ném exception[cite: 22]
+            return login(username, password);
+        } catch (AuthenticationException e) {
+            return null; // Bắt exception và trả về null để ClientHandler dễ xử lý If-Else
+        }
+    }
+
+    public boolean registerNewUser(String username, String password) {
+        // Kiểm tra xem user đã tồn tại chưa[cite: 22]
+        for (User u : users) {
+            if (u.getUsername().equalsIgnoreCase(username)) {
+                return false;
+            }
+        }
+
+        // Mặc định tạo tài khoản mới là Bidder với số vốn ban đầu là 5000$
+        Bidder newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 5000.0);
+
+        // Tận dụng hàm registerUser có sẵn để thêm vào List và lưu xuống Database[cite: 22]
+        this.registerUser(newUser);
+        return true;
     }
 }

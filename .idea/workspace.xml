@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core">
+    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="sửa fix lỗi về client-server">
+      <change afterPath="$PROJECT_DIR$/src/main/java/shared/Protocol.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -322,7 +323,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777875797530</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="sửa fix lỗi về client-server">
+      <option name="closed" value="true" />
+      <created>1777880013908</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1777880013908</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -348,7 +357,8 @@
     <MESSAGE value="update client-socket" />
     <MESSAGE value="update client-socket, sửa lỗi test và pom" />
     <MESSAGE value="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core" />
-    <option name="LAST_COMMIT_MESSAGE" value="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core" />
+    <MESSAGE value="sửa fix lỗi về client-server" />
+    <option name="LAST_COMMIT_MESSAGE" value="sửa fix lỗi về client-server" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
