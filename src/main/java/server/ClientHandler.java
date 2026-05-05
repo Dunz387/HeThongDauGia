@@ -4,13 +4,14 @@ import exception.AuctionClosedException;
 import exception.InvalidBidException;
 import model.auction.Auction;
 import model.user.Bidder;
-import model.user.User; // Đã thêm import
+import model.user.User;
 import service.AuctionManager;
-import shared.Protocol; // Đã thêm import
+import shared.Protocol;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List; // Đã thêm import
 
 public class ClientHandler implements Runnable {
     private Socket socket;
@@ -18,7 +19,6 @@ public class ClientHandler implements Runnable {
     private Auction currentAuction;
     private AuctionManager manager;
 
-    // ĐỔI TỪ: Bidder myProfile SANG User loggedInUser để quản lý Xác thực[cite: 21]
     private User loggedInUser = null;
 
     private ObjectOutputStream out;
@@ -34,21 +34,16 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            // Khởi tạo luồng Object[cite: 21]
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
-
-            // --- ĐÃ XÓA BỎ: Logic tự động tạo profile ảo[cite: 21] ---
-            // --- THÊM MỚI: Bộ định tuyến Router lắng nghe lệnh Protocol ---
 
             Object inputObj;
             while ((inputObj = in.readObject()) != null) {
                 if (inputObj instanceof String) {
                     String rawData = ((String) inputObj).trim();
-                    if (rawData.equalsIgnoreCase("exit")) break; //[cite: 21]
+                    if (rawData.equalsIgnoreCase("exit")) break;
 
-                    // Cắt chuỗi lệnh gửi lên
                     String[] parts = rawData.split(Protocol.SEPARATOR);
                     String command = parts[0];
 
@@ -62,12 +57,16 @@ public class ClientHandler implements Runnable {
                             break;
 
                         case Protocol.REQ_BID:
-                            // Kiểm tra bảo mật: Chưa đăng nhập thì không cho đấu giá
                             if (loggedInUser != null && loggedInUser instanceof Bidder) {
                                 handleBid(parts[1]);
                             } else {
                                 sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Vui lòng đăng nhập với tư cách người mua trước khi đấu giá!");
                             }
+                            break;
+
+                        // THÊM MỚI: Xử lý yêu cầu lấy danh sách đấu giá
+                        case Protocol.REQ_GET_AUCTIONS:
+                            handleGetAuctions();
                             break;
 
                         default:
@@ -86,12 +85,10 @@ public class ClientHandler implements Runnable {
     // --- CÁC HÀM XỬ LÝ LOGIC ---
 
     private void handleLogin(String username, String password) {
-        // Lưu ý: Bạn cần viết hàm authenticateUser() trong class AuctionManager
         User user = manager.authenticateUser(username, password);
 
         if (user != null) {
-            this.loggedInUser = user; // Gắn thẻ luồng này đã thuộc về user
-            // Trả về: LOGIN|SUCCESS|BIDDER
+            this.loggedInUser = user;
             sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + user.getRole());
         } else {
             sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Sai tên đăng nhập hoặc mật khẩu");
@@ -99,7 +96,6 @@ public class ClientHandler implements Runnable {
     }
 
     private void handleRegister(String username, String password) {
-        // Lưu ý: Bạn cần viết hàm registerNewUser() trong class AuctionManager
         boolean success = manager.registerNewUser(username, password);
 
         if (success) {
@@ -112,14 +108,20 @@ public class ClientHandler implements Runnable {
     private void handleBid(String amountStr) {
         try {
             double amount = Double.parseDouble(amountStr);
-            String result = manager.processBid((Bidder) loggedInUser, currentAuction, amount); //[cite: 21]
-            sendData(">> Kết quả: " + result); //[cite: 21]
+            String result = manager.processBid((Bidder) loggedInUser, currentAuction, amount);
+            sendData(">> Kết quả: " + result);
         } catch (NumberFormatException e) {
-            sendData("LỖI: Vui lòng chỉ nhập con số."); //[cite: 21]
+            sendData("LỖI: Vui lòng chỉ nhập con số.");
         }
     }
 
-    // Hàm nhận mọi loại Object giữ nguyên[cite: 21]
+    // THÊM MỚI: Hàm trả về danh sách phiên đấu giá
+    private void handleGetAuctions() {
+        List<Auction> runningAuctions = manager.getRunningAuctions();
+        sendData(Protocol.RES_AUCTION_LIST);
+        sendData(runningAuctions); // Gửi nguyên List<Auction>
+    }
+
     public void sendData(Object data) {
         try {
             if (out != null) {

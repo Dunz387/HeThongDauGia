@@ -27,7 +27,8 @@
                      <children>
                         <Group>
                            <children>
-                              <TextField layoutX="129.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="27.0" prefWidth="260.0" promptText="Enter User name" style="-fx-background-position: 1000;">
+                              <!-- ĐÃ THÊM fx:id="txtUsername" Ở DÒNG DƯỚI -->
+                              <TextField fx:id="txtUsername" layoutX="129.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="27.0" prefWidth="260.0" promptText="Enter User name" style="-fx-background-position: 1000;">
                                  <font>
                                     <Font name="Segoe UI" size="14.0" />
                                  </font>
@@ -42,7 +43,8 @@
                                     <Font name="Segoe UI Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <PasswordField layoutX="130.0" layoutY="39.0" prefHeight="30.0" prefWidth="259.0" promptText="Enter Password">
+                              <!-- ĐÃ THÊM fx:id="txtPassword" Ở DÒNG DƯỚI -->
+                              <PasswordField fx:id="txtPassword" layoutX="130.0" layoutY="39.0" prefHeight="30.0" prefWidth="259.0" promptText="Enter Password">
                                  <font>
                                     <Font name="Segoe UI" size="14.0" />
                                  </font>
