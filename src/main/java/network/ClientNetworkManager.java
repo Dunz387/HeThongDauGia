@@ -1,65 +1,52 @@
 package network;
 
 import javafx.application.Platform;
-import shared.Protocol; // Import file Protocol bạn vừa tạo ở mục 1.1
+import shared.Protocol;
+import model.auction.Auction; // Nhớ import cái này nhé!
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List; // Import List
 
 public class ClientNetworkManager {
-    // Áp dụng Singleton: Chỉ cho phép có 1 ống mạng duy nhất
     private static ClientNetworkManager instance;
-
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    // Biến để lưu trữ tạm thời phản hồi từ Server cho các lệnh đồng bộ (như Login/Register)
     private String lastResponse = null;
 
-    private ClientNetworkManager() {
-        // Constructor rỗng, ngăn không cho tạo instance mới bằng từ khóa new
-    }
+    // THÊM MỚI: Biến để hứng danh sách đấu giá
+    private List<Auction> lastAuctionList = null;
+
+    private ClientNetworkManager() {}
 
     public static ClientNetworkManager getInstance() {
-        if (instance == null) {
-            instance = new ClientNetworkManager();
-        }
+        if (instance == null) instance = new ClientNetworkManager();
         return instance;
     }
 
-    /**
-     * Mở đường ống kết nối đến Server
-     */
     public boolean connect(String ip, int port) {
         try {
             socket = new Socket(ip, port);
-
-            // QUAN TRỌNG: Khởi tạo luồng Out trước và flush ngay để tránh deadlock với Server
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
 
-            // Mở luồng chạy ngầm để liên tục lắng nghe Server chửi/khen
             startListeningThread();
-
             System.out.println("✅ Đã kết nối thành công đến Server!");
             return true;
         } catch (Exception e) {
-            System.out.println("❌ Không thể kết nối đến Server: " + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Ném dữ liệu lên Server
-     */
-    public void sendData(String data) {
+    public void sendData(Object data) { // Đổi tham số thành Object để gửi được nhiều kiểu
         try {
             if (out != null) {
                 out.writeObject(data);
-                out.reset(); // Xóa cache object
+                out.reset();
                 out.flush();
             }
         } catch (Exception e) {
@@ -67,20 +54,22 @@ public class ClientNetworkManager {
         }
     }
 
-    /**
-     * Luồng chạy ngầm (Background Thread) liên tục nghe ngóng
-     */
     private void startListeningThread() {
         Thread listenerThread = new Thread(() -> {
             try {
                 Object inputObj;
                 while ((inputObj = in.readObject()) != null) {
+
+                    // NẾU LÀ CHUỖI LỆNH (String)
                     if (inputObj instanceof String) {
                         String message = (String) inputObj;
-                        System.out.println("[Server trả về]: " + message);
-
-                        // Phân loại data nhận được
+                        System.out.println("[Server trả về Lệnh]: " + message);
                         processIncomingMessage(message);
+                    }
+                    // NẾU LÀ DANH SÁCH (List) -> THÊM MỚI ĐOẠN NÀY
+                    else if (inputObj instanceof List) {
+                        System.out.println("[Server trả về Data]: Nhận được một List!");
+                        this.lastAuctionList = (List<Auction>) inputObj;
                     }
                 }
             } catch (Exception e) {
@@ -88,38 +77,33 @@ public class ClientNetworkManager {
             }
         });
 
-        listenerThread.setDaemon(true); // Tự động chết khi tắt app
+        listenerThread.setDaemon(true);
         listenerThread.start();
     }
 
-    /**
-     * Xử lý gói tin Server ném về
-     */
     private void processIncomingMessage(String message) {
-        // Tách lệnh tương tự như Backend
         String[] parts = message.split(Protocol.SEPARATOR);
         String command = parts[0];
 
         switch (command) {
             case Protocol.REQ_LOGIN:
             case Protocol.REQ_REGISTER:
-                // Lưu lại kết quả để Controller kiểm tra
+            case Protocol.RES_AUCTION_LIST: // Báo hiệu chuẩn bị nhận List
                 this.lastResponse = message;
-                break;
-
-            case "BROADCAST": // Ví dụ sau này cho Realtime
-                // NHỚ QUY TẮC THÉP: Cập nhật UI thì phải bọc trong Platform.runLater
-                Platform.runLater(() -> {
-                    // Update nhãn giá tiền, đồng hồ... (Làm ở Bước 3)
-                });
                 break;
         }
     }
 
-    // Hàm tiện ích để Controller lấy kết quả trả về
     public String getLastResponse() {
         String temp = lastResponse;
-        lastResponse = null; // Đọc xong thì reset để không bị trùng
+        lastResponse = null;
+        return temp;
+    }
+
+    // THÊM MỚI: Hàm cho Controller lấy danh sách
+    public List<Auction> getLastAuctionList() {
+        List<Auction> temp = lastAuctionList;
+        lastAuctionList = null;
         return temp;
     }
 }

@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="sửa fix lỗi về client-server">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuthenticationUI/LoginView/Login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuthenticationUI/LoginView/Login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuthenticationUI/RegisterView/Register.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuthenticationUI/RegisterView/Register.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -346,7 +347,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777971151177</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="sửa fix lỗi về client-server">
+      <option name="closed" value="true" />
+      <created>1777975945014</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1777975945014</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

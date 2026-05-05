@@ -5,13 +5,14 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.BaseMenuController">
    <children>
@@ -23,10 +24,10 @@
                </font>
             </Button>
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="62.0" prefWidth="177.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài sản" textFill="#b85a1c">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-                <MenuItem mnemonicParsing="false" text="Action 2" />
-              </items>
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Action 1" />
+                  <MenuItem mnemonicParsing="false" text="Action 2" />
+               </items>
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>
@@ -43,7 +44,7 @@
             </Button>
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="62.0" prefWidth="150.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài khoản" textFill="#b85a1c">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#backToLoiginButtonClicked" text="Đăng nhập" />
+                  <MenuItem mnemonicParsing="false" onAction="#backToLoiginButtonClicked" text="Đăng xuất" />
                   <MenuItem mnemonicParsing="false" onAction="#backToRegisterButtonClicked" text="Đăng kí" />
                </items>
                <font>
@@ -52,9 +53,11 @@
             </MenuButton>
          </children>
       </HBox>
-      <ScrollPane hbarPolicy="NEVER" layoutY="62.0" prefHeight="394.0" prefWidth="834.0" vbarPolicy="NEVER">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="697.0" prefWidth="834.0">
+      <!-- Bật vbarPolicy thành AS_NEEDED để có thể cuộn dọc xuống xem bảng -->
+      <ScrollPane hbarPolicy="NEVER" layoutY="62.0" prefHeight="394.0" prefWidth="834.0" vbarPolicy="AS_NEEDED">
+         <content>
+            <!-- Nới chiều cao AnchorPane từ 697 lên 1150 để đủ chỗ chứa bảng -->
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1150.0" prefWidth="815.0">
                <children>
                   <ImageView fitHeight="391.0" fitWidth="1044.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -99,9 +102,27 @@
                         <Font name="Segoe UI Bold" size="13.0" />
                      </font>
                   </Label>
+
+                  <!-- BẮT ĐẦU PHẦN THÊM MỚI: DANH SÁCH ĐẤU GIÁ -->
+                  <Label layoutX="53.0" layoutY="660.0" prefHeight="35.0" prefWidth="365.0" text="Các phiên đấu giá đang diễn ra:">
+                     <font>
+                        <Font name="Segoe UI Bold" size="20.0" />
+                     </font>
+                  </Label>
+
+                  <TableView fx:id="tableAuctions" layoutX="53.0" layoutY="710.0" prefHeight="350.0" prefWidth="726.0">
+                     <columns>
+                        <TableColumn fx:id="colId" prefWidth="120.0" text="Mã Phiên" />
+                        <TableColumn fx:id="colName" prefWidth="256.0" text="Tên Sản Phẩm" />
+                        <TableColumn fx:id="colPrice" prefWidth="150.0" text="Giá Hiện Tại ($)" />
+                        <TableColumn fx:id="colStatus" prefWidth="198.0" text="Trạng Thái" />
+                     </columns>
+                  </TableView>
+                  <!-- KẾT THÚC PHẦN THÊM MỚI -->
+
                </children>
             </AnchorPane>
-        </content>
+         </content>
       </ScrollPane>
    </children>
 </AnchorPane>
