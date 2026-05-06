@@ -9,13 +9,25 @@ import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
 import javafx.scene.control.ChoiceBox;
+import javafx.fxml.Initializable;
 
-public class CreateItemController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class CreateItemController implements Initializable {
 
     @FXML private TextField txtItemName;
     @FXML private TextField txtStartPrice;
     @FXML private TextField txtDuration;
     @FXML private ChoiceBox<String> choiceType;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Khởi tạo các giá trị cho ChoiceBox
+        String[] itemTypes = {"Đồ điện", "Xe cộ", "Nghệ thuật"};
+        choiceType.getItems().addAll(itemTypes);
+        choiceType.setValue(null);
+    }
 
     @FXML
     private void createItemButtonClicked(ActionEvent event) {
