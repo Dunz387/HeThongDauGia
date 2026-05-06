@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AuctionServer",
+            "request": "launch",
+            "mainClass": "server.AuctionServer",
+            "projectName": "HeThongDauGia"
+        },
+        {
+            "type": "java",
             "name": "Launch Main",
             "request": "launch",
             "mainClass": "view.Main"

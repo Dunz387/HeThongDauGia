@@ -14,7 +14,7 @@
    <children>
       <HBox fx:id="menuBar" prefHeight="62.0" prefWidth="834.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="62.0" prefWidth="177.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Trang chủ" textFill="#b85a1cf5">
+            <Button mnemonicParsing="false" onAction="#backToBaseMenuButtonClicked" prefHeight="62.0" prefWidth="177.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Trang chủ" textFill="#b85a1cf5">
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>

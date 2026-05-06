@@ -8,26 +8,28 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import javafx.scene.control.ChoiceBox;
 
 public class CreateItemController {
 
     @FXML private TextField txtItemName;
     @FXML private TextField txtStartPrice;
     @FXML private TextField txtDuration;
+    @FXML private ChoiceBox<String> choiceType;
 
     @FXML
     private void createItemButtonClicked(ActionEvent event) {
         String itemName = txtItemName.getText().trim();
         String startPrice = txtStartPrice.getText().trim();
         String duration = txtDuration.getText().trim();
-
-        if (itemName.isEmpty() || startPrice.isEmpty() || duration.isEmpty()) {
+        String itemType = choiceType.getValue();
+        if (itemName.isEmpty() || startPrice.isEmpty() || duration.isEmpty() || itemType == null) {
             showAlert("Lỗi", "Vui lòng nhập đầy đủ thông tin!", Alert.AlertType.WARNING);
             return;
         }
 
-        // Đóng gói gửi lên Server: CREATE_ITEM | Tên_Hàng | Giá | Thời_Gian
-        String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + itemName + Protocol.DELIMITER + startPrice + Protocol.DELIMITER + duration;
+        // Đóng gói gửi lên Server: CREATE_ITEM | Tên_Hàng | Giá | Thời_Gian | Loại
+        String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + itemName + Protocol.DELIMITER + startPrice + Protocol.DELIMITER + duration + Protocol.DELIMITER + itemType;
         ClientNetworkManager.getInstance().sendData(request);
 
         // Mở luồng ngầm chờ Server trả lời

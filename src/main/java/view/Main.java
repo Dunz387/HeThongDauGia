@@ -1,7 +1,10 @@
 package view;
 
 import network.ClientNetworkManager;
-import view.AuthenticationUI.LoginView.Login;
+// import view.AuthenticationUI.LoginView.Login;
+// import view.AuthenticationUI.RegisterView.Register;
+import view.BaseMenuUI.BaseMenu;
+// import view.BaseMenuUI.AssertsListView;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,13 +20,13 @@ public class Main {
         // ------------------------------------
 
         // Run Login: (Khởi chạy màn hình đầu tiên)
-        Login.main(args);
+        // Login.main(args);
 
         // Run Register: (Đã đóng)
         // Register.main(args);
 
         // Run BaseMenu: (Đã đóng vì phải Login thành công mới được vào)
-        // BaseMenu.main(args);
+        BaseMenu.main(args);
 
         // Run AssertsListView: (Đã đóng)
         // AssertsListView.main(args);

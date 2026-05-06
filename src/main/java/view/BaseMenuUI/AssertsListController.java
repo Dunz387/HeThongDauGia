@@ -91,6 +91,12 @@ public class AssertsListController implements Initializable {
     }
 
     @FXML
+    private void backToBaseMenuButtonClicked(ActionEvent event) {
+        Stage stage = (Stage) menuBar.getScene().getWindow();
+        SceneManager.switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Base Menu");
+    }
+
+    @FXML
     private void backToLoiginButtonClicked(ActionEvent event) {
         Stage stage = (Stage) menuBar.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
