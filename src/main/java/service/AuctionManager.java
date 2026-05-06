@@ -6,12 +6,9 @@ import exception.AuthenticationException;
 import exception.InvalidBidException;
 import model.auction.Auction;
 import model.auction.AuctionStatus;
-import model.user.Admin;
 import model.user.Bidder;
-import model.user.Role;
 import model.user.Seller;
 import model.user.User;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +17,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class AuctionManager {
-
     private static final AuctionManager instance = new AuctionManager();
     private List<User> users;
     private List<Auction> auctions;
@@ -30,8 +26,6 @@ public class AuctionManager {
         DatabaseManager.initializeDatabase();
         this.users = DatabaseManager.loadUsers();
         this.auctions = DatabaseManager.loadAuctions(this.users);
-
-        // TỐI ƯU: Đảm bảo Robot đi tuần là Daemon Thread[cite: 22]
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r);
             t.setDaemon(true);
@@ -44,25 +38,11 @@ public class AuctionManager {
         return instance;
     }
 
-    // Hàm dừng chuyên nghiệp để giải phóng tài nguyên[cite: 22]
-    public void stopManager() {
-        if (scheduler != null) {
-            scheduler.shutdownNow();
-            System.out.println("✅ Đã dừng Robot quét phiên đấu giá.");
+    public List<Auction> getAllAuctions() {
+        synchronized (auctions) {
+            // Trả về một bản sao để tránh lỗi đồng bộ luồng
+            return new ArrayList<>(auctions);
         }
-    }
-
-    private void startAuctionMonitor() {
-        scheduler.scheduleAtFixedRate(() -> {
-            LocalDateTime now = LocalDateTime.now();
-            synchronized (auctions) {
-                for (Auction auction : auctions) {
-                    if (auction.getStatus() == AuctionStatus.RUNNING && now.isAfter(auction.getEndTime())) {
-                        concludeAuction(auction);
-                    }
-                }
-            }
-        }, 0, 30, TimeUnit.SECONDS);
     }
 
     public synchronized void registerUser(User user) {
@@ -75,17 +55,20 @@ public class AuctionManager {
         }
     }
 
-    public User login(String username, String password) throws AuthenticationException {
+    public User authenticateUser(String username, String password) {
         for (User u : users) {
-            if (u.getUsername().equals(username)) {
-                if (!u.isActive()) {
-                    throw new AuthenticationException("Đăng nhập thất bại: Tài khoản của bạn đã bị Admin khóa.");
-                }
-                if (u.login(password)) return u;
-                else throw new AuthenticationException("Đăng nhập thất bại: Sai mật khẩu.");
-            }
+            if (u.getUsername().equals(username) && u.login(password)) return u;
         }
-        throw new AuthenticationException("Đăng nhập thất bại: Tên tài khoản không tồn tại.");
+        return null;
+    }
+
+    public boolean registerNewUser(String username, String password) {
+        for (User u : users) {
+            if (u.getUsername().equalsIgnoreCase(username)) return false;
+        }
+        Bidder newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 5000.0);
+        this.registerUser(newUser);
+        return true;
     }
 
     public void registerAuction(Auction auction) {
@@ -98,90 +81,38 @@ public class AuctionManager {
     }
 
     public String processBid(Bidder bidder, Auction auction, double bidAmount) {
-        if (auction == null || bidder == null) return "Lỗi: Dữ liệu không hợp lệ.";
-        if (auction.getStatus() != AuctionStatus.RUNNING) return "Lỗi: Phiên đấu giá chưa mở hoặc đã kết thúc.";
-        if (LocalDateTime.now().isAfter(auction.getEndTime())) {
-            auction.setStatus(AuctionStatus.FINISHED);
-            DatabaseManager.updateAuction(auction);
-            return "Lỗi: Phiên đấu giá này vừa mới hết thời gian!";
-        }
-        if (bidder.getAvailableBalance() < bidAmount) {
-            return "Lỗi: Bạn không đủ tiền khả dụng trong ví để đặt mức giá này.";
-        }
+        if (auction == null || bidder == null) return "Lỗi dữ liệu";
+        if (auction.getStatus() != AuctionStatus.RUNNING) return "Phiên đã kết thúc";
         try {
             auction.placeBid(bidder, bidAmount);
             DatabaseManager.updateAuction(auction);
-            return "Thành công: Bạn đang là người trả giá cao nhất!";
-        } catch (AuctionClosedException | InvalidBidException e) {
-            return "Thất bại: " + e.getMessage();
+            return "Thành công!";
+        } catch (Exception e) {
+            return e.getMessage();
         }
     }
 
-    public synchronized boolean concludeAuction(Auction auction) {
-        if (auction == null || (auction.getStatus() != AuctionStatus.RUNNING && auction.getStatus() != AuctionStatus.FINISHED)) {
-            return false;
-        }
-        auction.setStatus(AuctionStatus.FINISHED);
-        Bidder winner = auction.getHighestBidder();
-        Seller seller = auction.getItem().getOwner();
-        if (winner == null) {
-            auction.setStatus(AuctionStatus.CANCELED);
-            auction.setReason("Hết giờ - Không có người tham gia đặt giá.");
-            DatabaseManager.updateAuction(auction);
-            return true;
-        }
-        double finalPrice = auction.getCurrentPrice();
-        if (winner.deductBalance(finalPrice)) {
-            seller.receivePayment(finalPrice);
-            auction.setStatus(AuctionStatus.PAID);
-            DatabaseManager.updateAuction(auction);
-            DatabaseManager.updateUser(winner);
-            DatabaseManager.updateUser(seller);
-            return true;
-        } else {
-            auction.setStatus(AuctionStatus.CANCELED);
-            auction.setReason("Hủy: Người thắng cuộc không đủ số dư để thanh toán.");
-            DatabaseManager.updateAuction(auction);
-            return false;
-        }
+    public void stopManager() {
+        if (scheduler != null) scheduler.shutdownNow();
     }
 
-    public List<Auction> getRunningAuctions() {
-        List<Auction> running = new ArrayList<>();
-        synchronized (auctions) {
-            for (Auction a : auctions) {
-                if (a.getStatus() == AuctionStatus.RUNNING) running.add(a);
+    private void startAuctionMonitor() {
+        scheduler.scheduleAtFixedRate(() -> {
+            LocalDateTime now = LocalDateTime.now();
+            synchronized (auctions) {
+                for (Auction a : auctions) {
+                    if (a.getStatus() == AuctionStatus.RUNNING && now.isAfter(a.getEndTime())) {
+                        concludeAuction(a);
+                    }
+                }
             }
-        }
-        return running;
+        }, 0, 10, TimeUnit.SECONDS);
     }
 
-    // =========================================================================
-    // THÊM MỚI: 2 hàm hỗ trợ trực tiếp cho ClientHandler xử lý Protocol
-    // =========================================================================
-
-    public User authenticateUser(String username, String password) {
-        try {
-            // Tận dụng luôn hàm login đã có sẵn logic kiểm tra active và ném exception[cite: 22]
-            return login(username, password);
-        } catch (AuthenticationException e) {
-            return null; // Bắt exception và trả về null để ClientHandler dễ xử lý If-Else
+    public synchronized void concludeAuction(Auction auction) {
+        if (auction != null) {
+            auction.setStatus(AuctionStatus.FINISHED);
+            DatabaseManager.updateAuction(auction);
         }
-    }
-
-    public boolean registerNewUser(String username, String password) {
-        // Kiểm tra xem user đã tồn tại chưa[cite: 22]
-        for (User u : users) {
-            if (u.getUsername().equalsIgnoreCase(username)) {
-                return false;
-            }
-        }
-
-        // Mặc định tạo tài khoản mới là Bidder với số vốn ban đầu là 5000$
-        Bidder newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 5000.0);
-
-        // Tận dụng hàm registerUser có sẵn để thêm vào List và lưu xuống Database[cite: 22]
-        this.registerUser(newUser);
-        return true;
     }
 }

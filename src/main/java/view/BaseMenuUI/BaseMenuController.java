@@ -7,12 +7,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import model.auction.Auction; // Import model Auction
+import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
 import view.SceneManager;
@@ -24,7 +27,7 @@ import java.util.ResourceBundle;
 public class BaseMenuController implements Initializable {
     @FXML private HBox menuBar;
 
-    // Khai báo các thành phần giao diện của Bảng (Khớp với fx:id trong FXML)
+    // Khai báo các thành phần giao diện của Bảng
     @FXML private TableView<Auction> tableAuctions;
     @FXML private TableColumn<Auction, String> colId;
     @FXML private TableColumn<Auction, String> colName;
@@ -34,7 +37,6 @@ public class BaseMenuController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 1. Cấu hình cách lấy dữ liệu cho từng cột trong Bảng
-        // Giả định class Auction của bạn có các hàm getter tương ứng.
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
         colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
@@ -57,11 +59,9 @@ public class BaseMenuController implements Initializable {
 
                 // 4. Có dữ liệu thì bắt buộc dùng Platform.runLater để vẽ lên UI
                 if (listFromServer != null) {
-                    // Ép kiểu List thường thành ObservableList của JavaFX
                     ObservableList<Auction> observableList = FXCollections.observableArrayList(listFromServer);
 
                     Platform.runLater(() -> {
-                        // Đổ dữ liệu vào bảng!
                         tableAuctions.setItems(observableList);
                         System.out.println("Đã load thành công " + observableList.size() + " món hàng lên UI!");
                     });
@@ -83,15 +83,25 @@ public class BaseMenuController implements Initializable {
         Stage stage = (Stage) menuBar.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/AuthenticationUI/RegisterView/Register.fxml", "Register");
     }
-<<<<<<< Updated upstream
-}
-=======
 
     @FXML
     private void goToAssertsListButtonClicked(ActionEvent event) {
-        // Handle logic to switch to asserts list screen here
         Stage stage = (Stage) menuBar.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Asserts List");
     }
+
+    // THÊM MỚI: Hàm mở Popup Tạo phiên đấu giá
+    @FXML
+    private void openCreateItemPopup(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SellerUI/CreateItem.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng bán sản phẩm");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
->>>>>>> Stashed changes

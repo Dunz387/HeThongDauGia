@@ -1,13 +1,12 @@
 package network;
 
-import javafx.application.Platform;
 import shared.Protocol;
-import model.auction.Auction; // Nhớ import cái này nhé!
+import model.auction.Auction;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List; // Import List
+import java.util.List;
 
 public class ClientNetworkManager {
     private static ClientNetworkManager instance;
@@ -15,10 +14,9 @@ public class ClientNetworkManager {
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    private String lastResponse = null;
-
-    // THÊM MỚI: Biến để hứng danh sách đấu giá
-    private List<Auction> lastAuctionList = null;
+    // SỬA LỖI: Thêm volatile để đồng bộ hóa giữa các luồng (Thread-safe)[cite: 15]
+    private volatile String lastResponse = null;
+    private volatile List<Auction> lastAuctionList = null;
 
     private ClientNetworkManager() {}
 
@@ -42,11 +40,11 @@ public class ClientNetworkManager {
         }
     }
 
-    public void sendData(Object data) { // Đổi tham số thành Object để gửi được nhiều kiểu
+    public void sendData(Object data) {
         try {
             if (out != null) {
                 out.writeObject(data);
-                out.reset();
+                out.reset(); // Xóa cache để gửi dữ liệu mới nhất[cite: 15]
                 out.flush();
             }
         } catch (Exception e) {
@@ -59,16 +57,14 @@ public class ClientNetworkManager {
             try {
                 Object inputObj;
                 while ((inputObj = in.readObject()) != null) {
-
-                    // NẾU LÀ CHUỖI LỆNH (String)
                     if (inputObj instanceof String) {
                         String message = (String) inputObj;
                         System.out.println("[Server trả về Lệnh]: " + message);
                         processIncomingMessage(message);
                     }
-                    // NẾU LÀ DANH SÁCH (List) -> THÊM MỚI ĐOẠN NÀY
                     else if (inputObj instanceof List) {
-                        System.out.println("[Server trả về Data]: Nhận được một List!");
+                        // Nhận danh sách Auction từ Server[cite: 15]
+                        System.out.println("[Server trả về Data]: Đã nhận List với " + ((List) inputObj).size() + " phần tử.");
                         this.lastAuctionList = (List<Auction>) inputObj;
                     }
                 }
@@ -76,7 +72,6 @@ public class ClientNetworkManager {
                 System.out.println("Mất kết nối với Server.");
             }
         });
-
         listenerThread.setDaemon(true);
         listenerThread.start();
     }
@@ -88,7 +83,8 @@ public class ClientNetworkManager {
         switch (command) {
             case Protocol.REQ_LOGIN:
             case Protocol.REQ_REGISTER:
-            case Protocol.RES_AUCTION_LIST: // Báo hiệu chuẩn bị nhận List
+            case Protocol.REQ_CREATE_ITEM: // Nhận phản hồi khi tạo hàng thành công[cite: 15]
+            case Protocol.RES_AUCTION_LIST:
                 this.lastResponse = message;
                 break;
         }
@@ -100,10 +96,9 @@ public class ClientNetworkManager {
         return temp;
     }
 
-    // THÊM MỚI: Hàm cho Controller lấy danh sách
     public List<Auction> getLastAuctionList() {
         List<Auction> temp = lastAuctionList;
-        lastAuctionList = null;
+        lastAuctionList = null; // Xóa sau khi lấy để tránh lấy trùng dữ liệu cũ[cite: 15]
         return temp;
     }
 }

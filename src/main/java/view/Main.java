@@ -1,10 +1,7 @@
 package view;
 
-<<<<<<< Updated upstream
-import network.ClientNetworkManager; // Thêm import trạm thu phát mạng
-import view.AuthenticationUI.LoginView.Login; // Đã bỏ comment
-// import view.AuthenticationUI.RegisterView.Register;
-import view.BaseMenuUI.BaseMenu; // Giữ nguyên import phòng hờ
+import network.ClientNetworkManager;
+import view.AuthenticationUI.LoginView.Login;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,33 +16,16 @@ public class Main {
         }
         // ------------------------------------
 
-        // Run Login: (Đã mở để chạy đầu tiên)
+        // Run Login: (Khởi chạy màn hình đầu tiên)
         Login.main(args);
-=======
-import view.AuthenticationUI.LoginView.Login;
-// import view.AuthenticationUI.RegisterView.Register;
-// import view.BaseMenuUI.BaseMenu;
-// import view.BaseMenuUI.AssertsListView;
 
-public class Main {
-    public static void main(String[] args) {
-        // Run Login:
-        Login.main(args); 
->>>>>>> Stashed changes
-
-        // Run Register:
+        // Run Register: (Đã đóng)
         // Register.main(args);
 
-<<<<<<< Updated upstream
-        // Run BaseMenu: (Đã đóng lại vì phải Login thành công mới được vào)
+        // Run BaseMenu: (Đã đóng vì phải Login thành công mới được vào)
         // BaseMenu.main(args);
 
-=======
-        // Run BaseMenu:
-        // BaseMenu.main(args);
-
-        // Run AssertsListView:
+        // Run AssertsListView: (Đã đóng)
         // AssertsListView.main(args);
->>>>>>> Stashed changes
     }
 }
