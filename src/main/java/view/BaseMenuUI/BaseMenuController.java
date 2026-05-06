@@ -11,9 +11,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.auction.Auction;
 import network.ClientNetworkManager;
@@ -25,6 +27,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class BaseMenuController implements Initializable {
+    @FXML private Pane darkOverlay;
+    @FXML private ScrollPane notificationMenu;
+    private NotificationMenuHandler notificationMenuHandler;
+
     @FXML private HBox menuBar;
 
     // Khai báo các thành phần giao diện của Bảng
@@ -70,6 +76,9 @@ public class BaseMenuController implements Initializable {
                 e.printStackTrace();
             }
         }).start();
+
+        // Khởi tạo Handler cho menu thông báo
+        notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
     }
 
     @FXML
@@ -88,6 +97,11 @@ public class BaseMenuController implements Initializable {
     private void goToAssertsListButtonClicked(ActionEvent event) {
         Stage stage = (Stage) menuBar.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Asserts List");
+    }
+
+    @FXML
+    private void notificationClicked(ActionEvent event){
+        notificationMenuHandler.toggleMenu();
     }
 
     // THÊM MỚI: Hàm mở Popup Tạo phiên đấu giá
