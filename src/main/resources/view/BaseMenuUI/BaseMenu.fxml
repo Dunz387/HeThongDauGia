@@ -24,10 +24,17 @@
                </font>
             </Button>
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="62.0" prefWidth="177.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài sản" textFill="#b85a1c">
+<<<<<<< Updated upstream
                <items>
                   <MenuItem mnemonicParsing="false" text="Action 1" />
                   <MenuItem mnemonicParsing="false" text="Action 2" />
                </items>
+=======
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="Danh sách" />
+                <MenuItem mnemonicParsing="false" text="Đấu giá mới" />
+              </items>
+>>>>>>> Stashed changes
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>

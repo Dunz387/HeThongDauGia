@@ -83,4 +83,15 @@ public class BaseMenuController implements Initializable {
         Stage stage = (Stage) menuBar.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/AuthenticationUI/RegisterView/Register.fxml", "Register");
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    @FXML
+    private void goToAssertsListButtonClicked(ActionEvent event) {
+        // Handle logic to switch to asserts list screen here
+        Stage stage = (Stage) menuBar.getScene().getWindow();
+        SceneManager.switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Asserts List");
+    }
+}
+>>>>>>> Stashed changes

@@ -24,7 +24,7 @@ HeThongDauGia/
 │   └── test/
 │       ├── java/                    # Test code
 │       └── resources/               # Test resources
-├── target/                          # Build output (auto-generated)
+├── target/   (auto-generated)       # Build output 
 └── .gitignore                       # Git ignore rules
 ```
 

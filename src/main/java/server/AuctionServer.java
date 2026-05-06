@@ -49,6 +49,12 @@ public class AuctionServer implements AuctionObserver {
         System.out.print("Giá khởi điểm ($): ");
         double price = Double.parseDouble(scanner.nextLine());
 
+<<<<<<< Updated upstream
+=======
+        String extra1 = "Default";
+        int extra2 = 0;
+
+>>>>>>> Stashed changes
         Seller admin = new Seller("S01", "HeThong", "123", 0.0);
         manager.registerUser(admin);
 
