@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.AssertsListController">
@@ -33,7 +34,7 @@
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>
             </Button>
-            <Button fx:id="notificationMenu" mnemonicParsing="false" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textFill="#b85a1cf5">
+            <Button onAction="#toggleNotificationMenu" mnemonicParsing="false" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textFill="#b85a1cf5">
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>
@@ -61,5 +62,18 @@
             </TableView>
          </content>
       </ScrollPane>
+
+      <Pane fx:id="darkOverlay" prefHeight="512.0" prefWidth="835.0" style="-fx-background-color: black;" visible="false" />
+      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" layoutX="569.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="266.0" vbarPolicy="NEVER">
+         <content>
+            <TableView prefHeight="510.0" prefWidth="264.0">
+               <columns>
+                  <TableColumn prefWidth="156.799" text="Thông báo" />
+                  <TableColumn prefWidth="108.8" text="Thời gian" />
+               </columns>
+            </TableView>
+         </content>
+      </ScrollPane>
+
    </children>
 </AnchorPane>
