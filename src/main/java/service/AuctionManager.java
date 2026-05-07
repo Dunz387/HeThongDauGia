@@ -1,10 +1,13 @@
 package service;
 
+import dao.AuctionDAO;
 import dao.DatabaseManager;
+import dao.UserDAO;
 import model.auction.Auction;
 import model.auction.AuctionStatus;
 import model.user.Bidder;
 import model.user.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +22,13 @@ public class AuctionManager {
     private ScheduledExecutorService scheduler;
 
     private AuctionManager() {
+        // Khởi tạo bảng nếu chưa có
         DatabaseManager.initializeDatabase();
-        this.users = DatabaseManager.loadUsers();
-        this.auctions = DatabaseManager.loadAuctions(this.users);
+
+        // SỬ DỤNG DAO ĐỂ TẢI DỮ LIỆU
+        this.users = UserDAO.loadUsers();
+        this.auctions = AuctionDAO.loadAuctions(this.users);
+
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r);
             t.setDaemon(true);
@@ -40,7 +47,6 @@ public class AuctionManager {
         }
     }
 
-    // THÊM MỚI: Hàm tìm Auction theo ID
     public Auction getAuctionById(String id) {
         synchronized (auctions) {
             for (Auction a : auctions) {
@@ -65,7 +71,9 @@ public class AuctionManager {
         }
         Bidder newBidder = new Bidder("U-" + System.currentTimeMillis(), username, password, 100000.0);
         users.add(newBidder);
-        DatabaseManager.saveUser(newBidder);
+
+        // SỬ DỤNG USER DAO
+        UserDAO.saveUser(newBidder);
         return true;
     }
 
@@ -73,7 +81,9 @@ public class AuctionManager {
         if (auction != null) {
             synchronized (auctions) {
                 auctions.add(auction);
-                DatabaseManager.saveAuction(auction);
+
+                // SỬ DỤNG AUCTION DAO
+                AuctionDAO.saveAuction(auction);
             }
         }
     }
@@ -83,7 +93,9 @@ public class AuctionManager {
         if (auction.getStatus() != AuctionStatus.RUNNING) return "Phiên đã kết thúc";
         try {
             auction.placeBid(bidder, bidAmount);
-            DatabaseManager.updateAuction(auction);
+
+            // SỬ DỤNG AUCTION DAO
+            AuctionDAO.updateAuction(auction);
             return "Thành công!";
         } catch (Exception e) {
             return e.getMessage();
@@ -110,7 +122,9 @@ public class AuctionManager {
     public synchronized void concludeAuction(Auction auction) {
         if (auction != null) {
             auction.setStatus(AuctionStatus.FINISHED);
-            DatabaseManager.updateAuction(auction);
+
+            // SỬ DỤNG AUCTION DAO
+            AuctionDAO.updateAuction(auction);
         }
     }
 }
