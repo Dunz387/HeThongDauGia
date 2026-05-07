@@ -2,11 +2,13 @@ package server;
 
 import model.auction.Auction;
 import model.auction.AuctionStatus;
+import model.user.Admin;
 import model.user.Bidder;
-import model.user.User;
 import model.user.Seller;
+import model.user.User;
 import service.AuctionManager;
 import shared.Protocol;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -55,6 +57,12 @@ public class ClientHandler implements Runnable {
                         case Protocol.REQ_BID:
                             if (parts.length >= 3) handleBid(parts[1], parts[2]);
                             break;
+                        case Protocol.REQ_GET_USERS:
+                            handleGetUsers();
+                            break;
+                        case Protocol.REQ_BAN_USER:
+                            if (parts.length >= 3) handleBanUser(parts[1], parts[2]);
+                            break;
                     }
                 }
             }
@@ -63,32 +71,26 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleBid(String auctionId, String amountStr) {
-        try {
-            if (!(loggedInUser instanceof Bidder)) {
-                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người mua (Bidder) mới được đặt giá!");
-                return;
-            }
-            double amount = Double.parseDouble(amountStr);
-            Bidder bidder = (Bidder) loggedInUser;
-
-            Auction auction = manager.getAuctionById(auctionId);
-            if (auction == null) {
-                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy phiên đấu giá!");
-                return;
-            }
-
-            String result = manager.processBid(bidder, auction, amount);
-            if (result.equals("Thành công!")) {
-                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-            } else {
-                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + result);
-            }
-        } catch (Exception e) {
-            sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi xử lý đặt giá.");
+    // --- NHÓM LỆNH XÁC THỰC ---
+    private void handleLogin(String u, String p) {
+        loggedInUser = manager.authenticateUser(u, p);
+        if (loggedInUser != null) {
+            // Trả về: LOGIN;;;SUCCESS;;;ROLE
+            sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + loggedInUser.getRole());
+        } else {
+            sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Tài khoản không tồn tại hoặc đã bị khóa!");
         }
     }
 
+    private void handleRegister(String u, String p) {
+        if (manager.registerNewUser(u, p)) {
+            sendData(Protocol.REQ_REGISTER + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+        } else {
+            sendData(Protocol.REQ_REGISTER + Protocol.DELIMITER + Protocol.RES_FAIL);
+        }
+    }
+
+    // --- NHÓM LỆNH ĐẤU GIÁ ---
     private void handleGetAuctions() {
         List<Auction> list = manager.getAllAuctions();
         sendData(Protocol.RES_AUCTION_LIST);
@@ -114,15 +116,15 @@ public class ClientHandler implements Runnable {
             Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0, java.time.LocalDateTime.now().plusMinutes(dur));
             auction.setStatus(AuctionStatus.RUNNING);
 
-            // Bắt Server lắng nghe luôn cái phiên mới tạo này
+            // Đăng ký Server làm Observer để bắn giá realtime sau này
             auction.addObserver(server);
 
             manager.registerAuction(auction);
 
-            // Báo thành công cho người vừa tạo
+            // 1. Phản hồi thành công cho người tạo
             sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
 
-            // THÊM DÒNG NÀY: Ra lệnh cho Server phát sóng danh sách cập nhật cho TẤT CẢ mọi người
+            // 2. Tự động cập nhật danh sách cho TẤT CẢ mọi người (Auto-refresh)
             server.broadcastAuctionList();
 
         } catch (Exception e) {
@@ -130,30 +132,66 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleLogin(String u, String p) {
-        loggedInUser = manager.authenticateUser(u, p);
-        if (loggedInUser != null) {
-            sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + loggedInUser.getRole());
-        } else {
-            sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_FAIL);
+    private void handleBid(String auctionId, String amountStr) {
+        try {
+            if (!(loggedInUser instanceof Bidder)) {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người mua mới được đặt giá!");
+                return;
+            }
+            double amount = Double.parseDouble(amountStr);
+            Bidder bidder = (Bidder) loggedInUser;
+
+            Auction auction = manager.getAuctionById(auctionId);
+            if (auction == null) {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy sản phẩm!");
+                return;
+            }
+
+            String result = manager.processBid(bidder, auction, amount);
+            if (result.equals("Thành công!")) {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+            } else {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + result);
+            }
+        } catch (Exception e) {
+            sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi hệ thống đặt giá.");
         }
     }
 
-    private void handleRegister(String u, String p) {
-        if (manager.registerNewUser(u, p)) {
-            sendData(Protocol.REQ_REGISTER + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+    // --- NHÓM LỆNH ADMIN ---
+    private void handleGetUsers() {
+        if (loggedInUser instanceof Admin) {
+            List<User> list = manager.getAllUsers();
+            sendData(Protocol.RES_USER_LIST);
+            sendData(list);
         } else {
-            sendData(Protocol.REQ_REGISTER + Protocol.DELIMITER + Protocol.RES_FAIL);
+            sendData(Protocol.REQ_GET_USERS + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Quyền truy cập bị từ chối!");
         }
     }
 
+    private void handleBanUser(String targetId, String statusStr) {
+        if (loggedInUser instanceof Admin) {
+            boolean isEnable = Boolean.parseBoolean(statusStr); // true = mở khóa, false = khóa
+            if (manager.banUser(targetId, isEnable)) {
+                sendData(Protocol.REQ_BAN_USER + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+            } else {
+                sendData(Protocol.REQ_BAN_USER + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi cập nhật trạng thái!");
+            }
+        } else {
+            sendData(Protocol.REQ_BAN_USER + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Admin mới được thực hiện!");
+        }
+    }
+
+    // --- HÀM GỬI DỮ LIỆU ---
     public void sendData(Object data) {
         try {
             if (out != null) {
                 out.writeObject(data);
-                out.reset();
+                out.reset(); // Xóa cache để dữ liệu sau không bị trùng lặp
                 out.flush();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.err.println("Lỗi gửi dữ liệu tới Client: " + e.getMessage());
+        }
     }
 }

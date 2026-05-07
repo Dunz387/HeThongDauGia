@@ -1,5 +1,6 @@
 package service;
 
+import dao.AdminDAO;
 import dao.AuctionDAO;
 import dao.DatabaseManager;
 import dao.UserDAO;
@@ -22,13 +23,9 @@ public class AuctionManager {
     private ScheduledExecutorService scheduler;
 
     private AuctionManager() {
-        // Khởi tạo bảng nếu chưa có
         DatabaseManager.initializeDatabase();
-
-        // SỬ DỤNG DAO ĐỂ TẢI DỮ LIỆU
         this.users = UserDAO.loadUsers();
         this.auctions = AuctionDAO.loadAuctions(this.users);
-
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r);
             t.setDaemon(true);
@@ -37,14 +34,10 @@ public class AuctionManager {
         startAuctionMonitor();
     }
 
-    public static AuctionManager getInstance() {
-        return instance;
-    }
+    public static AuctionManager getInstance() { return instance; }
 
     public List<Auction> getAllAuctions() {
-        synchronized (auctions) {
-            return new ArrayList<>(auctions);
-        }
+        synchronized (auctions) { return new ArrayList<>(auctions); }
     }
 
     public Auction getAuctionById(String id) {
@@ -56,9 +49,36 @@ public class AuctionManager {
         return null;
     }
 
+    // ==========================================
+    // NHÓM QUYỀN CỦA ADMIN
+    // ==========================================
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users); // Trả về danh sách user cho Admin xem
+    }
+
+    public boolean banUser(String targetUserId, boolean status) {
+        for (User u : users) {
+            if (u.getId().equals(targetUserId)) {
+                u.setActive(status); // 1. Cập nhật RAM ngay lập tức
+                return AdminDAO.setUserActiveStatus(targetUserId, status); // 2. Cập nhật xuống DB
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteAuctionForce(String auctionId) {
+        synchronized (auctions) {
+            auctions.removeIf(a -> a.getId().equals(auctionId)); // 1. Xóa khỏi RAM
+            return AdminDAO.deleteAuctionForce(auctionId);       // 2. Xóa dưới DB
+        }
+    }
+    // ==========================================
+
     public User authenticateUser(String username, String password) {
         for (User u : users) {
             if (u.getUsername().equals(username) && u.login(password)) {
+                // ĐÃ SỬA: Nếu isActive == false (Bị Ban) thì không cho đăng nhập
+                if (!u.isActive()) return null;
                 return u;
             }
         }
@@ -71,8 +91,6 @@ public class AuctionManager {
         }
         Bidder newBidder = new Bidder("U-" + System.currentTimeMillis(), username, password, 100000.0);
         users.add(newBidder);
-
-        // SỬ DỤNG USER DAO
         UserDAO.saveUser(newBidder);
         return true;
     }
@@ -81,8 +99,6 @@ public class AuctionManager {
         if (auction != null) {
             synchronized (auctions) {
                 auctions.add(auction);
-
-                // SỬ DỤNG AUCTION DAO
                 AuctionDAO.saveAuction(auction);
             }
         }
@@ -93,8 +109,6 @@ public class AuctionManager {
         if (auction.getStatus() != AuctionStatus.RUNNING) return "Phiên đã kết thúc";
         try {
             auction.placeBid(bidder, bidAmount);
-
-            // SỬ DỤNG AUCTION DAO
             AuctionDAO.updateAuction(auction);
             return "Thành công!";
         } catch (Exception e) {
@@ -122,8 +136,6 @@ public class AuctionManager {
     public synchronized void concludeAuction(Auction auction) {
         if (auction != null) {
             auction.setStatus(AuctionStatus.FINISHED);
-
-            // SỬ DỤNG AUCTION DAO
             AuctionDAO.updateAuction(auction);
         }
     }
