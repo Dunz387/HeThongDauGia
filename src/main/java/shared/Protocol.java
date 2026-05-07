@@ -1,23 +1,48 @@
 package shared;
 
 public class Protocol {
-    // 1. Nhóm lệnh từ Client gửi lên
+    // =================================================================
+    // 1. KÝ TỰ PHÂN CÁCH ĐƯỜNG TRUYỀN (Đã sửa lỗi dùng dấu |)
+    // =================================================================
+    // Sử dụng chuỗi đặc biệt ";;;" để không bao giờ bị trùng với dữ liệu người dùng nhập
+    public static final String SEPARATOR = ";;;"; // Dùng cho hàm split()
+    public static final String DELIMITER = ";;;"; // Dùng để nối chuỗi
+
+    // =================================================================
+    // 2. NHÓM LỆNH TỪ CLIENT GỬI LÊN (REQUEST)
+    // =================================================================
+    // Xác thực
     public static final String REQ_LOGIN = "LOGIN";
     public static final String REQ_REGISTER = "REGISTER";
-    public static final String REQ_BID = "BID";
 
-    // Nhóm lệnh Khám phá & Bán hàng (Thêm mới)
+    // Quản lý sản phẩm (Seller)
     public static final String REQ_GET_AUCTIONS = "GET_AUCTIONS";
     public static final String REQ_CREATE_ITEM = "CREATE_ITEM";
+    public static final String REQ_UPDATE_ITEM = "UPDATE_ITEM"; // Dành cho tính năng Sửa sau này
+    public static final String REQ_DELETE_ITEM = "DELETE_ITEM"; // Dành cho tính năng Xóa sau này
 
-    // 2. Nhóm lệnh Server trả về
+    // Đấu giá (Bidder)
+    public static final String REQ_BID = "BID";
+
+    // Quản trị viên (Admin)
+    public static final String REQ_GET_USERS = "GET_USERS";
+    public static final String REQ_BAN_USER = "BAN_USER";
+
+    // =================================================================
+    // 3. NHÓM LỆNH SERVER TRẢ VỀ (RESPONSE 1-1)
+    // =================================================================
+    // Phản hồi trạng thái chung
     public static final String RES_SUCCESS = "SUCCESS";
     public static final String RES_FAIL = "FAIL";
 
-    // Nhóm phản hồi danh sách (Thêm mới)
+    // Phản hồi gửi kèm dữ liệu
     public static final String RES_AUCTION_LIST = "AUCTION_LIST";
+    public static final String RES_USER_LIST = "USER_LIST";
 
-    // 3. Ký tự phân cách
-    public static final String SEPARATOR = "\\|"; // Dùng cho split()
-    public static final String DELIMITER = "|";   // Dùng cho nối chuỗi cộng chuỗi
+    // =================================================================
+    // 4. NHÓM LỆNH SERVER TỰ ĐỘNG BẮN XUỐNG (BROADCAST / OBSERVER)
+    // =================================================================
+    // Đây là các lệnh mà Server tự động gửi cho tất cả Client đang online
+    public static final String BROADCAST_NEW_BID = "NEW_BID";
+    public static final String BROADCAST_AUCTION_FINISHED = "AUCTION_FINISHED";
 }

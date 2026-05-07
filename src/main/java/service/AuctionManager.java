@@ -1,13 +1,9 @@
 package service;
 
 import dao.DatabaseManager;
-import exception.AuctionClosedException;
-import exception.AuthenticationException;
-import exception.InvalidBidException;
 import model.auction.Auction;
 import model.auction.AuctionStatus;
 import model.user.Bidder;
-import model.user.Seller;
 import model.user.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,34 +36,36 @@ public class AuctionManager {
 
     public List<Auction> getAllAuctions() {
         synchronized (auctions) {
-            // Trả về một bản sao để tránh lỗi đồng bộ luồng
             return new ArrayList<>(auctions);
         }
     }
 
-    public synchronized void registerUser(User user) {
-        if (user != null) {
-            for (User u : users) {
-                if (u.getUsername().equals(user.getUsername())) return;
+    // THÊM MỚI: Hàm tìm Auction theo ID
+    public Auction getAuctionById(String id) {
+        synchronized (auctions) {
+            for (Auction a : auctions) {
+                if (a.getId().equals(id)) return a;
             }
-            users.add(user);
-            DatabaseManager.saveUser(user);
         }
+        return null;
     }
 
     public User authenticateUser(String username, String password) {
         for (User u : users) {
-            if (u.getUsername().equals(username) && u.login(password)) return u;
+            if (u.getUsername().equals(username) && u.login(password)) {
+                return u;
+            }
         }
         return null;
     }
 
     public boolean registerNewUser(String username, String password) {
         for (User u : users) {
-            if (u.getUsername().equalsIgnoreCase(username)) return false;
+            if (u.getUsername().equals(username)) return false;
         }
-        Bidder newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 5000.0);
-        this.registerUser(newUser);
+        Bidder newBidder = new Bidder("U-" + System.currentTimeMillis(), username, password, 100000.0);
+        users.add(newBidder);
+        DatabaseManager.saveUser(newBidder);
         return true;
     }
 

@@ -45,37 +45,23 @@ public class CreateItemController implements Initializable {
         else if (itemTypeDisplay.equals("Xe cộ")) itemTypeCode = "VEHICLE";
         else if (itemTypeDisplay.equals("Nghệ thuật")) itemTypeCode = "ART";
 
-        // Gửi đủ 4 tham số (Tên, Giá, Thời gian, Mã Loại)
         String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + itemName + Protocol.DELIMITER + startPrice + Protocol.DELIMITER + duration + Protocol.DELIMITER + itemTypeCode;
-        ClientNetworkManager.getInstance().sendData(request);
 
-        new Thread(() -> {
-            try {
-                String response = null;
-                int timeout = 50;
-
-                while (timeout > 0) {
-                    response = ClientNetworkManager.getInstance().getLastCreateItemResponse();
-                    if (response != null && response.startsWith(Protocol.REQ_CREATE_ITEM)) break;
-                    Thread.sleep(100);
-                    timeout--;
-                }
-
-                if (response != null) {
-                    String[] parts = response.split(Protocol.SEPARATOR);
-                    Platform.runLater(() -> {
-                        if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                            showAlert("Thành công", "Đã đăng bán sản phẩm lên sàn!", Alert.AlertType.INFORMATION);
-                            closeWindow();
-                        } else {
-                            showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định", Alert.AlertType.ERROR);
-                        }
-                    });
+        // ĐĂNG KÝ CALLBACK
+        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_CREATE_ITEM, (response) -> {
+            String[] parts = response.split(Protocol.SEPARATOR);
+            Platform.runLater(() -> {
+                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    showAlert("Thành công", "Đã đăng bán sản phẩm lên sàn!", Alert.AlertType.INFORMATION);
+                    closeWindow();
                 } else {
-                    Platform.runLater(() -> showAlert("Lỗi Mạng", "Server không phản hồi.", Alert.AlertType.ERROR));
+                    showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định", Alert.AlertType.ERROR);
                 }
-            } catch (Exception e) {}
-        }).start();
+            });
+        });
+
+        // GỬI LỆNH ĐI
+        ClientNetworkManager.getInstance().sendData(request);
     }
 
     @FXML

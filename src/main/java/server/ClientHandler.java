@@ -2,6 +2,7 @@ package server;
 
 import model.auction.Auction;
 import model.auction.AuctionStatus;
+import model.user.Bidder;
 import model.user.User;
 import model.user.Seller;
 import service.AuctionManager;
@@ -49,8 +50,10 @@ public class ClientHandler implements Runnable {
                             handleGetAuctions();
                             break;
                         case Protocol.REQ_CREATE_ITEM:
-                            // Đảm bảo nhận đủ 5 tham số (Lệnh | Tên | Giá | Thời lượng | Mã loại)
                             if (parts.length >= 5) handleCreateItem(parts[1], parts[2], parts[3], parts[4]);
+                            break;
+                        case Protocol.REQ_BID:
+                            if (parts.length >= 3) handleBid(parts[1], parts[2]);
                             break;
                     }
                 }
@@ -60,20 +63,44 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    private void handleBid(String auctionId, String amountStr) {
+        try {
+            if (!(loggedInUser instanceof Bidder)) {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người mua (Bidder) mới được đặt giá!");
+                return;
+            }
+            double amount = Double.parseDouble(amountStr);
+            Bidder bidder = (Bidder) loggedInUser;
+
+            Auction auction = manager.getAuctionById(auctionId);
+            if (auction == null) {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy phiên đấu giá!");
+                return;
+            }
+
+            String result = manager.processBid(bidder, auction, amount);
+            if (result.equals("Thành công!")) {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+            } else {
+                sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + result);
+            }
+        } catch (Exception e) {
+            sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi xử lý đặt giá.");
+        }
+    }
+
     private void handleGetAuctions() {
         List<Auction> list = manager.getAllAuctions();
         sendData(Protocol.RES_AUCTION_LIST);
         sendData(list);
     }
 
-    // ĐÃ SỬA: Thêm tham số itemType và gọi ItemFactory
     private void handleCreateItem(String name, String priceStr, String durStr, String itemType) {
         try {
             double price = Double.parseDouble(priceStr);
             int dur = Integer.parseInt(durStr);
             Seller owner = (loggedInUser instanceof Seller) ? (Seller) loggedInUser : null;
 
-            // Gọi ItemFactory thay vì new Arts cứng
             model.item.Item item = model.item.ItemFactory.createItem(
                     itemType,
                     "IT-" + System.currentTimeMillis(),
@@ -86,9 +113,18 @@ public class ClientHandler implements Runnable {
 
             Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0, java.time.LocalDateTime.now().plusMinutes(dur));
             auction.setStatus(AuctionStatus.RUNNING);
+
+            // Bắt Server lắng nghe luôn cái phiên mới tạo này
+            auction.addObserver(server);
+
             manager.registerAuction(auction);
 
+            // Báo thành công cho người vừa tạo
             sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+
+            // THÊM DÒNG NÀY: Ra lệnh cho Server phát sóng danh sách cập nhật cho TẤT CẢ mọi người
+            server.broadcastAuctionList();
+
         } catch (Exception e) {
             sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL);
         }

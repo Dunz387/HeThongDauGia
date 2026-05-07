@@ -33,7 +33,6 @@ public class BaseMenuController implements Initializable {
 
     @FXML private HBox menuBar;
 
-    // Khai báo các thành phần giao diện của Bảng
     @FXML private TableView<Auction> tableAuctions;
     @FXML private TableColumn<Auction, String> colId;
     @FXML private TableColumn<Auction, String> colName;
@@ -42,42 +41,26 @@ public class BaseMenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1. Cấu hình cách lấy dữ liệu cho từng cột trong Bảng
+        // 1. Cấu hình cột
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
         colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
         colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name()));
 
-        // 2. Gửi yêu cầu lấy danh sách về Server
+        // 2. ĐĂNG KÝ CALLBACK LẮNG NGHE DANH SÁCH TỪ SERVER
+        ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
+            if (listFromServer != null) {
+                ObservableList<Auction> observableList = FXCollections.observableArrayList(listFromServer);
+                Platform.runLater(() -> {
+                    tableAuctions.setItems(observableList);
+                    System.out.println("✅ Đã load thành công " + observableList.size() + " món hàng lên Trang chủ!");
+                });
+            }
+        });
+
+        // 3. Gửi lệnh yêu cầu lấy danh sách (Gửi xong là đi làm việc khác, không cần chờ)
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
 
-        // 3. Mở luồng chạy ngầm để chờ Server trả danh sách
-        new Thread(() -> {
-            try {
-                List<Auction> listFromServer = null;
-                int timeout = 50; // Chờ tối đa 5 giây
-
-                while (listFromServer == null && timeout > 0) {
-                    listFromServer = ClientNetworkManager.getInstance().getLastAuctionList();
-                    Thread.sleep(100);
-                    timeout--;
-                }
-
-                // 4. Có dữ liệu thì bắt buộc dùng Platform.runLater để vẽ lên UI
-                if (listFromServer != null) {
-                    ObservableList<Auction> observableList = FXCollections.observableArrayList(listFromServer);
-
-                    Platform.runLater(() -> {
-                        tableAuctions.setItems(observableList);
-                        System.out.println("Đã load thành công " + observableList.size() + " món hàng lên UI!");
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-        // Khởi tạo Handler cho menu thông báo
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
     }
 
@@ -104,7 +87,6 @@ public class BaseMenuController implements Initializable {
         notificationMenuHandler.toggleMenu();
     }
 
-    // THÊM MỚI: Hàm mở Popup Tạo phiên đấu giá
     @FXML
     private void openCreateItemPopup(ActionEvent event) {
         try {

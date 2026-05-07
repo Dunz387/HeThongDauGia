@@ -23,7 +23,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class AssertsListController implements Initializable {
@@ -40,7 +39,6 @@ public class AssertsListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1. Cấu hình các cột hiển thị[cite: 14]
         colSTT.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(tableAsserts.getItems().indexOf(cellData.getValue()) + 1).asObject());
         colItemName.setCellValueFactory(cellData ->
@@ -50,38 +48,19 @@ public class AssertsListController implements Initializable {
         colId.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getId()));
 
-        // 2. Yêu cầu danh sách từ Server[cite: 14]
-        ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
-
-        // khởi tạo handler cho menu thông báo
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
 
-        // 3. Đợi và cập nhật dữ liệu lên bảng
-        loadDataFromServer();
-    }
-
-    private void loadDataFromServer() {
-        new Thread(() -> {
-            try {
-                List<Auction> list = null;
-                int retry = 50; // Chờ 5 giây
-                while (list == null && retry > 0) {
-                    list = ClientNetworkManager.getInstance().getLastAuctionList();
-                    Thread.sleep(100);
-                    retry--;
-                }
-
-                if (list != null) {
-                    System.out.println("✅ UI: Đã nhận dữ liệu, đang tiến hành vẽ bảng...");
-                    ObservableList<Auction> data = FXCollections.observableArrayList(list);
-                    Platform.runLater(() -> tableAsserts.setItems(data));
-                } else {
-                    System.out.println("⚠️ UI: Không nhận được danh sách nào từ Server.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        // LẮNG NGHE DANH SÁCH TỪ SERVER (Sẽ tự động chạy khi Server Broadcast)
+        ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
+            if (listFromServer != null) {
+                System.out.println("✅ UI: Đã nhận dữ liệu, đang tiến hành vẽ bảng tài sản...");
+                ObservableList<Auction> data = FXCollections.observableArrayList(listFromServer);
+                Platform.runLater(() -> tableAsserts.setItems(data));
             }
-        }).start();
+        });
+
+        // GỬI YÊU CẦU LẤY DANH SÁCH (Chạy lần đầu khi mở màn hình)
+        ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
     }
 
     @FXML
@@ -94,7 +73,6 @@ public class AssertsListController implements Initializable {
             stage.setTitle("Tạo phiên đấu giá mới");
             stage.show();
         } catch (Exception e) {
-            System.err.println("Lỗi mở Popup: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -124,7 +102,8 @@ public class AssertsListController implements Initializable {
 
     @FXML
     private void goToAssertsListButtonClicked(ActionEvent event) {
-        Stage stage = (Stage) menuBar.getScene().getWindow();
-        SceneManager.switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Asserts List");
+        // ĐÃ SỬA: Thay vì chuyển màn hình, chỉ gửi yêu cầu lấy danh sách mới nếu người dùng bấm thủ công
+        System.out.println("🔄 Đang làm mới danh sách tài sản...");
+        ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
     }
 }

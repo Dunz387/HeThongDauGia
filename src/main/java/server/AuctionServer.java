@@ -1,6 +1,10 @@
 package server;
 
+import model.auction.Auction;
+import model.auction.AuctionObserver;
 import service.AuctionManager;
+import shared.Protocol;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -9,7 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class AuctionServer {
+public class AuctionServer implements AuctionObserver {
     private static final int PORT = 8080;
     private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private AuctionManager manager;
@@ -21,7 +25,11 @@ public class AuctionServer {
     public void startServer() {
         manager = AuctionManager.getInstance();
 
-        // Luồng xử lý lệnh Terminal để không làm treo Server
+        // Lắng nghe tất cả các phiên đấu giá đã load từ Database
+        for (Auction auction : manager.getAllAuctions()) {
+            auction.addObserver(this);
+        }
+
         new Thread(() -> {
             Scanner s = new Scanner(System.in);
             System.out.println("Hệ thống Server đã sẵn sàng. Gõ 'exit' để tắt.");
@@ -49,5 +57,33 @@ public class AuctionServer {
 
     public void removeClient(ClientHandler c) {
         clients.remove(c);
+    }
+
+    // Hàm Broadcast gửi một thông điệp (chuỗi) tới tất cả Client đang online
+    public void broadcast(String message) {
+        for (ClientHandler client : clients) {
+            client.sendData(message);
+        }
+    }
+
+    // THÊM MỚI: Hàm Broadcast gửi DANH SÁCH tài sản mới nhất cho tất cả Client
+    public void broadcastAuctionList() {
+        List<Auction> list = manager.getAllAuctions();
+        for (ClientHandler client : clients) {
+            client.sendData(Protocol.RES_AUCTION_LIST);
+            client.sendData(list);
+        }
+    }
+
+    // Xử lý sự kiện khi có giá mới (từ AuctionObserver)
+    @Override
+    public void update(Auction auction, double newPrice, String topBidderName) {
+        String message = Protocol.BROADCAST_NEW_BID + Protocol.DELIMITER +
+                auction.getId() + Protocol.DELIMITER +
+                newPrice + Protocol.DELIMITER +
+                topBidderName;
+
+        System.out.println("📢 [BROADCAST] Đã phát sóng giá mới: " + message);
+        broadcast(message);
     }
 }

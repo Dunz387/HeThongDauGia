@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class ClientNetworkManager {
     private static ClientNetworkManager instance;
@@ -14,12 +17,9 @@ public class ClientNetworkManager {
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    // --- CÁC HÒM THƯ RIÊNG BIỆT ĐỂ KHÔNG BỊ GHI ĐÈ LUỒNG ---
-    private volatile String lastAuthResponse = null;       // Dành cho Đăng nhập / Đăng ký
-    private volatile String lastCreateItemResponse = null; // Dành riêng cho Đăng bán
-    private volatile String lastBidResponse = null;        // Dành riêng cho Đặt giá (Bid)
-    private volatile List<Auction> lastAuctionList = null; // Dành cho Cập nhật danh sách
-    // -------------------------------------------------------
+    // BẢN ĐỒ DANH BẠ: Lưu trữ các hàm Callback (Hành động sẽ thực hiện khi nhận được lệnh tương ứng)
+    private Map<String, Consumer<String>> messageListeners = new ConcurrentHashMap<>();
+    private Consumer<List<Auction>> auctionListListener = null;
 
     private ClientNetworkManager() {}
 
@@ -36,7 +36,7 @@ public class ClientNetworkManager {
             in = new ObjectInputStream(socket.getInputStream());
 
             startListeningThread();
-            System.out.println("✅ Đã kết nối thành công đến Server!");
+            System.out.println("✅ Đã kết nối thành công tới Server!");
             return true;
         } catch (Exception e) {
             return false;
@@ -50,77 +50,45 @@ public class ClientNetworkManager {
                 out.flush();
             }
         } catch (Exception e) {
-            System.out.println("Lỗi gửi dữ liệu: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    // ĐĂNG KÝ CALLBACK CHO STRING
+    public void registerListener(String command, Consumer<String> listener) {
+        messageListeners.put(command, listener);
+    }
+
+    // ĐĂNG KÝ CALLBACK CHO LIST OBJECT (Dành cho danh sách đấu giá)
+    public void setAuctionListListener(Consumer<List<Auction>> listener) {
+        this.auctionListListener = listener;
     }
 
     private void startListeningThread() {
         Thread listenerThread = new Thread(() -> {
             try {
-                Object inputObj;
-                while ((inputObj = in.readObject()) != null) {
-                    if (inputObj instanceof String) {
-                        String message = (String) inputObj;
-                        processIncomingMessage(message);
-                    }
-                    else if (inputObj instanceof List) {
-                        this.lastAuctionList = (List<Auction>) inputObj;
+                Object serverData;
+                while ((serverData = in.readObject()) != null) {
+                    if (serverData instanceof String) {
+                        String message = (String) serverData;
+                        String[] parts = message.split(Protocol.SEPARATOR);
+                        String command = parts[0];
+
+                        // Tra cứu danh bạ, nếu có Controller nào đang chờ lệnh này thì gọi nó
+                        if (messageListeners.containsKey(command)) {
+                            messageListeners.get(command).accept(message);
+                        }
+                    } else if (serverData instanceof List) {
+                        if (auctionListListener != null) {
+                            auctionListListener.accept((List<Auction>) serverData);
+                        }
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Mất kết nối với Server.");
+                System.out.println("❌ Mất kết nối tới Server.");
             }
         });
         listenerThread.setDaemon(true);
         listenerThread.start();
-    }
-
-    private void processIncomingMessage(String message) {
-        String[] parts = message.split(Protocol.SEPARATOR);
-        String command = parts[0];
-
-        // PHÂN LOẠI TIN NHẮN VÀO ĐÚNG HÒM THƯ
-        switch (command) {
-            case Protocol.REQ_LOGIN:
-            case Protocol.REQ_REGISTER:
-                this.lastAuthResponse = message;
-                break;
-            case Protocol.REQ_CREATE_ITEM:
-                this.lastCreateItemResponse = message; // Hứng kết quả Đăng bán
-                break;
-            case Protocol.REQ_BID:
-                this.lastBidResponse = message;        // Hứng kết quả Đặt giá
-                break;
-        }
-    }
-
-    // --- CÁC HÀM LẤY KẾT QUẢ CHO GIAO DIỆN (UI) ---
-    public String getLastAuthResponse() {
-        String temp = lastAuthResponse;
-        lastAuthResponse = null;
-        return temp;
-    }
-
-    public String getLastCreateItemResponse() {
-        String temp = lastCreateItemResponse;
-        lastCreateItemResponse = null;
-        return temp;
-    }
-
-    public String getLastBidResponse() {
-        String temp = lastBidResponse;
-        lastBidResponse = null;
-        return temp;
-    }
-
-    public List<Auction> getLastAuctionList() {
-        List<Auction> temp = lastAuctionList;
-        lastAuctionList = null;
-        return temp;
-    }
-
-    // Giữ lại hàm này tạm thời để các màn hình cũ chưa sửa không bị lỗi đỏ code
-    public String getLastResponse() {
-        return getLastAuthResponse();
     }
 }

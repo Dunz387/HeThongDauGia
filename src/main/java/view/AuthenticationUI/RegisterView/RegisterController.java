@@ -12,7 +12,6 @@ import view.SceneManager;
 
 public class RegisterController {
 
-    // Khai báo 2 ô nhập liệu (Nhớ kiểm tra bên file Register.fxml xem đã đặt fx:id đúng tên này chưa nhé)
     @FXML private TextField txtUsername;
     @FXML private TextField txtPassword;
 
@@ -26,43 +25,27 @@ public class RegisterController {
             return;
         }
 
-        // 1. Gửi lệnh Đăng ký qua Trạm mạng
+        // 1. Chuẩn bị yêu cầu đăng ký
         String request = Protocol.REQ_REGISTER + Protocol.DELIMITER + username.trim() + Protocol.DELIMITER + password.trim();
-        ClientNetworkManager.getInstance().sendData(request);
 
-        // 2. Mở luồng ngầm chờ Server phản hồi (Tránh đơ giao diện)
-        new Thread(() -> {
-            try {
-                String response = null;
-                int timeout = 50; // Đợi tối đa 5 giây
+        // 2. ĐĂNG KÝ CALLBACK: "Khi nào Server trả lời lệnh REGISTER, hãy chạy đoạn code này trên UI"
+        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_REGISTER, (response) -> {
+            String[] parts = response.split(Protocol.SEPARATOR);
+            Platform.runLater(() -> {
+                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    showAlert("Thành công", "Đăng ký thành công! Hãy tiến hành đăng nhập.", Alert.AlertType.INFORMATION);
 
-                while (response == null && timeout > 0) {
-                    response = ClientNetworkManager.getInstance().getLastResponse();
-                    Thread.sleep(100);
-                    timeout--;
-                }
-
-                // 3. Có kết quả thì xử lý
-                if (response != null) {
-                    String[] parts = response.split(Protocol.SEPARATOR);
-                    Platform.runLater(() -> {
-                        if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                            showAlert("Thành công", "Đăng ký thành công! Hãy tiến hành đăng nhập.", Alert.AlertType.INFORMATION);
-
-                            // Đăng ký xong thì tự động quay về màn hình Login
-                            Stage stage = (Stage) txtUsername.getScene().getWindow();
-                            SceneManager.switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
-                        } else {
-                            showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Tài khoản đã tồn tại!", Alert.AlertType.ERROR);
-                        }
-                    });
+                    // Đăng ký xong thì tự động quay về màn hình Login
+                    Stage stage = (Stage) txtUsername.getScene().getWindow();
+                    SceneManager.switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
                 } else {
-                    Platform.runLater(() -> showAlert("Lỗi Mạng", "Không nhận được phản hồi từ Server.", Alert.AlertType.ERROR));
+                    showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Tài khoản đã tồn tại!", Alert.AlertType.ERROR);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+            });
+        });
+
+        // 3. Gửi lệnh đi và kết thúc hàm (Không còn Thread.sleep bắt UI phải chờ nữa)
+        ClientNetworkManager.getInstance().sendData(request);
     }
 
     // Hàm gắn vào nút/chữ "Quay lại Đăng nhập"

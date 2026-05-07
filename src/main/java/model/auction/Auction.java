@@ -16,41 +16,85 @@ public class Auction extends Entity implements AuctionSubject {
     private Item item;
     private double startingPrice;
     private double currentPrice;
-    private double bidIncrement;        // Bước giá tối thiểu
+    private double bidIncrement;
 
     private Bidder highestBidder;
     private LocalDateTime endTime;
     private AuctionStatus status;
     private String reason;
 
-    // Lịch sử giao dịch
     private List<BidTransaction> bidHistory;
 
-    // Thêm danh sách Observer (dùng transient để bỏ qua khi lưu file sau này)
+    // Dùng transient để bỏ qua khi lưu file/gửi mạng
     private transient List<AuctionObserver> observers;
-
     private transient ReentrantLock lock = new ReentrantLock();
 
     public Auction(String id, Item item, double startingPrice, double bidIncrement, LocalDateTime endTime) {
         super(id);
         this.item = item;
         this.startingPrice = startingPrice;
-        this.currentPrice = startingPrice; // Ban đầu giá cao nhất chính là giá khởi điểm
+        this.currentPrice = startingPrice;
         this.bidIncrement = bidIncrement;
         this.endTime = endTime;
 
         this.highestBidder = null;
-        this.status = AuctionStatus.OPEN; // Mặc định vừa tạo là OPEN
+        this.status = AuctionStatus.OPEN;
         this.bidHistory = new ArrayList<>();
-        this.observers = new ArrayList<>(); // Khởi tạo danh sách
+        this.observers = new ArrayList<>();
     }
 
-    // TRIỂN KHAI OBSERVER PATTERN
+    public Item getItem() { return item; }
+    public double getCurrentPrice() { return currentPrice; }
+    public Bidder getHighestBidder() { return highestBidder; }
+    public LocalDateTime getEndTime() { return endTime; }
+    public AuctionStatus getStatus() { return status; }
+    public void setStatus(AuctionStatus status) { this.status = status; }
 
+    public void placeBid(Bidder bidder, double bidAmount) throws InvalidBidException, AuctionClosedException {
+        if (lock == null) lock = new ReentrantLock();
+        lock.lock();
+        try {
+            if (this.status != AuctionStatus.RUNNING) {
+                throw new AuctionClosedException("Phiên đấu giá không trong trạng thái đang diễn ra!");
+            }
+
+            double minRequiredBid = this.currentPrice + bidIncrement;
+            if (bidAmount < minRequiredBid) {
+                throw new InvalidBidException(String.format("Giá đặt phải lớn hơn hoặc bằng $%.2f", minRequiredBid));
+            }
+
+            Bidder previousBidder = this.highestBidder;
+            double previousBidAmount = this.currentPrice;
+
+            if (!bidder.lockBalance(bidAmount)) {
+                throw new InvalidBidException("Không đủ số dư khả dụng (Tiền của bạn có thể đang bị giam ở phòng khác).");
+            }
+
+            if (previousBidder != null) {
+                previousBidder.unlockBalance(previousBidAmount);
+            }
+
+            this.currentPrice = bidAmount;
+            this.highestBidder = bidder;
+
+            BidTransaction transaction = new BidTransaction("TX-" + System.currentTimeMillis(), this, bidder, bidAmount, java.time.LocalDateTime.now());
+            if (bidHistory == null) bidHistory = new ArrayList<>();
+            bidHistory.add(transaction);
+
+            // Báo cho Server biết có người vừa đặt giá!
+            notifyObservers();
+
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    // --- CÁC HÀM CỦA AUCTION SUBJECT ---
     @Override
     public void addObserver(AuctionObserver observer) {
-        // Đề phòng trường hợp đọc từ file lên observers bị null
-        if (observers == null) observers = new ArrayList<>();
+        if (observers == null) {
+            observers = new ArrayList<>();
+        }
         if (!observers.contains(observer)) {
             observers.add(observer);
         }
@@ -65,74 +109,11 @@ public class Auction extends Entity implements AuctionSubject {
 
     @Override
     public void notifyObservers() {
-        if (observers == null) return;
-        // Lấy tên người dẫn đầu hiện tại
-        String topBidderName = (highestBidder != null) ? highestBidder.getUsername() : "Chưa có";
-
-        for (AuctionObserver observer : observers) {
-            observer.update(this, this.currentPrice, topBidderName);
+        if (observers != null) {
+            for (AuctionObserver obs : observers) {
+                String topBidderName = (highestBidder != null) ? highestBidder.getUsername() : "Chưa có";
+                obs.update(this, this.currentPrice, topBidderName);
+            }
         }
-    }
-
-    // GETTER
-    public Item getItem() { return item; }
-    public double getCurrentPrice() { return currentPrice; }
-    public Bidder getHighestBidder() { return highestBidder; }
-    public AuctionStatus getStatus() { return status; }
-    public LocalDateTime getEndTime() { return endTime; }
-
-    // Dành cho Admin/Manager đổi trạng thái
-    public void setStatus(AuctionStatus status) { this.status = status; }
-
-    public String getReason() { return reason; }
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    // Logic EXCEPTION (Mục 2)
-    public void placeBid(Bidder bidder, double bidAmount) throws AuctionClosedException, InvalidBidException {
-        lock.lock();
-        try {
-            if (this.status != AuctionStatus.RUNNING) {
-                throw new AuctionClosedException("Phiên đấu giá chưa mở hoặc đã kết thúc.");
-            }
-
-            double minRequiredBid = currentPrice + bidIncrement;
-            if (bidAmount < minRequiredBid) {
-                throw new InvalidBidException(String.format("Giá đặt phải lớn hơn hoặc bằng $%.2f", minRequiredBid));
-            }
-
-            // Ghi nhớ người cũ trước khi cập nhật người mới
-            Bidder previousBidder = this.highestBidder;
-            double previousBidAmount = this.currentPrice;
-
-            // THỬ ĐÓNG BĂNG TIỀN CỦA NGƯỜI MỚI
-            if (!bidder.lockBalance(bidAmount)) {
-                throw new InvalidBidException("Không đủ số dư khả dụng (Tiền của bạn có thể đang bị giam ở phòng khác).");
-            }
-
-            // NẾU THÀNH CÔNG, HOÀN TRẢ TIỀN CHO NGƯỜI CŨ (NẾU CÓ)
-            if (previousBidder != null) {
-                previousBidder.unlockBalance(previousBidAmount);
-            }
-
-            // Cập nhật thông tin người thắng mới
-            this.currentPrice = bidAmount;
-            this.highestBidder = bidder;
-
-            BidTransaction transaction = new BidTransaction("TX-" + System.currentTimeMillis(), this, bidder, bidAmount, java.time.LocalDateTime.now());
-            bidHistory.add(transaction);
-
-            notifyObservers();
-
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        this.lock = new ReentrantLock();
-        this.observers = new ArrayList<>();
     }
 }

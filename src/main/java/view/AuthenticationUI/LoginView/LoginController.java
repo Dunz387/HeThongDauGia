@@ -26,40 +26,24 @@ public class LoginController {
             return;
         }
 
-        // 1. Gửi lệnh Login qua Trạm mạng mà bạn đã viết
+        // 1. Chuẩn bị yêu cầu
         String request = Protocol.REQ_LOGIN + Protocol.DELIMITER + username.trim() + Protocol.DELIMITER + password.trim();
-        ClientNetworkManager.getInstance().sendData(request);
 
-        // 2. Chờ Server phản hồi
-        new Thread(() -> {
-            try {
-                String response = null;
-                int timeout = 50; // Đợi tối đa 5 giây
-
-                while (response == null && timeout > 0) {
-                    response = ClientNetworkManager.getInstance().getLastResponse();
-                    Thread.sleep(100);
-                    timeout--;
-                }
-
-                // 3. Có kết quả thì chuyển màn hình
-                if (response != null) {
-                    String[] parts = response.split(Protocol.SEPARATOR);
-                    Platform.runLater(() -> {
-                        if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                            Stage stage = (Stage) txtUsername.getScene().getWindow();
-                            SceneManager.switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Trang Chủ");
-                        } else {
-                            showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Sai thông tin đăng nhập!");
-                        }
-                    });
+        // 2. ĐĂNG KÝ CALLBACK: "Khi nào Server trả lời lệnh LOGIN, hãy chạy đoạn code này trên UI"
+        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_LOGIN, (response) -> {
+            String[] parts = response.split(Protocol.SEPARATOR);
+            Platform.runLater(() -> {
+                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    Stage stage = (Stage) txtUsername.getScene().getWindow();
+                    SceneManager.switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Trang Chủ");
                 } else {
-                    Platform.runLater(() -> showAlert("Lỗi Mạng", "Không nhận được phản hồi từ Server."));
+                    showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Sai thông tin đăng nhập!");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+            });
+        });
+
+        // 3. Gửi đi và xong việc (Không còn Thread.sleep bắt UI phải chờ nữa)
+        ClientNetworkManager.getInstance().sendData(request);
     }
 
     @FXML
