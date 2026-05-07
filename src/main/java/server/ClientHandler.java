@@ -6,7 +6,6 @@ import model.user.User;
 import model.user.Seller;
 import service.AuctionManager;
 import shared.Protocol;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -50,7 +49,7 @@ public class ClientHandler implements Runnable {
                             handleGetAuctions();
                             break;
                         case Protocol.REQ_CREATE_ITEM:
-                            // Nhận đủ 5 tham số để lấy được mã loại sản phẩm (itemType)
+                            // Đảm bảo nhận đủ 5 tham số (Lệnh | Tên | Giá | Thời lượng | Mã loại)
                             if (parts.length >= 5) handleCreateItem(parts[1], parts[2], parts[3], parts[4]);
                             break;
                     }
@@ -67,13 +66,14 @@ public class ClientHandler implements Runnable {
         sendData(list);
     }
 
+    // ĐÃ SỬA: Thêm tham số itemType và gọi ItemFactory
     private void handleCreateItem(String name, String priceStr, String durStr, String itemType) {
         try {
             double price = Double.parseDouble(priceStr);
             int dur = Integer.parseInt(durStr);
             Seller owner = (loggedInUser instanceof Seller) ? (Seller) loggedInUser : null;
 
-            // Sử dụng ItemFactory để tạo đúng đối tượng theo mã Client gửi lên (ELECTRONICS, ART, VEHICLE)
+            // Gọi ItemFactory thay vì new Arts cứng
             model.item.Item item = model.item.ItemFactory.createItem(
                     itemType,
                     "IT-" + System.currentTimeMillis(),
@@ -85,8 +85,6 @@ public class ClientHandler implements Runnable {
             );
 
             Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0, java.time.LocalDateTime.now().plusMinutes(dur));
-
-            // Thiết lập trạng thái RUNNING để Client có thể thấy ngay
             auction.setStatus(AuctionStatus.RUNNING);
             manager.registerAuction(auction);
 
@@ -117,7 +115,7 @@ public class ClientHandler implements Runnable {
         try {
             if (out != null) {
                 out.writeObject(data);
-                out.reset(); // Xóa bộ nhớ đệm để gửi dữ liệu mới nhất
+                out.reset();
                 out.flush();
             }
         } catch (Exception e) {}

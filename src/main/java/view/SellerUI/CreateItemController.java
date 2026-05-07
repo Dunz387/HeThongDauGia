@@ -40,40 +40,23 @@ public class CreateItemController implements Initializable {
             return;
         }
 
-        // Chuyển đổi (Map) lựa chọn tiếng Việt trên UI sang mã chuẩn của Server
-        String itemTypeCode = "";
-        switch (itemTypeDisplay) {
-            case "Đồ điện":
-                itemTypeCode = "ELECTRONICS";
-                break;
-            case "Xe cộ":
-                itemTypeCode = "VEHICLE";
-                break;
-            case "Nghệ thuật":
-                itemTypeCode = "ART";
-                break;
-            default:
-                itemTypeCode = "ELECTRONICS"; // Mặc định an toàn
-                break;
-        }
+        String itemTypeCode = "ELECTRONICS";
+        if (itemTypeDisplay.equals("Đồ điện")) itemTypeCode = "ELECTRONICS";
+        else if (itemTypeDisplay.equals("Xe cộ")) itemTypeCode = "VEHICLE";
+        else if (itemTypeDisplay.equals("Nghệ thuật")) itemTypeCode = "ART";
 
-        // Tạo lệnh gửi lên Server (Đã bổ sung itemTypeCode vào gói tin gửi đi)
+        // Gửi đủ 4 tham số (Tên, Giá, Thời gian, Mã Loại)
         String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + itemName + Protocol.DELIMITER + startPrice + Protocol.DELIMITER + duration + Protocol.DELIMITER + itemTypeCode;
         ClientNetworkManager.getInstance().sendData(request);
 
-        // Mở luồng ngầm chờ kết quả
         new Thread(() -> {
             try {
                 String response = null;
                 int timeout = 50;
 
                 while (timeout > 0) {
-                    // Dùng đúng "hòm thư" của Create Item
                     response = ClientNetworkManager.getInstance().getLastCreateItemResponse();
-
-                    if (response != null && response.startsWith(Protocol.REQ_CREATE_ITEM)) {
-                        break;
-                    }
+                    if (response != null && response.startsWith(Protocol.REQ_CREATE_ITEM)) break;
                     Thread.sleep(100);
                     timeout--;
                 }
@@ -91,16 +74,12 @@ public class CreateItemController implements Initializable {
                 } else {
                     Platform.runLater(() -> showAlert("Lỗi Mạng", "Server không phản hồi.", Alert.AlertType.ERROR));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) {}
         }).start();
     }
 
     @FXML
-    private void cancelButtonClicked(ActionEvent event) {
-        closeWindow();
-    }
+    private void cancelButtonClicked(ActionEvent event) { closeWindow(); }
 
     private void closeWindow() {
         Stage stage = (Stage) txtItemName.getScene().getWindow();
