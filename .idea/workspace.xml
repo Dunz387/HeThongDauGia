@@ -4,38 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="sửa fix lỗi về client-server">
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/SellerUI/CreateItemController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/view/SellerUI/CreateItem.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
+    <list default="true" id="a5f6cc02-175f-4b42-b172-5780ea9df28a" name="Changes" comment="sửa lỗi liên quan đến tạo tài sản đấu giá">
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/LoginView/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/LoginView/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/RegisterView/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/RegisterView/RegisterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/AssertsListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/AssertsListController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/AssertsList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/AssertsList.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/AuctionTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="33" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -43,7 +21,7 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Dunz387&quot;
+    &quot;assignee&quot;: &quot;VinhPicoK70UET&quot;
   }
 }</component>
   <component name="GithubPullRequestsUISettings">{
@@ -52,115 +30,46 @@
     &quot;accountId&quot;: &quot;ff1da139-feb7-4b08-939d-8a1875aced7e&quot;
   }
 }</component>
-  <component name="MavenRunner">
-    <option name="delegateBuildToMaven" value="true" />
-  </component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
   </component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
 }</component>
-  <component name="ProjectId" id="3BtvXyeuSVovVaATK3HURELC32y" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectId" id="3DNjmn5pmOblu58A5XKIzE4Cq5q" />
   <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Application.Admin.executor": "Run",
-    "Application.AuctionClient.executor": "Run",
-    "Application.AuctionMenuGUI.executor": "Run",
-    "Application.AuctionServer.executor": "Run",
-    "Application.FX.executor": "Run",
-    "Application.HelloFX.executor": "Run",
-    "Application.LoginGUI.executor": "Run",
-    "Application.LoginUI.executor": "Run",
-    "Application.SignUpGUI.executor": "Run",
-    "Application.view.SignUpGUI.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "true",
-    "JUnit.AuctionTest.executor": "Run",
-    "Maven.AuctionClient.executor": "Run",
-    "Maven.AuctionServer.executor": "Run",
-    "Maven.HeThongDauGia [install,--non-recursive].executor": "Run",
-    "Maven.Login.executor": "Run",
-    "Maven.Main.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Projects/HeThongDauGia",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "D:/1 Dung/LapTrinhNangCao/BaiTapLon/HeThongDauGia/src/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.runner",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.AuctionServer.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuctionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.test in HeThongDauGia.executor&quot;: &quot;Debug&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.Main">
-    <configuration name="AuctionClient" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="client.AuctionClient" />
-      <module name="HeThongDauGia" />
-      <option name="VM_PARAMETERS" value="--module-path &quot;D:\openjfx-26_windows-x64_bin-sdk\javafx-sdk-26\lib&quot; " />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="client.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="AuctionServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="server.AuctionServer" />
       <module name="HeThongDauGia" />
-      <option name="VM_PARAMETERS" value="--module-path &quot;D:\openjfx-26_windows-x64_bin-sdk\javafx-sdk-26\lib&quot; " />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Login" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="view.AuthenticationUI.LoginView.Login" />
-      <module name="HeThongDauGia" />
       <option name="PROGRAM_PARAMETERS" value="$MAVEN_REPOSITORY$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="view.AuthenticationUI.LoginView.*" />
+          <option name="PATTERN" value="server.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -184,20 +93,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="view.SignUpGUI" type="Application" factoryName="Application" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="view.SignUpGUI" />
-      <module name="HeThongDauGia" />
-      <option name="VM_PARAMETERS" value="--module-path &quot;D:\openjfx-26_windows-x64_bin-sdk\javafx-sdk-26\lib&quot; --add-modules javafx.controls,javafx.fxml" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="GUI.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="AuctionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="HeThongDauGia" />
       <option name="PACKAGE_NAME" value="" />
@@ -207,21 +102,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Application.view.SignUpGUI" />
-      <item itemvalue="Application.Main" />
-      <item itemvalue="Application.Login" />
-      <item itemvalue="Application.AuctionClient" />
-      <item itemvalue="Application.AuctionServer" />
-      <item itemvalue="JUnit.AuctionTest" />
-    </list>
+    <configuration name="test in HeThongDauGia" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="HeThongDauGia" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
-        <item itemvalue="Application.Login" />
         <item itemvalue="Application.AuctionServer" />
+        <item itemvalue="JUnit.test in HeThongDauGia" />
         <item itemvalue="JUnit.AuctionTest" />
-        <item itemvalue="Application.AuctionClient" />
       </list>
     </recent_temporary>
   </component>
@@ -234,171 +134,25 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="98335d60-c32f-4efc-8f2a-bc0d0a6e7d17" name="Changes" comment="" />
-      <created>1775321227134</created>
+      <changelist id="a5f6cc02-175f-4b42-b172-5780ea9df28a" name="Changes" comment="" />
+      <created>1778129585054</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1775321227134</updated>
+      <updated>1778129585054</updated>
     </task>
-    <task id="LOCAL-00001" summary="chỉnh database sửa trong aution entity đổi tên item, và sửa 1 lỗi ở AuctionManager.java">
+    <task id="LOCAL-00001" summary="sửa lỗi liên quan đến tạo tài sản đấu giá">
       <option name="closed" value="true" />
-      <created>1776961678763</created>
+      <created>1778131586666</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1776961678763</updated>
+      <updated>1778131586667</updated>
     </task>
-    <task id="LOCAL-00002" summary="sửa lại từ autiontest sang auctiontest">
-      <option name="closed" value="true" />
-      <created>1776961930537</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1776961930537</updated>
-    </task>
-    <task id="LOCAL-00003" summary="sửa lại từ autiontest sang auctiontest, và thêm saveSystemdata">
-      <option name="closed" value="true" />
-      <created>1776962679420</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1776962679420</updated>
-    </task>
-    <task id="LOCAL-00004" summary="sửa pom.xml thêm sqlite vào trong pom.xml">
-      <option name="closed" value="true" />
-      <created>1777571538152</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1777571538152</updated>
-    </task>
-    <task id="LOCAL-00005" summary="sửa pom.xml thêm sqlite vào trong pom.xml">
-      <option name="closed" value="true" />
-      <created>1777571569562</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1777571569562</updated>
-    </task>
-    <task id="LOCAL-00006" summary="sửa pom.xml thêm sqlite vào trong pom.xml">
-      <option name="closed" value="true" />
-      <created>1777571584333</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1777571584333</updated>
-    </task>
-    <task id="LOCAL-00007" summary="update database sqlite">
-      <option name="closed" value="true" />
-      <created>1777571725694</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1777571725694</updated>
-    </task>
-    <task id="LOCAL-00008" summary="update database sqlite">
-      <option name="closed" value="true" />
-      <created>1777572973153</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1777572973153</updated>
-    </task>
-    <task id="LOCAL-00009" summary="update client-socket">
-      <option name="closed" value="true" />
-      <created>1777574222601</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1777574222601</updated>
-    </task>
-    <task id="LOCAL-00010" summary="update client-socket, sửa lỗi test và pom">
-      <option name="closed" value="true" />
-      <created>1777609923757</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1777609923757</updated>
-    </task>
-    <task id="LOCAL-00011" summary="update client-socket, sửa lỗi test và pom">
-      <option name="closed" value="true" />
-      <created>1777854948111</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1777854948111</updated>
-    </task>
-    <task id="LOCAL-00012" summary="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core">
-      <option name="closed" value="true" />
-      <created>1777875797530</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1777875797530</updated>
-    </task>
-    <task id="LOCAL-00013" summary="sửa fix lỗi về client-server">
-      <option name="closed" value="true" />
-      <created>1777880013908</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1777880013908</updated>
-    </task>
-    <task id="LOCAL-00014" summary="sửa fix lỗi về client-server">
-      <option name="closed" value="true" />
-      <created>1777970740325</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1777970740325</updated>
-    </task>
-    <task id="LOCAL-00015" summary="sửa fix lỗi về client-server">
-      <option name="closed" value="true" />
-      <created>1777971151177</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1777971151177</updated>
-    </task>
-    <task id="LOCAL-00016" summary="sửa fix lỗi về client-server">
-      <option name="closed" value="true" />
-      <created>1777975945014</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1777975945014</updated>
-    </task>
-    <option name="localTasksCounter" value="17" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="chỉnh database sửa trong aution entity đổi tên item, và sửa 1 lỗi ở AuctionManager.java" />
-    <MESSAGE value="sửa lại từ autiontest sang auctiontest" />
-    <MESSAGE value="sửa lại từ autiontest sang auctiontest, và thêm saveSystemdata" />
-    <MESSAGE value="sửa pom.xml thêm sqlite vào trong pom.xml" />
-    <MESSAGE value="update database sqlite" />
-    <MESSAGE value="update client-socket" />
-    <MESSAGE value="update client-socket, sửa lỗi test và pom" />
-    <MESSAGE value="update client-server socket, cập nhật database hoạt động và sửa 1 số lỗi nghiêm trọng, cùng với business core" />
-    <MESSAGE value="sửa fix lỗi về client-server" />
-    <option name="LAST_COMMIT_MESSAGE" value="sửa fix lỗi về client-server" />
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
+    <MESSAGE value="sửa lỗi liên quan đến tạo tài sản đấu giá" />
+    <option name="LAST_COMMIT_MESSAGE" value="sửa lỗi liên quan đến tạo tài sản đấu giá" />
   </component>
 </project>

@@ -14,9 +14,12 @@ public class ClientNetworkManager {
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    // SỬA LỖI: Thêm volatile để đồng bộ hóa giữa các luồng (Thread-safe)[cite: 15]
-    private volatile String lastResponse = null;
-    private volatile List<Auction> lastAuctionList = null;
+    // --- CÁC HÒM THƯ RIÊNG BIỆT ĐỂ KHÔNG BỊ GHI ĐÈ LUỒNG ---
+    private volatile String lastAuthResponse = null;       // Dành cho Đăng nhập / Đăng ký
+    private volatile String lastCreateItemResponse = null; // Dành riêng cho Đăng bán
+    private volatile String lastBidResponse = null;        // Dành riêng cho Đặt giá (Bid)
+    private volatile List<Auction> lastAuctionList = null; // Dành cho Cập nhật danh sách
+    // -------------------------------------------------------
 
     private ClientNetworkManager() {}
 
@@ -44,11 +47,10 @@ public class ClientNetworkManager {
         try {
             if (out != null) {
                 out.writeObject(data);
-                out.reset(); // Xóa cache để gửi dữ liệu mới nhất[cite: 15]
                 out.flush();
             }
         } catch (Exception e) {
-            System.out.println("Lỗi khi gửi dữ liệu: " + e.getMessage());
+            System.out.println("Lỗi gửi dữ liệu: " + e.getMessage());
         }
     }
 
@@ -59,12 +61,9 @@ public class ClientNetworkManager {
                 while ((inputObj = in.readObject()) != null) {
                     if (inputObj instanceof String) {
                         String message = (String) inputObj;
-                        System.out.println("[Server trả về Lệnh]: " + message);
                         processIncomingMessage(message);
                     }
                     else if (inputObj instanceof List) {
-                        // Nhận danh sách Auction từ Server[cite: 15]
-                        System.out.println("[Server trả về Data]: Đã nhận List với " + ((List) inputObj).size() + " phần tử.");
                         this.lastAuctionList = (List<Auction>) inputObj;
                     }
                 }
@@ -80,25 +79,48 @@ public class ClientNetworkManager {
         String[] parts = message.split(Protocol.SEPARATOR);
         String command = parts[0];
 
+        // PHÂN LOẠI TIN NHẮN VÀO ĐÚNG HÒM THƯ
         switch (command) {
             case Protocol.REQ_LOGIN:
             case Protocol.REQ_REGISTER:
-            case Protocol.REQ_CREATE_ITEM: // Nhận phản hồi khi tạo hàng thành công[cite: 15]
-            case Protocol.RES_AUCTION_LIST:
-                this.lastResponse = message;
+                this.lastAuthResponse = message;
+                break;
+            case Protocol.REQ_CREATE_ITEM:
+                this.lastCreateItemResponse = message; // Hứng kết quả Đăng bán
+                break;
+            case Protocol.REQ_BID:
+                this.lastBidResponse = message;        // Hứng kết quả Đặt giá
                 break;
         }
     }
 
-    public String getLastResponse() {
-        String temp = lastResponse;
-        lastResponse = null;
+    // --- CÁC HÀM LẤY KẾT QUẢ CHO GIAO DIỆN (UI) ---
+    public String getLastAuthResponse() {
+        String temp = lastAuthResponse;
+        lastAuthResponse = null;
+        return temp;
+    }
+
+    public String getLastCreateItemResponse() {
+        String temp = lastCreateItemResponse;
+        lastCreateItemResponse = null;
+        return temp;
+    }
+
+    public String getLastBidResponse() {
+        String temp = lastBidResponse;
+        lastBidResponse = null;
         return temp;
     }
 
     public List<Auction> getLastAuctionList() {
         List<Auction> temp = lastAuctionList;
-        lastAuctionList = null; // Xóa sau khi lấy để tránh lấy trùng dữ liệu cũ[cite: 15]
+        lastAuctionList = null;
         return temp;
+    }
+
+    // Giữ lại hàm này tạm thời để các màn hình cũ chưa sửa không bị lỗi đỏ code
+    public String getLastResponse() {
+        return getLastAuthResponse();
     }
 }

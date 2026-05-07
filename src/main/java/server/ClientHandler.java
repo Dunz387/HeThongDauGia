@@ -2,7 +2,6 @@ package server;
 
 import model.auction.Auction;
 import model.auction.AuctionStatus;
-import model.user.Bidder;
 import model.user.User;
 import model.user.Seller;
 import service.AuctionManager;
@@ -50,7 +49,8 @@ public class ClientHandler implements Runnable {
                             handleGetAuctions();
                             break;
                         case Protocol.REQ_CREATE_ITEM:
-                            if (parts.length >= 4) handleCreateItem(parts[1], parts[2], parts[3]);
+                            // Đảm bảo nhận đủ 5 tham số (Lệnh | Tên | Giá | Thời lượng | Mã loại)
+                            if (parts.length >= 5) handleCreateItem(parts[1], parts[2], parts[3], parts[4]);
                             break;
                     }
                 }
@@ -66,17 +66,25 @@ public class ClientHandler implements Runnable {
         sendData(list);
     }
 
-    private void handleCreateItem(String name, String priceStr, String durStr) {
+    // ĐÃ SỬA: Thêm tham số itemType và gọi ItemFactory
+    private void handleCreateItem(String name, String priceStr, String durStr, String itemType) {
         try {
             double price = Double.parseDouble(priceStr);
             int dur = Integer.parseInt(durStr);
             Seller owner = (loggedInUser instanceof Seller) ? (Seller) loggedInUser : null;
 
-            // Tạo sản phẩm và phiên đấu giá mới
-            model.item.Item item = new model.item.Arts("IT-" + System.currentTimeMillis(), name, "Mô tả", owner, "Ẩn danh", 2024);
-            Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0, java.time.LocalDateTime.now().plusMinutes(dur));
+            // Gọi ItemFactory thay vì new Arts cứng
+            model.item.Item item = model.item.ItemFactory.createItem(
+                    itemType,
+                    "IT-" + System.currentTimeMillis(),
+                    name,
+                    "Mô tả sản phẩm",
+                    owner,
+                    "Thông tin thêm",
+                    0
+            );
 
-            // Thiết lập trạng thái RUNNING để Client có thể thấy ngay
+            Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0, java.time.LocalDateTime.now().plusMinutes(dur));
             auction.setStatus(AuctionStatus.RUNNING);
             manager.registerAuction(auction);
 
@@ -107,7 +115,7 @@ public class ClientHandler implements Runnable {
         try {
             if (out != null) {
                 out.writeObject(data);
-                out.reset(); // Xóa bộ nhớ đệm để gửi dữ liệu mới nhất
+                out.reset();
                 out.flush();
             }
         } catch (Exception e) {}
