@@ -23,7 +23,6 @@ public class CreateItemController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Khởi tạo các giá trị cho ChoiceBox
         String[] itemTypes = {"Đồ điện", "Xe cộ", "Nghệ thuật"};
         choiceType.getItems().addAll(itemTypes);
         choiceType.setValue(null);
@@ -35,22 +34,29 @@ public class CreateItemController implements Initializable {
         String startPrice = txtStartPrice.getText().trim();
         String duration = txtDuration.getText().trim();
         String itemType = choiceType.getValue();
+
         if (itemName.isEmpty() || startPrice.isEmpty() || duration.isEmpty() || itemType == null) {
             showAlert("Lỗi", "Vui lòng nhập đầy đủ thông tin!", Alert.AlertType.WARNING);
             return;
         }
 
-        // Đóng gói gửi lên Server: CREATE_ITEM | Tên_Hàng | Giá | Thời_Gian | Loại
-        String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + itemName + Protocol.DELIMITER + startPrice + Protocol.DELIMITER + duration + Protocol.DELIMITER + itemType;
+        // Tạo lệnh gửi lên Server
+        String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + itemName + Protocol.DELIMITER + startPrice + Protocol.DELIMITER + duration;
         ClientNetworkManager.getInstance().sendData(request);
 
-        // Mở luồng ngầm chờ Server trả lời
+        // Mở luồng ngầm chờ kết quả
         new Thread(() -> {
             try {
                 String response = null;
                 int timeout = 50;
-                while (response == null && timeout > 0) {
-                    response = ClientNetworkManager.getInstance().getLastResponse();
+
+                while (timeout > 0) {
+                    // Dùng đúng "hòm thư" của Create Item
+                    response = ClientNetworkManager.getInstance().getLastCreateItemResponse();
+
+                    if (response != null && response.startsWith(Protocol.REQ_CREATE_ITEM)) {
+                        break;
+                    }
                     Thread.sleep(100);
                     timeout--;
                 }
@@ -60,7 +66,7 @@ public class CreateItemController implements Initializable {
                     Platform.runLater(() -> {
                         if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
                             showAlert("Thành công", "Đã đăng bán sản phẩm lên sàn!", Alert.AlertType.INFORMATION);
-                            closeWindow(); // Đóng popup khi thành công
+                            closeWindow();
                         } else {
                             showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định", Alert.AlertType.ERROR);
                         }
