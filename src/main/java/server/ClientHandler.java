@@ -2,11 +2,11 @@ package server;
 
 import model.auction.Auction;
 import model.auction.AuctionStatus;
-import model.user.Bidder;
 import model.user.User;
 import model.user.Seller;
 import service.AuctionManager;
 import shared.Protocol;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -50,7 +50,8 @@ public class ClientHandler implements Runnable {
                             handleGetAuctions();
                             break;
                         case Protocol.REQ_CREATE_ITEM:
-                            if (parts.length >= 4) handleCreateItem(parts[1], parts[2], parts[3]);
+                            // Nhận đủ 5 tham số để lấy được mã loại sản phẩm (itemType)
+                            if (parts.length >= 5) handleCreateItem(parts[1], parts[2], parts[3], parts[4]);
                             break;
                     }
                 }
@@ -66,14 +67,23 @@ public class ClientHandler implements Runnable {
         sendData(list);
     }
 
-    private void handleCreateItem(String name, String priceStr, String durStr) {
+    private void handleCreateItem(String name, String priceStr, String durStr, String itemType) {
         try {
             double price = Double.parseDouble(priceStr);
             int dur = Integer.parseInt(durStr);
             Seller owner = (loggedInUser instanceof Seller) ? (Seller) loggedInUser : null;
 
-            // Tạo sản phẩm và phiên đấu giá mới
-            model.item.Item item = new model.item.Arts("IT-" + System.currentTimeMillis(), name, "Mô tả", owner, "Ẩn danh", 2024);
+            // Sử dụng ItemFactory để tạo đúng đối tượng theo mã Client gửi lên (ELECTRONICS, ART, VEHICLE)
+            model.item.Item item = model.item.ItemFactory.createItem(
+                    itemType,
+                    "IT-" + System.currentTimeMillis(),
+                    name,
+                    "Mô tả sản phẩm",
+                    owner,
+                    "Thông tin thêm",
+                    0
+            );
+
             Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0, java.time.LocalDateTime.now().plusMinutes(dur));
 
             // Thiết lập trạng thái RUNNING để Client có thể thấy ngay
