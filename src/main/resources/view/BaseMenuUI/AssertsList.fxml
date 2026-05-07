@@ -33,7 +33,7 @@
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textFill="#b85a1cf5">
+            <Button fx:id="notificationMenu" mnemonicParsing="false" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textFill="#b85a1cf5">
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>

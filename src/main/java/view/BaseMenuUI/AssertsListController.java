@@ -19,12 +19,18 @@ import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
 import view.SceneManager;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class AssertsListController implements Initializable {
+    @FXML private Pane darkOverlay;
+    @FXML private ScrollPane notificationMenu;
+    private NotificationMenuHandler notificationMenuHandler;
+
     @FXML private HBox menuBar;
     @FXML private TableView<Auction> tableAsserts;
     @FXML private TableColumn<Auction, Integer> colSTT;
@@ -46,6 +52,9 @@ public class AssertsListController implements Initializable {
 
         // 2. Yêu cầu danh sách từ Server[cite: 14]
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
+
+        // khởi tạo handler cho menu thông báo
+        notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
 
         // 3. Đợi và cập nhật dữ liệu lên bảng
         loadDataFromServer();
@@ -88,6 +97,11 @@ public class AssertsListController implements Initializable {
             System.err.println("Lỗi mở Popup: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void toggleNotificationMenu(ActionEvent event) {
+        notificationMenuHandler.toggleMenu();
     }
 
     @FXML
