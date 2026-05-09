@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.SceneManager;
+import view.utility.SceneManager;
 
 public class RegisterController {
 

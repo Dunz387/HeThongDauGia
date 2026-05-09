@@ -27,7 +27,7 @@
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="62.0" prefWidth="177.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài sản" textFill="#b85a1c">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="Danh sách" />
-                  <MenuItem mnemonicParsing="false" onAction="#openCreateItemPopup" text="Đấu giá mới" />
+                  <MenuItem mnemonicParsing="false" onAction="#openChoiceMenu" text="Đấu giá mới" />
                </items>
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
@@ -85,7 +85,7 @@
                         <Font name="Times New Roman" size="18.0" />
                      </font>
                   </Label>
-                  <Button layoutX="53.0" layoutY="259.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="171.0" style="-fx-background-color: #b85a1c; -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Tham gia đấu giá" textFill="WHITE">
+                  <Button layoutX="53.0" layoutY="259.0" mnemonicParsing="false" onAction="#joinBidding" prefHeight="44.0" prefWidth="171.0" style="-fx-background-color: #b85a1c; -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Tham gia đấu giá" textFill="WHITE">
                      <font>
                         <Font name="Segoe UI Black Italic" size="16.0" />
                      </font>

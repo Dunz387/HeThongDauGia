@@ -7,20 +7,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.SceneManager;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Pane;
+import view.utility.SceneManager;
+import view.utility.WindowManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -65,16 +63,7 @@ public class AssertsListController implements Initializable {
 
     @FXML
     private void openCreateItemPopup(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SellerUI/CreateItem.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Tạo phiên đấu giá mới");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        WindowManager.openCreateItemWindow();
     }
 
     @FXML

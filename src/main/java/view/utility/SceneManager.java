@@ -1,4 +1,4 @@
-package view;
+package view.utility;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -9,9 +9,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Quản lý việc chuyển đổi Scene (thay đổi giao diện nhưng giữ nguyên cửa sổ)
+ * Sử dụng cho việc chuyển màn hình chính (Login -> Register -> BaseMenu, v.v)
+ */
 public class SceneManager {
 
     /**
+     * Chuyển Scene dựa trên Stage
      * @param stage    Cửa sổ hiện tại
      * @param fxmlPath Đường dẫn tuyệt đối đến file FXML mới
      * @param title    Tiêu đề mới cho cửa sổ
@@ -31,12 +36,13 @@ public class SceneManager {
             stage.show();
 
         } catch (IOException e) {
-            System.err.println("Không thể tải màn hình từ đường dẫn: " + fxmlPath);
+            System.err.println("❌ Không thể tải màn hình từ đường dẫn: " + fxmlPath);
             e.printStackTrace();
         }
     }
 
     /**
+     * Chuyển Scene dựa trên ActionEvent
      * @param event    Sự kiện click để lấy ra cửa sổ hiện tại
      * @param fxmlPath Đường dẫn tuyệt đối đến file FXML mới
      * @param title    Tiêu đề mới cho cửa sổ
@@ -45,7 +51,37 @@ public class SceneManager {
         // Lấy Stage từ sự kiện của Nút bấm
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         
-        // Gọi lại Phương thức 1 ở trên để thực hiện việc chuyển cảnh
+        // Gọi lại phương thức trên để thực hiện việc chuyển cảnh
         switchScene(stage, fxmlPath, title);
+    }
+
+    // ===== PHƯƠNG THỨC TIỆN LỢI CHO CÁC MÀNG HÌNH CHÍNH =====
+    
+    /**
+     * Chuyển tới màn hình Login
+     */
+    public static void goToLogin(Stage stage) {
+        switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
+    }
+
+    /**
+     * Chuyển tới màn hình Register
+     */
+    public static void goToRegister(Stage stage) {
+        switchScene(stage, "/view/AuthenticationUI/RegisterView/Register.fxml", "Register");
+    }
+
+    /**
+     * Chuyển tới màn hình Base Menu (Trang chủ)
+     */
+    public static void goToBaseMenu(Stage stage) {
+        switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Trang Chủ");
+    }
+
+    /**
+     * Chuyển tới danh sách tài sản
+     */
+    public static void goToAssertsList(Stage stage) {
+        switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Danh Sách Tài Sản");
     }
 }

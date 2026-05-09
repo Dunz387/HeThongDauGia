@@ -7,10 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -20,10 +17,10 @@ import javafx.stage.Stage;
 import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.SceneManager;
+import view.utility.SceneManager;
+import view.utility.WindowManager;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class BaseMenuController implements Initializable {
@@ -88,16 +85,12 @@ public class BaseMenuController implements Initializable {
     }
 
     @FXML
-    private void openCreateItemPopup(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SellerUI/CreateItem.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Đăng bán sản phẩm");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void openProfile(ActionEvent event) {
+        WindowManager.openUserProfileWindow();
+    }
+
+    @FXML
+    private void joinBidding(ActionEvent event) {
+        WindowManager.openBidOrSellChoiceWindow();
     }
 }
