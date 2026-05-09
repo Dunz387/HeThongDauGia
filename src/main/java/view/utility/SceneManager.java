@@ -84,4 +84,15 @@ public class SceneManager {
     public static void goToAssertsList(Stage stage) {
         switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Danh Sách Tài Sản");
     }
+
+    /**
+     * Chuyển tới danh sách phòng đấu giá
+     */
+    public static void goToRoomMenu(Stage stage) {
+        switchScene(stage, "/view/AuctionRoomUI/RoomMenuChoice.fxml", "Danh Sách Phòng Đấu Giá");
+    }
+
+    public static void goToCreateItem(Stage stage) {
+        switchScene(stage, "/view/SellerUI/CreateItem.fxml", "Đăng bán sản phẩm");
+    }
 }

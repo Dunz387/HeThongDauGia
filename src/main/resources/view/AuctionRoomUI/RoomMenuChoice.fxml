@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="815.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionRoomUI.RoomMenuChoiceController">
+   <children>
+      <TableView fx:id="tableAuctions" layoutX="44.0" layoutY="89.0" prefHeight="350.0" prefWidth="726.0">
+         <columns>
+            <TableColumn fx:id="colId" prefWidth="120.0" text="Mã Phiên" />
+            <TableColumn fx:id="colName" prefWidth="256.0" text="Tên Sản Phẩm" />
+            <TableColumn fx:id="colPrice" prefWidth="150.0" text="Giá Hiện Tại ($)" />
+            <TableColumn fx:id="colStatus" prefWidth="198.0" text="Trạng Thái" />
+         </columns>
+      </TableView>
+      <Label alignment="CENTER" layoutX="212.0" layoutY="33.0" prefHeight="43.0" prefWidth="390.0" text="Chọn phòng để tham gia">
+         <font>
+            <Font name="Segoe UI Black" size="30.0" />
+         </font>
+      </Label>
+      <Button layoutX="44.0" layoutY="459.0" mnemonicParsing="false" onAction="#backToBaseMenu" prefHeight="26.0" prefWidth="110.0" text="Thoát" />
+   </children>
+</AnchorPane>

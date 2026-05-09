@@ -50,7 +50,9 @@ public class BaseMenuController implements Initializable {
             TableRow<Auction> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    WindowManager.openBidOrSellChoiceWindow();
+                    // Lấy Stage từ tableAuctions
+                    Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
+                    WindowManager.openBidOrSellChoiceWindow(currentStage);
                 }
             });
             return row;
@@ -78,12 +80,14 @@ public class BaseMenuController implements Initializable {
     @FXML
     private void joinBidding(ActionEvent event) {
         // Mở menu lựa chọn Đấu giá hay Bán khi người dùng bấm nút
-        WindowManager.openBidOrSellChoiceWindow();
+        Stage currentStage = (Stage) menuBar.getScene().getWindow();
+        WindowManager.openBidOrSellChoiceWindow(currentStage);
     }
 
     @FXML
     private void openChoiceMenu(ActionEvent event) {
-        WindowManager.openBidOrSellChoiceWindow();
+        Stage currentStage = (Stage) menuBar.getScene().getWindow();
+        WindowManager.openBidOrSellChoiceWindow(currentStage);
     }
 
     @FXML
