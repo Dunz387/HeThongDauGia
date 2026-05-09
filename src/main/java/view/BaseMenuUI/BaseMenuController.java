@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -38,27 +39,51 @@ public class BaseMenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1. Cấu hình cột
+        // Cấu hình hiển thị dữ liệu cho các cột trong bảng
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
         colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
         colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name()));
 
-        // 2. ĐĂNG KÝ CALLBACK LẮNG NGHE DANH SÁCH TỪ SERVER
+        // --- TÍNH NĂNG THÊM: NHẤP ĐÚP CHUỘT VÀO DÒNG ĐỂ MỞ MENU LỰA CHỌN ---
+        tableAuctions.setRowFactory(tv -> {
+            TableRow<Auction> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    WindowManager.openBidOrSellChoiceWindow();
+                }
+            });
+            return row;
+        });
+
+        // Lắng nghe dữ liệu danh sách đấu giá từ Server
         ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
                 ObservableList<Auction> observableList = FXCollections.observableArrayList(listFromServer);
                 Platform.runLater(() -> {
                     tableAuctions.setItems(observableList);
-                    System.out.println("✅ Đã load thành công " + observableList.size() + " món hàng lên Trang chủ!");
                 });
             }
         });
 
-        // 3. Gửi lệnh yêu cầu lấy danh sách (Gửi xong là đi làm việc khác, không cần chờ)
+        // Gửi yêu cầu lấy danh sách đấu giá mới nhất khi vừa vào trang
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
 
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
+    }
+
+    // --- CÁC HÀM XỬ LÝ SỰ KIỆN CLICK TỪ GIAO DIỆN (FXML) ---
+
+    // HÀM MỚI BỔ SUNG ĐỂ SỬA LỖI #joinBidding
+    @FXML
+    private void joinBidding(ActionEvent event) {
+        // Mở menu lựa chọn Đấu giá hay Bán khi người dùng bấm nút
+        WindowManager.openBidOrSellChoiceWindow();
+    }
+
+    @FXML
+    private void openChoiceMenu(ActionEvent event) {
+        WindowManager.openBidOrSellChoiceWindow();
     }
 
     @FXML
@@ -87,10 +112,5 @@ public class BaseMenuController implements Initializable {
     @FXML
     private void openProfile(ActionEvent event) {
         WindowManager.openUserProfileWindow();
-    }
-
-    @FXML
-    private void joinBidding(ActionEvent event) {
-        WindowManager.openBidOrSellChoiceWindow();
     }
 }
