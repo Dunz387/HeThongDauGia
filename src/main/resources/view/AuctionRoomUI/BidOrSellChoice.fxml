@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionRoom.">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionRoomUI.BidOrSellChoiceController">
    <children>
       <Button layoutX="14.0" layoutY="137.0" mnemonicParsing="false" onAction="#SellChoiceClicked" prefHeight="126.0" prefWidth="263.0" text="Bán">
          <font>
@@ -23,10 +23,6 @@
             <Font name="Segoe UI Black Italic" size="24.0" />
          </font>
       </Button>
-      <Button layoutX="221.0" layoutY="327.0" mnemonicParsing="false" onAction="#backToHome" prefHeight="26.0" prefWidth="158.0" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 20;" text="Quay lại">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
+      <Button layoutX="268.0" layoutY="300.0" mnemonicParsing="false" onAction="#backToMenu" text="Quay lại" />
    </children>
 </AnchorPane>
