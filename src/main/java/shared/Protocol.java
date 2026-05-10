@@ -45,4 +45,6 @@ public class Protocol {
     // Đây là các lệnh mà Server tự động gửi cho tất cả Client đang online
     public static final String BROADCAST_NEW_BID = "NEW_BID";
     public static final String BROADCAST_AUCTION_FINISHED = "AUCTION_FINISHED";
+    public static final String BROADCAST_AUCTION_START = "AUCTION_START";
+    public static final String BROADCAST_ROUND_FINISHED = "ROUND_FINISHED";
 }

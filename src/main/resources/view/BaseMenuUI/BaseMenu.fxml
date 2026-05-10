@@ -33,11 +33,15 @@
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>
             </MenuButton>
-            <Button mnemonicParsing="false" prefHeight="62.0" prefWidth="146.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Hướng dẫn" textFill="#b85a1cf5">
-               <font>
-                  <Font name="Segoe UI Black Italic" size="18.0" />
-               </font>
-            </Button>
+            <AnchorPane prefHeight="62.0" prefWidth="142.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="62.0" prefWidth="142.0" style="-fx-background-color: #d4cd3d;" text="Số dư: 100$" textFill="#b85a1c">
+                     <font>
+                        <Font name="Segoe UI Black Italic" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
             <Button mnemonicParsing="false" onAction="#notificationClicked" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textFill="#b85a1cf5">
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />

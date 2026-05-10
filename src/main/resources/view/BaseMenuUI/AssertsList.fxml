@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
@@ -29,11 +30,11 @@
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>
             </MenuButton>
-            <Button mnemonicParsing="false" prefHeight="62.0" prefWidth="146.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Hướng dẫn" textFill="#b85a1cf5">
+            <Label alignment="CENTER" prefHeight="62.0" prefWidth="142.0" style="-fx-background-color: #d4cd3d;" text="Số dư: 100$" textFill="#b85a1c">
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
                </font>
-            </Button>
+            </Label>
             <Button mnemonicParsing="false" onAction="#toggleNotificationMenu" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textFill="#b85a1cf5">
                <font>
                   <Font name="Segoe UI Black Italic" size="18.0" />
