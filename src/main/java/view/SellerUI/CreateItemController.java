@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.SceneManager;
 import javafx.scene.control.ChoiceBox;
 import javafx.fxml.Initializable;
 
@@ -53,7 +54,20 @@ public class CreateItemController implements Initializable {
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
                     showAlert("Thành công", "Đã đăng bán sản phẩm lên sàn!", Alert.AlertType.INFORMATION);
-                    closeWindow();
+                    
+                    // Lấy cửa sổ Popup hiện tại
+                    Stage popupStage = (Stage) txtItemName.getScene().getWindow();
+                    
+                    // Lấy cửa sổ chính (owner)
+                    Stage mainStage = (Stage) popupStage.getOwner();
+                    
+                    // Đóng cửa sổ popup
+                    popupStage.close();
+                    
+                    // Chuyển sang InRoomView nếu cửa sổ chính tồn tại
+                    if (mainStage != null) {
+                        SceneManager.goToInRoom(mainStage);
+                    }
                 } else {
                     showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định", Alert.AlertType.ERROR);
                 }
@@ -65,7 +79,9 @@ public class CreateItemController implements Initializable {
     }
 
     @FXML
-    private void cancelButtonClicked(ActionEvent event) { closeWindow(); }
+    private void cancelButtonClicked(ActionEvent event) { 
+        closeWindow(); 
+    }
 
     private void closeWindow() {
         Stage stage = (Stage) txtItemName.getScene().getWindow();

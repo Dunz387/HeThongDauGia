@@ -92,6 +92,13 @@ public class SceneManager {
         switchScene(stage, "/view/AuctionRoomUI/RoomMenuChoice.fxml", "Danh Sách Phòng Đấu Giá");
     }
 
+    /**
+     * Chuyển tới phòng đấu giá (InRoomView)
+     */
+    public static void goToInRoom(Stage stage) {
+        switchScene(stage, "/view/AuctionRoomUI/InRoomView.fxml", "Phòng Đấu Giá");
+    }
+
     public static void goToCreateItem(Stage stage) {
         switchScene(stage, "/view/SellerUI/CreateItem.fxml", "Đăng bán sản phẩm");
     }
