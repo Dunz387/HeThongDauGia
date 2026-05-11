@@ -10,9 +10,11 @@ public class BaseMenu extends Application {
     @Override
     public void start(Stage BaseMenuStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/view/BaseMenuUI/BaseMenu.fxml"));
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 1050, 680);
 
         BaseMenuStage.setTitle("Base Menu");
+        BaseMenuStage.setMinWidth(800);
+        BaseMenuStage.setMinHeight(500);
         BaseMenuStage.setScene(scene);
         BaseMenuStage.show();
 

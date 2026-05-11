@@ -26,7 +26,10 @@ public class SceneManager {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root);
+            // Giữ nguyên kích thước cửa sổ hiện tại khi chuyển scene
+            double width = stage.getScene() != null ? stage.getScene().getWidth() : 1050;
+            double height = stage.getScene() != null ? stage.getScene().getHeight() : 680;
+            Scene scene = new Scene(root, width, height);
             stage.setScene(scene);
 
             if (title != null && !title.trim().isEmpty()) {
