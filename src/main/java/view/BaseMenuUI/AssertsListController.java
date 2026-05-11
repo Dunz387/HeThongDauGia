@@ -41,20 +41,33 @@ public class AssertsListController implements Initializable {
                 new SimpleIntegerProperty(tableAsserts.getItems().indexOf(cellData.getValue()) + 1).asObject());
         colItemName.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getItem().getName()));
-        colType.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getItem().getClass().getSimpleName()));
+        colType.setCellValueFactory(cellData -> {
+            String type = cellData.getValue().getItem().getClass().getSimpleName();
+            String displayType = switch (type) {
+                case "Electronics" -> "🔌 Đồ điện";
+                case "Vehicle" -> "🚗 Xe cộ";
+                case "Arts" -> "🎨 Nghệ thuật";
+                default -> type;
+            };
+            return new SimpleStringProperty(displayType);
+        });
         colId.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getId()));
 
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
 
-        // LẮNG NGHE DANH SÁCH TỪ SERVER (Sẽ tự động chạy khi Server Broadcast)
+        // LẮNG NGHE DANH SÁCH TỪ SERVER (REAL-TIME - Sẽ tự động chạy khi Server Broadcast)
         ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
                 System.out.println("✅ UI: Đã nhận dữ liệu, đang tiến hành vẽ bảng tài sản...");
                 ObservableList<Auction> data = FXCollections.observableArrayList(listFromServer);
                 Platform.runLater(() -> tableAsserts.setItems(data));
             }
+        });
+
+        // Lắng nghe BROADCAST_NEW_BID để tự động cập nhật
+        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_NEW_BID, (message) -> {
+            ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
         });
 
         // GỬI YÊU CẦU LẤY DANH SÁCH (Chạy lần đầu khi mở màn hình)

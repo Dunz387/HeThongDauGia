@@ -43,7 +43,18 @@ public class BaseMenuController implements Initializable {
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
         colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
-        colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name()));
+        colStatus.setCellValueFactory(cellData -> {
+            String status = cellData.getValue().getStatus().name();
+            String displayStatus = switch (status) {
+                case "OPEN" -> "⏳ Chưa bắt đầu";
+                case "RUNNING" -> "🔥 Đang diễn ra";
+                case "FINISHED" -> "✅ Đã kết thúc";
+                case "PAID" -> "💰 Đã thanh toán";
+                case "CANCELED" -> "❌ Đã hủy";
+                default -> status;
+            };
+            return new SimpleStringProperty(displayStatus);
+        });
 
         // --- TÍNH NĂNG THÊM: NHẤP ĐÚP CHUỘT VÀO DÒNG ĐỂ MỞ MENU LỰA CHỌN ---
         tableAuctions.setRowFactory(tv -> {
@@ -58,7 +69,7 @@ public class BaseMenuController implements Initializable {
             return row;
         });
 
-        // Lắng nghe dữ liệu danh sách đấu giá từ Server
+        // Lắng nghe dữ liệu danh sách đấu giá từ Server (REAL-TIME)
         ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
                 ObservableList<Auction> observableList = FXCollections.observableArrayList(listFromServer);
@@ -66,6 +77,12 @@ public class BaseMenuController implements Initializable {
                     tableAuctions.setItems(observableList);
                 });
             }
+        });
+
+        // Lắng nghe lệnh BROADCAST_NEW_BID để cập nhật bảng real-time
+        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_NEW_BID, (message) -> {
+            // Khi có giá mới, tự động yêu cầu lấy danh sách đấu giá mới nhất
+            ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
         });
 
         // Gửi yêu cầu lấy danh sách đấu giá mới nhất khi vừa vào trang

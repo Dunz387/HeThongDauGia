@@ -2,6 +2,7 @@ package server;
 
 import model.auction.Auction;
 import model.auction.AuctionObserver;
+import model.user.User;
 import service.AuctionManager;
 import shared.Protocol;
 
@@ -71,6 +72,15 @@ public class AuctionServer implements AuctionObserver {
         List<Auction> list = manager.getAllAuctions();
         for (ClientHandler client : clients) {
             client.sendData(Protocol.RES_AUCTION_LIST);
+            client.sendData(list);
+        }
+    }
+
+    // THÊM MỚI: Hàm Broadcast gửi DANH SÁCH USER mới nhất cho tất cả Client (Real-time cho Admin)
+    public void broadcastUserList() {
+        List<User> list = manager.getAllUsers();
+        for (ClientHandler client : clients) {
+            client.sendData(Protocol.RES_USER_LIST);
             client.sendData(list);
         }
     }

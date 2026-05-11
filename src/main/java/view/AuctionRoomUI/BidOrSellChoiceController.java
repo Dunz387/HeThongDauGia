@@ -4,7 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import view.utility.SceneManager;
-import view.utility.WindowManager; // Thêm import này
+import view.utility.WindowManager;
 
 public class BidOrSellChoiceController {
     
@@ -15,7 +15,7 @@ public class BidOrSellChoiceController {
         
         popupStage.close(); // Đóng popup
         
-        // Đấu giá: Vẫn chuyển Scene trên cửa sổ chính sang Phòng đấu giá
+        // Đấu giá: Chuyển Scene trên cửa sổ chính sang danh sách phòng đấu giá
         if (mainStage != null) {
             SceneManager.goToRoomMenu(mainStage);
         }
@@ -28,6 +28,7 @@ public class BidOrSellChoiceController {
         
         popupStage.close();
         
+        // Bán: Mở popup tạo sản phẩm
         if (mainStage != null) {
             WindowManager.openCreateItemWindow(mainStage); 
         } else {

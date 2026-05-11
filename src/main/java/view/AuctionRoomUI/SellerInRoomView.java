@@ -11,8 +11,8 @@ import java.io.IOException;
 public class SellerInRoomView extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/AuctionRoomUI/SellerInRoomView.fxml"));
-        primaryStage.setTitle("In Room");
+        Parent root = FXMLLoader.load(getClass().getResource("/view/AuctionRoomUI/SellerInRoomView.fxml"));
+        primaryStage.setTitle("Phòng Đấu Giá - Người Bán");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

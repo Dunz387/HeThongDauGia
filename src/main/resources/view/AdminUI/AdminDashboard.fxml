@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1050.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AdminUI.AdminDashboardController">
+   <children>
+      <!-- ADMIN NAV BAR -->
+      <HBox fx:id="menuBar" prefHeight="56.0" alignment="CENTER_LEFT" styleClass="nav-bar" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+         <children>
+            <Label text="🛡️ ADMIN PANEL" style="-fx-text-fill: #d4cd3d; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 0 24 0 20;" />
+            <Button mnemonicParsing="false" prefHeight="56.0" styleClass="nav-btn-active" text="📊 Tổng quan" />
+            <Button mnemonicParsing="false" onAction="#goToUserManagement" prefHeight="56.0" styleClass="nav-btn" text="👥 Người dùng" />
+            <Button mnemonicParsing="false" onAction="#goToAuctionManagement" prefHeight="56.0" styleClass="nav-btn" text="🏷️ Đấu giá" />
+            <Region HBox.hgrow="ALWAYS" />
+            <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="56.0" text="🛡️ Admin">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#logoutClicked" text="🚪 Đăng xuất" />
+               </items>
+            </MenuButton>
+         </children>
+      </HBox>
+
+      <!-- MAIN CONTENT -->
+      <javafx.scene.control.ScrollPane hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent;" AnchorPane.topAnchor="56" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+         <content>
+            <VBox spacing="24" style="-fx-background-color: transparent;">
+               <padding><Insets top="30" right="40" bottom="30" left="40"/></padding>
+               <children>
+                  <!-- WELCOME HEADER -->
+                  <VBox spacing="4">
+                     <children>
+                        <Label text="📊 Tổng Quan Hệ Thống" styleClass="admin-title" />
+                        <Label text="Theo dõi hoạt động và quản lý hệ thống đấu giá" styleClass="admin-subtitle" />
+                     </children>
+                  </VBox>
+
+                  <!-- STAT CARDS ROW -->
+                  <HBox alignment="CENTER" spacing="20">
+                     <children>
+                        <!-- Card: Tổng người dùng -->
+                        <VBox alignment="CENTER" spacing="6" prefWidth="220.0" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                           <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
+                           <children>
+                              <Label text="👥" styleClass="stat-icon" />
+                              <Label fx:id="lblTotalUsers" text="0" styleClass="stat-value" />
+                              <Label text="Tổng người dùng" styleClass="stat-label" />
+                           </children>
+                        </VBox>
+                        <!-- Card: Tổng phiên đấu giá -->
+                        <VBox alignment="CENTER" spacing="6" prefWidth="220.0" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                           <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
+                           <children>
+                              <Label text="🏷️" styleClass="stat-icon" />
+                              <Label fx:id="lblTotalAuctions" text="0" styleClass="stat-value" />
+                              <Label text="Tổng phiên đấu giá" styleClass="stat-label" />
+                           </children>
+                        </VBox>
+                        <!-- Card: Phiên đang diễn ra -->
+                        <VBox alignment="CENTER" spacing="6" prefWidth="220.0" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                           <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
+                           <children>
+                              <Label text="🔥" styleClass="stat-icon" />
+                              <Label fx:id="lblRunningAuctions" text="0" styleClass="stat-value" />
+                              <Label text="Đang diễn ra" styleClass="stat-label" />
+                           </children>
+                        </VBox>
+                        <!-- Card: Phiên đã kết thúc -->
+                        <VBox alignment="CENTER" spacing="6" prefWidth="220.0" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                           <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
+                           <children>
+                              <Label text="✅" styleClass="stat-icon" />
+                              <Label fx:id="lblFinishedAuctions" text="0" styleClass="stat-value" />
+                              <Label text="Đã kết thúc" styleClass="stat-label" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <!-- RECENT AUCTIONS TABLE -->
+                  <VBox spacing="12" styleClass="admin-card">
+                     <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                           <children>
+                              <Label text="🏷️ Phiên đấu giá gần đây" style="-fx-text-fill: #1a1a1a; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Button mnemonicParsing="false" onAction="#goToAuctionManagement" styleClass="btn-outline-dark" text="Xem tất cả →" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableRecentAuctions" prefHeight="200.0">
+                           <columns>
+                              <TableColumn fx:id="colAucId" prefWidth="180.0" text="Mã Phiên" />
+                              <TableColumn fx:id="colAucName" prefWidth="260.0" text="Tên Sản Phẩm" />
+                              <TableColumn fx:id="colAucPrice" prefWidth="160.0" text="Giá Hiện Tại ($)" />
+                              <TableColumn fx:id="colAucStatus" prefWidth="160.0" text="Trạng Thái" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+
+                  <!-- RECENT USERS TABLE -->
+                  <VBox spacing="12" styleClass="admin-card">
+                     <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                           <children>
+                              <Label text="👥 Người dùng gần đây" style="-fx-text-fill: #1a1a1a; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Button mnemonicParsing="false" onAction="#goToUserManagement" styleClass="btn-outline-dark" text="Xem tất cả →" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableRecentUsers" prefHeight="200.0">
+                           <columns>
+                              <TableColumn fx:id="colUserId" prefWidth="180.0" text="Mã Người Dùng" />
+                              <TableColumn fx:id="colUserName" prefWidth="200.0" text="Tên Tài Khoản" />
+                              <TableColumn fx:id="colUserRole" prefWidth="140.0" text="Vai Trò" />
+                              <TableColumn fx:id="colUserStatus" prefWidth="140.0" text="Trạng Thái" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </content>
+      </javafx.scene.control.ScrollPane>
+   </children>
+</AnchorPane>

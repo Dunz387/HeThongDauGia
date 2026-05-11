@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1050.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AdminUI.AdminUserManagementController">
+   <children>
+      <!-- ADMIN NAV BAR -->
+      <HBox fx:id="menuBar" prefHeight="56.0" alignment="CENTER_LEFT" styleClass="nav-bar" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+         <children>
+            <Label text="🛡️ ADMIN PANEL" style="-fx-text-fill: #d4cd3d; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 0 24 0 20;" />
+            <Button mnemonicParsing="false" onAction="#goToDashboard" prefHeight="56.0" styleClass="nav-btn" text="📊 Tổng quan" />
+            <Button mnemonicParsing="false" prefHeight="56.0" styleClass="nav-btn-active" text="👥 Người dùng" />
+            <Button mnemonicParsing="false" onAction="#goToAuctionManagement" prefHeight="56.0" styleClass="nav-btn" text="🏷️ Đấu giá" />
+            <Region HBox.hgrow="ALWAYS" />
+            <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="56.0" text="🛡️ Admin">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#logoutClicked" text="🚪 Đăng xuất" />
+               </items>
+            </MenuButton>
+         </children>
+      </HBox>
+
+      <!-- HEADER -->
+      <VBox AnchorPane.topAnchor="70" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" spacing="6">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+               <children>
+                  <Label text="👥 Quản Lý Người Dùng" styleClass="admin-title" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#refreshData" styleClass="btn-accent" text="🔄 Làm mới" />
+               </children>
+            </HBox>
+            <Label text="Xem, khóa hoặc mở khóa tài khoản người dùng trong hệ thống" styleClass="admin-subtitle" />
+         </children>
+      </VBox>
+
+      <!-- TABLE CARD -->
+      <VBox AnchorPane.topAnchor="145" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="20" styleClass="admin-card">
+         <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+         <children>
+            <TableView fx:id="tableUsers" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colSTT" prefWidth="60.0" text="STT" />
+                  <TableColumn fx:id="colId" prefWidth="180.0" text="Mã Người Dùng" />
+                  <TableColumn fx:id="colUsername" prefWidth="180.0" text="Tên Tài Khoản" />
+                  <TableColumn fx:id="colRole" prefWidth="120.0" text="Vai Trò" />
+                  <TableColumn fx:id="colBalance" prefWidth="140.0" text="Số Dư ($)" />
+                  <TableColumn fx:id="colStatus" prefWidth="120.0" text="Trạng Thái" />
+                  <TableColumn fx:id="colAction" prefWidth="140.0" text="Hành Động" />
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

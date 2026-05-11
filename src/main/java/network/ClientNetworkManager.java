@@ -2,6 +2,7 @@ package network;
 
 import shared.Protocol;
 import model.auction.Auction;
+import model.user.User;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,6 +21,10 @@ public class ClientNetworkManager {
     // BẢN ĐỒ DANH BẠ: Lưu trữ các hàm Callback (Hành động sẽ thực hiện khi nhận được lệnh tương ứng)
     private Map<String, Consumer<String>> messageListeners = new ConcurrentHashMap<>();
     private Consumer<List<Auction>> auctionListListener = null;
+    private Consumer<List<User>> userListListener = null; // THÊM MỚI: Listener cho danh sách User
+
+    // THÊM MỚI: Header đang chờ để phân biệt loại List khi nhận từ Server
+    private volatile String pendingListHeader = null;
 
     private ClientNetworkManager() {}
 
@@ -64,6 +69,12 @@ public class ClientNetworkManager {
         this.auctionListListener = listener;
     }
 
+    // THÊM MỚI: ĐĂNG KÝ CALLBACK CHO LIST<USER> (Dành cho Admin quản lý)
+    public void setUserListListener(Consumer<List<User>> listener) {
+        this.userListListener = listener;
+    }
+
+    @SuppressWarnings("unchecked")
     private void startListeningThread() {
         Thread listenerThread = new Thread(() -> {
             try {
@@ -74,13 +85,30 @@ public class ClientNetworkManager {
                         String[] parts = message.split(Protocol.SEPARATOR);
                         String command = parts[0];
 
+                        // THÊM MỚI: Nếu là header báo hiệu danh sách sắp đến, lưu lại để phân loại
+                        if (command.equals(Protocol.RES_AUCTION_LIST) || command.equals(Protocol.RES_USER_LIST)) {
+                            pendingListHeader = command;
+                        }
+
                         // Tra cứu danh bạ, nếu có Controller nào đang chờ lệnh này thì gọi nó
                         if (messageListeners.containsKey(command)) {
                             messageListeners.get(command).accept(message);
                         }
                     } else if (serverData instanceof List) {
-                        if (auctionListListener != null) {
-                            auctionListListener.accept((List<Auction>) serverData);
+                        // THÊM MỚI: Phân loại List dựa trên header đã nhận trước đó
+                        String header = pendingListHeader;
+                        pendingListHeader = null; // Reset ngay sau khi dùng
+
+                        if (Protocol.RES_USER_LIST.equals(header)) {
+                            // Đây là danh sách User
+                            if (userListListener != null) {
+                                userListListener.accept((List<User>) serverData);
+                            }
+                        } else {
+                            // Mặc định: danh sách Auction (tương thích ngược)
+                            if (auctionListListener != null) {
+                                auctionListListener.accept((List<Auction>) serverData);
+                            }
                         }
                     }
                 }

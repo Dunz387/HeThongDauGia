@@ -7,74 +7,82 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane prefHeight="450.0" prefWidth="500.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SellerUI.CreateItemController">
-    <children>
-        <Label layoutX="98.0" layoutY="25.0" text="TẠO PHIÊN ĐẤU GIÁ MỚI" textFill="#ea7f33">
-            <font>
-                <Font name="Segoe UI Black" size="24.0" />
-            </font>
-        </Label>
-
-          <Button layoutX="70.0" layoutY="342.0" mnemonicParsing="false" onAction="#createItemButtonClicked" prefHeight="35.0" prefWidth="360.0" style="-fx-background-color: #ea7f33; -fx-background-radius: 10;" text="ĐĂNG BÁN" textFill="WHITE">
-              <font>
-                  <Font name="Segoe UI Bold" size="16.0" />
-              </font>
-          </Button>
-
-          <Button alignment="CENTER" layoutX="70.0" layoutY="391.0" mnemonicParsing="false" onAction="#cancelButtonClicked" prefHeight="35.0" prefWidth="360.0" style="-fx-background-color: transparent; -fx-border-color: #cccccc; -fx-border-radius: 10;" text="Hủy bỏ">
-         <font>
-            <Font name="Segoe UI" size="14.0" />
-         </font>
-      </Button>
-      <VBox layoutX="70.0" layoutY="60.0" prefHeight="270.0" prefWidth="360.0">
+<AnchorPane prefHeight="520.0" prefWidth="520.0" style="-fx-background-color: #ffffff;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SellerUI.CreateItemController">
+   <children>
+      <VBox alignment="TOP_CENTER" spacing="0" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+         <padding><Insets top="28" right="40" bottom="28" left="40"/></padding>
          <children>
-            <Label alignment="CENTER" prefHeight="30.0" prefWidth="158.0" text="Tên sản phẩm:">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtItemName" promptText="VD: Xe máy" />
-            <HBox prefHeight="59.0" prefWidth="360.0">
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
                <children>
-                  <VBox prefHeight="59.0" prefWidth="161.0">
+                  <Pane prefHeight="44.0" prefWidth="44.0" style="-fx-background-color: rgba(234,127,51,0.15); -fx-background-radius: 22;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="38.0" prefWidth="160.0" text="Loại sản phẩm:">
-                           <font>
-                              <Font name="Segoe UI Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <ChoiceBox fx:id="choiceType" prefHeight="35.0" prefWidth="182.0" />
+                        <Label text="🏷️" layoutX="10.0" layoutY="6.0" style="-fx-font-size: 20px;" />
                      </children>
-                  </VBox>
-                  <AnchorPane prefHeight="59.0" prefWidth="39.0" />
-                  <VBox prefHeight="59.0" prefWidth="162.0">
+                  </Pane>
+                  <VBox spacing="2">
                      <children>
-                        <Label alignment="CENTER" prefHeight="41.0" prefWidth="162.0" text="Giá khởi điểm:">
-                           <font>
-                              <Font name="Segoe UI Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtStartPrice" prefHeight="39.0" prefWidth="178.0" promptText="Đơn vị: VND" />
+                        <Label text="Tạo Phiên Đấu Giá" style="-fx-text-fill: #1a1a1a; -fx-font-size: 22px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                        <Label text="Đăng sản phẩm lên sàn đấu giá" style="-fx-text-fill: #888; -fx-font-size: 13px;" />
                      </children>
                   </VBox>
                </children>
+               <VBox.margin><Insets bottom="20"/></VBox.margin>
             </HBox>
-            <Label alignment="CENTER" prefHeight="38.0" prefWidth="158.0" text="Thời gian đấu giá:">
-               <font>
-                  <Font name="Segoe UI Bold" size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtDuration" prefHeight="30.0" prefWidth="360.0" promptText="Đơn vị: phút" />
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="367.0" text="Mô tả:">
-               <font>
-                  <Font name="Segoe UI Bold" size="14.0" />
-               </font>
-            </Label>
-            <TextArea prefHeight="62.0" prefWidth="360.0" />
+
+            <!-- Form -->
+            <VBox spacing="12" style="-fx-background-color: #faf9f0; -fx-background-radius: 14; -fx-padding: 22; -fx-border-color: #e8e8e0; -fx-border-radius: 14;">
+               <children>
+                  <VBox spacing="6">
+                     <children>
+                        <Label text="Tên sản phẩm" styleClass="label-field" />
+                        <TextField fx:id="txtItemName" promptText="VD: Xe máy Honda Wave" />
+                     </children>
+                  </VBox>
+                  <HBox spacing="16">
+                     <children>
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Loại sản phẩm" styleClass="label-field" />
+                              <ChoiceBox fx:id="choiceType" prefHeight="40.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Giá khởi điểm ($)" styleClass="label-field" />
+                              <TextField fx:id="txtStartPrice" promptText="VD: 5000" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <VBox spacing="6">
+                     <children>
+                        <Label text="Thời gian (phút)" styleClass="label-field" />
+                        <TextField fx:id="txtDuration" promptText="VD: 30" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="6">
+                     <children>
+                        <Label text="Mô tả sản phẩm" styleClass="label-field" />
+                        <TextArea prefHeight="65.0" promptText="Mô tả chi tiết..." />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+
+            <!-- Buttons -->
+            <VBox spacing="10">
+               <VBox.margin><Insets top="18"/></VBox.margin>
+               <children>
+                  <Button mnemonicParsing="false" onAction="#createItemButtonClicked" prefHeight="44.0" prefWidth="440.0" styleClass="btn-primary" text="🚀 ĐĂNG BÁN" />
+                  <Button mnemonicParsing="false" onAction="#cancelButtonClicked" prefHeight="38.0" prefWidth="440.0" styleClass="btn-secondary" text="Hủy bỏ" />
+               </children>
+            </VBox>
          </children>
       </VBox>
-    </children>
+   </children>
 </AnchorPane>

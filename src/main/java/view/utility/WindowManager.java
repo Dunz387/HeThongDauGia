@@ -50,4 +50,8 @@ public class WindowManager {
     public static void openCreateItemWindow() {
         openWindow("/view/SellerUI/CreateItem.fxml", "Tạo phiên đấu giá mới", null);
     }
+
+    public static void openSellerAuctionListWindow(Stage owner) {
+        openWindow("/view/SellerUI/SellerAuctionList.fxml", "Phiên đấu giá của bạn", owner);
+    }
 }

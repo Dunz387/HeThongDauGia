@@ -35,7 +35,13 @@ public class LoginController {
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
                     Stage stage = (Stage) txtUsername.getScene().getWindow();
-                    SceneManager.switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Trang Chủ");
+                    // THÊM MỚI: Phân luồng theo Role - Admin vào Dashboard, User vào BaseMenu
+                    String role = parts.length >= 3 ? parts[2] : "";
+                    if ("ADMIN".equals(role)) {
+                        SceneManager.goToAdminDashboard(stage);
+                    } else {
+                        SceneManager.switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Trang Chủ");
+                    }
                 } else {
                     showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Sai thông tin đăng nhập!");
                 }

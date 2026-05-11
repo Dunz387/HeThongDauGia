@@ -5,76 +5,86 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.AssertsListController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="950.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.AssertsListController">
    <children>
-      <HBox fx:id="menuBar" prefHeight="62.0" prefWidth="834.0">
+      <!-- NAV BAR -->
+      <HBox fx:id="menuBar" prefHeight="56.0" prefWidth="950.0" alignment="CENTER_LEFT" styleClass="nav-bar" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
          <children>
-            <Button mnemonicParsing="false" onAction="#backToBaseMenuButtonClicked" prefHeight="62.0" prefWidth="177.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Trang chủ" textFill="#b85a1cf5">
-               <font>
-                  <Font name="Segoe UI Black Italic" size="18.0" />
-               </font>
-            </Button>
-            <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="62.0" prefWidth="177.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài sản" textFill="#b85a1c">
+            <Label text="⚡ ĐẤU GIÁ" style="-fx-text-fill: #d4cd3d; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 0 24 0 20;" />
+            <Button mnemonicParsing="false" onAction="#backToBaseMenuButtonClicked" prefHeight="56.0" styleClass="nav-btn" text="Trang chủ" />
+            <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="56.0" text="Tài sản">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="Danh sách" />
+                  <MenuItem mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="Làm mới danh sách" />
                   <MenuItem mnemonicParsing="false" onAction="#joinNewBidding" text="Đấu giá mới" />
                </items>
-               <font>
-                  <Font name="Segoe UI Black Italic" size="18.0" />
-               </font>
             </MenuButton>
-            <Label alignment="CENTER" prefHeight="62.0" prefWidth="142.0" style="-fx-background-color: #d4cd3d;" text="Số dư: 100$" textFill="#b85a1c">
-               <font>
-                  <Font name="Segoe UI Black Italic" size="18.0" />
-               </font>
-            </Label>
-            <Button mnemonicParsing="false" onAction="#toggleNotificationMenu" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Thông báo" textFill="#b85a1cf5">
-               <font>
-                  <Font name="Segoe UI Black Italic" size="18.0" />
-               </font>
-            </Button>
-            <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="62.0" prefWidth="150.0" style="-fx-background-color: #d4cd3d; -fx-background-radius: 0;" text="Tài khoản" textFill="#b85a1c">
+            <Button mnemonicParsing="false" onAction="#toggleNotificationMenu" prefHeight="56.0" styleClass="nav-btn" text="🔔 Thông báo" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label text="💰 Số dư: $100,000" style="-fx-text-fill: #d4cd3d; -fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-padding: 0 16;" />
+            <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="56.0" text="👤 Tài khoản">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#backToLoiginButtonClicked" text="Đăng xuất" />
-                  <MenuItem mnemonicParsing="false" onAction="#backToRegisterButtonClicked" text="Đăng kí" />
+                  <MenuItem mnemonicParsing="false" onAction="#backToRegisterButtonClicked" text="Đăng ký tài khoản mới" />
                </items>
-               <font>
-                  <Font name="Segoe UI Black Italic" size="18.0" />
-               </font>
             </MenuButton>
          </children>
       </HBox>
-      <ScrollPane hbarPolicy="NEVER" layoutX="50.0" layoutY="80.0" prefHeight="400.0" prefWidth="735.0" vbarPolicy="AS_NEEDED">
-         <content>
-            <TableView fx:id="tableAsserts" prefHeight="398.0" prefWidth="733.0">
+
+      <!-- HEADER -->
+      <VBox AnchorPane.topAnchor="70" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" spacing="6">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+               <children>
+                  <Label text="📋 Danh Sách Tài Sản" style="-fx-text-fill: #1a1a1a; -fx-font-size: 26px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#joinNewBidding" styleClass="btn-accent" text="+ Đấu giá mới" />
+               </children>
+            </HBox>
+            <Label text="Quản lý và theo dõi tất cả tài sản trong hệ thống" style="-fx-text-fill: #888888; -fx-font-size: 14px; -fx-font-family: 'Segoe UI';" />
+         </children>
+      </VBox>
+
+      <!-- TABLE CARD -->
+      <VBox AnchorPane.topAnchor="145" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="20" style="-fx-background-color: #ffffff; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #e8e8e0; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);">
+         <children>
+            <TableView fx:id="tableAsserts" VBox.vgrow="ALWAYS" prefWidth="850.0">
                <columns>
-                  <TableColumn fx:id="colSTT" prefWidth="50.0" text="STT" />
-                  <TableColumn fx:id="colItemName" prefWidth="250.0" text="Tên sản phẩm" />
-                  <TableColumn fx:id="colType" prefWidth="150.0" text="Loại sản phẩm" />
-                  <TableColumn fx:id="colId" prefWidth="280.0" text="Mã sản phẩm" />
+                  <TableColumn fx:id="colSTT" prefWidth="70.0" text="STT" />
+                  <TableColumn fx:id="colItemName" prefWidth="280.0" text="Tên sản phẩm" />
+                  <TableColumn fx:id="colType" prefWidth="200.0" text="Loại sản phẩm" />
+                  <TableColumn fx:id="colId" prefWidth="300.0" text="Mã sản phẩm" />
                </columns>
             </TableView>
-         </content>
-      </ScrollPane>
+         </children>
+      </VBox>
 
-      <Pane fx:id="darkOverlay" prefHeight="512.0" prefWidth="835.0" style="-fx-background-color: black;" visible="false" />
-      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" layoutX="569.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="266.0" vbarPolicy="NEVER">
+      <Pane fx:id="darkOverlay" prefHeight="620.0" prefWidth="950.0" style="-fx-background-color: rgba(0,0,0,0.4);" visible="false" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+
+      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" vbarPolicy="NEVER" prefHeight="620.0" prefWidth="300.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0">
          <content>
-            <TableView prefHeight="510.0" prefWidth="264.0">
-               <columns>
-                  <TableColumn prefWidth="156.799" text="Thông báo" />
-                  <TableColumn prefWidth="108.8" text="Thời gian" />
-               </columns>
-            </TableView>
+            <VBox prefWidth="298.0" spacing="0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label text="🔔 Thông báo" style="-fx-text-fill: #1a1a1a; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 20 16;" />
+                  <Separator />
+                  <TableView prefHeight="550.0" prefWidth="298.0">
+                     <columns>
+                        <TableColumn prefWidth="180.0" text="Nội dung" />
+                        <TableColumn prefWidth="116.0" text="Thời gian" />
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
          </content>
       </ScrollPane>
-
    </children>
 </AnchorPane>

@@ -63,6 +63,10 @@ public class ClientHandler implements Runnable {
                         case Protocol.REQ_BAN_USER:
                             if (parts.length >= 3) handleBanUser(parts[1], parts[2]);
                             break;
+                        // THÊM MỚI: Xử lý xóa phiên đấu giá (Admin)
+                        case Protocol.REQ_DELETE_AUCTION:
+                            if (parts.length >= 2) handleDeleteAuction(parts[1]);
+                            break;
                     }
                 }
             }
@@ -174,11 +178,28 @@ public class ClientHandler implements Runnable {
             boolean isEnable = Boolean.parseBoolean(statusStr); // true = mở khóa, false = khóa
             if (manager.banUser(targetId, isEnable)) {
                 sendData(Protocol.REQ_BAN_USER + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                // THÊM MỚI: Broadcast danh sách User mới cho tất cả Admin (real-time)
+                server.broadcastUserList();
             } else {
                 sendData(Protocol.REQ_BAN_USER + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi cập nhật trạng thái!");
             }
         } else {
             sendData(Protocol.REQ_BAN_USER + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Admin mới được thực hiện!");
+        }
+    }
+
+    // THÊM MỚI: Xóa phiên đấu giá cưỡng chế (Admin)
+    private void handleDeleteAuction(String auctionId) {
+        if (loggedInUser instanceof Admin) {
+            if (manager.deleteAuctionForce(auctionId)) {
+                sendData(Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                // Broadcast danh sách đấu giá mới cho tất cả (real-time)
+                server.broadcastAuctionList();
+            } else {
+                sendData(Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy phiên đấu giá!");
+            }
+        } else {
+            sendData(Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Admin mới được thực hiện!");
         }
     }
 

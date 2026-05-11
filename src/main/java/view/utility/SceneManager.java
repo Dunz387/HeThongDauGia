@@ -102,4 +102,34 @@ public class SceneManager {
     public static void goToCreateItem(Stage stage) {
         switchScene(stage, "/view/SellerUI/CreateItem.fxml", "Đăng bán sản phẩm");
     }
+
+    /**
+     * Chuyển tới phòng đấu giá dành cho Seller (chỉ theo dõi)
+     */
+    public static void goToSellerInRoom(Stage stage) {
+        switchScene(stage, "/view/AuctionRoomUI/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
+    }
+
+    // ===== MÀN HÌNH QUẢN TRỊ (ADMIN) =====
+
+    /**
+     * Chuyển tới Admin Dashboard
+     */
+    public static void goToAdminDashboard(Stage stage) {
+        switchScene(stage, "/view/AdminUI/AdminDashboard.fxml", "Admin - Tổng Quan");
+    }
+
+    /**
+     * Chuyển tới màn hình Quản lý Người Dùng (Admin)
+     */
+    public static void goToAdminUserManagement(Stage stage) {
+        switchScene(stage, "/view/AdminUI/AdminUserManagement.fxml", "Admin - Quản Lý Người Dùng");
+    }
+
+    /**
+     * Chuyển tới màn hình Quản lý Phiên Đấu Giá (Admin)
+     */
+    public static void goToAdminAuctionManagement(Stage stage) {
+        switchScene(stage, "/view/AdminUI/AdminAuctionManagement.fxml", "Admin - Quản Lý Đấu Giá");
+    }
 }

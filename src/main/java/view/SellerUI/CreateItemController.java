@@ -64,9 +64,11 @@ public class CreateItemController implements Initializable {
                     // Đóng cửa sổ popup
                     popupStage.close();
                     
-                    // Chuyển sang InRoomView nếu cửa sổ chính tồn tại
+                    // Mở popup danh sách phòng đấu giá của Seller
                     if (mainStage != null) {
-                        SceneManager.goToInRoom(mainStage);
+                        view.utility.WindowManager.openSellerAuctionListWindow(mainStage);
+                    } else {
+                        view.utility.WindowManager.openSellerAuctionListWindow(null);
                     }
                 } else {
                     showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định", Alert.AlertType.ERROR);

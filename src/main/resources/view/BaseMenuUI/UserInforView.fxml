@@ -2,59 +2,82 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="549.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="420.0" style="-fx-background-color: #ffffff;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fitHeight="160.0" fitWidth="160.0" layoutX="117.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../AuctionRoomUI/smiling-face-with-sunglasses-emoji-clipart-lg.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="120.0" layoutY="197.0" prefHeight="42.0" prefWidth="154.0" text="USER NAME">
-         <font>
-            <Font name="Segoe UI Black" size="24.0" />
-         </font>
-      </Label>
-      <VBox layoutX="43.0" layoutY="265.0" prefHeight="116.0" prefWidth="307.0">
+      <VBox alignment="CENTER" spacing="14" AnchorPane.topAnchor="30" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
          <children>
-            <HBox prefHeight="36.0" prefWidth="307.0">
+            <!-- Avatar circle -->
+            <Pane prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: linear-gradient(to bottom right, #d4cd3d, #ea7f33); -fx-background-radius: 60;">
                <children>
-                  <Label prefHeight="47.0" prefWidth="121.0" text="Số dư tài khoản">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefHeight="50.0" prefWidth="218.0" text="1000$">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
+                  <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../AuctionRoomUI/smiling-face-with-sunglasses-emoji-clipart-lg.png" />
+                     </image>
+                  </ImageView>
                </children>
-            </HBox>
-            <HBox prefHeight="42.0" prefWidth="307.0">
+            </Pane>
+
+            <Label text="USER NAME" style="-fx-text-fill: #1a1a1a; -fx-font-size: 24px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+            <Label text="ID: 123456" style="-fx-text-fill: #999999; -fx-font-size: 13px; -fx-font-family: 'Segoe UI';" />
+
+            <Separator prefWidth="200.0" />
+
+            <!-- Info Card -->
+            <VBox spacing="12" prefWidth="340.0" style="-fx-background-color: #faf9f0; -fx-background-radius: 12; -fx-padding: 20; -fx-border-color: #e8e8e0; -fx-border-radius: 12;">
                <children>
-                  <Label alignment="CENTER" prefHeight="42.0" prefWidth="155.0" text="Số lượng tài sản hiện có">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefHeight="42.0" prefWidth="155.0" text="10">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
+                  <HBox alignment="CENTER_LEFT" spacing="10">
+                     <children>
+                        <Label text="💰" style="-fx-font-size: 20px;" />
+                        <VBox spacing="2">
+                           <children>
+                              <Label text="Số dư tài khoản" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
+                              <Label text="$100,000" style="-fx-text-fill: #ea7f33; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <Separator />
+
+                  <HBox alignment="CENTER_LEFT" spacing="10">
+                     <children>
+                        <Label text="📦" style="-fx-font-size: 20px;" />
+                        <VBox spacing="2">
+                           <children>
+                              <Label text="Tài sản hiện có" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
+                              <Label text="10 sản phẩm" style="-fx-text-fill: #1a1a1a; -fx-font-size: 18px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <Separator />
+
+                  <HBox alignment="CENTER_LEFT" spacing="10">
+                     <children>
+                        <Label text="🏆" style="-fx-font-size: 20px;" />
+                        <VBox spacing="2">
+                           <children>
+                              <Label text="Vai trò" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
+                              <Label text="BIDDER" style="-fx-text-fill: #d4cd3d; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
+
+            <Button mnemonicParsing="false" prefWidth="340.0" prefHeight="40.0" styleClass="btn-secondary" text="Đóng" />
          </children>
       </VBox>
-      <Label layoutX="156.0" layoutY="239.0" text="user id: 123456" />
-      <Button layoutX="42.0" layoutY="448.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="307.0" text="Quay lại" />
    </children>
 </AnchorPane>

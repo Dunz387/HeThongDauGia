@@ -27,6 +27,7 @@ public class Protocol {
     // Quản trị viên (Admin)
     public static final String REQ_GET_USERS = "GET_USERS";
     public static final String REQ_BAN_USER = "BAN_USER";
+    public static final String REQ_DELETE_AUCTION = "DELETE_AUCTION";
 
     // =================================================================
     // 3. NHÓM LỆNH SERVER TRẢ VỀ (RESPONSE 1-1)
