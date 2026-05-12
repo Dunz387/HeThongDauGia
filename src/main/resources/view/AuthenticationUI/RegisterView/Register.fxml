@@ -8,19 +8,18 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
 
-<StackPane stylesheets="@../../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuthenticationUI.RegisterView.RegisterController">
+<HBox stylesheets="@../../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuthenticationUI.RegisterView.RegisterController">
    <children>
-      <AnchorPane prefHeight="560.0" prefWidth="950.0" style="-fx-background-color: #ffffff;">
+      <!-- Left: Register Form (56% width) -->
+      <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: #ffffff; -fx-min-width: 400;">
          <children>
-            <!-- Left: Register Form -->
-            <VBox layoutX="75.0" layoutY="70.0" prefWidth="390.0" spacing="0" style="-fx-background-color: #ffffff; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);">
+            <VBox alignment="CENTER" maxWidth="390.0" spacing="0" StackPane.alignment="CENTER">
                <padding>
                   <Insets top="40" right="36" bottom="40" left="36"/>
                </padding>
@@ -46,7 +45,7 @@
                      <VBox.margin><Insets bottom="26"/></VBox.margin>
                   </PasswordField>
 
-                  <Button mnemonicParsing="false" onAction="#registerButtonClicked" prefHeight="44.0" prefWidth="318.0" styleClass="btn-primary" text="ĐĂNG KÝ">
+                  <Button mnemonicParsing="false" onAction="#registerButtonClicked" prefHeight="44.0" maxWidth="Infinity" styleClass="btn-primary" text="ĐĂNG KÝ">
                      <VBox.margin><Insets bottom="18"/></VBox.margin>
                   </Button>
 
@@ -58,20 +57,30 @@
                   </HBox>
                </children>
             </VBox>
+         </children>
+      </StackPane>
 
-            <!-- Right: Orange decorative panel -->
-            <Pane layoutX="530.0" layoutY="0.0" prefHeight="560.0" prefWidth="420.0" style="-fx-background-color: linear-gradient(to bottom, #ea7f33, #d46b20);">
+      <!-- Right: Orange decorative panel (44% width) -->
+      <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to bottom, #ea7f33, #d46b20); -fx-min-width: 300;">
+         <children>
+            <!-- Decorative circles -->
+            <Pane style="-fx-background-color: rgba(212,205,61,0.25); -fx-background-radius: 80; -fx-pref-width: 160; -fx-pref-height: 160;" StackPane.alignment="TOP_RIGHT">
+               <StackPane.margin><Insets top="-40" right="-20" /></StackPane.margin>
+            </Pane>
+            <Pane style="-fx-background-color: rgba(26,26,26,0.1); -fx-background-radius: 70; -fx-pref-width: 140; -fx-pref-height: 140;" StackPane.alignment="BOTTOM_LEFT">
+               <StackPane.margin><Insets bottom="20" left="-20" /></StackPane.margin>
+            </Pane>
+
+            <!-- Image + Branding -->
+            <VBox alignment="CENTER" spacing="20" StackPane.alignment="CENTER">
+               <padding><Insets top="40" right="30" bottom="40" left="30" /></padding>
                <children>
-                  <Pane layoutX="260.0" layoutY="-40.0" prefHeight="160.0" prefWidth="160.0" style="-fx-background-color: rgba(212,205,61,0.25); -fx-background-radius: 80;" />
-                  <Pane layoutX="-20.0" layoutY="380.0" prefHeight="140.0" prefWidth="140.0" style="-fx-background-color: rgba(26,26,26,0.1); -fx-background-radius: 70;" />
-
-                  <ImageView fitHeight="300.0" fitWidth="280.0" layoutX="70.0" layoutY="40.0" preserveRatio="true" opacity="0.9">
+                  <ImageView fitHeight="280.0" fitWidth="260.0" preserveRatio="true" opacity="0.9">
                      <image>
                         <Image url="@register.jpg" />
                      </image>
                   </ImageView>
-
-                  <VBox layoutX="50.0" layoutY="370.0" spacing="6">
+                  <VBox spacing="6">
                      <children>
                         <Label text="THAM GIA NGAY" style="-fx-text-fill: #ffffff; -fx-font-size: 22px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
                         <Label text="ĐẤU GIÁ TRỰC TUYẾN" style="-fx-text-fill: #1a1a1a; -fx-font-size: 24px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
@@ -80,8 +89,8 @@
                      </children>
                   </VBox>
                </children>
-            </Pane>
+            </VBox>
          </children>
-      </AnchorPane>
+      </StackPane>
    </children>
-</StackPane>
+</HBox>

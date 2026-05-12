@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1050.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AdminUI.AdminDashboardController">
+<AnchorPane prefHeight="680.0" prefWidth="1050.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AdminUI.AdminDashboardController">
    <children>
       <!-- ADMIN NAV BAR -->
       <HBox fx:id="menuBar" prefHeight="56.0" alignment="CENTER_LEFT" styleClass="nav-bar" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
