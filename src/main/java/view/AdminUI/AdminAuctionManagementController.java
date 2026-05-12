@@ -15,7 +15,9 @@ import javafx.stage.Stage;
 import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.AlertHelper;
 import view.utility.SceneManager;
+import view.utility.StatusDisplayHelper;
 
 import java.net.URL;
 import java.util.Optional;
@@ -41,18 +43,8 @@ public class AdminAuctionManagementController implements Initializable {
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
         colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
-        colStatus.setCellValueFactory(cellData -> {
-            String status = cellData.getValue().getStatus().name();
-            String displayStatus = switch (status) {
-                case "OPEN" -> "⏳ Chưa bắt đầu";
-                case "RUNNING" -> "🔥 Đang diễn ra";
-                case "FINISHED" -> "✅ Đã kết thúc";
-                case "PAID" -> "💰 Đã thanh toán";
-                case "CANCELED" -> "❌ Đã hủy";
-                default -> status;
-            };
-            return new SimpleStringProperty(displayStatus);
-        });
+        colStatus.setCellValueFactory(cellData ->
+                new SimpleStringProperty(StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
         colBidder.setCellValueFactory(cellData -> {
             var bidder = cellData.getValue().getHighestBidder();
             return new SimpleStringProperty(bidder != null ? bidder.getUsername() : "Chưa có");
@@ -67,13 +59,11 @@ public class AdminAuctionManagementController implements Initializable {
                 btnDelete.setOnAction(event -> {
                     Auction auction = getTableView().getItems().get(getIndex());
 
-                    // Xác nhận trước khi xóa
-                    Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-                    confirmAlert.setTitle("Xác nhận xóa");
-                    confirmAlert.setHeaderText("Bạn có chắc muốn xóa phiên đấu giá này?");
-                    confirmAlert.setContentText("Mã phiên: " + auction.getId() + "\nSản phẩm: " + auction.getItem().getName());
+                    // Xác nhận trước khi xóa (SRP: delegate sang AlertHelper)
+                    Optional<ButtonType> result = AlertHelper.showConfirmation("Xác nhận xóa",
+                            "Bạn có chắc muốn xóa phiên đấu giá này?\n" +
+                            "Mã phiên: " + auction.getId() + "\nSản phẩm: " + auction.getItem().getName());
 
-                    Optional<ButtonType> result = confirmAlert.showAndWait();
                     if (result.isPresent() && result.get() == ButtonType.OK) {
                         String request = Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + auction.getId();
 
@@ -82,11 +72,10 @@ public class AdminAuctionManagementController implements Initializable {
                             String[] parts = response.split(Protocol.SEPARATOR);
                             Platform.runLater(() -> {
                                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                                    showAlert("Thành công", "Đã xóa phiên đấu giá: " + auction.getId(), Alert.AlertType.INFORMATION);
+                                    AlertHelper.showInfo("Thành công", "Đã xóa phiên đấu giá: " + auction.getId());
                                 } else {
-                                    showAlert("Thất bại",
-                                            parts.length >= 3 ? parts[2] : "Lỗi không xác định",
-                                            Alert.AlertType.ERROR);
+                                    AlertHelper.showError("Thất bại",
+                                            parts.length >= 3 ? parts[2] : "Lỗi không xác định");
                                 }
                             });
                         });
@@ -145,13 +134,5 @@ public class AdminAuctionManagementController implements Initializable {
     @FXML
     private void refreshData(ActionEvent event) {
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
-    }
-
-    private void showAlert(String title, String content, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }

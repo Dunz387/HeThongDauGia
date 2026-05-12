@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.AlertHelper;
 import view.utility.SceneManager;
 
 import java.net.URL;
@@ -148,9 +149,8 @@ public class InRoomController implements Initializable {
                         stopAllTimers();
                         System.out.println("[Auction] Phiên đấu giá kết thúc!");
                         System.out.println("[Result] Người chiến thắng: " + finalWinner + " với giá: " + finalPrice);
-                        showAlert("Kết quả đấu giá",
-                                "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + finalPrice,
-                                Alert.AlertType.INFORMATION);
+                        AlertHelper.showInfo("Kết quả đấu giá",
+                                "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + finalPrice);
                     });
                 }
             }
@@ -163,9 +163,8 @@ public class InRoomController implements Initializable {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
                     System.out.println("✅ Đặt giá thành công!");
                 } else {
-                    showAlert("Đặt giá thất bại",
-                            parts.length >= 3 ? parts[2] : "Lỗi không xác định",
-                            Alert.AlertType.WARNING);
+                    AlertHelper.showWarning("Đặt giá thất bại",
+                            parts.length >= 3 ? parts[2] : "Lỗi không xác định");
                 }
             });
         });
@@ -316,7 +315,7 @@ public class InRoomController implements Initializable {
             bidAmountField.clear();
 
         } catch (NumberFormatException e) {
-            showAlert("Lỗi", "Vui lòng nhập số tiền hợp lệ!", Alert.AlertType.WARNING);
+            AlertHelper.showWarning("Lỗi", "Vui lòng nhập số tiền hợp lệ!");
         }
     }
 
@@ -325,13 +324,5 @@ public class InRoomController implements Initializable {
         stopAllTimers();
         Stage stage = (Stage) priceChart.getScene().getWindow();
         SceneManager.goToBaseMenu(stage);
-    }
-
-    private void showAlert(String title, String content, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }

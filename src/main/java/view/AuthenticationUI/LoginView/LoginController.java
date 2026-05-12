@@ -3,11 +3,11 @@ package view.AuthenticationUI.LoginView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.AlertHelper;
 import view.utility.SceneManager;
 
 public class LoginController {
@@ -22,7 +22,7 @@ public class LoginController {
         String password = txtPassword.getText();
 
         if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            showAlert("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!");
+            AlertHelper.showWarning("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!");
             return;
         }
 
@@ -35,7 +35,7 @@ public class LoginController {
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
                     Stage stage = (Stage) txtUsername.getScene().getWindow();
-                    // THÊM MỚI: Phân luồng theo Role - Admin vào Dashboard, User vào BaseMenu
+                    // Phân luồng theo Role - Admin vào Dashboard, User vào BaseMenu
                     String role = parts.length >= 3 ? parts[2] : "";
                     if ("ADMIN".equals(role)) {
                         SceneManager.goToAdminDashboard(stage);
@@ -43,7 +43,7 @@ public class LoginController {
                         SceneManager.switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Trang Chủ");
                     }
                 } else {
-                    showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Sai thông tin đăng nhập!");
+                    AlertHelper.showWarning("Thất bại", parts.length >= 3 ? parts[2] : "Sai thông tin đăng nhập!");
                 }
             });
         });
@@ -56,13 +56,5 @@ public class LoginController {
     private void registerLinkClicked(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         SceneManager.switchScene(stage, "/view/AuthenticationUI/RegisterView/Register.fxml", "Register");
-    }
-
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }

@@ -14,15 +14,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.auction.Auction;
-import model.user.Bidder;
-import model.user.Seller;
 import model.user.User;
 import network.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.SceneManager;
+import view.utility.StatusDisplayHelper;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdminDashboardController implements Initializable {
@@ -55,13 +53,16 @@ public class AdminDashboardController implements Initializable {
         colAucId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colAucName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
         colAucPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
-        colAucStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name()));
+        colAucStatus.setCellValueFactory(cellData ->
+                new SimpleStringProperty(StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
 
         // === CẤU HÌNH CỘT BẢNG NGƯỜI DÙNG ===
         colUserId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colUserName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        colUserRole.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRole().name()));
-        colUserStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isActive() ? "Hoạt động" : "Bị khóa"));
+        colUserRole.setCellValueFactory(cellData ->
+                new SimpleStringProperty(StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
+        colUserStatus.setCellValueFactory(cellData ->
+                new SimpleStringProperty(StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER (REAL-TIME) ===
         ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {

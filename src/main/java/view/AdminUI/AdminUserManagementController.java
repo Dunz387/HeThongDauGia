@@ -17,7 +17,9 @@ import model.user.Seller;
 import model.user.User;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.AlertHelper;
 import view.utility.SceneManager;
+import view.utility.StatusDisplayHelper;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -41,16 +43,8 @@ public class AdminUserManagementController implements Initializable {
                 new SimpleIntegerProperty(tableUsers.getItems().indexOf(cellData.getValue()) + 1).asObject());
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colUsername.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        colRole.setCellValueFactory(cellData -> {
-            String role = cellData.getValue().getRole().name();
-            String displayRole = switch (role) {
-                case "ADMIN" -> "Quản trị viên";
-                case "SELLER" -> "Người bán";
-                case "BIDDER" -> "Người mua";
-                default -> role;
-            };
-            return new SimpleStringProperty(displayRole);
-        });
+        colRole.setCellValueFactory(cellData ->
+                new SimpleStringProperty(StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
         colBalance.setCellValueFactory(cellData -> {
             User u = cellData.getValue();
             double balance = 0.0;
@@ -59,7 +53,7 @@ public class AdminUserManagementController implements Initializable {
             return new SimpleDoubleProperty(balance).asObject();
         });
         colStatus.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().isActive() ? "✅ Hoạt động" : "🚫 Bị khóa"));
+                new SimpleStringProperty(StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
 
         // === CỘT HÀNH ĐỘNG: NÚT KHÓA / MỞ KHÓA ===
         colAction.setCellFactory(col -> new TableCell<>() {
@@ -79,14 +73,12 @@ public class AdminUserManagementController implements Initializable {
                         String[] parts = response.split(Protocol.SEPARATOR);
                         Platform.runLater(() -> {
                             if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                                showAlert("Thành công",
+                                AlertHelper.showInfo("Thành công",
                                         currentlyActive ? "Đã khóa tài khoản: " + user.getUsername()
-                                                : "Đã mở khóa tài khoản: " + user.getUsername(),
-                                        Alert.AlertType.INFORMATION);
+                                                : "Đã mở khóa tài khoản: " + user.getUsername());
                             } else {
-                                showAlert("Thất bại",
-                                        parts.length >= 3 ? parts[2] : "Lỗi không xác định",
-                                        Alert.AlertType.ERROR);
+                                AlertHelper.showError("Thất bại",
+                                        parts.length >= 3 ? parts[2] : "Lỗi không xác định");
                             }
                         });
                     });
@@ -157,13 +149,5 @@ public class AdminUserManagementController implements Initializable {
     @FXML
     private void refreshData(ActionEvent event) {
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
-    }
-
-    private void showAlert(String title, String content, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }

@@ -3,11 +3,11 @@ package view.AuthenticationUI.RegisterView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.AlertHelper;
 import view.utility.SceneManager;
 
 public class RegisterController {
@@ -21,7 +21,7 @@ public class RegisterController {
         String password = txtPassword.getText();
 
         if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            showAlert("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!", Alert.AlertType.WARNING);
+            AlertHelper.showWarning("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!");
             return;
         }
 
@@ -33,13 +33,13 @@ public class RegisterController {
             String[] parts = response.split(Protocol.SEPARATOR);
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                    showAlert("Thành công", "Đăng ký thành công! Hãy tiến hành đăng nhập.", Alert.AlertType.INFORMATION);
+                    AlertHelper.showInfo("Thành công", "Đăng ký thành công! Hãy tiến hành đăng nhập.");
 
                     // Đăng ký xong thì tự động quay về màn hình Login
                     Stage stage = (Stage) txtUsername.getScene().getWindow();
                     SceneManager.switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
                 } else {
-                    showAlert("Thất bại", parts.length >= 3 ? parts[2] : "Tài khoản đã tồn tại!", Alert.AlertType.ERROR);
+                    AlertHelper.showError("Thất bại", parts.length >= 3 ? parts[2] : "Tài khoản đã tồn tại!");
                 }
             });
         });
@@ -53,13 +53,5 @@ public class RegisterController {
     private void backToLoginLinkClicked(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         SceneManager.switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
-    }
-
-    private void showAlert(String title, String content, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }

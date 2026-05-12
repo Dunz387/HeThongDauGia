@@ -10,9 +10,11 @@ public class Login extends Application {
     @Override
     public void start(Stage LoginStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/view/AuthenticationUI/LoginView/Login.fxml"));
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 950, 560);
 
         LoginStage.setTitle("Login");
+        LoginStage.setMinWidth(700);
+        LoginStage.setMinHeight(450);
         LoginStage.setScene(scene);
         LoginStage.show();
 

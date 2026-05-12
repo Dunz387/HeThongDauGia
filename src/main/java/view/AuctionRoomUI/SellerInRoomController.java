@@ -10,13 +10,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.AlertHelper;
 import view.utility.SceneManager;
 
 import java.net.URL;
@@ -123,9 +123,8 @@ public class SellerInRoomController implements Initializable {
 
                 if (auctionId.equals(this.currentAuctionId)) {
                     Platform.runLater(() -> {
-                        showAlert("Phiên đấu giá kết thúc!",
-                                "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + finalPrice + " $",
-                                Alert.AlertType.INFORMATION);
+                        AlertHelper.showInfo("Phiên đấu giá kết thúc!",
+                                "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + finalPrice + " $");
                     });
                 }
             }
@@ -147,13 +146,5 @@ public class SellerInRoomController implements Initializable {
     private void exitRoom(ActionEvent event) {
         Stage stage = (Stage) priceChart.getScene().getWindow();
         SceneManager.goToBaseMenu(stage);
-    }
-
-    private void showAlert(String title, String content, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }
