@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="680.0" prefWidth="1050.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.BaseMenuController">
    <children>
@@ -161,7 +162,10 @@
       <!-- ========== TOP NAVIGATION BAR ========== -->
       <HBox fx:id="menuBar" alignment="CENTER_LEFT" prefHeight="60.0" styleClass="nav-bar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label style="-fx-text-fill: #d4cd3d; -fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 0 20 0 20; -fx-effect: dropshadow(gaussian, rgba(212,205,61,0.3), 6, 0, 0, 0);" text="⚡ ĐẤU GIÁ" />
+            <Label style="-fx-text-fill: #d4cd3d; -fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 0 20 0 20; -fx-effect: dropshadow(gaussian, rgba(212,205,61,0.3), 6, 0, 0, 0);" text="⚡ ĐẤU GIÁ">
+               <font>
+                  <Font name="Segoe UI" size="12.0" />
+               </font></Label>
             <Separator orientation="VERTICAL" prefHeight="30.0" />
             <Button mnemonicParsing="false" prefHeight="60.0" styleClass="nav-btn-active" text="🏠 Trang Chủ" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="📦 Tài Sản">
