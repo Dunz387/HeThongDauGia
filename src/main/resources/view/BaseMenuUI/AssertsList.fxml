@@ -13,44 +13,43 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.geometry.Insets?>
 
-<AnchorPane prefHeight="680.0" prefWidth="1050.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.AssertsListController">
+<AnchorPane prefHeight="680.0" prefWidth="1050.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BaseMenuUI.AssertsListController">
    <children>
 
       <!-- ========== MAIN CONTENT AREA ========== -->
-      <VBox AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" spacing="0" style="-fx-background-color: #f5f5f0;">
+      <VBox spacing="0" style="-fx-background-color: #f5f5f0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
 
          <!-- ===== PAGE HEADER BANNER ===== -->
          <HBox alignment="CENTER_LEFT" spacing="0" style="-fx-background-color: #1a1a1a; -fx-padding: 28 40;">
             <children>
                <VBox spacing="4" HBox.hgrow="ALWAYS">
                   <children>
-                     <Label text="📋 Danh Sách Tài Sản" style="-fx-text-fill: #ffffff; -fx-font-size: 24px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
-                     <Label text="Quản lý và theo dõi tất cả tài sản trong hệ thống đấu giá" style="-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 13px; -fx-font-family: 'Segoe UI';" />
+                     <Label style="-fx-text-fill: #ffffff; -fx-font-size: 24px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" text="📋 Danh Sách Tài Sản" />
+                     <Label style="-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 13px; -fx-font-family: 'Segoe UI';" text="Quản lý và theo dõi tất cả tài sản trong hệ thống đấu giá" />
                   </children>
                </VBox>
-               <Button mnemonicParsing="false" onAction="#joinNewBidding" text="+ Đấu Giá Mới" style="-fx-background-color: linear-gradient(to right, #ea7f33, #d46b20); -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-background-radius: 25; -fx-padding: 10 28; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.4), 10, 0, 0, 3);" />
+               <Button mnemonicParsing="false" onAction="#joinNewBidding" style="-fx-background-color: linear-gradient(to right, #ea7f33, #d46b20); -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-background-radius: 25; -fx-padding: 10 28; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.4), 10, 0, 0, 3);" text="+ Đấu Giá Mới" />
             </children>
          </HBox>
 
          <!-- ===== STAT CHIPS BAR ===== -->
          <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-background-color: #ffffff; -fx-padding: 14 40; -fx-border-color: #e8e8e0; -fx-border-width: 0 0 1 0;">
             <children>
-               <Label text="🏷️ Tất cả sản phẩm" style="-fx-text-fill: #ea7f33; -fx-font-size: 13px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 4 14; -fx-background-color: rgba(234,127,51,0.1); -fx-background-radius: 16;" />
+               <Label style="-fx-text-fill: #ea7f33; -fx-font-size: 13px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 4 14; -fx-background-color: rgba(234,127,51,0.1); -fx-background-radius: 16;" text="🏷️ Tất cả sản phẩm" />
                <Separator orientation="VERTICAL" prefHeight="20.0" />
-               <Label text="🔌 Đồ điện" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
-               <Label text="🚗 Xe cộ" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
-               <Label text="🎨 Nghệ thuật" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
+               <Label style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" text="🔌 Đồ điện" />
+               <Label style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" text="🚗 Xe cộ" />
+               <Label style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" text="🎨 Nghệ thuật" />
                <Region HBox.hgrow="ALWAYS" />
-               <Button mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="🔄 Làm Mới" style="-fx-background-color: transparent; -fx-text-fill: #666666; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: #d0d0d0; -fx-border-radius: 16; -fx-background-radius: 16; -fx-padding: 4 14; -fx-cursor: hand;" />
+               <Button mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" style="-fx-background-color: transparent; -fx-text-fill: #666666; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: #d0d0d0; -fx-border-radius: 16; -fx-background-radius: 16; -fx-padding: 4 14; -fx-cursor: hand;" text="🔄 Làm Mới" />
             </children>
          </HBox>
 
          <!-- ===== TABLE CARD ===== -->
-         <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 20 40;">
+         <VBox style="-fx-padding: 20 40;" VBox.vgrow="ALWAYS">
             <children>
-               <VBox VBox.vgrow="ALWAYS" style="-fx-background-color: #ffffff; -fx-background-radius: 14; -fx-padding: 0; -fx-border-color: #e8e8e0; -fx-border-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);">
+               <VBox style="-fx-background-color: #ffffff; -fx-background-radius: 14; -fx-padding: 0; -fx-border-color: #e8e8e0; -fx-border-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
                   <children>
                      <TableView fx:id="tableAsserts" VBox.vgrow="ALWAYS">
                         <columnResizePolicy>
@@ -68,26 +67,19 @@
             </children>
          </VBox>
 
-         <!-- ===== FOOTER ===== -->
-         <HBox alignment="CENTER" style="-fx-background-color: #1a1a1a; -fx-padding: 14 30;">
-            <children>
-               <Label text="© 2026 Hệ Thống Đấu Giá — Nhóm 6 • Lập Trình Nâng Cao" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px; -fx-font-family: 'Segoe UI';" />
-            </children>
-         </HBox>
-
       </VBox>
 
       <!-- ========== DARK OVERLAY ========== -->
-      <Pane fx:id="darkOverlay" style="-fx-background-color: rgba(0,0,0,0.5);" visible="false" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Pane fx:id="darkOverlay" style="-fx-background-color: rgba(0,0,0,0.5);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 
       <!-- ========== NOTIFICATION SIDE PANEL ========== -->
-      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" fitToWidth="true" prefWidth="300.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <ScrollPane fx:id="notificationMenu" fitToWidth="true" hbarPolicy="NEVER" prefHeight="620.0" prefWidth="300.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <content>
             <VBox spacing="0" style="-fx-background-color: #ffffff;">
                <children>
                   <HBox alignment="CENTER_LEFT" style="-fx-background-color: #1a1a1a; -fx-padding: 16 14;">
                      <children>
-                        <Label text="🔔 Thông Báo" style="-fx-text-fill: #d4cd3d; -fx-font-size: 16px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                        <Label style="-fx-text-fill: #d4cd3d; -fx-font-size: 16px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" text="🔔 Thông Báo" />
                      </children>
                   </HBox>
                   <Separator />
@@ -103,9 +95,9 @@
       </ScrollPane>
 
       <!-- ========== TOP NAVIGATION BAR ========== -->
-      <HBox fx:id="menuBar" prefHeight="60.0" alignment="CENTER_LEFT" styleClass="nav-bar" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <HBox fx:id="menuBar" alignment="CENTER_LEFT" prefHeight="60.0" styleClass="nav-bar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label text="⚡ ĐẤU GIÁ" style="-fx-text-fill: #d4cd3d; -fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 0 20 0 20; -fx-effect: dropshadow(gaussian, rgba(212,205,61,0.3), 6, 0, 0, 0);" />
+            <Label style="-fx-text-fill: #d4cd3d; -fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-padding: 0 20 0 20; -fx-effect: dropshadow(gaussian, rgba(212,205,61,0.3), 6, 0, 0, 0);" text="⚡ ĐẤU GIÁ" />
             <Separator orientation="VERTICAL" prefHeight="30.0" />
             <Button mnemonicParsing="false" onAction="#backToBaseMenuButtonClicked" prefHeight="60.0" styleClass="nav-btn" text="🏠 Trang Chủ" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="📦 Tài Sản">
@@ -116,7 +108,7 @@
             </MenuButton>
             <Button mnemonicParsing="false" onAction="#toggleNotificationMenu" prefHeight="60.0" styleClass="nav-btn" text="🔔 Thông Báo" />
             <Region HBox.hgrow="ALWAYS" />
-            <Label text="💰 Số dư: $100,000" style="-fx-text-fill: #d4cd3d; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-padding: 6 12; -fx-background-color: rgba(212,205,61,0.1); -fx-background-radius: 20;" />
+            <Label style="-fx-text-fill: #d4cd3d; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-padding: 6 12; -fx-background-color: rgba(212,205,61,0.1); -fx-background-radius: 20;" text="💰 Số dư: $100,000" />
             <Region prefWidth="6.0" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="👤 Tài Khoản">
                <items>
