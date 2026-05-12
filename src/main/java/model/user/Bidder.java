@@ -3,7 +3,7 @@ package model.user;
 public class Bidder extends User {
 
     private double balance;
-    private double lockedBalance = 0.0; // THÊM MỚI: Tiền đang bị giam ở các phiên đấu giá
+    private double lockedBalance = 0.0; // Tiền đang bị giam ở các phiên đấu giá
 
     public Bidder(String id, String username, String password, double initialBalance) {
         super(id, username, password, Role.BIDDER);
@@ -14,12 +14,12 @@ public class Bidder extends User {
         return balance;
     }
 
-    // THÊM MỚI: Tính toán số tiền thực sự có thể dùng
+    // Tính toán số tiền thực sự có thể dùng
     public double getAvailableBalance() {
         return balance - lockedBalance;
     }
 
-    // THÊM MỚI: Khóa tiền khi đặt giá thành công
+    // Khóa tiền khi đặt giá thành công
     public synchronized boolean lockBalance(double amount) {
         if (amount > 0 && getAvailableBalance() >= amount) {
             this.lockedBalance += amount;
@@ -28,7 +28,7 @@ public class Bidder extends User {
         return false;
     }
 
-    // THÊM MỚI: Hoàn tiền đang giam khi bị người khác vượt giá
+    // Hoàn tiền đang giam khi bị người khác vượt giá
     public synchronized void unlockBalance(double amount) {
         if (amount > 0 && this.lockedBalance >= amount) {
             this.lockedBalance -= amount;
@@ -41,7 +41,7 @@ public class Bidder extends User {
         }
     }
 
-    // CẬP NHẬT: Khi thanh toán thực sự, trừ cả số dư gốc và số dư bị giam
+    // Khi thanh toán thực sự, trừ cả số dư gốc và số dư bị giam
     public synchronized boolean deductBalance(double amount) {
         if (amount > 0 && this.balance >= amount && this.lockedBalance >= amount) {
             this.balance -= amount;
