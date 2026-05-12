@@ -43,15 +43,39 @@ public class Auction extends Entity implements AuctionSubject {
         this.observers = new ArrayList<>();
     }
 
-    public Item getItem() { return item; }
-    public double getCurrentPrice() { return currentPrice; }
-    public Bidder getHighestBidder() { return highestBidder; }
-    public LocalDateTime getEndTime() { return endTime; }
-    public AuctionStatus getStatus() { return status; }
-    public void setStatus(AuctionStatus status) { this.status = status; }
+    public Item getItem() {
+        return item;
+    }
+
+    public double getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public Bidder getHighestBidder() {
+        return highestBidder;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public AuctionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AuctionStatus status) {
+        this.status = status;
+    }
+
+    public List<BidTransaction> getBidHistory() {
+        if (bidHistory == null)
+            bidHistory = new ArrayList<>();
+        return bidHistory;
+    }
 
     public void placeBid(Bidder bidder, double bidAmount) throws InvalidBidException, AuctionClosedException {
-        if (lock == null) lock = new ReentrantLock();
+        if (lock == null)
+            lock = new ReentrantLock();
         lock.lock();
         try {
             if (this.status != AuctionStatus.RUNNING) {
@@ -67,7 +91,8 @@ public class Auction extends Entity implements AuctionSubject {
             double previousBidAmount = this.currentPrice;
 
             if (!bidder.lockBalance(bidAmount)) {
-                throw new InvalidBidException("Không đủ số dư khả dụng (Tiền của bạn có thể đang bị giam ở phòng khác).");
+                throw new InvalidBidException(
+                        "Không đủ số dư khả dụng (Tiền của bạn có thể đang bị giam ở phòng khác).");
             }
 
             if (previousBidder != null) {
@@ -77,8 +102,10 @@ public class Auction extends Entity implements AuctionSubject {
             this.currentPrice = bidAmount;
             this.highestBidder = bidder;
 
-            BidTransaction transaction = new BidTransaction("TX-" + System.currentTimeMillis(), this, bidder, bidAmount, java.time.LocalDateTime.now());
-            if (bidHistory == null) bidHistory = new ArrayList<>();
+            BidTransaction transaction = new BidTransaction("TX-" + System.currentTimeMillis(), this, bidder, bidAmount,
+                    java.time.LocalDateTime.now());
+            if (bidHistory == null)
+                bidHistory = new ArrayList<>();
             bidHistory.add(transaction);
 
             // Báo cho Server biết có người vừa đặt giá!
