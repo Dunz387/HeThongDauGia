@@ -115,16 +115,17 @@
             <Button mnemonicParsing="false" onAction="#backToBaseMenuButtonClicked" prefHeight="60.0" styleClass="nav-btn" text="🏠 Trang Chủ" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="📦 Tài Sản">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="Làm mới danh sách" />
-                  <MenuItem mnemonicParsing="false" onAction="#joinNewBidding" text="Đấu giá mới" />
+                  <MenuItem mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="Danh sách tài sản" />
+                  <MenuItem mnemonicParsing="false" onAction="#openChoiceMenu" text="Đấu giá mới" />
                </items>
             </MenuButton>
-            <Button mnemonicParsing="false" onAction="#toggleNotificationMenu" prefHeight="60.0" styleClass="nav-btn" text="🔔 Thông Báo" />
+            <Button mnemonicParsing="false" onAction="#notificationClicked" prefHeight="60.0" styleClass="nav-btn" text="🔔 Thông Báo" />
             <Region HBox.hgrow="ALWAYS" />
             <Label text="💰 Số dư: $100,000" style="-fx-text-fill: #d4cd3d; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-padding: 6 12; -fx-background-color: rgba(212,205,61,0.1); -fx-background-radius: 20;" />
             <Region prefWidth="6.0" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="👤 Tài Khoản">
                <items>
+                  <MenuItem mnemonicParsing="false" onAction="#openProfile" text="Thông tin cá nhân" />
                   <MenuItem mnemonicParsing="false" onAction="#backToLoiginButtonClicked" text="Đăng xuất" />
                   <MenuItem mnemonicParsing="false" onAction="#backToRegisterButtonClicked" text="Đăng ký tài khoản mới" />
                </items>

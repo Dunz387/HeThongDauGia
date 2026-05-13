@@ -50,14 +50,19 @@ public class AssertsListController implements Initializable {
     }
 
     @FXML
-    private void joinNewBidding(ActionEvent event) {
+    private void openChoiceMenu(ActionEvent event) {
         Stage currentStage = (Stage) menuBar.getScene().getWindow();
         WindowManager.openBidOrSellChoiceWindow(currentStage);
     }
 
     @FXML
-    private void toggleNotificationMenu(ActionEvent event) {
+    private void notificationClicked(ActionEvent event) {
         notificationMenuHandler.toggleMenu();
+    }
+
+    @FXML
+    private void openProfile(ActionEvent event) {
+        WindowManager.openUserProfileWindow();
     }
 
     @FXML
