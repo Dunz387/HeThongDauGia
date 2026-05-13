@@ -23,6 +23,7 @@ public class ClientNetworkManager {
     private Map<String, List<Consumer<String>>> messageListeners = new ConcurrentHashMap<>();
     private List<Consumer<List<Auction>>> auctionListListeners = new CopyOnWriteArrayList<>();
     private List<Consumer<List<User>>> userListListeners = new CopyOnWriteArrayList<>();
+    private List<Consumer<Double>> balanceListeners = new CopyOnWriteArrayList<>();
 
     // Header đang chờ để phân biệt loại List khi nhận từ Server
     private volatile String pendingListHeader = null;
@@ -128,6 +129,14 @@ public class ClientNetworkManager {
         userListListeners.add(listener);
     }
 
+    public void addBalanceListener(Consumer<Double> listener) {
+        balanceListeners.add(listener);
+    }
+
+    public void removeBalanceListener(Consumer<Double> listener) {
+        balanceListeners.remove(listener);
+    }
+
     @SuppressWarnings("unchecked")
     private void startListeningThread() {
         Thread listenerThread = new Thread(() -> {
@@ -153,6 +162,15 @@ public class ClientNetworkManager {
                                 } catch (Exception e) {
                                     System.err.println("❌ Lỗi trong listener [" + command + "]: " + e.getMessage()); // T12
                                 }
+                            }
+                        }
+
+                        // T11: Xử lý riêng lệnh cập nhật số dư
+                        if (command.equals(Protocol.RES_UPDATE_BALANCE) && parts.length >= 2) {
+                            double newBalance = Double.parseDouble(parts[1]);
+                            SessionManager.getInstance().updateBalance(newBalance);
+                            for (Consumer<Double> listener : balanceListeners) {
+                                listener.accept(newBalance);
                             }
                         }
                     } else if (serverData instanceof List) {

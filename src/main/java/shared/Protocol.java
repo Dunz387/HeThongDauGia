@@ -39,6 +39,7 @@ public class Protocol {
     // Phản hồi gửi kèm dữ liệu
     public static final String RES_AUCTION_LIST = "AUCTION_LIST";
     public static final String RES_USER_LIST = "USER_LIST";
+    public static final String RES_UPDATE_BALANCE = "UPDATE_BALANCE";
 
     // =================================================================
     // 4. NHÓM LỆNH SERVER TỰ ĐỘNG BẮN XUỐNG (BROADCAST / OBSERVER)

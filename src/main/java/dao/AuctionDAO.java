@@ -47,7 +47,7 @@ public class AuctionDAO {
     }
 
     public static boolean updateAuction(Auction auction) {
-        String sql = "UPDATE auctions SET current_price = ?, starting_price = ?, status = ?, highest_bidder_id = ?, item_name = ?, item_description = ?, item_type = ? WHERE id = ?";
+        String sql = "UPDATE auctions SET current_price = ?, starting_price = ?, status = ?, highest_bidder_id = ?, item_name = ?, item_description = ?, item_type = ?, end_time = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, auction.getCurrentPrice());
             pstmt.setDouble(2, auction.getStartingPrice());
@@ -61,7 +61,8 @@ public class AuctionDAO {
             else if (auction.getItem() instanceof model.item.Vehicle) type = "VEHICLE";
             pstmt.setString(7, type);
             
-            pstmt.setString(8, auction.getId());
+            pstmt.setString(8, auction.getEndTime().toString());
+            pstmt.setString(9, auction.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("❌ Lỗi cập nhật auction: " + e.getMessage());

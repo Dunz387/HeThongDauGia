@@ -22,6 +22,10 @@ public class SceneManager {
      * @param title    Tiêu đề mới cho cửa sổ
      */
     public static void switchScene(Stage stage, String fxmlPath, String title) {
+        if (stage == null) {
+            System.err.println("⚠️ Cảnh báo: Stage bị null khi cố gắng chuyển sang " + fxmlPath);
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
@@ -52,6 +56,10 @@ public class SceneManager {
      * @return Controller của Scene vừa load, hoặc null nếu lỗi
      */
     public static <T> T switchSceneAndGetController(Stage stage, String fxmlPath, String title) {
+        if (stage == null) {
+            System.err.println("⚠️ Cảnh báo: Stage bị null khi cố gắng chuyển sang " + fxmlPath);
+            return null;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();

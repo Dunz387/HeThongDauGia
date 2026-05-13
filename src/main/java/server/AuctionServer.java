@@ -2,6 +2,8 @@ package server;
 
 import model.auction.Auction;
 import model.auction.AuctionObserver;
+import model.user.Bidder;
+import model.user.Seller;
 import model.user.User;
 import service.AuctionManager;
 import shared.Protocol;
@@ -48,6 +50,16 @@ public class AuctionServer implements AuctionObserver {
 
             // Cập nhật danh sách cho tất cả Client
             broadcastAuctionList();
+
+            // T11: Cập nhật số dư cho Người thắng và Người bán
+            Bidder winner = finishedAuction.getHighestBidder();
+            if (winner != null) {
+                sendBalanceUpdateToUser(winner.getId(), winner.getBalance());
+            }
+            Seller seller = (Seller) finishedAuction.getItem().getOwner();
+            if (seller != null) {
+                sendBalanceUpdateToUser(seller.getId(), seller.getBalance());
+            }
         });
 
         // T10: Đăng ký callback để broadcast ROUND_FINISHED
@@ -108,6 +120,14 @@ public class AuctionServer implements AuctionObserver {
         for (ClientHandler client : clients) {
             client.sendData(Protocol.RES_USER_LIST);
             client.sendData(list);
+        }
+    }
+
+    public void sendBalanceUpdateToUser(String userId, double balance) {
+        for (ClientHandler client : clients) {
+            if (client.getLoggedInUser() != null && client.getLoggedInUser().getId().equals(userId)) {
+                client.sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + balance);
+            }
         }
     }
 

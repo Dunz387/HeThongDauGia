@@ -68,7 +68,7 @@
                   <VBox spacing="6">
                      <children>
                         <Label text="Mô tả sản phẩm" styleClass="label-field" />
-                        <TextArea prefHeight="65.0" promptText="Mô tả chi tiết..." />
+                        <TextArea fx:id="txtDescription" prefHeight="65.0" promptText="Mô tả chi tiết..." />
                      </children>
                   </VBox>
                </children>

@@ -27,25 +27,29 @@ public class LoginController {
             return;
         }
 
+        // T7: Lấy Stage ngay tại đây từ sự kiện để tránh lỗi Null sau này trong callback
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
         // 1. Chuẩn bị yêu cầu
         String request = Protocol.REQ_LOGIN + Protocol.DELIMITER + username.trim() + Protocol.DELIMITER + password.trim();
 
-        // 2. ĐĂNG KÝ CALLBACK: "Khi nào Server trả lời lệnh LOGIN, hãy chạy đoạn code này trên UI"
+        // 2. ĐĂNG KÝ CALLBACK
+        // T7: Xóa các listener cũ để tránh việc callback chạy nhiều lần (Memory leak & Bug)
+        ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_LOGIN);
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_LOGIN, (response) -> {
             String[] parts = response.split(Protocol.SEPARATOR);
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                    // Parse thông tin user từ response: LOGIN;;;SUCCESS;;;ROLE;;;userId;;;username;;;balance
+                    // Parse thông tin user từ response
                     String role = parts.length >= 3 ? parts[2] : "";
                     String userId = parts.length >= 4 ? parts[3] : "";
                     String userName = parts.length >= 5 ? parts[4] : "";
                     double balance = parts.length >= 6 ? Double.parseDouble(parts[5]) : 0.0;
 
-                    // Lưu thông tin phiên đăng nhập vào SessionManager
+                    // Lưu thông tin phiên đăng nhập
                     SessionManager.getInstance().setSession(userId, userName, role, balance);
 
-                    Stage stage = (Stage) txtUsername.getScene().getWindow();
-                    // Phân luồng theo Role - Admin vào Dashboard, User vào BaseMenu
+                    // Phân luồng theo Role
                     if ("ADMIN".equals(role)) {
                         SceneManager.goToAdminDashboard(stage);
                     } else {
@@ -57,7 +61,7 @@ public class LoginController {
             });
         });
 
-        // 3. Gửi đi và xong việc (Không còn Thread.sleep bắt UI phải chờ nữa)
+        // 3. Gửi đi
         ClientNetworkManager.getInstance().sendData(request);
     }
 

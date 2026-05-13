@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BaseMenuController implements Initializable {
+    @FXML private javafx.scene.control.Label txtBalance;
     @FXML private Pane darkOverlay;
     @FXML private ScrollPane notificationMenu;
     private NotificationMenuHandler notificationMenuHandler;
@@ -31,6 +32,7 @@ public class BaseMenuController implements Initializable {
     @FXML private TableView<Auction> tableAuctions;
     @FXML private TableColumn<Auction, String> colId;
     @FXML private TableColumn<Auction, String> colName;
+    @FXML private TableColumn<Auction, String> colDescription;
     @FXML private TableColumn<Auction, String> colType;
     @FXML private TableColumn<Auction, Double> colPrice;
     @FXML private TableColumn<Auction, Integer> colBidCount;
@@ -41,8 +43,14 @@ public class BaseMenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Cấu hình 9 cột bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
-        AuctionTableConfigurator.configure(colId, colName, colType, colPrice,
+        // Cập nhật số dư từ Session
+        if (txtBalance != null) {
+            double balance = network.SessionManager.getInstance().getBalance();
+            txtBalance.setText(String.format("💰 Số dư: $%,.0f", balance));
+        }
+
+        // Cấu hình 10 cột bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
+        AuctionTableConfigurator.configure(colId, colName, colDescription, colType, colPrice,
                 colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
 
         // Nhấp đúp chuột vào dòng để mở phòng đấu giá dựa trên Role
@@ -71,8 +79,15 @@ public class BaseMenuController implements Initializable {
             return row;
         });
 
-        // Đăng ký lắng nghe danh sách đấu giá từ Server (SRP: delegate sang AuctionNetworkHelper)
-        AuctionNetworkHelper.registerAuctionListListener(tableAuctions);
+        // Đăng ký lắng nghe danh sách đấu giá từ Server
+        view.utility.AuctionNetworkHelper.registerAuctionListListener(tableAuctions);
+
+        // Đăng ký lắng nghe số dư realtime
+        network.ClientNetworkManager.getInstance().addBalanceListener(newBalance -> {
+            javafx.application.Platform.runLater(() -> {
+                txtBalance.setText(String.format("💰 Số dư: $%,.0f", newBalance));
+            });
+        });
 
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
     }

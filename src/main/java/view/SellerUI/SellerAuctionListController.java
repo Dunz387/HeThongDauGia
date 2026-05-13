@@ -30,6 +30,7 @@ public class SellerAuctionListController implements Initializable {
     @FXML private TableView<Auction> tableMyAuction;
     @FXML private TableColumn<Auction, String> colId;
     @FXML private TableColumn<Auction, String> colName;
+    @FXML private TableColumn<Auction, String> colDescription;
     @FXML private TableColumn<Auction, String> colType;
     @FXML private TableColumn<Auction, Double> colPrice;
     @FXML private TableColumn<Auction, Integer> colBidCount;
@@ -44,7 +45,7 @@ public class SellerAuctionListController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // === CẤU HÌNH CỘT BẢNG ===
-        AuctionTableConfigurator.configure(colId, colName, colType, colPrice,
+        AuctionTableConfigurator.configure(colId, colName, colDescription, colType, colPrice,
                 colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER ===

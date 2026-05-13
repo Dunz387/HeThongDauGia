@@ -37,20 +37,23 @@ public class RegisterController implements Initializable {
             return;
         }
 
+        // T7: Lấy Stage ngay tại đây từ sự kiện để tránh lỗi Null trong callback
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
         String role = cbRole.getValue() != null && cbRole.getValue().contains("Seller") ? "SELLER" : "BIDDER";
 
         // 1. Chuẩn bị yêu cầu đăng ký
         String request = Protocol.REQ_REGISTER + Protocol.DELIMITER + username.trim() + Protocol.DELIMITER + password.trim() + Protocol.DELIMITER + role;
 
-        // 2. ĐĂNG KÝ CALLBACK: "Khi nào Server trả lời lệnh REGISTER, hãy chạy đoạn code này trên UI"
+        // 2. ĐĂNG KÝ CALLBACK
+        // T7: Xóa các listener cũ để tránh lỗi callback chồng chéo
+        ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_REGISTER);
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_REGISTER, (response) -> {
             String[] parts = response.split(Protocol.SEPARATOR);
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
                     AlertHelper.showInfo("Thành công", "Đăng ký thành công! Hãy tiến hành đăng nhập.");
-
-                    // Đăng ký xong thì tự động quay về màn hình Login
-                    Stage stage = (Stage) txtUsername.getScene().getWindow();
+                    // Quay về màn hình Login bằng Stage đã bắt được
                     SceneManager.switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
                 } else {
                     AlertHelper.showError("Thất bại", parts.length >= 3 ? parts[2] : "Tài khoản đã tồn tại!");
@@ -58,7 +61,7 @@ public class RegisterController implements Initializable {
             });
         });
 
-        // 3. Gửi lệnh đi và kết thúc hàm (Không còn Thread.sleep bắt UI phải chờ nữa)
+        // 3. Gửi lệnh đi
         ClientNetworkManager.getInstance().sendData(request);
     }
 

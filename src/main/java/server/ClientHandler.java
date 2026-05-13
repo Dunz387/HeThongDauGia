@@ -28,6 +28,10 @@ public class ClientHandler implements Runnable {
         this.manager = manager;
     }
 
+    public User getLoggedInUser() {
+        return loggedInUser;
+    }
+
     @Override
     public void run() {
         try {
@@ -53,10 +57,10 @@ public class ClientHandler implements Runnable {
                             handleGetAuctions();
                             break;
                         case Protocol.REQ_CREATE_ITEM:
-                            if (parts.length >= 5) handleCreateItem(parts[1], parts[2], parts[3], parts[4]);
+                            if (parts.length >= 6) handleCreateItem(parts[1], parts[2], parts[3], parts[4], parts[5]);
                             break;
                         case Protocol.REQ_UPDATE_ITEM:
-                            if (parts.length >= 6) handleUpdateItem(parts[1], parts[2], parts[3], parts[4], parts[5]);
+                            if (parts.length >= 7) handleUpdateItem(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
                             break;
                         case Protocol.REQ_DELETE_ITEM:
                             if (parts.length >= 2) handleDeleteItem(parts[1]);
@@ -116,7 +120,7 @@ public class ClientHandler implements Runnable {
         sendData(list);
     }
 
-    private void handleCreateItem(String name, String priceStr, String durStr, String itemType) {
+    private void handleCreateItem(String name, String priceStr, String durStr, String itemType, String itemDesc) {
         if (!(loggedInUser instanceof Seller)) {
             sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người bán mới được tạo phiên đấu giá!");
             return;
@@ -126,12 +130,13 @@ public class ClientHandler implements Runnable {
             double price = Double.parseDouble(priceStr);
             int dur = Integer.parseInt(durStr);
             Seller owner = (Seller) loggedInUser;
+            String desc = (itemDesc != null) ? itemDesc : "Mô tả sản phẩm";
 
             model.item.Item item = model.item.ItemFactory.createItem(
                     itemType,
                     "IT-" + System.currentTimeMillis(),
                     name,
-                    "Mô tả sản phẩm",
+                    desc,
                     owner,
                     "Thông tin thêm",
                     0
@@ -162,11 +167,12 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleUpdateItem(String auctionId, String newName, String newDesc, String newType, String newPriceStr) {
+    private void handleUpdateItem(String auctionId, String newName, String newDesc, String newType, String newPriceStr, String newDurStr) {
         try {
             if (loggedInUser instanceof Admin) {
                 double newPrice = Double.parseDouble(newPriceStr);
-                if (manager.updateAuctionForce(auctionId, newName, newDesc, newType, newPrice)) {
+                int newDur = Integer.parseInt(newDurStr);
+                if (manager.updateAuctionForce(auctionId, newName, newDesc, newType, newPrice, newDur)) {
                     sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
                     server.broadcastAuctionList();
                 } else {

@@ -19,6 +19,7 @@ public class CreateItemController implements Initializable {
     @FXML private TextField txtItemName;
     @FXML private TextField txtStartPrice;
     @FXML private TextField txtDuration;
+    @FXML private javafx.scene.control.TextArea txtDescription;
     @FXML private ChoiceBox<String> choiceType;
 
     @Override
@@ -39,22 +40,34 @@ public class CreateItemController implements Initializable {
             return;
         }
 
+        // T7: Lấy Stage ngay tại đây để dùng an toàn trong callback
+        Stage currentStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
         String itemTypeCode = switch (itemTypeDisplay) {
             case "Xe cộ" -> "VEHICLE";
             case "Nghệ thuật" -> "ART";
             default -> "ELECTRONICS";
         };
 
-        String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + itemName + Protocol.DELIMITER + startPrice + Protocol.DELIMITER + duration + Protocol.DELIMITER + itemTypeCode;
+        String description = txtDescription.getText().trim();
+        if (description.isEmpty()) description = "Chưa có mô tả";
 
+        String request = Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + 
+                         itemName + Protocol.DELIMITER + 
+                         startPrice + Protocol.DELIMITER + 
+                         duration + Protocol.DELIMITER + 
+                         itemTypeCode + Protocol.DELIMITER + 
+                         description.replace("\n", " ");
+
+        // T7: Clear listener cũ trước khi đăng ký mới
+        ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_CREATE_ITEM);
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_CREATE_ITEM, (response) -> {
             String[] parts = response.split(Protocol.SEPARATOR);
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
                     AlertHelper.showInfo("Thành công", "Đã đăng bán sản phẩm lên sàn!");
-                    Stage popupStage = (Stage) txtItemName.getScene().getWindow();
-                    Stage mainStage = (Stage) popupStage.getOwner();
-                    popupStage.close();
+                    Stage mainStage = (Stage) currentStage.getOwner();
+                    currentStage.close();
                     view.utility.WindowManager.openSellerAuctionListWindow(mainStage != null ? mainStage : null);
                 } else {
                     AlertHelper.showError("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định");

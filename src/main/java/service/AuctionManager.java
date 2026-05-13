@@ -92,7 +92,7 @@ public class AuctionManager {
         }
     }
 
-    public boolean updateAuctionForce(String auctionId, String newName, String newDesc, String newType, double newPrice) {
+    public boolean updateAuctionForce(String auctionId, String newName, String newDesc, String newType, double newPrice, int newDur) {
         synchronized (auctions) {
             Auction a = getAuctionById(auctionId);
             if (a != null) {
@@ -107,8 +107,6 @@ public class AuctionManager {
                 
                 if (!currentType.equalsIgnoreCase(newType)) {
                     model.item.Item newItem = model.item.ItemFactory.createItem(newType, a.getItem().getId(), newName, newDesc, a.getItem().getOwner(), "Unknown", 0);
-                    // Dùng reflection hoặc gán lại item trong Auction nếu item không final.
-                    // Trong code hiện tại Item item không final.
                     try {
                         java.lang.reflect.Field itemField = Auction.class.getDeclaredField("item");
                         itemField.setAccessible(true);
@@ -123,6 +121,9 @@ public class AuctionManager {
                 if (a.getBidHistory().isEmpty()) {
                     a.setCurrentPrice(newPrice);
                 }
+
+                // Cập nhật thời gian kết thúc
+                a.setEndTime(java.time.LocalDateTime.now().plusMinutes(newDur));
                 
                 return AuctionDAO.updateAuction(a);
             }

@@ -24,6 +24,7 @@ public class AuctionTableConfigurator {
     public static void configure(
             TableColumn<Auction, String> colId,
             TableColumn<Auction, String> colName,
+            TableColumn<Auction, String> colDescription,
             TableColumn<Auction, String> colType,
             TableColumn<Auction, Double> colPrice,
             TableColumn<Auction, Integer> colBidCount,
@@ -37,6 +38,9 @@ public class AuctionTableConfigurator {
 
         colName.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getItem().getName()));
+
+        colDescription.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getItem().getDescription()));
 
         colType.setCellValueFactory(cellData ->
                 new SimpleStringProperty(
