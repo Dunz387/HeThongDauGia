@@ -10,26 +10,34 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class ClientNetworkManager {
-    private static ClientNetworkManager instance;
+    private static volatile ClientNetworkManager instance; // T18: volatile cho thread-safe
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    // BẢN ĐỒ DANH BẠ: Lưu trữ các hàm Callback (Hành động sẽ thực hiện khi nhận được lệnh tương ứng)
-    private Map<String, Consumer<String>> messageListeners = new ConcurrentHashMap<>();
-    private Consumer<List<Auction>> auctionListListener = null;
-    private Consumer<List<User>> userListListener = null; // THÊM MỚI: Listener cho danh sách User
+    // T7: Chuyển từ single listener sang DANH SÁCH listeners để nhiều Controller cùng nhận broadcast
+    private Map<String, List<Consumer<String>>> messageListeners = new ConcurrentHashMap<>();
+    private List<Consumer<List<Auction>>> auctionListListeners = new CopyOnWriteArrayList<>();
+    private List<Consumer<List<User>>> userListListeners = new CopyOnWriteArrayList<>();
 
-    // THÊM MỚI: Header đang chờ để phân biệt loại List khi nhận từ Server
+    // Header đang chờ để phân biệt loại List khi nhận từ Server
     private volatile String pendingListHeader = null;
 
     private ClientNetworkManager() {}
 
+    // T18: Thread-safe Singleton với double-checked locking
     public static ClientNetworkManager getInstance() {
-        if (instance == null) instance = new ClientNetworkManager();
+        if (instance == null) {
+            synchronized (ClientNetworkManager.class) {
+                if (instance == null) {
+                    instance = new ClientNetworkManager();
+                }
+            }
+        }
         return instance;
     }
 
@@ -44,6 +52,7 @@ public class ClientNetworkManager {
             System.out.println("✅ Đã kết nối thành công tới Server!");
             return true;
         } catch (Exception e) {
+            System.err.println("❌ Lỗi kết nối tới Server: " + e.getMessage()); // T12: log error
             return false;
         }
     }
@@ -55,23 +64,68 @@ public class ClientNetworkManager {
                 out.flush();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("❌ Lỗi gửi dữ liệu: " + e.getMessage()); // T12: log error
         }
     }
 
-    // ĐĂNG KÝ CALLBACK CHO STRING
+    // T7: ĐĂNG KÝ CALLBACK CHO STRING — Hỗ trợ NHIỀU listener cho cùng 1 command
     public void registerListener(String command, Consumer<String> listener) {
-        messageListeners.put(command, listener);
+        messageListeners.computeIfAbsent(command, k -> new CopyOnWriteArrayList<>()).add(listener);
     }
 
-    // ĐĂNG KÝ CALLBACK CHO LIST OBJECT (Dành cho danh sách đấu giá)
+    /**
+     * Hủy đăng ký listener cho một command cụ thể.
+     * Quan trọng khi Controller bị dispose để tránh memory leak.
+     */
+    public void removeListener(String command, Consumer<String> listener) {
+        List<Consumer<String>> listeners = messageListeners.get(command);
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
+    }
+
+    /**
+     * Xóa TẤT CẢ listener cho một command. Dùng khi cần reset hoàn toàn.
+     */
+    public void clearListeners(String command) {
+        messageListeners.remove(command);
+    }
+
+    // T7: ĐĂNG KÝ CALLBACK CHO LIST OBJECT — Hỗ trợ NHIỀU listener
+    public void addAuctionListListener(Consumer<List<Auction>> listener) {
+        auctionListListeners.add(listener);
+    }
+
+    public void removeAuctionListListener(Consumer<List<Auction>> listener) {
+        auctionListListeners.remove(listener);
+    }
+
+    /**
+     * @deprecated Dùng {@link #addAuctionListListener(Consumer)} thay thế.
+     * Phương thức này giữ lại để tương thích ngược, nhưng sẽ XÓA hết listener cũ trước khi thêm mới.
+     */
+    @Deprecated
     public void setAuctionListListener(Consumer<List<Auction>> listener) {
-        this.auctionListListener = listener;
+        auctionListListeners.clear();
+        auctionListListeners.add(listener);
     }
 
-    // THÊM MỚI: ĐĂNG KÝ CALLBACK CHO LIST<USER> (Dành cho Admin quản lý)
+    // T7: ĐĂNG KÝ CALLBACK CHO LIST<USER> — Hỗ trợ NHIỀU listener
+    public void addUserListListener(Consumer<List<User>> listener) {
+        userListListeners.add(listener);
+    }
+
+    public void removeUserListListener(Consumer<List<User>> listener) {
+        userListListeners.remove(listener);
+    }
+
+    /**
+     * @deprecated Dùng {@link #addUserListListener(Consumer)} thay thế.
+     */
+    @Deprecated
     public void setUserListListener(Consumer<List<User>> listener) {
-        this.userListListener = listener;
+        userListListeners.clear();
+        userListListeners.add(listener);
     }
 
     @SuppressWarnings("unchecked")
@@ -85,35 +139,52 @@ public class ClientNetworkManager {
                         String[] parts = message.split(Protocol.SEPARATOR);
                         String command = parts[0];
 
-                        // THÊM MỚI: Nếu là header báo hiệu danh sách sắp đến, lưu lại để phân loại
+                        // Nếu là header báo hiệu danh sách sắp đến, lưu lại để phân loại
                         if (command.equals(Protocol.RES_AUCTION_LIST) || command.equals(Protocol.RES_USER_LIST)) {
                             pendingListHeader = command;
                         }
 
-                        // Tra cứu danh bạ, nếu có Controller nào đang chờ lệnh này thì gọi nó
-                        if (messageListeners.containsKey(command)) {
-                            messageListeners.get(command).accept(message);
+                        // T7: Gọi TẤT CẢ listener đã đăng ký cho command này
+                        List<Consumer<String>> listeners = messageListeners.get(command);
+                        if (listeners != null) {
+                            for (Consumer<String> listener : listeners) {
+                                try {
+                                    listener.accept(message);
+                                } catch (Exception e) {
+                                    System.err.println("❌ Lỗi trong listener [" + command + "]: " + e.getMessage()); // T12
+                                }
+                            }
                         }
                     } else if (serverData instanceof List) {
-                        // THÊM MỚI: Phân loại List dựa trên header đã nhận trước đó
+                        // Phân loại List dựa trên header đã nhận trước đó
                         String header = pendingListHeader;
                         pendingListHeader = null; // Reset ngay sau khi dùng
 
                         if (Protocol.RES_USER_LIST.equals(header)) {
-                            // Đây là danh sách User
-                            if (userListListener != null) {
-                                userListListener.accept((List<User>) serverData);
+                            // T7: Thông báo TẤT CẢ user list listener
+                            List<User> userList = (List<User>) serverData;
+                            for (Consumer<List<User>> listener : userListListeners) {
+                                try {
+                                    listener.accept(userList);
+                                } catch (Exception e) {
+                                    System.err.println("❌ Lỗi trong userListListener: " + e.getMessage()); // T12
+                                }
                             }
                         } else {
-                            // Mặc định: danh sách Auction (tương thích ngược)
-                            if (auctionListListener != null) {
-                                auctionListListener.accept((List<Auction>) serverData);
+                            // T7: Thông báo TẤT CẢ auction list listener
+                            List<Auction> auctionList = (List<Auction>) serverData;
+                            for (Consumer<List<Auction>> listener : auctionListListeners) {
+                                try {
+                                    listener.accept(auctionList);
+                                } catch (Exception e) {
+                                    System.err.println("❌ Lỗi trong auctionListListener: " + e.getMessage()); // T12
+                                }
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                System.out.println("❌ Mất kết nối tới Server.");
+                System.err.println("❌ Mất kết nối tới Server: " + e.getMessage()); // T12: log chi tiết
             }
         });
         listenerThread.setDaemon(true);

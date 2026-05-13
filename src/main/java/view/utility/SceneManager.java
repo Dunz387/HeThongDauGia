@@ -45,6 +45,37 @@ public class SceneManager {
     }
 
     /**
+     * Chuyển Scene và trả về Controller để caller có thể truyền dữ liệu vào.
+     * @param stage    Cửa sổ hiện tại
+     * @param fxmlPath Đường dẫn tuyệt đối đến file FXML mới
+     * @param title    Tiêu đề mới cho cửa sổ
+     * @return Controller của Scene vừa load, hoặc null nếu lỗi
+     */
+    public static <T> T switchSceneAndGetController(Stage stage, String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
+            Parent root = loader.load();
+
+            double width = stage.getScene() != null ? stage.getScene().getWidth() : 1050;
+            double height = stage.getScene() != null ? stage.getScene().getHeight() : 680;
+            Scene scene = new Scene(root, width, height);
+            stage.setScene(scene);
+
+            if (title != null && !title.trim().isEmpty()) {
+                stage.setTitle(title);
+            }
+
+            stage.show();
+            return loader.getController();
+
+        } catch (IOException e) {
+            System.err.println("❌ Không thể tải màn hình từ đường dẫn: " + fxmlPath);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Chuyển Scene dựa trên ActionEvent
      * @param event    Sự kiện click để lấy ra cửa sổ hiện tại
      * @param fxmlPath Đường dẫn tuyệt đối đến file FXML mới
@@ -84,8 +115,8 @@ public class SceneManager {
     /**
      * Chuyển tới danh sách tài sản
      */
-    public static void goToAssertsList(Stage stage) {
-        switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Danh Sách Tài Sản");
+    public static void goToAssetsList(Stage stage) {
+        switchScene(stage, "/view/BaseMenuUI/AssetsList.fxml", "Danh Sách Tài Sản");
     }
 
     /**
@@ -96,10 +127,23 @@ public class SceneManager {
     }
 
     /**
-     * Chuyển tới phòng đấu giá (InRoomView)
+     * Chuyển tới phòng đấu giá (InRoomView) - KHÔNG truyền auctionId (legacy)
      */
     public static void goToInRoom(Stage stage) {
         switchScene(stage, "/view/AuctionRoomUI/InRoomView.fxml", "Phòng Đấu Giá");
+    }
+
+    /**
+     * Chuyển tới phòng đấu giá (InRoomView) VÀ truyền auctionId vào Controller.
+     * @param stage     Cửa sổ hiện tại
+     * @param auctionId ID phiên đấu giá cần tham gia
+     */
+    public static void goToInRoom(Stage stage, String auctionId) {
+        view.AuctionRoomUI.InRoomController controller =
+                switchSceneAndGetController(stage, "/view/AuctionRoomUI/InRoomView.fxml", "Phòng Đấu Giá");
+        if (controller != null) {
+            controller.setAuctionId(auctionId);
+        }
     }
 
     public static void goToCreateItem(Stage stage) {
@@ -107,10 +151,23 @@ public class SceneManager {
     }
 
     /**
-     * Chuyển tới phòng đấu giá dành cho Seller (chỉ theo dõi)
+     * Chuyển tới phòng đấu giá dành cho Seller (chỉ theo dõi) - KHÔNG truyền auctionId (legacy)
      */
     public static void goToSellerInRoom(Stage stage) {
         switchScene(stage, "/view/AuctionRoomUI/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
+    }
+
+    /**
+     * Chuyển tới phòng đấu giá dành cho Seller VÀ truyền auctionId vào Controller.
+     * @param stage     Cửa sổ hiện tại
+     * @param auctionId ID phiên đấu giá cần theo dõi
+     */
+    public static void goToSellerInRoom(Stage stage, String auctionId) {
+        view.AuctionRoomUI.SellerInRoomController controller =
+                switchSceneAndGetController(stage, "/view/AuctionRoomUI/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
+        if (controller != null) {
+            controller.setAuctionId(auctionId);
+        }
     }
 
     // ===== MÀN HÌNH QUẢN TRỊ (ADMIN) =====
@@ -136,3 +193,4 @@ public class SceneManager {
         switchScene(stage, "/view/AdminUI/AdminAuctionManagement.fxml", "Admin - Quản Lý Đấu Giá");
     }
 }
+

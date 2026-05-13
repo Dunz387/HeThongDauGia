@@ -12,10 +12,7 @@ import java.util.function.Predicate;
 
 /**
  * Helper class tập trung xử lý đăng ký network listener cho bảng Auction (SRP + DIP).
- * Thay thế pattern lặp lại trong 5+ controllers:
- *   - setAuctionListListener → cập nhật bảng
- *   - registerListener(BROADCAST_NEW_BID) → refresh
- *   - sendData(REQ_GET_AUCTIONS) → yêu cầu dữ liệu
+ * T7: Sửa dùng addAuctionListListener (multi-listener) thay vì setAuctionListListener (single).
  */
 public class AuctionNetworkHelper {
 
@@ -31,13 +28,14 @@ public class AuctionNetworkHelper {
 
     /**
      * Đăng ký lắng nghe danh sách đấu giá từ Server với bộ lọc tùy chọn.
+     * T7: Sử dụng addAuctionListListener để hỗ trợ nhiều Controller cùng lắng nghe.
      *
      * @param table  Bảng TableView cần cập nhật
      * @param filter Bộ lọc (VD: chỉ hiển thị RUNNING). Null = hiển thị tất cả.
      */
     public static void registerAuctionListListener(TableView<Auction> table, Predicate<Auction> filter) {
-        // Lắng nghe dữ liệu danh sách đấu giá từ Server (REAL-TIME)
-        ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
+        // T7: Dùng addAuctionListListener thay vì setAuctionListListener
+        ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
                 var displayList = (filter != null)
                         ? listFromServer.stream().filter(filter).toList()

@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
+import network.SessionManager;
 import shared.Protocol;
 import view.utility.AlertHelper;
 import view.utility.SceneManager;
@@ -34,9 +35,17 @@ public class LoginController {
             String[] parts = response.split(Protocol.SEPARATOR);
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    // Parse thông tin user từ response: LOGIN;;;SUCCESS;;;ROLE;;;userId;;;username;;;balance
+                    String role = parts.length >= 3 ? parts[2] : "";
+                    String userId = parts.length >= 4 ? parts[3] : "";
+                    String userName = parts.length >= 5 ? parts[4] : "";
+                    double balance = parts.length >= 6 ? Double.parseDouble(parts[5]) : 0.0;
+
+                    // Lưu thông tin phiên đăng nhập vào SessionManager
+                    SessionManager.getInstance().setSession(userId, userName, role, balance);
+
                     Stage stage = (Stage) txtUsername.getScene().getWindow();
                     // Phân luồng theo Role - Admin vào Dashboard, User vào BaseMenu
-                    String role = parts.length >= 3 ? parts[2] : "";
                     if ("ADMIN".equals(role)) {
                         SceneManager.goToAdminDashboard(stage);
                     } else {
@@ -57,4 +66,4 @@ public class LoginController {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         SceneManager.switchScene(stage, "/view/AuthenticationUI/RegisterView/Register.fxml", "Register");
     }
-}
+}

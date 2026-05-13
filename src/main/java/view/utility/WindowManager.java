@@ -35,9 +35,7 @@ public class WindowManager {
         openWindow(fxmlPath, title, null);
     }
 
-    public static void openBidOrSellChoiceWindow(Stage owner) {
-        openWindow("/view/AuctionRoomUI/BidOrSellChoice.fxml", "Lựa chọn hành động", owner);
-    }
+
 
     public static void openUserProfileWindow() {
         openWindow("/view/BaseMenuUI/UserInforView.fxml", "Thông tin cá nhân");

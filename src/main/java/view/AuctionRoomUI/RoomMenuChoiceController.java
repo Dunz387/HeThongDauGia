@@ -42,7 +42,8 @@ public class RoomMenuChoiceController implements Initializable {
                     Auction selectedAuction = row.getItem();
                     System.out.println("🏛️ Đang vào phòng đấu giá: " + selectedAuction.getId());
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
-                    SceneManager.goToInRoom(currentStage);
+                    // Truyền auctionId thực tế vào phòng đấu giá
+                    SceneManager.goToInRoom(currentStage, selectedAuction.getId());
                 }
             });
             return row;

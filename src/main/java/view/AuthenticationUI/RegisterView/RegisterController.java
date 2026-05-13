@@ -1,19 +1,31 @@
 package view.AuthenticationUI.RegisterView;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.AlertHelper;
 import view.utility.SceneManager;
 
-public class RegisterController {
+public class RegisterController implements Initializable {
 
     @FXML private TextField txtUsername;
     @FXML private TextField txtPassword;
+    @FXML private ComboBox<String> cbRole;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        cbRole.setItems(FXCollections.observableArrayList("Người Mua (Bidder)", "Người Bán (Seller)"));
+        cbRole.getSelectionModel().selectFirst();
+    }
 
     @FXML
     private void registerButtonClicked(ActionEvent event) {
@@ -25,8 +37,10 @@ public class RegisterController {
             return;
         }
 
+        String role = cbRole.getValue() != null && cbRole.getValue().contains("Seller") ? "SELLER" : "BIDDER";
+
         // 1. Chuẩn bị yêu cầu đăng ký
-        String request = Protocol.REQ_REGISTER + Protocol.DELIMITER + username.trim() + Protocol.DELIMITER + password.trim();
+        String request = Protocol.REQ_REGISTER + Protocol.DELIMITER + username.trim() + Protocol.DELIMITER + password.trim() + Protocol.DELIMITER + role;
 
         // 2. ĐĂNG KÝ CALLBACK: "Khi nào Server trả lời lệnh REGISTER, hãy chạy đoạn code này trên UI"
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_REGISTER, (response) -> {

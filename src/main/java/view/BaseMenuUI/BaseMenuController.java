@@ -16,6 +16,7 @@ import view.utility.AuctionTableConfigurator;
 import view.utility.NotificationMenuHandler;
 import view.utility.SceneManager;
 import view.utility.WindowManager;
+import view.utility.AlertHelper;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,13 +45,27 @@ public class BaseMenuController implements Initializable {
         AuctionTableConfigurator.configure(colId, colName, colType, colPrice,
                 colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
 
-        // Nhấp đúp chuột vào dòng để mở menu lựa chọn
+        // Nhấp đúp chuột vào dòng để mở phòng đấu giá dựa trên Role
         tableAuctions.setRowFactory(tv -> {
             TableRow<Auction> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Auction selectedAuction = row.getItem();
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
-                    WindowManager.openBidOrSellChoiceWindow(currentStage);
+                    
+                    if (network.SessionManager.getInstance().isBidder()) {
+                        SceneManager.goToInRoom(currentStage, selectedAuction.getId());
+                    } else if (network.SessionManager.getInstance().isSeller()) {
+                        if (selectedAuction.getItem().getOwner() != null && selectedAuction.getItem().getOwner().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                            SceneManager.goToSellerInRoom(currentStage, selectedAuction.getId());
+                        } else {
+                            AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
+                        }
+                    } else if (network.SessionManager.getInstance().isAdmin()) {
+                        AlertHelper.showWarning("Cảnh báo", "Admin không tham gia phòng đấu giá!");
+                    } else {
+                        AlertHelper.showWarning("Quyền truy cập", "Bạn không có quyền tham gia!");
+                    }
                 }
             });
             return row;
@@ -66,14 +81,22 @@ public class BaseMenuController implements Initializable {
 
     @FXML
     private void joinBidding(ActionEvent event) {
+        if (!network.SessionManager.getInstance().isBidder()) {
+            AlertHelper.showWarning("Quyền truy cập", "Chỉ người mua (Bidder) mới có thể tham gia đấu giá!");
+            return;
+        }
         Stage currentStage = (Stage) menuBar.getScene().getWindow();
-        WindowManager.openBidOrSellChoiceWindow(currentStage);
+        SceneManager.goToRoomMenu(currentStage);
     }
 
     @FXML
     private void openChoiceMenu(ActionEvent event) {
+        if (!network.SessionManager.getInstance().isSeller()) {
+            AlertHelper.showWarning("Quyền truy cập", "Chỉ người bán (Seller) mới có thể tạo phiên đấu giá!");
+            return;
+        }
         Stage currentStage = (Stage) menuBar.getScene().getWindow();
-        WindowManager.openBidOrSellChoiceWindow(currentStage);
+        WindowManager.openCreateItemWindow(currentStage);
     }
 
     @FXML
@@ -89,9 +112,9 @@ public class BaseMenuController implements Initializable {
     }
 
     @FXML
-    private void goToAssertsListButtonClicked(ActionEvent event) {
+    private void goToAssetsListButtonClicked(ActionEvent event) {
         Stage stage = (Stage) menuBar.getScene().getWindow();
-        SceneManager.switchScene(stage, "/view/BaseMenuUI/AssertsList.fxml", "Asserts List");
+        SceneManager.switchScene(stage, "/view/BaseMenuUI/AssetsList.fxml", "Danh Sách Tài Sản");
     }
 
     @FXML

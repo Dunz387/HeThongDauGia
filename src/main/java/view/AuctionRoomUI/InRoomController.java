@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.animation.Timeline;
@@ -41,8 +40,8 @@ public class InRoomController implements Initializable {
     private XYChart.Series<String, Number> priceSeries;
     private int bidCount = 0;
 
-    // ID của phiên đấu giá hiện tại (Nên được truyền vào khi chuyển màn hình)
-    private String currentAuctionId = "AUC-123";
+    // ID của phiên đấu giá hiện tại — được truyền vào từ SceneManager.goToInRoom(stage, auctionId)
+    private String currentAuctionId = null;
 
     // Quản lý thời gian
     private Timeline totalTimelineTimer;
@@ -70,6 +69,15 @@ public class InRoomController implements Initializable {
         registerNetworkListeners();
     }
 
+    /**
+     * Thiết lập ID phiên đấu giá hiện tại.
+     * Được gọi từ SceneManager.goToInRoom(stage, auctionId) SAU khi FXML đã load.
+     */
+    public void setAuctionId(String auctionId) {
+        this.currentAuctionId = auctionId;
+        System.out.println("🏛️ [InRoom] Đã thiết lập phòng đấu giá: " + auctionId);
+    }
+
     private void registerNetworkListeners() {
         // Lắng nghe lệnh BROADCAST_AUCTION_START
         ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_AUCTION_START, (message) -> {
@@ -78,7 +86,7 @@ public class InRoomController implements Initializable {
                 String auctionId = parts[1];
                 int durationMinutes = Integer.parseInt(parts[2]);
 
-                if (auctionId.equals(this.currentAuctionId)) {
+                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     totalTimeRemaining = durationMinutes * 60;
                     roundTimeRemaining = ROUND_DURATION;
                     currentRoundHighestPrice = 0;
@@ -100,7 +108,7 @@ public class InRoomController implements Initializable {
             if (parts.length >= 4) {
                 String auctionId = parts[1];
 
-                if (auctionId.equals(this.currentAuctionId)) {
+                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     double newPrice = Double.parseDouble(parts[2]);
                     String topBidder = parts[3];
 
@@ -122,7 +130,7 @@ public class InRoomController implements Initializable {
             if (parts.length >= 2) {
                 String auctionId = parts[1];
 
-                if (auctionId.equals(this.currentAuctionId)) {
+                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     Platform.runLater(() -> {
                         System.out.println("[Round] Vòng kết thúc! Người chiến thắng: " + roundWinner + " với giá: " + currentRoundHighestPrice);
                         if (roundWinner.isEmpty()) {
@@ -144,7 +152,7 @@ public class InRoomController implements Initializable {
                 String finalWinner = parts.length > 2 ? parts[2] : "Không có";
                 double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
 
-                if (auctionId.equals(this.currentAuctionId)) {
+                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     Platform.runLater(() -> {
                         stopAllTimers();
                         System.out.println("[Auction] Phiên đấu giá kết thúc!");
@@ -302,6 +310,10 @@ public class InRoomController implements Initializable {
     private void handlePlaceBid() {
         try {
             if (bidAmountField.getText().isEmpty()) return;
+            if (currentAuctionId == null) {
+                AlertHelper.showWarning("Lỗi", "Chưa xác định được phòng đấu giá!");
+                return;
+            }
             double amount = Double.parseDouble(bidAmountField.getText());
 
             // Sử dụng ClientNetworkManager thay vì socket riêng
@@ -325,4 +337,4 @@ public class InRoomController implements Initializable {
         Stage stage = (Stage) priceChart.getScene().getWindow();
         SceneManager.goToBaseMenu(stage);
     }
-}
+}

@@ -24,6 +24,9 @@ public class Auction extends Entity implements AuctionSubject {
     private String reason;
 
     private List<BidTransaction> bidHistory;
+    
+    // T10: Lưu lại thời gian có hoạt động (đặt giá) gần nhất để tính giờ vòng đấu
+    private transient LocalDateTime lastActivityTime = LocalDateTime.now();
 
     // Dùng transient để bỏ qua khi lưu file/gửi mạng
     private transient List<AuctionObserver> observers;
@@ -47,16 +50,48 @@ public class Auction extends Entity implements AuctionSubject {
         return item;
     }
 
+    public double getStartingPrice() {
+        return startingPrice;
+    }
+
     public double getCurrentPrice() {
         return currentPrice;
+    }
+
+    public void setStartingPrice(double startingPrice) {
+        this.startingPrice = startingPrice;
+    }
+
+    /**
+     * Setter cho currentPrice — dùng khi khôi phục dữ liệu từ DB.
+     * KHÔNG dùng trong logic đấu giá bình thường (dùng placeBid() thay thế).
+     */
+    public void setCurrentPrice(double currentPrice) {
+        this.currentPrice = currentPrice;
+    }
+
+    public double getBidIncrement() {
+        return bidIncrement;
     }
 
     public Bidder getHighestBidder() {
         return highestBidder;
     }
 
+    /**
+     * Setter cho highestBidder — dùng khi khôi phục dữ liệu từ DB.
+     * KHÔNG dùng trong logic đấu giá bình thường (dùng placeBid() thay thế).
+     */
+    public void setHighestBidder(Bidder highestBidder) {
+        this.highestBidder = highestBidder;
+    }
+
     public LocalDateTime getEndTime() {
         return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public AuctionStatus getStatus() {
@@ -107,6 +142,8 @@ public class Auction extends Entity implements AuctionSubject {
             if (bidHistory == null)
                 bidHistory = new ArrayList<>();
             bidHistory.add(transaction);
+            
+            this.lastActivityTime = LocalDateTime.now(); // Cập nhật thời gian khi có bid mới
 
             // Báo cho Server biết có người vừa đặt giá!
             notifyObservers();
@@ -142,5 +179,14 @@ public class Auction extends Entity implements AuctionSubject {
                 obs.update(this, this.currentPrice, topBidderName);
             }
         }
+    }
+
+    public LocalDateTime getLastActivityTime() {
+        if (lastActivityTime == null) lastActivityTime = LocalDateTime.now();
+        return lastActivityTime;
+    }
+
+    public void updateActivityTime() {
+        this.lastActivityTime = LocalDateTime.now();
     }
 }

@@ -19,7 +19,7 @@ public class AuctionTableConfigurator {
 
     /**
      * Cấu hình đầy đủ 9 cột bảng Auction thống nhất.
-     * Dùng cho BaseMenu, AssertsList, RoomMenuChoice.
+     * Dùng cho BaseMenu, AssetsList, RoomMenuChoice.
      */
     public static void configure(
             TableColumn<Auction, String> colId,

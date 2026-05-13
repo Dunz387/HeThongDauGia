@@ -46,13 +46,20 @@ public class ClientHandler implements Runnable {
                             if (parts.length >= 3) handleLogin(parts[1], parts[2]);
                             break;
                         case Protocol.REQ_REGISTER:
-                            if (parts.length >= 3) handleRegister(parts[1], parts[2]);
+                            if (parts.length >= 4) handleRegister(parts[1], parts[2], parts[3]);
+                            else if (parts.length >= 3) handleRegister(parts[1], parts[2], "BIDDER");
                             break;
                         case Protocol.REQ_GET_AUCTIONS:
                             handleGetAuctions();
                             break;
                         case Protocol.REQ_CREATE_ITEM:
                             if (parts.length >= 5) handleCreateItem(parts[1], parts[2], parts[3], parts[4]);
+                            break;
+                        case Protocol.REQ_UPDATE_ITEM:
+                            if (parts.length >= 5) handleUpdateItem(parts[1], parts[2], parts[3], parts[4]);
+                            break;
+                        case Protocol.REQ_DELETE_ITEM:
+                            if (parts.length >= 2) handleDeleteItem(parts[1]);
                             break;
                         case Protocol.REQ_BID:
                             if (parts.length >= 3) handleBid(parts[1], parts[2]);
@@ -79,15 +86,23 @@ public class ClientHandler implements Runnable {
     private void handleLogin(String u, String p) {
         loggedInUser = manager.authenticateUser(u, p);
         if (loggedInUser != null) {
-            // Trả về: LOGIN;;;SUCCESS;;;ROLE
-            sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + loggedInUser.getRole());
+            // Trả về: LOGIN;;;SUCCESS;;;ROLE;;;userId;;;username;;;balance
+            double balance = 0.0;
+            if (loggedInUser instanceof Bidder) balance = ((Bidder) loggedInUser).getBalance();
+            else if (loggedInUser instanceof Seller) balance = ((Seller) loggedInUser).getBalance();
+
+            sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_SUCCESS
+                    + Protocol.DELIMITER + loggedInUser.getRole()
+                    + Protocol.DELIMITER + loggedInUser.getId()
+                    + Protocol.DELIMITER + loggedInUser.getUsername()
+                    + Protocol.DELIMITER + balance);
         } else {
             sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Tài khoản không tồn tại hoặc đã bị khóa!");
         }
     }
 
-    private void handleRegister(String u, String p) {
-        if (manager.registerNewUser(u, p)) {
+    private void handleRegister(String u, String p, String role) {
+        if (manager.registerNewUser(u, p, role)) {
             sendData(Protocol.REQ_REGISTER + Protocol.DELIMITER + Protocol.RES_SUCCESS);
         } else {
             sendData(Protocol.REQ_REGISTER + Protocol.DELIMITER + Protocol.RES_FAIL);
@@ -102,10 +117,15 @@ public class ClientHandler implements Runnable {
     }
 
     private void handleCreateItem(String name, String priceStr, String durStr, String itemType) {
+        if (!(loggedInUser instanceof Seller)) {
+            sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người bán mới được tạo phiên đấu giá!");
+            return;
+        }
+        
         try {
             double price = Double.parseDouble(priceStr);
             int dur = Integer.parseInt(durStr);
-            Seller owner = (loggedInUser instanceof Seller) ? (Seller) loggedInUser : null;
+            Seller owner = (Seller) loggedInUser;
 
             model.item.Item item = model.item.ItemFactory.createItem(
                     itemType,
@@ -131,8 +151,46 @@ public class ClientHandler implements Runnable {
             // 2. Tự động cập nhật danh sách cho TẤT CẢ mọi người (Auto-refresh)
             server.broadcastAuctionList();
 
+            // 3. Broadcast AUCTION_START cho tất cả Client để bắt đầu timer
+            String startMessage = Protocol.BROADCAST_AUCTION_START + Protocol.DELIMITER
+                    + auction.getId() + Protocol.DELIMITER + dur;
+            server.broadcast(startMessage);
+            System.out.println("📢 [BROADCAST] Phiên đấu giá bắt đầu: " + auction.getId() + " | Thời gian: " + dur + " phút");
+
         } catch (Exception e) {
             sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL);
+        }
+    }
+
+    private void handleUpdateItem(String auctionId, String newName, String newPriceStr, String newDurStr) {
+        if (loggedInUser instanceof Seller) {
+            try {
+                double newPrice = Double.parseDouble(newPriceStr);
+                int newDur = Integer.parseInt(newDurStr);
+                if (manager.updateAuctionBySeller(auctionId, loggedInUser.getId(), newName, newPrice, newDur)) {
+                    sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                    server.broadcastAuctionList(); // Cập nhật lại UI cho mọi người
+                } else {
+                    sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không thể sửa (đã có người đặt giá hoặc sai quyền).");
+                }
+            } catch (Exception e) {
+                sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Dữ liệu không hợp lệ.");
+            }
+        } else {
+            sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người bán mới được sửa!");
+        }
+    }
+
+    private void handleDeleteItem(String auctionId) {
+        if (loggedInUser instanceof Seller) {
+            if (manager.deleteAuctionBySeller(auctionId, loggedInUser.getId())) {
+                sendData(Protocol.REQ_DELETE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                server.broadcastAuctionList(); // Cập nhật lại UI cho mọi người
+            } else {
+                sendData(Protocol.REQ_DELETE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không thể xóa (đã có người đặt giá hoặc sai quyền).");
+            }
+        } else {
+            sendData(Protocol.REQ_DELETE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người bán mới được xóa!");
         }
     }
 

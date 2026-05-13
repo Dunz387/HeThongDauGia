@@ -4,7 +4,7 @@ import network.ClientNetworkManager;
 import view.AuthenticationUI.LoginView.Login;
 // import view.AuthenticationUI.RegisterView.Register;
 // import view.BaseMenuUI.BaseMenu;
-// import view.BaseMenuUI.AssertsListView;
+// import view.BaseMenuUI.AssetsListView;
 
 public class Main {
     public static void main(String[] args) {
@@ -29,7 +29,7 @@ public class Main {
         // Run BaseMenu: (Đã đóng vì phải Login thành công mới được vào)
         // BaseMenu.main(args);
 
-        // Run AssertsListView: (Đã đóng)
-        // AssertsListView.main(args);
+        // Run AssetsListView: (Đã đóng)
+        // AssetsListView.main(args);
     }
 }

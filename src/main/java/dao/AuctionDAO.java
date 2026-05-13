@@ -15,7 +15,7 @@ import java.util.List;
 public class AuctionDAO {
 
     public static boolean saveAuction(Auction auction) {
-        String sql = "INSERT INTO auctions(id, item_name, item_type, starting_price, current_price, end_time, status) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO auctions(id, item_name, item_type, starting_price, current_price, bid_increment, end_time, status, seller_id) VALUES(?,?,?,?,?,?,?,?,?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -28,13 +28,19 @@ public class AuctionDAO {
             else if (auction.getItem() instanceof model.item.Vehicle) type = "VEHICLE";
 
             pstmt.setString(3, type);
-            pstmt.setDouble(4, auction.getCurrentPrice());
+            pstmt.setDouble(4, auction.getStartingPrice());
             pstmt.setDouble(5, auction.getCurrentPrice());
-            pstmt.setString(6, auction.getEndTime().toString());
-            pstmt.setString(7, auction.getStatus().toString());
+            pstmt.setDouble(6, auction.getBidIncrement());
+            pstmt.setString(7, auction.getEndTime().toString());
+            pstmt.setString(8, auction.getStatus().toString());
+
+            // Lưu seller_id từ Item owner
+            String sellerId = (auction.getItem().getOwner() != null) ? auction.getItem().getOwner().getId() : null;
+            pstmt.setString(9, sellerId);
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
+            System.err.println("❌ Lỗi lưu auction: " + e.getMessage());
             return false;
         }
     }
@@ -47,7 +53,25 @@ public class AuctionDAO {
             pstmt.setString(3, (auction.getHighestBidder() != null) ? auction.getHighestBidder().getId() : null);
             pstmt.setString(4, auction.getId());
             return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) { return false; }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi cập nhật auction: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean saveBidTransaction(model.auction.BidTransaction tx) {
+        String sql = "INSERT INTO bid_transactions(id, auction_id, bidder_id, bid_amount, timestamp) VALUES(?,?,?,?,?)";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, tx.getId());
+            pstmt.setString(2, tx.getAuction().getId());
+            pstmt.setString(3, tx.getBidder().getId());
+            pstmt.setDouble(4, tx.getBidAmount());
+            pstmt.setString(5, tx.getTimestamp().toString());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi lưu bid transaction: " + e.getMessage());
+            return false;
+        }
     }
 
     public static List<Auction> loadAuctions(List<User> loadedUsers) {
@@ -66,34 +90,51 @@ public class AuctionDAO {
 
                 double startingPrice = rs.getDouble("starting_price");
                 double currentPrice = rs.getDouble("current_price");
+                double bidIncrement = rs.getDouble("bid_increment");
+                if (bidIncrement <= 0) bidIncrement = 10.0; // Giá trị mặc định
                 String endTimeStr = rs.getString("end_time");
                 String statusStr = rs.getString("status");
+                String sellerId = rs.getString("seller_id");
                 String bidderId = rs.getString("highest_bidder_id");
 
-                Seller tempSeller = new Seller("S-TEMP", "System", "123", 0.0);
-                model.item.Item tempItem = ItemFactory.createItem(
-                        itemType, "ITEM-" + id, itemName, "Khôi phục từ DB", tempSeller, "Unknown", 0);
+                // Tìm Seller thực tế từ danh sách users đã load
+                Seller seller = null;
+                if (sellerId != null) {
+                    for (User u : loadedUsers) {
+                        if (u.getId().equals(sellerId) && u instanceof Seller) {
+                            seller = (Seller) u;
+                            break;
+                        }
+                    }
+                }
+                // Nếu không tìm thấy Seller, dùng placeholder
+                if (seller == null) {
+                    seller = new Seller("S-TEMP", "System", "123", 0.0);
+                }
 
-                Auction auction = new Auction(id, tempItem, startingPrice, 50.0, LocalDateTime.parse(endTimeStr));
+                model.item.Item tempItem = ItemFactory.createItem(
+                        itemType, "ITEM-" + id, itemName, "Khôi phục từ DB", seller, "Unknown", 0);
+
+                Auction auction = new Auction(id, tempItem, startingPrice, bidIncrement, LocalDateTime.parse(endTimeStr));
                 auction.setStatus(AuctionStatus.valueOf(statusStr));
 
-                java.lang.reflect.Field priceField = Auction.class.getDeclaredField("currentPrice");
-                priceField.setAccessible(true);
-                priceField.set(auction, currentPrice);
+                // Cập nhật giá hiện tại thông qua setter (thay vì reflection)
+                auction.setCurrentPrice(currentPrice);
 
+                // Tìm và gán highest bidder
                 if (bidderId != null) {
                     for (User u : loadedUsers) {
                         if (u.getId().equals(bidderId) && u instanceof Bidder) {
-                            java.lang.reflect.Field bidderField = Auction.class.getDeclaredField("highestBidder");
-                            bidderField.setAccessible(true);
-                            bidderField.set(auction, u);
+                            auction.setHighestBidder((Bidder) u);
                             break;
                         }
                     }
                 }
                 list.add(auction);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi load auctions từ DB: " + e.getMessage());
+        }
         return list;
     }
-}
+}

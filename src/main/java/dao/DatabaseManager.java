@@ -25,10 +25,25 @@ public class DatabaseManager {
                 item_type TEXT, 
                 starting_price REAL,
                 current_price REAL,
+                bid_increment REAL DEFAULT 10.0,
                 end_time TEXT,
                 status TEXT,
+                seller_id TEXT,
                 highest_bidder_id TEXT,
+                FOREIGN KEY (seller_id) REFERENCES users(id),
                 FOREIGN KEY (highest_bidder_id) REFERENCES users(id)
+            );
+        """;
+
+        String createBidTransactionsTable = """
+            CREATE TABLE IF NOT EXISTS bid_transactions (
+                id TEXT PRIMARY KEY,
+                auction_id TEXT NOT NULL,
+                bidder_id TEXT NOT NULL,
+                bid_amount REAL NOT NULL,
+                timestamp TEXT NOT NULL,
+                FOREIGN KEY (auction_id) REFERENCES auctions(id),
+                FOREIGN KEY (bidder_id) REFERENCES users(id)
             );
         """;
 
@@ -36,6 +51,7 @@ public class DatabaseManager {
              Statement stmt = conn.createStatement()) {
             stmt.execute(createUsersTable);
             stmt.execute(createAuctionsTable);
+            stmt.execute(createBidTransactionsTable);
             System.out.println("✅ Database SQLite đã được khởi tạo thành công!");
         } catch (SQLException e) {
             System.err.println("❌ Lỗi tạo bảng Database: " + e.getMessage());

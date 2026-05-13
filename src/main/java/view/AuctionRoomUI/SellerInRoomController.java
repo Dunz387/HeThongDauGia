@@ -54,7 +54,7 @@ public class SellerInRoomController implements Initializable {
     private XYChart.Series<String, Number> priceSeries;
     private ObservableList<double[]> bidHistory = FXCollections.observableArrayList();
     private int bidCount = 0;
-    private String currentAuctionId = "AUC-123";
+    private String currentAuctionId = null;
     private double currentHighestPrice = 0;
 
     @Override
@@ -82,7 +82,7 @@ public class SellerInRoomController implements Initializable {
             String[] parts = message.split(Protocol.SEPARATOR);
             if (parts.length >= 4) {
                 String auctionId = parts[1];
-                if (auctionId.equals(this.currentAuctionId)) {
+                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     double newPrice = Double.parseDouble(parts[2]);
                     String topBidder = parts[3];
 
@@ -121,7 +121,7 @@ public class SellerInRoomController implements Initializable {
                 String winner = parts.length > 2 ? parts[2] : "Không có";
                 double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
 
-                if (auctionId.equals(this.currentAuctionId)) {
+                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     Platform.runLater(() -> {
                         AlertHelper.showInfo("Phiên đấu giá kết thúc!",
                                 "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + finalPrice + " $");

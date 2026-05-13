@@ -31,6 +31,32 @@ public class AuctionServer implements AuctionObserver {
             auction.addObserver(this);
         }
 
+        // Đăng ký callback để broadcast AUCTION_FINISHED khi phiên kết thúc tự động
+        manager.setAuctionFinishedCallback((finishedAuction) -> {
+            String winnerName = (finishedAuction.getHighestBidder() != null)
+                    ? finishedAuction.getHighestBidder().getUsername() : "Không có";
+            double finalPrice = finishedAuction.getCurrentPrice();
+
+            String finishMessage = Protocol.BROADCAST_AUCTION_FINISHED + Protocol.DELIMITER
+                    + finishedAuction.getId() + Protocol.DELIMITER
+                    + winnerName + Protocol.DELIMITER
+                    + finalPrice;
+
+            System.out.println("📢 [BROADCAST] Phiên đấu giá kết thúc: " + finishedAuction.getId()
+                    + " | Người thắng: " + winnerName + " | Giá: $" + finalPrice);
+            broadcast(finishMessage);
+
+            // Cập nhật danh sách cho tất cả Client
+            broadcastAuctionList();
+        });
+
+        // T10: Đăng ký callback để broadcast ROUND_FINISHED
+        manager.setRoundFinishedCallback((finishedRoundAuction) -> {
+            String roundMessage = Protocol.BROADCAST_ROUND_FINISHED + Protocol.DELIMITER + finishedRoundAuction.getId();
+            System.out.println("📢 [BROADCAST] Vòng đấu giá kết thúc: " + finishedRoundAuction.getId());
+            broadcast(roundMessage);
+        });
+
         new Thread(() -> {
             Scanner s = new Scanner(System.in);
             System.out.println("Hệ thống Server đã sẵn sàng. Gõ 'exit' để tắt.");

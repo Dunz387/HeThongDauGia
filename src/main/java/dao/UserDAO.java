@@ -26,6 +26,7 @@ public class UserDAO {
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
+            System.err.println("❌ Lỗi lưu user: " + e.getMessage());
             return false;
         }
     }
@@ -52,7 +53,9 @@ public class UserDAO {
                     users.add(newUser);
                 }
             }
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi load users từ DB: " + e.getMessage());
+        }
         return users;
     }
 
@@ -63,7 +66,10 @@ public class UserDAO {
             pstmt.setString(2, userId);
             pstmt.executeUpdate();
             return true;
-        } catch (SQLException e) { return false; }
+        } catch (SQLException e) { 
+            System.err.println("❌ Lỗi cập nhật số dư user: " + e.getMessage());
+            return false; 
+        }
     }
 
     public static boolean updateUser(User user) {
@@ -76,6 +82,9 @@ public class UserDAO {
             pstmt.setInt(2, user.isActive() ? 1 : 0);
             pstmt.setString(3, user.getId());
             return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) { return false; }
+        } catch (SQLException e) { 
+            System.err.println("❌ Lỗi cập nhật user: " + e.getMessage());
+            return false; 
+        }
     }
 }

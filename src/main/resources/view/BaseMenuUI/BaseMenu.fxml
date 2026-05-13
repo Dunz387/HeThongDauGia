@@ -44,7 +44,7 @@
                         <HBox spacing="12" alignment="CENTER_LEFT">
                            <children>
                               <Button mnemonicParsing="false" onAction="#joinBidding" text="🔥 THAM GIA ĐẤU GIÁ" style="-fx-background-color: linear-gradient(to right, #ea7f33, #d46b20); -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-background-radius: 25; -fx-padding: 12 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.5), 14, 0, 0, 4);" />
-                              <Button mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="📋 Xem Tài Sản" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: rgba(255,255,255,0.35); -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 10 24; -fx-cursor: hand;" />
+                              <Button mnemonicParsing="false" onAction="#goToAssetsListButtonClicked" text="📋 Xem Tài Sản" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: rgba(255,255,255,0.35); -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 10 24; -fx-cursor: hand;" />
                            </children>
                         </HBox>
                      </children>
@@ -179,7 +179,7 @@
             <Button mnemonicParsing="false" prefHeight="60.0" styleClass="nav-btn-active" text="🏠 Trang Chủ" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="📦 Tài Sản">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToAssertsListButtonClicked" text="Danh sách tài sản" />
+                  <MenuItem mnemonicParsing="false" onAction="#goToAssetsListButtonClicked" text="Danh sách tài sản" />
                   <MenuItem mnemonicParsing="false" onAction="#openChoiceMenu" text="Đấu giá mới" />
                </items>
             </MenuButton>

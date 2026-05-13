@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -42,8 +43,15 @@
                      <VBox.margin><Insets bottom="6"/></VBox.margin>
                   </Label>
                   <PasswordField fx:id="txtPassword" promptText="Nhập mật khẩu">
-                     <VBox.margin><Insets bottom="26"/></VBox.margin>
+                     <VBox.margin><Insets bottom="16"/></VBox.margin>
                   </PasswordField>
+
+                  <Label text="Vai trò" styleClass="label-field">
+                     <VBox.margin><Insets bottom="6"/></VBox.margin>
+                  </Label>
+                  <ComboBox fx:id="cbRole" promptText="Chọn vai trò" maxWidth="Infinity" style="-fx-background-color: #f8f8f8; -fx-border-color: #e0e0e0; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 4 8;">
+                     <VBox.margin><Insets bottom="26"/></VBox.margin>
+                  </ComboBox>
 
                   <Button mnemonicParsing="false" onAction="#registerButtonClicked" maxWidth="Infinity" prefHeight="44.0" styleClass="btn-primary" text="ĐĂNG KÝ">
                      <VBox.margin><Insets bottom="18"/></VBox.margin>
