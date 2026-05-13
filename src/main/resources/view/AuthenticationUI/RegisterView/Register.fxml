@@ -16,10 +16,10 @@
 
 <HBox stylesheets="@../../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuthenticationUI.RegisterView.RegisterController">
    <children>
-      <!-- Left: Register Form (56% width) -->
-      <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: #ffffff; -fx-min-width: 400;">
+      <!-- Left: Register Form (55% width) -->
+      <VBox alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color: #ffffff; -fx-min-width: 380;">
          <children>
-            <VBox alignment="CENTER" maxWidth="390.0" spacing="0" StackPane.alignment="CENTER">
+            <VBox prefWidth="360.0" spacing="0" style="-fx-background-color: #ffffff; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);">
                <padding>
                   <Insets top="40" right="36" bottom="40" left="36"/>
                </padding>
@@ -45,7 +45,7 @@
                      <VBox.margin><Insets bottom="26"/></VBox.margin>
                   </PasswordField>
 
-                  <Button mnemonicParsing="false" onAction="#registerButtonClicked" prefHeight="44.0" maxWidth="Infinity" styleClass="btn-primary" text="ĐĂNG KÝ">
+                  <Button mnemonicParsing="false" onAction="#registerButtonClicked" maxWidth="Infinity" prefHeight="44.0" styleClass="btn-primary" text="ĐĂNG KÝ">
                      <VBox.margin><Insets bottom="18"/></VBox.margin>
                   </Button>
 
@@ -58,29 +58,24 @@
                </children>
             </VBox>
          </children>
-      </StackPane>
+      </VBox>
 
-      <!-- Right: Orange decorative panel (44% width) -->
+      <!-- Right: Orange decorative panel (45% width) -->
       <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to bottom, #ea7f33, #d46b20); -fx-min-width: 300;">
          <children>
-            <!-- Decorative circles -->
-            <Pane style="-fx-background-color: rgba(212,205,61,0.25); -fx-background-radius: 80; -fx-pref-width: 160; -fx-pref-height: 160;" StackPane.alignment="TOP_RIGHT">
-               <StackPane.margin><Insets top="-40" right="-20" /></StackPane.margin>
-            </Pane>
-            <Pane style="-fx-background-color: rgba(26,26,26,0.1); -fx-background-radius: 70; -fx-pref-width: 140; -fx-pref-height: 140;" StackPane.alignment="BOTTOM_LEFT">
-               <StackPane.margin><Insets bottom="20" left="-20" /></StackPane.margin>
-            </Pane>
+            <Pane style="-fx-background-color: rgba(212,205,61,0.25); -fx-background-radius: 80; -fx-pref-width: 160; -fx-pref-height: 160;" StackPane.alignment="TOP_RIGHT" translateX="-20" translateY="-40" />
+            <Pane style="-fx-background-color: rgba(26,26,26,0.1); -fx-background-radius: 70; -fx-pref-width: 140; -fx-pref-height: 140;" StackPane.alignment="BOTTOM_LEFT" translateX="20" translateY="-30" />
 
-            <!-- Image + Branding -->
-            <VBox alignment="CENTER" spacing="20" StackPane.alignment="CENTER">
-               <padding><Insets top="40" right="30" bottom="40" left="30" /></padding>
+            <VBox alignment="CENTER" spacing="16">
+               <padding><Insets top="40" bottom="40" left="40" right="40"/></padding>
                <children>
                   <ImageView fitHeight="280.0" fitWidth="260.0" preserveRatio="true" opacity="0.9">
                      <image>
                         <Image url="@register.jpg" />
                      </image>
                   </ImageView>
-                  <VBox spacing="6">
+
+                  <VBox spacing="6" alignment="CENTER_LEFT">
                      <children>
                         <Label text="THAM GIA NGAY" style="-fx-text-fill: #ffffff; -fx-font-size: 22px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
                         <Label text="ĐẤU GIÁ TRỰC TUYẾN" style="-fx-text-fill: #1a1a1a; -fx-font-size: 24px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />

@@ -17,30 +17,27 @@
 
 <HBox stylesheets="@../../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuthenticationUI.LoginView.LoginController">
    <children>
-      <!-- Left: Yellow decorative panel (44% width) -->
+      <!-- Left: Yellow decorative panel (45% width) -->
       <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to bottom, #d4cd3d, #c4b82e); -fx-min-width: 300;">
          <children>
             <!-- Decorative circles -->
-            <Pane style="-fx-background-color: rgba(234,127,51,0.25); -fx-background-radius: 90; -fx-pref-width: 180; -fx-pref-height: 180;" StackPane.alignment="TOP_LEFT">
-               <StackPane.margin><Insets top="-50" left="-50" /></StackPane.margin>
-            </Pane>
-            <Pane style="-fx-background-color: rgba(26,26,26,0.08); -fx-background-radius: 60; -fx-pref-width: 120; -fx-pref-height: 120;" StackPane.alignment="BOTTOM_RIGHT">
-               <StackPane.margin><Insets bottom="30" right="20" /></StackPane.margin>
-            </Pane>
-            <Pane style="-fx-background-color: rgba(234,127,51,0.15); -fx-background-radius: 40; -fx-pref-width: 80; -fx-pref-height: 80;" StackPane.alignment="CENTER_LEFT">
-               <StackPane.margin><Insets left="60" top="120" /></StackPane.margin>
-            </Pane>
+            <Pane style="-fx-background-color: rgba(234,127,51,0.25); -fx-background-radius: 90; -fx-pref-width: 180; -fx-pref-height: 180;" StackPane.alignment="TOP_LEFT" translateX="-50" translateY="-50" />
+            <Pane style="-fx-background-color: rgba(26,26,26,0.08); -fx-background-radius: 60; -fx-pref-width: 120; -fx-pref-height: 120;" StackPane.alignment="BOTTOM_RIGHT" translateX="-20" translateY="-30" />
+            <Pane style="-fx-background-color: rgba(234,127,51,0.15); -fx-background-radius: 40; -fx-pref-width: 80; -fx-pref-height: 80;" StackPane.alignment="CENTER_LEFT" translateX="60" translateY="80" />
 
-            <!-- Image + Branding -->
-            <VBox alignment="CENTER" spacing="20" StackPane.alignment="CENTER">
-               <padding><Insets top="40" right="30" bottom="40" left="30" /></padding>
+            <!-- Main content -->
+            <VBox alignment="CENTER" spacing="16">
+               <padding><Insets top="40" bottom="40" left="40" right="40"/></padding>
                <children>
+                  <!-- Image -->
                   <ImageView fitHeight="280.0" fitWidth="260.0" preserveRatio="true" opacity="0.9">
                      <image>
                         <Image url="@LoginImage.jpg" />
                      </image>
                   </ImageView>
-                  <VBox spacing="6">
+
+                  <!-- Branding -->
+                  <VBox spacing="6" alignment="CENTER_LEFT">
                      <children>
                         <Label text="HỆ THỐNG ĐẤU GIÁ" style="-fx-text-fill: #1a1a1a; -fx-font-size: 22px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
                         <Label text="TRỰC TUYẾN" style="-fx-text-fill: #ffffff; -fx-font-size: 28px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
@@ -53,10 +50,10 @@
          </children>
       </StackPane>
 
-      <!-- Right: Login Form (56% width) -->
-      <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: #ffffff; -fx-min-width: 400;">
+      <!-- Right: Login Form (55% width) -->
+      <VBox alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color: #ffffff; -fx-min-width: 380;">
          <children>
-            <VBox alignment="CENTER" maxWidth="390.0" spacing="0" StackPane.alignment="CENTER">
+            <VBox prefWidth="360.0" spacing="0" style="-fx-background-color: #ffffff; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);">
                <padding>
                   <Insets top="40" right="36" bottom="40" left="36"/>
                </padding>
@@ -82,7 +79,7 @@
                      <VBox.margin><Insets bottom="26"/></VBox.margin>
                   </PasswordField>
 
-                  <Button mnemonicParsing="false" onAction="#loginButtonClicked" prefHeight="44.0" maxWidth="Infinity" styleClass="btn-primary" text="ĐĂNG NHẬP">
+                  <Button mnemonicParsing="false" onAction="#loginButtonClicked" maxWidth="Infinity" prefHeight="44.0" styleClass="btn-primary" text="ĐĂNG NHẬP">
                      <VBox.margin><Insets bottom="18"/></VBox.margin>
                   </Button>
 
@@ -95,6 +92,6 @@
                </children>
             </VBox>
          </children>
-      </StackPane>
+      </VBox>
    </children>
 </HBox>

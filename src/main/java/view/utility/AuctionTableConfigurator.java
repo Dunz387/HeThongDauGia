@@ -32,50 +32,41 @@ public class AuctionTableConfigurator {
             TableColumn<Auction, String> colStatus,
             TableColumn<Auction, String> colSeller
     ) {
-        if (colId != null)
-            colId.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(cellData.getValue().getId()));
+        colId.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getId()));
 
-        if (colName != null)
-            colName.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(cellData.getValue().getItem().getName()));
+        colName.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getItem().getName()));
 
-        if (colType != null)
-            colType.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(
-                            StatusDisplayHelper.formatItemType(
-                                    cellData.getValue().getItem().getClass().getSimpleName())));
+        colType.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        StatusDisplayHelper.formatItemType(
+                                cellData.getValue().getItem().getClass().getSimpleName())));
 
-        if (colPrice != null)
-            colPrice.setCellValueFactory(cellData ->
-                    new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
+        colPrice.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
 
-        if (colBidCount != null)
-            colBidCount.setCellValueFactory(cellData ->
-                    new SimpleIntegerProperty(cellData.getValue().getBidHistory().size()).asObject());
+        colBidCount.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(cellData.getValue().getBidHistory().size()).asObject());
 
-        if (colHighestBidder != null)
-            colHighestBidder.setCellValueFactory(cellData -> {
-                var bidder = cellData.getValue().getHighestBidder();
-                return new SimpleStringProperty(bidder != null ? bidder.getUsername() : "Chưa có");
-            });
+        colHighestBidder.setCellValueFactory(cellData -> {
+            var bidder = cellData.getValue().getHighestBidder();
+            return new SimpleStringProperty(bidder != null ? bidder.getUsername() : "Chưa có");
+        });
 
-        if (colEndTime != null)
-            colEndTime.setCellValueFactory(cellData -> {
-                var endTime = cellData.getValue().getEndTime();
-                return new SimpleStringProperty(endTime != null ? endTime.format(TIME_FMT) : "—");
-            });
+        colEndTime.setCellValueFactory(cellData -> {
+            var endTime = cellData.getValue().getEndTime();
+            return new SimpleStringProperty(endTime != null ? endTime.format(TIME_FMT) : "—");
+        });
 
-        if (colStatus != null)
-            colStatus.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(
-                            StatusDisplayHelper.formatAuctionStatus(
-                                    cellData.getValue().getStatus().name())));
+        colStatus.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        StatusDisplayHelper.formatAuctionStatus(
+                                cellData.getValue().getStatus().name())));
 
-        if (colSeller != null)
-            colSeller.setCellValueFactory(cellData -> {
-                var owner = cellData.getValue().getItem().getOwner();
-                return new SimpleStringProperty(owner != null ? owner.getUsername() : "—");
-            });
+        colSeller.setCellValueFactory(cellData -> {
+            var owner = cellData.getValue().getItem().getOwner();
+            return new SimpleStringProperty(owner != null ? owner.getUsername() : "—");
+        });
     }
 }

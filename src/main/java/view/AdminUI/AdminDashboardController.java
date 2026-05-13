@@ -25,44 +25,60 @@ import java.util.ResourceBundle;
 
 public class AdminDashboardController implements Initializable {
 
-    @FXML private HBox menuBar;
+    @FXML
+    private HBox menuBar;
 
     // Stat Labels
-    @FXML private Label lblTotalUsers;
-    @FXML private Label lblTotalAuctions;
-    @FXML private Label lblRunningAuctions;
-    @FXML private Label lblFinishedAuctions;
+    @FXML
+    private Label lblTotalUsers;
+    @FXML
+    private Label lblTotalAuctions;
+    @FXML
+    private Label lblRunningAuctions;
+    @FXML
+    private Label lblFinishedAuctions;
 
     // Recent Auctions Table
-    @FXML private TableView<Auction> tableRecentAuctions;
-    @FXML private TableColumn<Auction, String> colAucId;
-    @FXML private TableColumn<Auction, String> colAucName;
-    @FXML private TableColumn<Auction, Double> colAucPrice;
-    @FXML private TableColumn<Auction, String> colAucStatus;
+    @FXML
+    private TableView<Auction> tableRecentAuctions;
+    @FXML
+    private TableColumn<Auction, String> colAucId;
+    @FXML
+    private TableColumn<Auction, String> colAucName;
+    @FXML
+    private TableColumn<Auction, Double> colAucPrice;
+    @FXML
+    private TableColumn<Auction, String> colAucStatus;
 
     // Recent Users Table
-    @FXML private TableView<User> tableRecentUsers;
-    @FXML private TableColumn<User, String> colUserId;
-    @FXML private TableColumn<User, String> colUserName;
-    @FXML private TableColumn<User, String> colUserRole;
-    @FXML private TableColumn<User, String> colUserStatus;
+    @FXML
+    private TableView<User> tableRecentUsers;
+    @FXML
+    private TableColumn<User, String> colUserId;
+    @FXML
+    private TableColumn<User, String> colUserName;
+    @FXML
+    private TableColumn<User, String> colUserRole;
+    @FXML
+    private TableColumn<User, String> colUserStatus;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // === CẤU HÌNH CỘT BẢNG ĐẤU GIÁ ===
         colAucId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colAucName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
-        colAucPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
-        colAucStatus.setCellValueFactory(cellData ->
-                new SimpleStringProperty(StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
+        colAucPrice.setCellValueFactory(
+                cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
+        colAucStatus.setCellValueFactory(cellData -> new SimpleStringProperty(
+                StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
 
         // === CẤU HÌNH CỘT BẢNG NGƯỜI DÙNG ===
         colUserId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colUserName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        colUserRole.setCellValueFactory(cellData ->
-                new SimpleStringProperty(StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
-        colUserStatus.setCellValueFactory(cellData ->
-                new SimpleStringProperty(StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
+        colUserRole.setCellValueFactory(cellData -> new SimpleStringProperty(
+                StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
+        colUserStatus.setCellValueFactory(cellData -> new SimpleStringProperty(
+                StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER (REAL-TIME) ===
         ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
@@ -71,15 +87,15 @@ public class AdminDashboardController implements Initializable {
                     // Cập nhật thống kê
                     lblTotalAuctions.setText(String.valueOf(listFromServer.size()));
                     long running = listFromServer.stream().filter(a -> "RUNNING".equals(a.getStatus().name())).count();
-                    long finished = listFromServer.stream().filter(a -> "FINISHED".equals(a.getStatus().name())).count();
+                    long finished = listFromServer.stream().filter(a -> "FINISHED".equals(a.getStatus().name()))
+                            .count();
                     lblRunningAuctions.setText(String.valueOf(running));
                     lblFinishedAuctions.setText(String.valueOf(finished));
 
                     // Hiển thị tối đa 5 phiên gần nhất
                     int limit = Math.min(5, listFromServer.size());
                     ObservableList<Auction> recentAuctions = FXCollections.observableArrayList(
-                            listFromServer.subList(Math.max(0, listFromServer.size() - limit), listFromServer.size())
-                    );
+                            listFromServer.subList(Math.max(0, listFromServer.size() - limit), listFromServer.size()));
                     tableRecentAuctions.setItems(recentAuctions);
                 });
             }
@@ -94,8 +110,7 @@ public class AdminDashboardController implements Initializable {
                     // Hiển thị tối đa 5 user gần nhất
                     int limit = Math.min(5, listFromServer.size());
                     ObservableList<User> recentUsers = FXCollections.observableArrayList(
-                            listFromServer.subList(Math.max(0, listFromServer.size() - limit), listFromServer.size())
-                    );
+                            listFromServer.subList(Math.max(0, listFromServer.size() - limit), listFromServer.size()));
                     tableRecentUsers.setItems(recentUsers);
                 });
             }

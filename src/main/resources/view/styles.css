@@ -22,7 +22,8 @@
 }
 
 /* --- TEXT FIELDS & PASSWORD FIELDS --- */
-.text-field, .password-field {
+.text-field,
+.password-field {
     -fx-background-color: #ffffff;
     -fx-border-color: #d0d0d0;
     -fx-border-radius: 8;
@@ -33,13 +34,14 @@
     -fx-font-family: "Segoe UI";
     -fx-padding: 10 14;
     -fx-pref-height: 40;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 4, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 4, 0, 0, 1);
 }
 
-.text-field:focused, .password-field:focused {
+.text-field:focused,
+.password-field:focused {
     -fx-border-color: #ea7f33;
     -fx-background-color: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.25), 8, 0, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.25), 8, 0, 0, 0);
 }
 
 /* --- TEXT AREA --- */
@@ -71,17 +73,17 @@
     -fx-background-radius: 10;
     -fx-padding: 12 30;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.35), 10, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.35), 10, 0, 0, 3);
 }
 
 .btn-primary:hover {
     -fx-background-color: linear-gradient(to right, #f59542, #ea7f33);
-    -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.5), 14, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.5), 14, 0, 0, 5);
 }
 
 .btn-primary:pressed {
     -fx-background-color: linear-gradient(to right, #c05e18, #a84f12);
-    -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.2), 4, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.2), 4, 0, 0, 1);
 }
 
 .btn-secondary {
@@ -110,12 +112,12 @@
     -fx-background-radius: 25;
     -fx-padding: 14 36;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(212,205,61,0.4), 10, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(212, 205, 61, 0.4), 10, 0, 0, 3);
 }
 
 .btn-gold:hover {
     -fx-background-color: linear-gradient(to right, #e0d94a, #d4cd3d);
-    -fx-effect: dropshadow(gaussian, rgba(212,205,61,0.6), 14, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(212, 205, 61, 0.6), 14, 0, 0, 5);
 }
 
 .btn-accent {
@@ -152,32 +154,32 @@
 .nav-bar {
     -fx-background-color: #1a1a1a;
     -fx-padding: 0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
 }
 
 .nav-btn {
     -fx-background-color: transparent;
     -fx-text-fill: #cccccc;
-    -fx-font-size: 15px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-font-family: "Segoe UI";
-    -fx-padding: 20 24;
+    -fx-padding: 22 20;
     -fx-cursor: hand;
     -fx-background-radius: 0;
 }
 
 .nav-btn:hover {
-    -fx-background-color: rgba(234,127,51,0.2);
+    -fx-background-color: rgba(234, 127, 51, 0.2);
     -fx-text-fill: #ea7f33;
 }
 
 .nav-btn-active {
-    -fx-background-color: rgba(234,127,51,0.25);
+    -fx-background-color: rgba(234, 127, 51, 0.25);
     -fx-text-fill: #ea7f33;
-    -fx-font-size: 15px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-font-family: "Segoe UI";
-    -fx-padding: 20 24;
+    -fx-padding: 22 20;
     -fx-cursor: hand;
     -fx-background-radius: 0;
     -fx-border-width: 0 0 3 0;
@@ -188,15 +190,15 @@
 .menu-button {
     -fx-background-color: transparent;
     -fx-text-fill: #cccccc;
-    -fx-font-size: 15px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-font-family: "Segoe UI";
-    -fx-padding: 20 24;
+    -fx-padding: 22 18;
     -fx-cursor: hand;
 }
 
 .menu-button:hover {
-    -fx-background-color: rgba(234,127,51,0.2);
+    -fx-background-color: rgba(234, 127, 51, 0.2);
     -fx-text-fill: #ea7f33;
 }
 
@@ -219,7 +221,8 @@
     -fx-padding: 8 16;
 }
 
-.menu-item:hover, .menu-item:focused {
+.menu-item:hover,
+.menu-item:focused {
     -fx-background-color: #ea7f33;
     -fx-text-fill: white;
 }
@@ -228,7 +231,8 @@
     -fx-text-fill: #1a1a1a;
 }
 
-.menu-item:hover .label, .menu-item:focused .label {
+.menu-item:hover .label,
+.menu-item:focused .label {
     -fx-text-fill: white;
 }
 
@@ -237,7 +241,7 @@
     -fx-border-color: #e0e0e0;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 12, 0, 0, 4);
 }
 
 /* --- TABLE VIEW --- */
@@ -255,7 +259,7 @@
 
 .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-border-color: transparent transparent rgba(255,255,255,0.1) transparent;
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.1) transparent;
 }
 
 .table-view .column-header .label {
@@ -283,11 +287,11 @@
 }
 
 .table-row-cell:selected {
-    -fx-background-color: rgba(234,127,51,0.15);
+    -fx-background-color: rgba(234, 127, 51, 0.15);
 }
 
 .table-row-cell:hover {
-    -fx-background-color: rgba(212,205,61,0.12);
+    -fx-background-color: rgba(212, 205, 61, 0.12);
 }
 
 .table-view .filler {
@@ -304,7 +308,7 @@
     -fx-background: transparent;
 }
 
-.scroll-pane > .viewport {
+.scroll-pane>.viewport {
     -fx-background-color: transparent;
 }
 
@@ -313,20 +317,22 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: rgba(0,0,0,0.12);
+    -fx-background-color: rgba(0, 0, 0, 0.12);
     -fx-background-radius: 10;
 }
 
 .scroll-bar .thumb:hover {
-    -fx-background-color: rgba(0,0,0,0.22);
+    -fx-background-color: rgba(0, 0, 0, 0.22);
 }
 
-.scroll-bar .increment-button, .scroll-bar .decrement-button {
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
     -fx-background-color: transparent;
     -fx-padding: 0;
 }
 
-.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
     -fx-shape: "";
     -fx-padding: 0;
 }
@@ -490,11 +496,11 @@
     -fx-background-radius: 14;
     -fx-border-color: #e8e8e0;
     -fx-border-radius: 14;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 8, 0, 0, 2);
 }
 
 .stat-card:hover {
-    -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.15), 12, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.15), 12, 0, 0, 4);
 }
 
 .stat-value {
@@ -568,7 +574,7 @@
 
 /* --- STATUS BADGES --- */
 .badge-active {
-    -fx-background-color: rgba(39,174,96,0.15);
+    -fx-background-color: rgba(39, 174, 96, 0.15);
     -fx-text-fill: #27ae60;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
@@ -577,7 +583,7 @@
 }
 
 .badge-inactive {
-    -fx-background-color: rgba(231,76,60,0.15);
+    -fx-background-color: rgba(231, 76, 60, 0.15);
     -fx-text-fill: #e74c3c;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
@@ -586,7 +592,7 @@
 }
 
 .badge-running {
-    -fx-background-color: rgba(234,127,51,0.15);
+    -fx-background-color: rgba(234, 127, 51, 0.15);
     -fx-text-fill: #ea7f33;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
@@ -595,7 +601,7 @@
 }
 
 .badge-finished {
-    -fx-background-color: rgba(149,165,166,0.2);
+    -fx-background-color: rgba(149, 165, 166, 0.2);
     -fx-text-fill: #7f8c8d;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
@@ -609,7 +615,7 @@
     -fx-background-radius: 16;
     -fx-border-color: #e8e8e0;
     -fx-border-radius: 16;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
 }
 
 /* --- ADMIN PAGE TITLE --- */
@@ -625,4 +631,3 @@
     -fx-font-size: 14px;
     -fx-font-family: "Segoe UI";
 }
-
