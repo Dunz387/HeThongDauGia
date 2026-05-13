@@ -17,7 +17,7 @@ import network.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.AlertHelper;
 import view.utility.SceneManager;
-import view.utility.StatusDisplayHelper;
+import view.utility.AuctionTableConfigurator;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,20 +30,22 @@ public class SellerAuctionListController implements Initializable {
     @FXML private TableView<Auction> tableMyAuction;
     @FXML private TableColumn<Auction, String> colId;
     @FXML private TableColumn<Auction, String> colName;
+    @FXML private TableColumn<Auction, String> colType;
     @FXML private TableColumn<Auction, Double> colPrice;
+    @FXML private TableColumn<Auction, Integer> colBidCount;
+    @FXML private TableColumn<Auction, String> colHighestBidder;
+    @FXML private TableColumn<Auction, String> colEndTime;
     @FXML private TableColumn<Auction, String> colStatus;
+    @FXML private TableColumn<Auction, String> colSeller;
     @FXML private Button btnMonitor;
 
     private Auction latestAuction = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // === CẤU HÌNH CỘT BẢNG (SRP: sử dụng StatusDisplayHelper) ===
-        colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
-        colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
-        colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
-        colStatus.setCellValueFactory(cellData ->
-                new SimpleStringProperty(StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
+        // === CẤU HÌNH CỘT BẢNG ===
+        AuctionTableConfigurator.configure(colId, colName, colType, colPrice,
+                colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER ===
         ClientNetworkManager.getInstance().setAuctionListListener((listFromServer) -> {
