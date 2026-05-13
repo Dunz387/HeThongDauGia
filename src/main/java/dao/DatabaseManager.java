@@ -22,6 +22,7 @@ public class DatabaseManager {
             CREATE TABLE IF NOT EXISTS auctions (
                 id TEXT PRIMARY KEY,
                 item_name TEXT NOT NULL,
+                item_description TEXT,
                 item_type TEXT, 
                 starting_price REAL,
                 current_price REAL,
@@ -51,6 +52,14 @@ public class DatabaseManager {
              Statement stmt = conn.createStatement()) {
             stmt.execute(createUsersTable);
             stmt.execute(createAuctionsTable);
+            
+            // Migration: Add item_description if not exists
+            try {
+                stmt.execute("ALTER TABLE auctions ADD COLUMN item_description TEXT");
+            } catch (SQLException ignored) {
+                // Column already exists
+            }
+
             stmt.execute(createBidTransactionsTable);
             System.out.println("✅ Database SQLite đã được khởi tạo thành công!");
         } catch (SQLException e) {

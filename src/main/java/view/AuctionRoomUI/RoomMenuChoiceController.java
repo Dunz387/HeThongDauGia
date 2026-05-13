@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.auction.Auction;
 import view.utility.AuctionNetworkHelper;
@@ -28,8 +30,17 @@ public class RoomMenuChoiceController implements Initializable {
     @FXML private TableColumn<Auction, String> colStatus;
     @FXML private TableColumn<Auction, String> colSeller;
 
+    @FXML private HBox sellerActionBox;
+    @FXML private Button btnCreateAuction;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (!network.SessionManager.getInstance().isSeller()) {
+            if (sellerActionBox != null) {
+                sellerActionBox.setVisible(false);
+                sellerActionBox.setManaged(false);
+            }
+        }
         // Cấu hình 9 cột bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
         AuctionTableConfigurator.configure(colId, colName, colType, colPrice,
                 colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
@@ -42,8 +53,16 @@ public class RoomMenuChoiceController implements Initializable {
                     Auction selectedAuction = row.getItem();
                     System.out.println("🏛️ Đang vào phòng đấu giá: " + selectedAuction.getId());
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
-                    // Truyền auctionId thực tế vào phòng đấu giá
-                    SceneManager.goToInRoom(currentStage, selectedAuction.getId());
+                    
+                    if (network.SessionManager.getInstance().isBidder() || network.SessionManager.getInstance().isAdmin()) {
+                        SceneManager.goToInRoom(currentStage, selectedAuction.getId());
+                    } else if (network.SessionManager.getInstance().isSeller()) {
+                        if (selectedAuction.getItem().getOwner() != null && selectedAuction.getItem().getOwner().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                            SceneManager.goToSellerInRoom(currentStage, selectedAuction.getId());
+                        } else {
+                            view.utility.AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
+                        }
+                    }
                 }
             });
             return row;
@@ -58,5 +77,11 @@ public class RoomMenuChoiceController implements Initializable {
     private void backToBaseMenu(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         SceneManager.goToBaseMenu(stage);
+    }
+
+    @FXML
+    private void goToCreateItem(ActionEvent event) {
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        view.utility.WindowManager.openCreateItemWindow(stage);
     }
 }

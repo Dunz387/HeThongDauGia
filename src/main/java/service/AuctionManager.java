@@ -91,6 +91,44 @@ public class AuctionManager {
             return AdminDAO.deleteAuctionForce(auctionId);       // 2. Xóa dưới DB
         }
     }
+
+    public boolean updateAuctionForce(String auctionId, String newName, String newDesc, String newType, double newPrice) {
+        synchronized (auctions) {
+            Auction a = getAuctionById(auctionId);
+            if (a != null) {
+                // Sửa thông tin Item
+                a.getItem().setName(newName);
+                a.getItem().setDescription(newDesc);
+                
+                // Nếu đổi type thì phải tạo Item mới (ItemFactory)
+                String currentType = "ELECTRONICS";
+                if (a.getItem() instanceof model.item.Arts) currentType = "ART";
+                else if (a.getItem() instanceof model.item.Vehicle) currentType = "VEHICLE";
+                
+                if (!currentType.equalsIgnoreCase(newType)) {
+                    model.item.Item newItem = model.item.ItemFactory.createItem(newType, a.getItem().getId(), newName, newDesc, a.getItem().getOwner(), "Unknown", 0);
+                    // Dùng reflection hoặc gán lại item trong Auction nếu item không final.
+                    // Trong code hiện tại Item item không final.
+                    try {
+                        java.lang.reflect.Field itemField = Auction.class.getDeclaredField("item");
+                        itemField.setAccessible(true);
+                        itemField.set(a, newItem);
+                    } catch (Exception e) {
+                        System.err.println("Lỗi đổi loại sản phẩm: " + e.getMessage());
+                    }
+                }
+
+                a.setStartingPrice(newPrice);
+                // Nếu chưa ai đặt giá thì cập nhật currentPrice luôn
+                if (a.getBidHistory().isEmpty()) {
+                    a.setCurrentPrice(newPrice);
+                }
+                
+                return AuctionDAO.updateAuction(a);
+            }
+            return false;
+        }
+    }
     // ==========================================
 
     // ==========================================
@@ -109,15 +147,31 @@ public class AuctionManager {
         }
     }
 
-    public boolean updateAuctionBySeller(String auctionId, String sellerId, String newName, double newPrice, int newDuration) {
+    public boolean updateAuctionBySeller(String auctionId, String sellerId, String newName, String newDesc, String newType) {
         synchronized (auctions) {
             Auction a = getAuctionById(auctionId);
             if (a != null && a.getItem().getOwner().getId().equals(sellerId)) {
+                // Chỉ cho sửa nếu chưa có ai đặt giá và phiên chưa kết thúc
                 if (a.getStatus() != AuctionStatus.FINISHED && a.getBidHistory().isEmpty()) {
                     a.getItem().setName(newName);
-                    a.setStartingPrice(newPrice);
-                    a.setCurrentPrice(newPrice);
-                    a.setEndTime(LocalDateTime.now().plusMinutes(newDuration));
+                    a.getItem().setDescription(newDesc);
+                    
+                    // Xử lý đổi loại sản phẩm
+                    String currentType = "ELECTRONICS";
+                    if (a.getItem() instanceof model.item.Arts) currentType = "ART";
+                    else if (a.getItem() instanceof model.item.Vehicle) currentType = "VEHICLE";
+                    
+                    if (!currentType.equalsIgnoreCase(newType)) {
+                        model.item.Item newItem = model.item.ItemFactory.createItem(newType, a.getItem().getId(), newName, newDesc, a.getItem().getOwner(), "Unknown", 0);
+                        try {
+                            java.lang.reflect.Field itemField = Auction.class.getDeclaredField("item");
+                            itemField.setAccessible(true);
+                            itemField.set(a, newItem);
+                        } catch (Exception e) {
+                             System.err.println("Lỗi đổi loại sản phẩm: " + e.getMessage());
+                        }
+                    }
+                    
                     return AuctionDAO.updateAuction(a);
                 }
             }

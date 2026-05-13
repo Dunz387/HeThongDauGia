@@ -29,7 +29,7 @@
       </VBox>
 
       <!-- Table Card -->
-      <VBox AnchorPane.topAnchor="110" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="30" style="-fx-background-color: #ffffff; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #e8e8e0; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);">
+      <VBox AnchorPane.topAnchor="110" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="80" style="-fx-background-color: #ffffff; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #e8e8e0; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);">
          <children>
              <TableView fx:id="tableAuctions" VBox.vgrow="ALWAYS" prefWidth="780.0">
                 <columnResizePolicy>
@@ -49,5 +49,11 @@
              </TableView>
          </children>
       </VBox>
+
+      <HBox fx:id="sellerActionBox" alignment="CENTER_RIGHT" spacing="10" AnchorPane.bottomAnchor="30" AnchorPane.rightAnchor="40">
+         <children>
+            <Button fx:id="btnCreateAuction" mnemonicParsing="false" onAction="#goToCreateItem" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8;" text="Tạo phiên đấu giá" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

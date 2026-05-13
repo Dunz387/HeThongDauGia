@@ -56,7 +56,7 @@ public class ClientHandler implements Runnable {
                             if (parts.length >= 5) handleCreateItem(parts[1], parts[2], parts[3], parts[4]);
                             break;
                         case Protocol.REQ_UPDATE_ITEM:
-                            if (parts.length >= 5) handleUpdateItem(parts[1], parts[2], parts[3], parts[4]);
+                            if (parts.length >= 6) handleUpdateItem(parts[1], parts[2], parts[3], parts[4], parts[5]);
                             break;
                         case Protocol.REQ_DELETE_ITEM:
                             if (parts.length >= 2) handleDeleteItem(parts[1]);
@@ -162,22 +162,28 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleUpdateItem(String auctionId, String newName, String newPriceStr, String newDurStr) {
-        if (loggedInUser instanceof Seller) {
-            try {
+    private void handleUpdateItem(String auctionId, String newName, String newDesc, String newType, String newPriceStr) {
+        try {
+            if (loggedInUser instanceof Admin) {
                 double newPrice = Double.parseDouble(newPriceStr);
-                int newDur = Integer.parseInt(newDurStr);
-                if (manager.updateAuctionBySeller(auctionId, loggedInUser.getId(), newName, newPrice, newDur)) {
+                if (manager.updateAuctionForce(auctionId, newName, newDesc, newType, newPrice)) {
                     sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-                    server.broadcastAuctionList(); // Cập nhật lại UI cho mọi người
+                    server.broadcastAuctionList();
+                } else {
+                    sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi cập nhật (không tìm thấy phiên).");
+                }
+            } else if (loggedInUser instanceof Seller) {
+                if (manager.updateAuctionBySeller(auctionId, loggedInUser.getId(), newName, newDesc, newType)) {
+                    sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                    server.broadcastAuctionList();
                 } else {
                     sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không thể sửa (đã có người đặt giá hoặc sai quyền).");
                 }
-            } catch (Exception e) {
-                sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Dữ liệu không hợp lệ.");
+            } else {
+                sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Bạn không có quyền thực hiện!");
             }
-        } else {
-            sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người bán mới được sửa!");
+        } catch (Exception e) {
+            sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Dữ liệu không hợp lệ.");
         }
     }
 

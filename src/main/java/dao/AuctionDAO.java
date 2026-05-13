@@ -15,28 +15,29 @@ import java.util.List;
 public class AuctionDAO {
 
     public static boolean saveAuction(Auction auction) {
-        String sql = "INSERT INTO auctions(id, item_name, item_type, starting_price, current_price, bid_increment, end_time, status, seller_id) VALUES(?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO auctions(id, item_name, item_description, item_type, starting_price, current_price, bid_increment, end_time, status, seller_id) VALUES(?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, auction.getId());
             pstmt.setString(2, auction.getItem().getName());
+            pstmt.setString(3, auction.getItem().getDescription());
 
             String type = "ELECTRONICS";
             if (auction.getItem() instanceof model.item.Arts) type = "ART";
             else if (auction.getItem() instanceof model.item.Vehicle) type = "VEHICLE";
 
-            pstmt.setString(3, type);
-            pstmt.setDouble(4, auction.getStartingPrice());
-            pstmt.setDouble(5, auction.getCurrentPrice());
-            pstmt.setDouble(6, auction.getBidIncrement());
-            pstmt.setString(7, auction.getEndTime().toString());
-            pstmt.setString(8, auction.getStatus().toString());
+            pstmt.setString(4, type);
+            pstmt.setDouble(5, auction.getStartingPrice());
+            pstmt.setDouble(6, auction.getCurrentPrice());
+            pstmt.setDouble(7, auction.getBidIncrement());
+            pstmt.setString(8, auction.getEndTime().toString());
+            pstmt.setString(9, auction.getStatus().toString());
 
             // Lưu seller_id từ Item owner
             String sellerId = (auction.getItem().getOwner() != null) ? auction.getItem().getOwner().getId() : null;
-            pstmt.setString(9, sellerId);
+            pstmt.setString(10, sellerId);
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -46,12 +47,21 @@ public class AuctionDAO {
     }
 
     public static boolean updateAuction(Auction auction) {
-        String sql = "UPDATE auctions SET current_price = ?, status = ?, highest_bidder_id = ? WHERE id = ?";
+        String sql = "UPDATE auctions SET current_price = ?, starting_price = ?, status = ?, highest_bidder_id = ?, item_name = ?, item_description = ?, item_type = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, auction.getCurrentPrice());
-            pstmt.setString(2, auction.getStatus().toString());
-            pstmt.setString(3, (auction.getHighestBidder() != null) ? auction.getHighestBidder().getId() : null);
-            pstmt.setString(4, auction.getId());
+            pstmt.setDouble(2, auction.getStartingPrice());
+            pstmt.setString(3, auction.getStatus().toString());
+            pstmt.setString(4, (auction.getHighestBidder() != null) ? auction.getHighestBidder().getId() : null);
+            pstmt.setString(5, auction.getItem().getName());
+            pstmt.setString(6, auction.getItem().getDescription());
+            
+            String type = "ELECTRONICS";
+            if (auction.getItem() instanceof model.item.Arts) type = "ART";
+            else if (auction.getItem() instanceof model.item.Vehicle) type = "VEHICLE";
+            pstmt.setString(7, type);
+            
+            pstmt.setString(8, auction.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("❌ Lỗi cập nhật auction: " + e.getMessage());
@@ -85,6 +95,8 @@ public class AuctionDAO {
             while (rs.next()) {
                 String id = rs.getString("id");
                 String itemName = rs.getString("item_name");
+                String itemDesc = rs.getString("item_description");
+                if (itemDesc == null) itemDesc = "Mô tả sản phẩm";
                 String itemType = rs.getString("item_type");
                 if (itemType == null) itemType = "ELECTRONICS";
 
@@ -113,7 +125,7 @@ public class AuctionDAO {
                 }
 
                 model.item.Item tempItem = ItemFactory.createItem(
-                        itemType, "ITEM-" + id, itemName, "Khôi phục từ DB", seller, "Unknown", 0);
+                        itemType, "ITEM-" + id, itemName, itemDesc, seller, "Unknown", 0);
 
                 Auction auction = new Auction(id, tempItem, startingPrice, bidIncrement, LocalDateTime.parse(endTimeStr));
                 auction.setStatus(AuctionStatus.valueOf(statusStr));

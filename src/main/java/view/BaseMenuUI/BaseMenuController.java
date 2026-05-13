@@ -62,7 +62,7 @@ public class BaseMenuController implements Initializable {
                             AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
                         }
                     } else if (network.SessionManager.getInstance().isAdmin()) {
-                        AlertHelper.showWarning("Cảnh báo", "Admin không tham gia phòng đấu giá!");
+                        SceneManager.goToInRoom(currentStage, selectedAuction.getId());
                     } else {
                         AlertHelper.showWarning("Quyền truy cập", "Bạn không có quyền tham gia!");
                     }
@@ -81,10 +81,6 @@ public class BaseMenuController implements Initializable {
 
     @FXML
     private void joinBidding(ActionEvent event) {
-        if (!network.SessionManager.getInstance().isBidder()) {
-            AlertHelper.showWarning("Quyền truy cập", "Chỉ người mua (Bidder) mới có thể tham gia đấu giá!");
-            return;
-        }
         Stage currentStage = (Stage) menuBar.getScene().getWindow();
         SceneManager.goToRoomMenu(currentStage);
     }
