@@ -10,8 +10,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29630cb3-8303-45f8-ba5d-eadca0659df0" name="Changes" comment="sửa tinh chỉnh toàn diện">
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/AuctionObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/AuctionObserver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/shared/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/shared/Protocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/RoomMenuChoiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/RoomMenuChoiceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/SellerInRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/SellerInRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/SellerUI/SellerAuctionListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/SellerUI/SellerAuctionListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/SceneManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/SceneManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

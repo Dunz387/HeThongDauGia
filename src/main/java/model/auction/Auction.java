@@ -9,6 +9,7 @@ import model.user.Bidder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Auction extends Entity implements AuctionSubject {
@@ -32,6 +33,28 @@ public class Auction extends Entity implements AuctionSubject {
     private transient List<AuctionObserver> observers;
     private transient ReentrantLock lock = new ReentrantLock();
 
+    // Auto-bidding
+    public static class AutoBidConfig implements Comparable<AutoBidConfig> {
+        public Bidder bidder;
+        public double maxBid;
+        public double increment;
+        public long registerTime;
+
+        public AutoBidConfig(Bidder bidder, double maxBid, double increment, long registerTime) {
+            this.bidder = bidder;
+            this.maxBid = maxBid;
+            this.increment = increment;
+            this.registerTime = registerTime;
+        }
+
+        @Override
+        public int compareTo(AutoBidConfig other) {
+            return Long.compare(this.registerTime, other.registerTime);
+        }
+    }
+    
+    private transient PriorityQueue<AutoBidConfig> autoBids;
+
     public Auction(String id, Item item, double startingPrice, double bidIncrement, LocalDateTime endTime) {
         super(id);
         this.item = item;
@@ -44,6 +67,7 @@ public class Auction extends Entity implements AuctionSubject {
         this.status = AuctionStatus.OPEN;
         this.bidHistory = new ArrayList<>();
         this.observers = new ArrayList<>();
+        this.autoBids = new PriorityQueue<>();
     }
 
     public Item getItem() {
@@ -108,6 +132,51 @@ public class Auction extends Entity implements AuctionSubject {
         return bidHistory;
     }
 
+    public void registerAutoBid(Bidder bidder, double maxBid, double increment) {
+        if (autoBids == null) autoBids = new PriorityQueue<>();
+        autoBids.add(new AutoBidConfig(bidder, maxBid, increment, System.currentTimeMillis()));
+        triggerAutoBidding();
+    }
+
+    private void triggerAutoBidding() {
+        if (autoBids == null || autoBids.isEmpty()) return;
+        
+        // Cần copy ra một danh sách tạm để duyệt qua PriorityQueue
+        List<AutoBidConfig> activeAutoBids = new ArrayList<>(autoBids);
+        activeAutoBids.sort(null); // Sắp xếp theo registerTime
+        
+        boolean newBidPlaced = false;
+        for (AutoBidConfig config : activeAutoBids) {
+            // Nếu người này đang là người giữ giá cao nhất thì không cần tự động đặt
+            if (this.highestBidder != null && this.highestBidder.getId().equals(config.bidder.getId())) continue;
+            
+            double nextBid = this.currentPrice + config.increment;
+            // Chỉ đặt nếu giá tiếp theo <= maxBid
+            if (nextBid <= config.maxBid) {
+                try {
+                    placeBid(config.bidder, nextBid);
+                    newBidPlaced = true;
+                    break; // Phá vỡ vòng lặp để đợt placeBid đệ quy tự lo
+                } catch (Exception e) {
+                    // Auto-bid thất bại (không đủ tiền, v.v.), có thể xóa khỏi autoBids nếu muốn
+                }
+            }
+        }
+    }
+
+    public double getDynamicIncrement() {
+        // Quy tắc bước nhảy 10% (Universal Auction Language)
+        // Bước giá tối thiểu = 10% giá hiện tại
+        double increment = this.currentPrice * 0.1;
+        
+        // Làm tròn bước giá cho đẹp (Ví dụ: 10.5 -> 10, 155 -> 150 hoặc 160)
+        // Ở đây ta có thể làm tròn xuống hàng đơn vị hoặc hàng chục tùy quy mô
+        if (increment < 1) return 1.0;
+        if (increment < 10) return Math.floor(increment);
+        if (increment < 100) return Math.floor(increment / 5) * 5;
+        return Math.floor(increment / 10) * 10;
+    }
+
     public void placeBid(Bidder bidder, double bidAmount) throws InvalidBidException, AuctionClosedException {
         if (lock == null)
             lock = new ReentrantLock();
@@ -117,9 +186,10 @@ public class Auction extends Entity implements AuctionSubject {
                 throw new AuctionClosedException("Phiên đấu giá không trong trạng thái đang diễn ra!");
             }
 
-            double minRequiredBid = this.currentPrice + bidIncrement;
+            double minRequiredBid = this.currentPrice + getDynamicIncrement();
             if (bidAmount < minRequiredBid) {
-                throw new InvalidBidException(String.format("Giá đặt phải lớn hơn hoặc bằng $%.2f", minRequiredBid));
+                throw new InvalidBidException(String.format("Giá đặt phải lớn hơn hoặc bằng $%.2f (Bước nhảy tối thiểu: $%.2f)", 
+                        minRequiredBid, getDynamicIncrement()));
             }
 
             Bidder previousBidder = this.highestBidder;
@@ -148,9 +218,23 @@ public class Auction extends Entity implements AuctionSubject {
             // Báo cho Server biết có người vừa đặt giá!
             notifyObservers();
 
+            // Anti-sniping: Nếu còn dưới 30s thì tự động cộng thêm 30s
+            LocalDateTime now = LocalDateTime.now();
+            if (this.endTime.minusSeconds(30).isBefore(now) && this.endTime.isAfter(now)) {
+                this.endTime = this.endTime.plusSeconds(30);
+                if (observers != null) {
+                    for (AuctionObserver obs : observers) {
+                        obs.onTimeExtended(this, 30);
+                    }
+                }
+            }
+
         } finally {
             lock.unlock();
         }
+        
+        // Kích hoạt auto-bidding cho người khác sau khi nhả lock để tránh deadlock đệ quy
+        triggerAutoBidding();
     }
 
     // --- CÁC HÀM CỦA AUCTION SUBJECT ---

@@ -142,4 +142,12 @@ public class AuctionServer implements AuctionObserver {
         System.out.println("📢 [BROADCAST] Đã phát sóng giá mới: " + message);
         broadcast(message);
     }
+
+    @Override
+    public void onTimeExtended(Auction auction, int addedSeconds) {
+        String message = Protocol.BROADCAST_TIME_EXTENDED + Protocol.DELIMITER +
+                auction.getId() + Protocol.DELIMITER + addedSeconds;
+        System.out.println("📢 [BROADCAST] Gia hạn phiên đấu giá " + auction.getId() + " thêm " + addedSeconds + "s");
+        broadcast(message);
+    }
 }

@@ -161,10 +161,10 @@
                      </children>
                   </HBox>
                   <Separator />
-                  <TableView prefHeight="500.0" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="tableNotifications" prefHeight="500.0" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn prefWidth="180.0" text="Nội dung" />
-                        <TableColumn prefWidth="116.0" text="Thời gian" />
+                        <TableColumn fx:id="colNotifContent" prefWidth="180.0" text="Nội dung" />
+                        <TableColumn fx:id="colNotifTime" prefWidth="116.0" text="Thời gian" />
                      </columns>
                   </TableView>
                </children>

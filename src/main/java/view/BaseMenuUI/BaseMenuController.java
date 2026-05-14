@@ -41,6 +41,11 @@ public class BaseMenuController implements Initializable {
     @FXML private TableColumn<Auction, String> colStatus;
     @FXML private TableColumn<Auction, String> colSeller;
 
+    // Notifications
+    @FXML private TableView<network.NotificationManager.NotificationItem> tableNotifications;
+    @FXML private TableColumn<network.NotificationManager.NotificationItem, String> colNotifContent;
+    @FXML private TableColumn<network.NotificationManager.NotificationItem, String> colNotifTime;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Cập nhật số dư từ Session
@@ -62,15 +67,15 @@ public class BaseMenuController implements Initializable {
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
                     
                     if (network.SessionManager.getInstance().isBidder()) {
-                        SceneManager.goToInRoom(currentStage, selectedAuction.getId());
+                        SceneManager.goToInRoom(currentStage, selectedAuction);
                     } else if (network.SessionManager.getInstance().isSeller()) {
                         if (selectedAuction.getItem().getOwner() != null && selectedAuction.getItem().getOwner().getId().equals(network.SessionManager.getInstance().getUserId())) {
-                            SceneManager.goToSellerInRoom(currentStage, selectedAuction.getId());
+                            SceneManager.goToSellerInRoom(currentStage, selectedAuction);
                         } else {
                             AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
                         }
                     } else if (network.SessionManager.getInstance().isAdmin()) {
-                        SceneManager.goToInRoom(currentStage, selectedAuction.getId());
+                        SceneManager.goToInRoom(currentStage, selectedAuction);
                     } else {
                         AlertHelper.showWarning("Quyền truy cập", "Bạn không có quyền tham gia!");
                     }
@@ -81,6 +86,29 @@ public class BaseMenuController implements Initializable {
 
         // Đăng ký lắng nghe danh sách đấu giá từ Server
         view.utility.AuctionNetworkHelper.registerAuctionListListener(tableAuctions);
+
+        // Cấu hình bảng thông báo
+        if (tableNotifications != null) {
+            colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
+            colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
+            tableNotifications.setItems(network.NotificationManager.getInstance().getNotifications());
+        }
+
+        // Lắng nghe các sự kiện quan trọng để đẩy thông báo ra ngoài màn hình chính
+        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_START, (message) -> {
+            String[] parts = message.split(shared.Protocol.SEPARATOR);
+            if (parts.length >= 2) {
+                network.NotificationManager.getInstance().addNotification("🚀 Một phiên đấu giá mới (" + parts[1] + ") đã bắt đầu!");
+            }
+        });
+
+        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
+            String[] parts = message.split(shared.Protocol.SEPARATOR);
+            if (parts.length >= 2) {
+                String winner = parts.length > 2 ? parts[2] : "Không có";
+                network.NotificationManager.getInstance().addNotification("🏆 Phiên đấu giá " + parts[1] + " đã kết thúc. Người thắng: " + winner);
+            }
+        });
 
         // Đăng ký lắng nghe số dư realtime
         network.ClientNetworkManager.getInstance().addBalanceListener(newBalance -> {

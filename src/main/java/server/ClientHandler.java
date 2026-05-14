@@ -68,6 +68,9 @@ public class ClientHandler implements Runnable {
                         case Protocol.REQ_BID:
                             if (parts.length >= 3) handleBid(parts[1], parts[2]);
                             break;
+                        case Protocol.REQ_AUTOBID:
+                            if (parts.length >= 4) handleAutoBid(parts[1], parts[2], parts[3]);
+                            break;
                         case Protocol.REQ_GET_USERS:
                             handleGetUsers();
                             break;
@@ -224,11 +227,37 @@ public class ClientHandler implements Runnable {
             String result = manager.processBid(bidder, auction, amount);
             if (result.equals("Thành công!")) {
                 sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                // Gửi cập nhật số dư mới nhất cho chính người vừa đặt giá
+                sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + bidder.getBalance());
             } else {
                 sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + result);
             }
         } catch (Exception e) {
             sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi hệ thống đặt giá.");
+        }
+    }
+
+    private void handleAutoBid(String auctionId, String maxBidStr, String incrementStr) {
+        try {
+            if (!(loggedInUser instanceof Bidder)) {
+                sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người mua mới được đặt auto-bid!");
+                return;
+            }
+            double maxBid = Double.parseDouble(maxBidStr);
+            double increment = Double.parseDouble(incrementStr);
+            Bidder bidder = (Bidder) loggedInUser;
+
+            Auction auction = manager.getAuctionById(auctionId);
+            if (auction == null) {
+                sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy sản phẩm!");
+                return;
+            }
+
+            auction.registerAutoBid(bidder, maxBid, increment);
+            sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+            
+        } catch (Exception e) {
+            sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi hệ thống auto-bid.");
         }
     }
 

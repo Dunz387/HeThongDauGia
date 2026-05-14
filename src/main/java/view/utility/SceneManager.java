@@ -142,15 +142,15 @@ public class SceneManager {
     }
 
     /**
-     * Chuyển tới phòng đấu giá (InRoomView) VÀ truyền auctionId vào Controller.
+     * Chuyển tới phòng đấu giá (InRoomView) VÀ truyền auction vào Controller.
      * @param stage     Cửa sổ hiện tại
-     * @param auctionId ID phiên đấu giá cần tham gia
+     * @param auction Đối tượng phiên đấu giá cần tham gia
      */
-    public static void goToInRoom(Stage stage, String auctionId) {
+    public static void goToInRoom(Stage stage, model.auction.Auction auction) {
         view.AuctionRoomUI.InRoomController controller =
                 switchSceneAndGetController(stage, "/view/AuctionRoomUI/InRoomView.fxml", "Phòng Đấu Giá");
         if (controller != null) {
-            controller.setAuctionId(auctionId);
+            controller.setAuction(auction);
         }
     }
 
@@ -166,15 +166,15 @@ public class SceneManager {
     }
 
     /**
-     * Chuyển tới phòng đấu giá dành cho Seller VÀ truyền auctionId vào Controller.
+     * Chuyển tới phòng đấu giá dành cho Seller VÀ truyền auction vào Controller.
      * @param stage     Cửa sổ hiện tại
-     * @param auctionId ID phiên đấu giá cần theo dõi
+     * @param auction Đối tượng phiên đấu giá cần theo dõi
      */
-    public static void goToSellerInRoom(Stage stage, String auctionId) {
+    public static void goToSellerInRoom(Stage stage, model.auction.Auction auction) {
         view.AuctionRoomUI.SellerInRoomController controller =
                 switchSceneAndGetController(stage, "/view/AuctionRoomUI/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
         if (controller != null) {
-            controller.setAuctionId(auctionId);
+            controller.setAuction(auction);
         }
     }
 

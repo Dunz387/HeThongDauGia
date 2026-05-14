@@ -74,7 +74,7 @@ public class SellerAuctionListController implements Initializable {
         stage.close();
         if (mainStage != null) {
             // Truyền auctionId thực tế vào phòng theo dõi
-            SceneManager.goToSellerInRoom(mainStage, latestAuction.getId());
+            SceneManager.goToSellerInRoom(mainStage, latestAuction);
         }
     }
 
