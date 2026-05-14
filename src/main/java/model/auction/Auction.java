@@ -138,29 +138,39 @@ public class Auction extends Entity implements AuctionSubject {
         triggerAutoBidding();
     }
 
-    private void triggerAutoBidding() {
-        if (autoBids == null || autoBids.isEmpty()) return;
+    private transient boolean isAutoBidding = false;
+
+    public void triggerAutoBidding() {
+        if (autoBids == null || autoBids.isEmpty() || isAutoBidding) return;
         
-        // Cần copy ra một danh sách tạm để duyệt qua PriorityQueue
-        List<AutoBidConfig> activeAutoBids = new ArrayList<>(autoBids);
-        activeAutoBids.sort(null); // Sắp xếp theo registerTime
-        
-        boolean newBidPlaced = false;
-        for (AutoBidConfig config : activeAutoBids) {
-            // Nếu người này đang là người giữ giá cao nhất thì không cần tự động đặt
-            if (this.highestBidder != null && this.highestBidder.getId().equals(config.bidder.getId())) continue;
-            
-            double nextBid = this.currentPrice + config.increment;
-            // Chỉ đặt nếu giá tiếp theo <= maxBid
-            if (nextBid <= config.maxBid) {
-                try {
-                    placeBid(config.bidder, nextBid);
-                    newBidPlaced = true;
-                    break; // Phá vỡ vòng lặp để đợt placeBid đệ quy tự lo
-                } catch (Exception e) {
-                    // Auto-bid thất bại (không đủ tiền, v.v.), có thể xóa khỏi autoBids nếu muốn
+        isAutoBidding = true;
+        try {
+            while (true) {
+                // Cần copy ra một danh sách tạm để duyệt qua PriorityQueue
+                List<AutoBidConfig> activeAutoBids = new ArrayList<>(autoBids);
+                activeAutoBids.sort(null); // Sắp xếp theo registerTime
+                
+                boolean bidPlacedThisIteration = false;
+                for (AutoBidConfig config : activeAutoBids) {
+                    // Nếu người này đang là người giữ giá cao nhất thì không cần tự động đặt
+                    if (this.highestBidder != null && this.highestBidder.getId().equals(config.bidder.getId())) continue;
+                    
+                    double nextBid = this.currentPrice + Math.max(config.increment, getDynamicIncrement());
+                    // Chỉ đặt nếu giá tiếp theo <= maxBid
+                    if (nextBid <= config.maxBid) {
+                        try {
+                            placeBid(config.bidder, nextBid);
+                            bidPlacedThisIteration = true;
+                            break; // Phá vỡ vòng lặp để lượt while tiếp theo xử lý
+                        } catch (Exception e) {
+                            // Auto-bid thất bại (không đủ tiền, v.v.), có thể xóa khỏi autoBids nếu muốn
+                        }
+                    }
                 }
+                if (!bidPlacedThisIteration) break;
             }
+        } finally {
+            isAutoBidding = false;
         }
     }
 
@@ -216,7 +226,7 @@ public class Auction extends Entity implements AuctionSubject {
             this.lastActivityTime = LocalDateTime.now(); // Cập nhật thời gian khi có bid mới
 
             // Báo cho Server biết có người vừa đặt giá!
-            notifyObservers();
+            notifyObservers(previousBidder);
 
             // Anti-sniping: Nếu còn dưới 30s thì tự động cộng thêm 30s
             LocalDateTime now = LocalDateTime.now();
@@ -233,8 +243,10 @@ public class Auction extends Entity implements AuctionSubject {
             lock.unlock();
         }
         
-        // Kích hoạt auto-bidding cho người khác sau khi nhả lock để tránh deadlock đệ quy
-        triggerAutoBidding();
+        // Kích hoạt auto-bidding cho người khác (chỉ khi không phải đang trong vòng lặp auto-bid)
+        if (!isAutoBidding) {
+            triggerAutoBidding();
+        }
     }
 
     // --- CÁC HÀM CỦA AUCTION SUBJECT ---
@@ -255,14 +267,18 @@ public class Auction extends Entity implements AuctionSubject {
         }
     }
 
-    @Override
-    public void notifyObservers() {
+    public void notifyObservers(Bidder previousBidder) {
         if (observers != null) {
             for (AuctionObserver obs : observers) {
                 String topBidderName = (highestBidder != null) ? highestBidder.getUsername() : "Chưa có";
-                obs.update(this, this.currentPrice, topBidderName);
+                obs.update(this, this.currentPrice, topBidderName, previousBidder);
             }
         }
+    }
+
+    @Override
+    public void notifyObservers() {
+        notifyObservers(null);
     }
 
     public LocalDateTime getLastActivityTime() {

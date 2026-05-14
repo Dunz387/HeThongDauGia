@@ -133,7 +133,7 @@ public class AuctionServer implements AuctionObserver {
 
     // Xử lý sự kiện khi có giá mới (từ AuctionObserver)
     @Override
-    public void update(Auction auction, double newPrice, String topBidderName) {
+    public void update(Auction auction, double newPrice, String topBidderName, Bidder previousBidder) {
         String message = Protocol.BROADCAST_NEW_BID + Protocol.DELIMITER +
                 auction.getId() + Protocol.DELIMITER +
                 newPrice + Protocol.DELIMITER +
@@ -141,6 +141,11 @@ public class AuctionServer implements AuctionObserver {
 
         System.out.println("📢 [BROADCAST] Đã phát sóng giá mới: " + message);
         broadcast(message);
+
+        // T11: Cập nhật số dư cho người vừa bị vượt giá (nếu có)
+        if (previousBidder != null) {
+            sendBalanceUpdateToUser(previousBidder.getId(), previousBidder.getAvailableBalance());
+        }
     }
 
     @Override

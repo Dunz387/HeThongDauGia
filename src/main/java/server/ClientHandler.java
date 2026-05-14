@@ -95,7 +95,7 @@ public class ClientHandler implements Runnable {
         if (loggedInUser != null) {
             // Trả về: LOGIN;;;SUCCESS;;;ROLE;;;userId;;;username;;;balance
             double balance = 0.0;
-            if (loggedInUser instanceof Bidder) balance = ((Bidder) loggedInUser).getBalance();
+            if (loggedInUser instanceof Bidder) balance = ((Bidder) loggedInUser).getAvailableBalance();
             else if (loggedInUser instanceof Seller) balance = ((Seller) loggedInUser).getBalance();
 
             sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_SUCCESS
@@ -227,8 +227,8 @@ public class ClientHandler implements Runnable {
             String result = manager.processBid(bidder, auction, amount);
             if (result.equals("Thành công!")) {
                 sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-                // Gửi cập nhật số dư mới nhất cho chính người vừa đặt giá
-                sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + bidder.getBalance());
+                // Gửi cập nhật số dư mới nhất cho chính người vừa đặt giá (Số dư khả dụng)
+                sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + bidder.getAvailableBalance());
             } else {
                 sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + result);
             }

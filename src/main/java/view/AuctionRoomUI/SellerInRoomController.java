@@ -65,7 +65,7 @@ public class SellerInRoomController implements Initializable {
     private Timeline roundTimelineTimer;
     private java.time.LocalDateTime auctionEndTime;
     private int totalTimeRemaining = 0;
-    private static final int ROUND_DURATION = 90;
+    private static final int ROUND_DURATION = 30;
     private int roundTimeRemaining = ROUND_DURATION;
 
     @Override

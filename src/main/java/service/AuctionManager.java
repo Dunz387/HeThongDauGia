@@ -245,8 +245,10 @@ public class AuctionManager {
                     if (a.getStatus() == AuctionStatus.RUNNING) {
                         if (now.isAfter(a.getEndTime())) {
                             concludeAuction(a);
-                        } else if (java.time.temporal.ChronoUnit.SECONDS.between(a.getLastActivityTime(), now) >= 90) {
-                            // T10: Đã 90s trôi qua không ai đặt giá -> Hết vòng
+                        } else if (java.time.temporal.ChronoUnit.SECONDS.between(a.getLastActivityTime(), now) >= 30) {
+                            // T10: Đã 30s trôi qua không ai đặt giá -> Hết vòng -> Thử kích hoạt AutoBid
+                            a.triggerAutoBidding();
+                            
                             if (roundFinishedCallback != null) {
                                 roundFinishedCallback.accept(a);
                             }
