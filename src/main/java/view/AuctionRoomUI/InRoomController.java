@@ -19,7 +19,6 @@ import network.NotificationManager;
 import shared.Protocol;
 import view.utility.AlertHelper;
 import view.utility.SceneManager;
-import network.SessionManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
