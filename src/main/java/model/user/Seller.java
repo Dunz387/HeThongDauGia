@@ -15,6 +15,14 @@ public class Seller extends User {
         }
     }
 
+    public synchronized boolean deductBalance(double amount) {
+        if (amount > 0 && this.balance >= amount) {
+            this.balance -= amount;
+            return true;
+        }
+        return false;
+    }
+
     public double getBalance() {
         return balance;
     }

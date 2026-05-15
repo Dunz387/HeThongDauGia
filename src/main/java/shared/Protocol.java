@@ -21,6 +21,10 @@ public class Protocol {
     public static final String REQ_UPDATE_ITEM = "UPDATE_ITEM"; // Dành cho tính năng Sửa sau này
     public static final String REQ_DELETE_ITEM = "DELETE_ITEM"; // Dành cho tính năng Xóa sau này
 
+    // Giao dịch Tài chính
+    public static final String REQ_DEPOSIT = "DEPOSIT";
+    public static final String REQ_WITHDRAW = "WITHDRAW";
+
     // Đấu giá (Bidder)
     public static final String REQ_BID = "BID";
     public static final String REQ_AUTOBID = "AUTOBID";

@@ -17,12 +17,15 @@ import view.utility.NotificationMenuHandler;
 import view.utility.SceneManager;
 import view.utility.WindowManager;
 import view.utility.AlertHelper;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BaseMenuController implements Initializable {
     @FXML private javafx.scene.control.Label txtBalance;
+    @FXML private javafx.scene.control.Button btnTransaction;
     @FXML private Pane darkOverlay;
     @FXML private ScrollPane notificationMenu;
     private NotificationMenuHandler notificationMenuHandler;
@@ -52,6 +55,17 @@ public class BaseMenuController implements Initializable {
         if (txtBalance != null) {
             double balance = network.SessionManager.getInstance().getBalance();
             txtBalance.setText(String.format("💰 Số dư: $%,.0f", balance));
+        }
+
+        if (btnTransaction != null) {
+            if (network.SessionManager.getInstance().isBidder()) {
+                btnTransaction.setText("Nạp tiền");
+            } else if (network.SessionManager.getInstance().isSeller()) {
+                btnTransaction.setText("Rút tiền");
+            } else {
+                btnTransaction.setVisible(false);
+                btnTransaction.setManaged(false);
+            }
         }
 
         // Cấu hình 10 cột bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
@@ -152,6 +166,27 @@ public class BaseMenuController implements Initializable {
             });
         });
 
+        // Đăng ký Listener phản hồi giao dịch
+        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_DEPOSIT, (message) -> {
+            String[] parts = message.split(shared.Protocol.SEPARATOR);
+            if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
+                javafx.application.Platform.runLater(() -> AlertHelper.showInfo("Thành công", "Nạp tiền thành công!"));
+            } else {
+                String reason = parts.length > 2 ? parts[2] : "Lỗi hệ thống";
+                javafx.application.Platform.runLater(() -> AlertHelper.showError("Thất bại", "Nạp tiền thất bại: " + reason));
+            }
+        });
+
+        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_WITHDRAW, (message) -> {
+            String[] parts = message.split(shared.Protocol.SEPARATOR);
+            if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
+                javafx.application.Platform.runLater(() -> AlertHelper.showInfo("Thành công", "Rút tiền thành công!"));
+            } else {
+                String reason = parts.length > 2 ? parts[2] : "Lỗi hệ thống";
+                javafx.application.Platform.runLater(() -> AlertHelper.showError("Thất bại", "Rút tiền thất bại: " + reason));
+            }
+        });
+
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
     }
 
@@ -199,5 +234,32 @@ public class BaseMenuController implements Initializable {
     @FXML
     private void openProfile(ActionEvent event) {
         WindowManager.openUserProfileWindow();
+    }
+
+    @FXML
+    private void handleTransaction(ActionEvent event) {
+        if (network.SessionManager.getInstance().isBidder()) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Nạp tiền");
+            dialog.setHeaderText("Nhập số tiền muốn nạp:");
+            dialog.setContentText("Số tiền ($):");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(amount -> {
+                if (!amount.trim().isEmpty()) {
+                    network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_DEPOSIT + shared.Protocol.DELIMITER + amount.trim());
+                }
+            });
+        } else if (network.SessionManager.getInstance().isSeller()) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Rút tiền");
+            dialog.setHeaderText("Nhập số tiền muốn rút:");
+            dialog.setContentText("Số tiền ($):");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(amount -> {
+                if (!amount.trim().isEmpty()) {
+                    network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_WITHDRAW + shared.Protocol.DELIMITER + amount.trim());
+                }
+            });
+        }
     }
 }

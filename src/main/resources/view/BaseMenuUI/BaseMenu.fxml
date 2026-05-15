@@ -188,12 +188,14 @@
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="txtBalance" text="💰 Số dư: $0" style="-fx-text-fill: #d4cd3d; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-padding: 6 12; -fx-background-color: rgba(212,205,61,0.1); -fx-background-radius: 20;" />
             <Region prefWidth="6.0" />
+            <Button fx:id="btnTransaction" mnemonicParsing="false" onAction="#handleTransaction" text="Nạp/Rút" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: rgba(255,255,255,0.35); -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 6 12; -fx-cursor: hand;" />
+            <Region prefWidth="6.0" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="👤 Tài Khoản">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#openProfile" text="Thông tin cá nhân" />
-                  <MenuItem mnemonicParsing="false" onAction="#backToLoiginButtonClicked" text="Đăng xuất" />
-                  <MenuItem mnemonicParsing="false" onAction="#backToRegisterButtonClicked" text="Đăng ký tài khoản mới" />
-               </items>
+                <items>
+                   <MenuItem mnemonicParsing="false" onAction="#openProfile" text="Thông tin cá nhân" />
+                   <MenuItem mnemonicParsing="false" onAction="#backToLoiginButtonClicked" text="Đăng xuất" />
+                   <MenuItem mnemonicParsing="false" onAction="#backToRegisterButtonClicked" text="Đăng ký tài khoản mới" />
+                </items>
             </MenuButton>
             <Region prefWidth="10.0" />
          </children>

@@ -81,6 +81,13 @@ public class ClientHandler implements Runnable {
                         case Protocol.REQ_DELETE_AUCTION:
                             if (parts.length >= 2) handleDeleteAuction(parts[1]);
                             break;
+                        // THÊM MỚI: Giao dịch tài chính
+                        case Protocol.REQ_DEPOSIT:
+                            if (parts.length >= 2) handleDeposit(parts[1]);
+                            break;
+                        case Protocol.REQ_WITHDRAW:
+                            if (parts.length >= 2) handleWithdraw(parts[1]);
+                            break;
                     }
                 }
             }
@@ -299,6 +306,44 @@ public class ClientHandler implements Runnable {
             }
         } else {
             sendData(Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Admin mới được thực hiện!");
+        }
+    }
+
+    // THÊM MỚI: Giao dịch tài chính
+    private void handleDeposit(String amountStr) {
+        try {
+            double amount = Double.parseDouble(amountStr);
+            if (loggedInUser instanceof Bidder) {
+                Bidder bidder = (Bidder) loggedInUser;
+                bidder.addBalance(amount);
+                dao.UserDAO.updateUserBalance(bidder.getId(), bidder.getBalance());
+                sendData(Protocol.REQ_DEPOSIT + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + bidder.getAvailableBalance());
+            } else {
+                sendData(Protocol.REQ_DEPOSIT + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Bidder mới có thể nạp tiền!");
+            }
+        } catch (Exception e) {
+            sendData(Protocol.REQ_DEPOSIT + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền không hợp lệ.");
+        }
+    }
+
+    private void handleWithdraw(String amountStr) {
+        try {
+            double amount = Double.parseDouble(amountStr);
+            if (loggedInUser instanceof Seller) {
+                Seller seller = (Seller) loggedInUser;
+                if (seller.deductBalance(amount)) {
+                    dao.UserDAO.updateUserBalance(seller.getId(), seller.getBalance());
+                    sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                    sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + seller.getBalance());
+                } else {
+                    sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số dư không đủ để rút!");
+                }
+            } else {
+                sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Seller mới có thể rút tiền!");
+            }
+        } catch (Exception e) {
+            sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền không hợp lệ.");
         }
     }
 
