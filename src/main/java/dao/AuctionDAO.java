@@ -143,11 +143,44 @@ public class AuctionDAO {
                         }
                     }
                 }
+
+                // T10: Load lịch sử đặt giá cho auction này
+                loadBidHistoryForAuction(auction, loadedUsers);
+
                 list.add(auction);
             }
         } catch (Exception e) {
             System.err.println("❌ Lỗi load auctions từ DB: " + e.getMessage());
         }
         return list;
+    }
+
+    private static void loadBidHistoryForAuction(Auction auction, List<User> loadedUsers) {
+        String sql = "SELECT * FROM bid_transactions WHERE auction_id = ? ORDER BY timestamp ASC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, auction.getId());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String bidderId = rs.getString("bidder_id");
+                double amount = rs.getDouble("bid_amount");
+                String timeStr = rs.getString("timestamp");
+
+                Bidder bidder = null;
+                for (User u : loadedUsers) {
+                    if (u.getId().equals(bidderId) && u instanceof Bidder) {
+                        bidder = (Bidder) u;
+                        break;
+                    }
+                }
+                if (bidder != null) {
+                    model.auction.BidTransaction tx = new model.auction.BidTransaction(id, auction, bidder, amount, LocalDateTime.parse(timeStr));
+                    auction.getBidHistory().add(tx);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi load bid history cho " + auction.getId() + ": " + e.getMessage());
+        }
     }
 }

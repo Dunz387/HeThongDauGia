@@ -8,6 +8,8 @@ import view.AuthenticationUI.LoginView.Login;
 
 public class Main {
     public static void main(String[] args) {
+        // --- PHẦN THÊM MỚI: XỬ LÝ NGOẠI LỆ TOÀN CỤC ---
+        view.utility.GlobalExceptionHandler.setupHandler();
 
         // --- PHẦN THÊM MỚI: KẾT NỐI MẠNG ---
         System.out.println("Đang kết nối đến Server...");

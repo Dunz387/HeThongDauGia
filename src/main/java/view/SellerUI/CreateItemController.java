@@ -35,8 +35,20 @@ public class CreateItemController implements Initializable {
         String duration = txtDuration.getText().trim();
         String itemTypeDisplay = choiceType.getValue();
 
-        if (itemName.isEmpty() || startPrice.isEmpty() || duration.isEmpty() || itemTypeDisplay == null) {
+        if (view.utility.ValidationHelper.isEmpty(itemName) || view.utility.ValidationHelper.isEmpty(startPrice) || 
+            view.utility.ValidationHelper.isEmpty(duration) || itemTypeDisplay == null) {
             AlertHelper.showWarning("Lỗi", "Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
+
+        // Kiểm tra tính hợp lệ của số liệu
+        if (!view.utility.ValidationHelper.isValidStartPrice(startPrice)) {
+            AlertHelper.showWarning("Lỗi dữ liệu", "Giá khởi điểm phải là một số thực lớn hơn 0.");
+            return;
+        }
+
+        if (!view.utility.ValidationHelper.isValidDuration(duration)) {
+            AlertHelper.showWarning("Lỗi dữ liệu", "Thời lượng phiên phải là số nguyên (phút) và lớn hơn 0.");
             return;
         }
 

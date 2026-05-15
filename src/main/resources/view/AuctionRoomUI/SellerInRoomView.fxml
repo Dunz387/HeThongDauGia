@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -47,14 +46,8 @@
       </VBox>
       <VBox alignment="CENTER" spacing="4" GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-background-color: #1a1a1a; -fx-padding: 8;">
          <children>
-            <Label text="⏱ Tổng thời gian" style="-fx-text-fill: #999; -fx-font-size: 11px; -fx-font-weight: bold;" />
-            <Label fx:id="totalTimeLabel" text="00:00" style="-fx-text-fill: #ea7f33; -fx-font-size: 30px; -fx-font-weight: 900;" />
-            <HBox alignment="CENTER" spacing="6">
-               <children>
-                  <Label text="Lượt:" style="-fx-text-fill: #999; -fx-font-size: 12px;" />
-                  <Label fx:id="roundTimeLabel" text="01:30" style="-fx-text-fill: #d4cd3d; -fx-font-size: 20px; -fx-font-weight: bold;" />
-               </children>
-            </HBox>
+            <Label text="Tổng thời gian còn lại" style="-fx-text-fill: #999; -fx-font-size: 11px; -fx-font-weight: bold;" />
+            <Label fx:id="totalTimeLabel" text="00:00" style="-fx-text-fill: #ea7f33; -fx-font-size: 34px; -fx-font-weight: 900;" />
          </children>
       </VBox>
 
@@ -63,14 +56,14 @@
          <children>
             <VBox alignment="CENTER" spacing="4" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 14; -fx-border-color: #e8e8e0; -fx-border-radius: 12;">
                <children>
-                  <Label text="💰 Giá hiện tại" style="-fx-text-fill: #888; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                  <Label text="Giá hiện tại" style="-fx-text-fill: #888; -fx-font-size: 12px; -fx-font-weight: bold;" />
                   <Label fx:id="lblCurrentPrice" text="0 $" style="-fx-text-fill: #ea7f33; -fx-font-size: 22px; -fx-font-weight: 900;" />
                </children>
             </VBox>
             <Separator />
             <VBox alignment="CENTER" spacing="4" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 14; -fx-border-color: #e8e8e0; -fx-border-radius: 12;">
                <children>
-                  <Label text="📊 Bước giá tối thiểu" style="-fx-text-fill: #888; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                  <Label text="Bước giá tối thiểu" style="-fx-text-fill: #888; -fx-font-size: 12px; -fx-font-weight: bold;" />
                   <Label fx:id="lblMinStep" text="10 $" style="-fx-text-fill: #d4cd3d; -fx-font-size: 22px; -fx-font-weight: 900;" />
                </children>
             </VBox>
@@ -78,10 +71,10 @@
       </VBox>
       <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color: white; -fx-padding: 8;">
          <children>
-            <LineChart fx:id="priceChart" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" title="Biến động giá sản phẩm" style="-fx-background-color: white;">
-               <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
-               <yAxis><NumberAxis animated="false" side="LEFT" /></yAxis>
-            </LineChart>
+            <AreaChart fx:id="priceChart" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" title="Biểu đồ biến động giá" style="-fx-background-color: white;">
+               <xAxis><NumberAxis side="BOTTOM" label="Lượt đặt giá" forceZeroInRange="false" minorTickCount="0" tickUnit="1" animated="true" /></xAxis>
+               <yAxis><NumberAxis animated="true" side="LEFT" label="Giá ($)" /></yAxis>
+            </AreaChart>
          </children>
       </AnchorPane>
       <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-background-color: #faf9f0; -fx-padding: 12;">

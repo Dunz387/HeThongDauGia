@@ -101,6 +101,10 @@ public class ClientNetworkManager {
         auctionListListeners.remove(listener);
     }
 
+    public void clearAuctionListListeners() {
+        auctionListListeners.clear();
+    }
+
     /**
      * @deprecated Dùng {@link #addAuctionListListener(Consumer)} thay thế.
      * Phương thức này giữ lại để tương thích ngược, nhưng sẽ XÓA hết listener cũ trước khi thêm mới.

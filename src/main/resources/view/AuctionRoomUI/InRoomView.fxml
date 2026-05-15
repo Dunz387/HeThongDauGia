@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -46,14 +45,8 @@
 
       <VBox alignment="CENTER" spacing="4" GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-background-color: #1a1a1a; -fx-padding: 8;">
          <children>
-            <Label text="⏱ Tổng thời gian" style="-fx-text-fill: #999999; -fx-font-size: 11px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
-            <Label fx:id="totalTimeLabel" text="00:00" style="-fx-text-fill: #ea7f33; -fx-font-size: 30px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
-            <HBox alignment="CENTER" spacing="6">
-               <children>
-                  <Label text="Lượt:" style="-fx-text-fill: #999999; -fx-font-size: 12px;" />
-                  <Label fx:id="roundTimeLabel" text="01:30" style="-fx-text-fill: #d4cd3d; -fx-font-size: 20px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
-               </children>
-            </HBox>
+            <Label text="Tổng thời gian còn lại" style="-fx-text-fill: #999999; -fx-font-size: 11px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+            <Label fx:id="totalTimeLabel" text="00:00" style="-fx-text-fill: #ea7f33; -fx-font-size: 34px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
          </children>
       </VBox>
 
@@ -62,14 +55,14 @@
          <children>
             <VBox alignment="CENTER" spacing="4" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 14; -fx-border-color: #e8e8e0; -fx-border-radius: 12;">
                <children>
-                  <Label text="💰 Số dư" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+                  <Label text="Số dư" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
                   <Label fx:id="balanceLabel" text="0 $" style="-fx-text-fill: #ea7f33; -fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
                </children>
             </VBox>
             <Separator />
             <VBox alignment="CENTER" spacing="4" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 14; -fx-border-color: #e8e8e0; -fx-border-radius: 12;">
                <children>
-                  <Label text="📊 Bước giá" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+                  <Label text="Bước giá" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
                   <Label text="tối thiểu" style="-fx-text-fill: #888888; -fx-font-size: 11px; -fx-font-family: 'Segoe UI';" />
                   <Label fx:id="bidIncrementLabel" text="0 $" style="-fx-text-fill: #d4cd3d; -fx-font-size: 22px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
                </children>
@@ -79,14 +72,14 @@
 
       <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color: #ffffff; -fx-padding: 8;">
          <children>
-            <LineChart fx:id="priceChart" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" title="Biến động giá theo thời gian" style="-fx-background-color: #ffffff;">
+            <AreaChart fx:id="priceChart" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" title="Biểu đồ biến động giá" style="-fx-background-color: #ffffff;">
                <xAxis>
-                  <CategoryAxis label="Lượt đặt giá" side="BOTTOM" />
+                  <NumberAxis label="Lượt đặt giá" side="BOTTOM" forceZeroInRange="false" minorTickCount="0" tickUnit="1" animated="true" />
                </xAxis>
                <yAxis>
-                  <NumberAxis animated="false" label="Giá ($)" side="LEFT" />
+                  <NumberAxis animated="true" label="Giá ($)" side="LEFT" />
                </yAxis>
-            </LineChart>
+            </AreaChart>
          </children>
       </AnchorPane>
 
@@ -104,7 +97,7 @@
             <TableView fx:id="notificationTableView" prefHeight="180.0" VBox.vgrow="ALWAYS">
                <columns>
                   <TableColumn fx:id="colNotifTime" prefWidth="65.0" text="Thời gian" />
-                  <TableColumn fx:id="colNotifContent" prefWidth="130.0" text="Nội dung" />
+                  <TableColumn fx:id="colNotifContent" prefWidth="250.0" text="Nội dung" />
                </columns>
             </TableView>
          </children>

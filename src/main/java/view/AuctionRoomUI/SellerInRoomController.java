@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -34,14 +35,13 @@ public class SellerInRoomController implements Initializable {
     // Header
     @FXML private Label lblRoomId;
     @FXML private Label totalTimeLabel;
-    @FXML private Label roundTimeLabel;
 
     // Sidebar trái
     @FXML private Label lblCurrentPrice;
     @FXML private Label lblMinStep;
 
     // Biểu đồ
-    @FXML private LineChart<String, Number> priceChart;
+    @FXML private javafx.scene.chart.AreaChart<Number, Number> priceChart;
 
     // Bảng lịch sử giá
     @FXML private TableView<double[]> tableBidHistory;
@@ -54,27 +54,25 @@ public class SellerInRoomController implements Initializable {
     @FXML private Label lblRounds;
     @FXML private Label topBidderLabel;
 
-    private XYChart.Series<String, Number> priceSeries;
+    private XYChart.Series<Number, Number> priceSeries;
     private ObservableList<double[]> bidHistory = FXCollections.observableArrayList();
     private int bidCount = 0;
+    private model.auction.Auction auction;
     private String currentAuctionId = null;
     private double currentHighestPrice = 0;
 
     // Quản lý thời gian
     private Timeline totalTimelineTimer;
-    private Timeline roundTimelineTimer;
     private java.time.LocalDateTime auctionEndTime;
     private int totalTimeRemaining = 0;
-    private static final int ROUND_DURATION = 30;
-    private int roundTimeRemaining = ROUND_DURATION;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // === KHỞI TẠO BIỂU ĐỒ ===
         priceSeries = new XYChart.Series<>();
-        priceSeries.setName("Biến động giá");
+        priceSeries.setName("Biến động giá ($)");
         priceChart.getData().add(priceSeries);
-        priceChart.setAnimated(false);
+        priceChart.setAnimated(true);
 
         // === KHỞI TẠO BẢNG LỊCH SỬ GIÁ ===
         colRound.setCellValueFactory(cellData ->
@@ -82,6 +80,20 @@ public class SellerInRoomController implements Initializable {
         colBidPrice.setCellValueFactory(cellData ->
                 new SimpleDoubleProperty(cellData.getValue()[1]).asObject());
         tableBidHistory.setItems(bidHistory);
+
+        // Cấu hình Trục X chỉ hiển thị số nguyên
+        if (priceChart.getXAxis() instanceof javafx.scene.chart.NumberAxis) {
+            javafx.scene.chart.NumberAxis xAxis = (javafx.scene.chart.NumberAxis) priceChart.getXAxis();
+            xAxis.setMinorTickCount(0);
+            xAxis.setTickUnit(1);
+            xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+                @Override public String toString(Number object) {
+                    if (object.doubleValue() == 0) return "S";
+                    return String.format("%.0f", object.doubleValue());
+                }
+                @Override public Number fromString(String string) { return 0; }
+            });
+        }
 
         // === ĐĂNG KÝ LẮNG NGHE TỪ SERVER ===
         registerNetworkListeners();
@@ -98,7 +110,6 @@ public class SellerInRoomController implements Initializable {
                     String topBidder = parts[3];
 
                     currentHighestPrice = newPrice;
-                    bidCount++;
 
                     Platform.runLater(() -> {
                         // Cập nhật giá hiện tại
@@ -108,23 +119,35 @@ public class SellerInRoomController implements Initializable {
                         // Cập nhật người đặt cao nhất
                         topBidderLabel.setText(topBidder);
 
-                        // Cập nhật biểu đồ
-                        priceSeries.getData().add(new XYChart.Data<>(String.valueOf(bidCount), newPrice));
-                        if (priceSeries.getData().size() > 20) {
-                            priceSeries.getData().remove(0);
+                        // Cập nhật biểu đồ theo lượt (Trục X)
+                        bidCount++;
+                        
+                        // Tối ưu trục X để không bị nhảy giật cục
+                        if (priceChart.getXAxis() instanceof NumberAxis) {
+                            NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
+                            if (bidCount > 5) {
+                                xAxis.setAutoRanging(false);
+                                xAxis.setLowerBound(Math.max(0, bidCount - 10));
+                                xAxis.setUpperBound(bidCount + 1);
+                            }
                         }
+                        
+                        priceChart.setAnimated(true);
+                        priceSeries.getData().add(new XYChart.Data<>(bidCount, newPrice));
 
                         // Cập nhật bảng lịch sử
                         bidHistory.add(new double[]{bidCount, newPrice});
 
-                        // Cập nhật số vòng
+                        // Cập nhật số lượt (thay cho số vòng)
                         lblRounds.setText(String.valueOf(bidCount));
                         
                         // Cập nhật bước giá mới
                         updateIncrementDisplay(newPrice);
                         
-                        // Reset round timer
-                        resetRoundTimer();
+                        // Thông báo toàn cục (Account wide)
+                        if (auction != null) {
+                            network.NotificationManager.getInstance().addNotification("📢 [" + auction.getItem().getName() + "] - " + topBidder + " vừa đặt $" + newPrice);
+                        }
                     });
                 }
             }
@@ -144,7 +167,6 @@ public class SellerInRoomController implements Initializable {
                         }
                         totalTimeRemaining += addedSeconds;
                         updateTotalTimeDisplay();
-                        System.out.println("⏳ [Anti-Sniping] Thời gian đã được cộng thêm " + addedSeconds + "s");
                     });
                 }
             }
@@ -167,24 +189,13 @@ public class SellerInRoomController implements Initializable {
                 }
             }
         });
-        
-        // Lắng nghe lệnh BROADCAST_ROUND_FINISHED
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_ROUND_FINISHED, (message) -> {
-            String[] parts = message.split(Protocol.SEPARATOR);
-            if (parts.length >= 2) {
-                String auctionId = parts[1];
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
-                    Platform.runLater(this::resetRoundTimer);
-                }
-            }
-        });
     }
 
     /**
      * Thiết lập phiên đấu giá mà Seller đang theo dõi.
-     * Gọi trước khi chuyển sang màn hình này.
      */
     public void setAuction(model.auction.Auction auction) {
+        this.auction = auction;
         this.currentAuctionId = auction.getId();
         if (lblRoomId != null) {
             lblRoomId.setText("ID phòng: " + auction.getId());
@@ -194,39 +205,56 @@ public class SellerInRoomController implements Initializable {
             long seconds = java.time.Duration.between(java.time.LocalDateTime.now(), auctionEndTime).getSeconds();
             this.totalTimeRemaining = (int) Math.max(0, seconds);
             
-            // Tính thời gian lượt còn lại
-            long secondsSinceActivity = java.time.Duration.between(auction.getLastActivityTime(), java.time.LocalDateTime.now()).getSeconds();
-            this.roundTimeRemaining = Math.max(0, ROUND_DURATION - (int) secondsSinceActivity);
-            
             Platform.runLater(() -> {
                 startTotalTimer();
-                startRoundTimer();
                 updateTotalTimeDisplay();
-                updateRoundTimeDisplay();
             });
         }
-        if (auction.getHighestBidder() != null) {
-             currentHighestPrice = auction.getCurrentPrice();
-             if (lblCurrentPrice != null) lblCurrentPrice.setText(String.format("%.0f $", currentHighestPrice));
-             if (lblEarnings != null) lblEarnings.setText(String.format("%.0f $", currentHighestPrice));
-             if (topBidderLabel != null) topBidderLabel.setText(auction.getHighestBidder().getUsername());
-             Platform.runLater(() -> {
-                 priceSeries.getData().add(new XYChart.Data<>("Current", currentHighestPrice));
-             });
-        }
-        
-        // Cập nhật bước giá ban đầu
-        updateIncrementDisplay(currentHighestPrice);
+
+        // === KHÔI PHỤC DỮ LIỆU ĐẤU GIÁ ===
+        Platform.runLater(() -> {
+            priceSeries.getData().clear();
+            bidHistory.clear();
+            
+            // Điểm bắt đầu
+            priceSeries.getData().add(new XYChart.Data<>(0, auction.getStartingPrice()));
+            
+            java.util.List<model.auction.BidTransaction> history = auction.getBidHistory();
+            this.bidCount = 0;
+            
+            if (history != null) {
+                for (model.auction.BidTransaction tx : history) {
+                    this.bidCount++;
+                    priceSeries.getData().add(new XYChart.Data<>(bidCount, tx.getBidAmount()));
+                    bidHistory.add(new double[]{bidCount, tx.getBidAmount()});
+                }
+            }
+
+            if (auction.getHighestBidder() != null) {
+                 currentHighestPrice = auction.getCurrentPrice();
+                 if (lblCurrentPrice != null) lblCurrentPrice.setText(String.format("%.0f $", currentHighestPrice));
+                 if (lblEarnings != null) lblEarnings.setText(String.format("%.0f $", currentHighestPrice));
+                 if (topBidderLabel != null) topBidderLabel.setText(auction.getHighestBidder().getUsername());
+                 if (lblRounds != null) lblRounds.setText(String.valueOf(bidCount));
+            } else {
+                 currentHighestPrice = auction.getStartingPrice();
+            }
+            
+            updateIncrementDisplay(currentHighestPrice);
+        });
     }
 
     @FXML
     private void exitRoom(ActionEvent event) {
         stopAllTimers();
+        
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_NEW_BID);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_TIME_EXTENDED);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_AUCTION_FINISHED);
+
         Stage stage = (Stage) priceChart.getScene().getWindow();
         SceneManager.goToBaseMenu(stage);
     }
-
-    // === CÁC HÀM QUẢN LÝ TIMER ===
 
     private void startTotalTimer() {
         if (totalTimelineTimer != null) totalTimelineTimer.stop();
@@ -245,30 +273,8 @@ public class SellerInRoomController implements Initializable {
         totalTimelineTimer.play();
     }
 
-    private void startRoundTimer() {
-        if (roundTimelineTimer != null) roundTimelineTimer.stop();
-        roundTimelineTimer = new Timeline(new KeyFrame(
-                Duration.seconds(1),
-                event -> {
-                    if (roundTimeRemaining > 0) {
-                        roundTimeRemaining--;
-                        updateRoundTimeDisplay();
-                    }
-                }
-        ));
-        roundTimelineTimer.setCycleCount(Timeline.INDEFINITE);
-        roundTimelineTimer.play();
-    }
-
-    private void resetRoundTimer() {
-        roundTimeRemaining = ROUND_DURATION;
-        if (roundTimelineTimer != null) roundTimelineTimer.stop();
-        startRoundTimer();
-    }
-
     private void stopAllTimers() {
         if (totalTimelineTimer != null) { totalTimelineTimer.stop(); totalTimelineTimer = null; }
-        if (roundTimelineTimer != null) { roundTimelineTimer.stop(); roundTimelineTimer = null; }
     }
 
     private void updateTotalTimeDisplay() {
@@ -279,16 +285,7 @@ public class SellerInRoomController implements Initializable {
         }
     }
 
-    private void updateRoundTimeDisplay() {
-        if (roundTimeLabel != null) {
-            int m = roundTimeRemaining / 60;
-            int s = roundTimeRemaining % 60;
-            roundTimeLabel.setText(String.format("%02d:%02d", m, s));
-        }
-    }
-
     private void updateIncrementDisplay(double currentPrice) {
-        // Tính toán bước giá theo quy tắc 10% đồng bộ với Auction.java
         double increment = currentPrice * 0.1;
         double roundedIncrement;
         if (increment < 1) roundedIncrement = 1.0;
@@ -303,3 +300,4 @@ public class SellerInRoomController implements Initializable {
         });
     }
 }
+

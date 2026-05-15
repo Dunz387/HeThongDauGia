@@ -27,8 +27,7 @@ public class AuctionManager {
     // Callback để thông báo Server khi phiên đấu giá kết thúc
     private Consumer<Auction> auctionFinishedCallback = null;
     
-    // T10: Callback để thông báo Server khi kết thúc 1 vòng (90s không ai đặt)
-    private Consumer<Auction> roundFinishedCallback = null;
+
 
     private AuctionManager() {
         DatabaseManager.initializeDatabase();
@@ -51,9 +50,7 @@ public class AuctionManager {
         this.auctionFinishedCallback = callback;
     }
 
-    public void setRoundFinishedCallback(Consumer<Auction> callback) {
-        this.roundFinishedCallback = callback;
-    }
+
 
     public List<Auction> getAllAuctions() {
         synchronized (auctions) { return new ArrayList<>(auctions); }
@@ -182,29 +179,33 @@ public class AuctionManager {
     // ==========================================
 
     public User authenticateUser(String username, String password) {
-        for (User u : users) {
-            if (u.getUsername().equals(username) && u.login(password)) {
-                // ĐÃ SỬA: Nếu isActive == false (Bị Ban) thì không cho đăng nhập
-                if (!u.isActive()) return null;
-                return u;
+        synchronized (users) {
+            for (User u : users) {
+                if (u.getUsername().equals(username) && u.login(password)) {
+                    // ĐÃ SỬA: Nếu isActive == false (Bị Ban) thì không cho đăng nhập
+                    if (!u.isActive()) return null;
+                    return u;
+                }
             }
         }
         return null;
     }
 
     public boolean registerNewUser(String username, String password, String role) {
-        for (User u : users) {
-            if (u.getUsername().equals(username)) return false;
+        synchronized (users) {
+            for (User u : users) {
+                if (u.getUsername().equals(username)) return false;
+            }
+            User newUser;
+            if ("SELLER".equals(role)) {
+                newUser = new Seller("U-" + System.currentTimeMillis(), username, password, 0.0);
+            } else {
+                newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 100000.0);
+            }
+            users.add(newUser);
+            UserDAO.saveUser(newUser);
+            return true;
         }
-        User newUser;
-        if ("SELLER".equals(role)) {
-            newUser = new Seller("U-" + System.currentTimeMillis(), username, password, 0.0);
-        } else {
-            newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 100000.0);
-        }
-        users.add(newUser);
-        UserDAO.saveUser(newUser);
-        return true;
     }
 
     public void registerAuction(Auction auction) {
@@ -245,14 +246,6 @@ public class AuctionManager {
                     if (a.getStatus() == AuctionStatus.RUNNING) {
                         if (now.isAfter(a.getEndTime())) {
                             concludeAuction(a);
-                        } else if (java.time.temporal.ChronoUnit.SECONDS.between(a.getLastActivityTime(), now) >= 30) {
-                            // T10: Đã 30s trôi qua không ai đặt giá -> Hết vòng -> Thử kích hoạt AutoBid
-                            a.triggerAutoBidding();
-                            
-                            if (roundFinishedCallback != null) {
-                                roundFinishedCallback.accept(a);
-                            }
-                            a.updateActivityTime(); // Bắt đầu tính giờ cho vòng mới
                         }
                     }
                 }

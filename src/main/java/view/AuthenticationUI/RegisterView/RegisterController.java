@@ -29,11 +29,24 @@ public class RegisterController implements Initializable {
 
     @FXML
     private void registerButtonClicked(ActionEvent event) {
-        String username = txtUsername.getText();
-        String password = txtPassword.getText();
+        String username = txtUsername.getText().trim();
+        String password = txtPassword.getText().trim();
 
-        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+        // ÁP DỤNG VALIDATION MỚI (Mật khẩu 8 ký tự, Tên đăng nhập hợp lệ)
+        if (view.utility.ValidationHelper.isEmpty(username) || view.utility.ValidationHelper.isEmpty(password)) {
             AlertHelper.showWarning("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!");
+            return;
+        }
+
+        if (!view.utility.ValidationHelper.isValidUsername(username)) {
+            AlertHelper.showWarning("Tên đăng nhập không hợp lệ", 
+                "Tên đăng nhập phải từ 3-20 ký tự, chỉ chứa chữ cái, số và dấu gạch dưới.");
+            return;
+        }
+
+        if (!view.utility.ValidationHelper.isStrongPassword(password)) {
+            AlertHelper.showWarning("Mật khẩu yếu", 
+                "Mật khẩu phải từ 8 ký tự trở lên, bao gồm ít nhất 1 chữ cái và 1 chữ số.");
             return;
         }
 

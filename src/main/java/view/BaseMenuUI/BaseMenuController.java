@@ -91,7 +91,32 @@ public class BaseMenuController implements Initializable {
         if (tableNotifications != null) {
             colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
             colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
+            
+            // T10: Cho phép tự động xuống dòng và tự động giãn độ cao dòng
+            colNotifContent.setCellFactory(tc -> {
+                javafx.scene.control.TableCell<network.NotificationManager.NotificationItem, String> cell = new javafx.scene.control.TableCell<>() {
+                    private final javafx.scene.control.Label label = new javafx.scene.control.Label();
+                    {
+                        label.setWrapText(true);
+                        // Liên kết độ rộng của nhãn với độ rộng của cột để ép xuống dòng
+                        label.prefWidthProperty().bind(tc.widthProperty().subtract(10));
+                        setGraphic(label);
+                    }
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            label.setText(null);
+                        } else {
+                            label.setText(item);
+                        }
+                    }
+                };
+                return cell;
+            });
+            
             tableNotifications.setItems(network.NotificationManager.getInstance().getNotifications());
+            tableNotifications.setFixedCellSize(-1); // Tự động giãn dòng
         }
 
         // Lắng nghe các sự kiện quan trọng để đẩy thông báo ra ngoài màn hình chính
@@ -105,8 +130,18 @@ public class BaseMenuController implements Initializable {
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
             String[] parts = message.split(shared.Protocol.SEPARATOR);
             if (parts.length >= 2) {
+                String auctionId = parts[1];
                 String winner = parts.length > 2 ? parts[2] : "Không có";
-                network.NotificationManager.getInstance().addNotification("🏆 Phiên đấu giá " + parts[1] + " đã kết thúc. Người thắng: " + winner);
+                
+                // Tìm tên sản phẩm từ bảng
+                String itemName = auctionId;
+                for (Auction a : tableAuctions.getItems()) {
+                    if (a.getId().equals(auctionId)) {
+                        itemName = a.getItem().getName();
+                        break;
+                    }
+                }
+                network.NotificationManager.getInstance().addNotification("🏆 [" + itemName + "] kết thúc. Người thắng: " + winner);
             }
         });
 

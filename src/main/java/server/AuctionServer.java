@@ -62,12 +62,7 @@ public class AuctionServer implements AuctionObserver {
             }
         });
 
-        // T10: Đăng ký callback để broadcast ROUND_FINISHED
-        manager.setRoundFinishedCallback((finishedRoundAuction) -> {
-            String roundMessage = Protocol.BROADCAST_ROUND_FINISHED + Protocol.DELIMITER + finishedRoundAuction.getId();
-            System.out.println("📢 [BROADCAST] Vòng đấu giá kết thúc: " + finishedRoundAuction.getId());
-            broadcast(roundMessage);
-        });
+
 
         new Thread(() -> {
             Scanner s = new Scanner(System.in);

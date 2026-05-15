@@ -48,6 +48,16 @@ public class DatabaseManager {
             );
         """;
 
+        String createNotificationsTable = """
+            CREATE TABLE IF NOT EXISTS notifications (
+                id TEXT PRIMARY KEY,
+                user_id TEXT,
+                content TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                type TEXT
+            );
+        """;
+
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(createUsersTable);
@@ -61,6 +71,7 @@ public class DatabaseManager {
             }
 
             stmt.execute(createBidTransactionsTable);
+            stmt.execute(createNotificationsTable);
             System.out.println("✅ Database SQLite đã được khởi tạo thành công!");
         } catch (SQLException e) {
             System.err.println("❌ Lỗi tạo bảng Database: " + e.getMessage());

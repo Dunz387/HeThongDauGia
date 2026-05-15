@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -26,7 +27,7 @@ import java.util.ResourceBundle;
 public class InRoomController implements Initializable {
 
     @FXML
-    private LineChart<String, Number> priceChart;
+    private javafx.scene.chart.AreaChart<Number, Number> priceChart;
 
     @FXML
     private TextField bidAmountField;
@@ -37,9 +38,6 @@ public class InRoomController implements Initializable {
     @FXML
     private Label totalTimeLabel;
     
-    @FXML
-    private Label roundTimeLabel;
-
     @FXML
     private Label roomIdLabel;
     
@@ -58,6 +56,7 @@ public class InRoomController implements Initializable {
     @FXML private TableColumn<HistoryItem, Integer> colHistoryRound;
     @FXML private TableColumn<HistoryItem, Double> colHistoryPrice;
 
+    private javafx.collections.ObservableList<network.NotificationManager.NotificationItem> roomNotifications = javafx.collections.FXCollections.observableArrayList();
     private javafx.collections.ObservableList<HistoryItem> historyData = javafx.collections.FXCollections.observableArrayList();
 
     public static class HistoryItem {
@@ -68,59 +67,96 @@ public class InRoomController implements Initializable {
         public double getPrice() { return price; }
     }
 
-    private XYChart.Series<String, Number> priceSeries;
+    private XYChart.Series<Number, Number> priceSeries;
     private int bidCount = 0;
 
     // ID của phiên đấu giá hiện tại — được truyền vào từ SceneManager.goToInRoom(stage, auctionId)
+    private model.auction.Auction auction;
     private String currentAuctionId = null;
 
     // Quản lý thời gian
     private Timeline totalTimelineTimer;
-    private Timeline roundTimelineTimer;
     private java.time.LocalDateTime auctionEndTime; // Lưu thời gian kết thúc từ server
     private int totalTimeRemaining = 0; // Tính bằng giây
-    private static final int ROUND_DURATION = 30; // Thời gian mỗi vòng: 30 giây
-    private int roundTimeRemaining = ROUND_DURATION; // Tính bằng giây
     private String currentTopBidder = "Chưa có";
-    private double currentRoundHighestPrice = 0; // Giá cao nhất trong vòng
-    private String roundWinner = ""; // Người chiến thắng vòng
+    private double currentHighestPrice = 0; 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         priceSeries = new XYChart.Series<>();
-        priceSeries.setName("Lịch sử biến động giá");
+        priceSeries.setName("Diễn biến giá ($)");
         priceChart.getData().add(priceSeries);
-        priceChart.setAnimated(false);
+        priceChart.setAnimated(true); // Cho mượt mà
+        
+        // CSS Styling cho Chart (màu sắc hiện đại)
+        priceChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent;");
         
         // Cấu hình bảng lịch sử giá
         colHistoryRound.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("round"));
         colHistoryPrice.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("price"));
         historyTableView.setItems(historyData);
 
-        // Cấu hình bảng thông báo
+        // Cấu hình bảng thông báo (CHỈ CỦA PHÒNG NÀY)
         colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
         colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
-        notificationTableView.setItems(network.NotificationManager.getInstance().getNotifications());
+        
+        // T10: Cho phép tự động xuống dòng và tự động giãn độ cao dòng trong phòng
+        colNotifContent.setCellFactory(tc -> {
+            javafx.scene.control.TableCell<network.NotificationManager.NotificationItem, String> cell = new javafx.scene.control.TableCell<>() {
+                private final javafx.scene.control.Label label = new javafx.scene.control.Label();
+                {
+                    label.setWrapText(true);
+                    label.prefWidthProperty().bind(tc.widthProperty().subtract(10));
+                    setGraphic(label);
+                }
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        label.setText(null);
+                    } else {
+                        label.setText(item);
+                    }
+                }
+            };
+            return cell;
+        });
+        
+        notificationTableView.setItems(roomNotifications);
+        notificationTableView.setFixedCellSize(-1); // Cho phép hàng tự co giãn theo nội dung
 
         // Khởi tạo giá trị hiển thị
         if (topBidderLabel != null) {
             topBidderLabel.setText(currentTopBidder);
         }
 
-        // === SỬ DỤNG CLIENTNETWORKMANAGER ĐỂ LẮNG NGHE (thay vì tạo socket riêng) ===
+        // Cấu hình Trục X chỉ hiển thị số nguyên (Lượt đặt giá)
+        if (priceChart.getXAxis() instanceof javafx.scene.chart.NumberAxis) {
+            javafx.scene.chart.NumberAxis xAxis = (javafx.scene.chart.NumberAxis) priceChart.getXAxis();
+            xAxis.setMinorTickCount(0);
+            xAxis.setTickUnit(1);
+            xAxis.setAutoRanging(true); // Để tự động giãn trục X theo lượt đặt giá
+            xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+                @Override public String toString(Number object) {
+                    if (object.doubleValue() == 0) return "S"; // S đại diện cho Starting
+                    return String.format("%.0f", object.doubleValue());
+                }
+                @Override public Number fromString(String string) { return 0; }
+            });
+        }
+
         registerNetworkListeners();
     }
 
     /**
      * Thiết lập ID phiên đấu giá hiện tại.
-     * Được gọi từ SceneManager.goToInRoom(stage, auction) SAU khi FXML đã load.
      */
     public void setAuction(model.auction.Auction auction) {
+        this.auction = auction;
         this.currentAuctionId = auction.getId();
         if (roomIdLabel != null) {
             roomIdLabel.setText("ID phòng: " + currentAuctionId);
         }
-        System.out.println("🏛️ [InRoom] Đã thiết lập phòng đấu giá: " + currentAuctionId);
 
         // Tính tổng thời gian còn lại
         if (auction.getEndTime() != null) {
@@ -128,36 +164,59 @@ public class InRoomController implements Initializable {
             long seconds = java.time.Duration.between(java.time.LocalDateTime.now(), auctionEndTime).getSeconds();
             this.totalTimeRemaining = (int) Math.max(0, seconds);
             
-            // Tính thời gian lượt còn lại
-            long secondsSinceActivity = java.time.Duration.between(auction.getLastActivityTime(), java.time.LocalDateTime.now()).getSeconds();
-            this.roundTimeRemaining = Math.max(0, ROUND_DURATION - (int) secondsSinceActivity);
-            
-            javafx.application.Platform.runLater(() -> {
-                startTotalTimer();
-                startRoundTimer();
-            });
+            javafx.application.Platform.runLater(this::startTotalTimer);
             updateTotalTimeDisplay();
-            updateRoundTimeDisplay();
         }
+
+        // === KHÔI PHỤC LỊCH SỬ GIÁ, BIỂU ĐỒ VÀ THÔNG BÁO ===
+        Platform.runLater(() -> {
+            boolean wasAnimated = priceChart.getAnimated();
+            priceChart.setAnimated(false); // Tắt animation để load nhanh và không bị hiệu ứng lạ
+            
+            priceSeries.getData().clear();
+            historyData.clear();
+            roomNotifications.clear();
+            
+            // Lấy lịch sử từ Auction object (đã được load từ DB ở Server)
+            java.util.List<model.auction.BidTransaction> history = auction.getBidHistory();
+            this.bidCount = 0;
+
+            // 1. Điểm xuất phát (Starting Price - Turn 0)
+            priceSeries.getData().add(new XYChart.Data<>(0, auction.getStartingPrice()));
+            
+            if (history != null && !history.isEmpty()) {
+                for (model.auction.BidTransaction tx : history) {
+                    this.bidCount++;
+                    priceSeries.getData().add(new XYChart.Data<>(bidCount, tx.getBidAmount()));
+                    
+                    // Cập nhật bảng lịch sử
+                    historyData.add(0, new HistoryItem(bidCount, tx.getBidAmount()));
+                    
+                    // Phục hồi thông báo từ lịch sử phòng
+                    String timeStr = tx.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+                    roomNotifications.add(0, new network.NotificationManager.NotificationItem(
+                        "📌 " + tx.getBidder().getUsername() + " đã đặt $" + tx.getBidAmount(), timeStr));
+                }
+            }
+
+            // Cập nhật thông tin giá cao nhất
+            if (auction.getHighestBidder() != null) {
+                updateTopBidder(auction.getHighestBidder().getUsername());
+                currentHighestPrice = auction.getCurrentPrice();
+            } else {
+                currentHighestPrice = auction.getStartingPrice();
+                updateTopBidder("Chưa có");
+            }
+            
+            updateIncrementDisplay(currentHighestPrice);
+            
+            // Bật lại animation cho các lượt đặt giá tiếp theo
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(Duration.millis(500));
+            pause.setOnFinished(e -> priceChart.setAnimated(wasAnimated));
+            pause.play();
+        });
         
-        // Cập nhật giá cao nhất và top bidder hiện tại nếu có
-        if (auction.getHighestBidder() != null) {
-             currentRoundHighestPrice = auction.getCurrentPrice();
-             roundWinner = auction.getHighestBidder().getUsername();
-             updateTopBidder(roundWinner);
-             javafx.application.Platform.runLater(() -> {
-                 priceSeries.getData().add(new XYChart.Data<>("Current", currentRoundHighestPrice));
-             });
-        } else if (auction.getCurrentPrice() > 0) {
-             currentRoundHighestPrice = auction.getCurrentPrice();
-             javafx.application.Platform.runLater(() -> {
-                 priceSeries.getData().add(new XYChart.Data<>("Start", currentRoundHighestPrice));
-             });
-        }
-        
-        // Cập nhật Số dư và Bước giá khởi điểm
         updateBalanceDisplay(network.SessionManager.getInstance().getBalance());
-        updateIncrementDisplay(currentRoundHighestPrice);
     }
 
     private void registerNetworkListeners() {
@@ -170,16 +229,9 @@ public class InRoomController implements Initializable {
 
                 if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     totalTimeRemaining = durationMinutes * 60;
-                    roundTimeRemaining = ROUND_DURATION;
-                    currentRoundHighestPrice = 0;
-                    roundWinner = "";
+                    currentHighestPrice = 0;
 
-                    Platform.runLater(() -> {
-                        startTotalTimer();
-                        startRoundTimer();
-                    });
-
-                    System.out.println("[Auction] Phiên đấu giá bắt đầu. Tổng thời gian: " + durationMinutes + " phút");
+                    Platform.runLater(this::startTotalTimer);
                     network.NotificationManager.getInstance().addNotification("🚀 Phiên đấu giá " + auctionId + " đã BẮT ĐẦU!");
                 }
             }
@@ -195,50 +247,39 @@ public class InRoomController implements Initializable {
                     double newPrice = Double.parseDouble(parts[2]);
                     String topBidder = parts[3];
 
-                    if (newPrice > currentRoundHighestPrice) {
-                        currentRoundHighestPrice = newPrice;
-                        roundWinner = topBidder;
+                    if (newPrice > currentHighestPrice) {
+                        currentHighestPrice = newPrice;
                         updateTopBidder(topBidder);
                         updateIncrementDisplay(newPrice);
                         
-                        // Cập nhật biểu đồ NGAY LẬP TỨC khi có giá mới
+                        // Cập nhật biểu đồ theo lượt đấu (Trục X)
                         bidCount++;
                         Platform.runLater(() -> {
-                            priceSeries.getData().add(new XYChart.Data<>(String.valueOf(bidCount), newPrice));
-                            if (priceSeries.getData().size() > 20) {
-                                priceSeries.getData().remove(0);
+                            // Tắt tạm autoRanging để tránh trục bị nhảy giật cục làm mất hiệu ứng chéo
+                            if (priceChart.getXAxis() instanceof NumberAxis) {
+                                NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
+                                if (bidCount > 5) { // Chỉ can thiệp khi đã có một số điểm nhất định
+                                    xAxis.setAutoRanging(false);
+                                    xAxis.setLowerBound(Math.max(0, bidCount - 10)); // Giữ khung nhìn 10 lượt gần nhất
+                                    xAxis.setUpperBound(bidCount + 1);
+                                }
                             }
-                        });
-                        
-                        // Thêm vào bảng lịch sử giá
-                        Platform.runLater(() -> {
+
+                            // Tạo điểm mới. LineChart sẽ nối chéo từ (bidCount-1, oldPrice) sang (bidCount, newPrice)
+                            priceSeries.getData().add(new XYChart.Data<>(bidCount, newPrice));
+                            
+                            // Thêm vào bảng lịch sử giá
                             historyData.add(0, new HistoryItem(bidCount, newPrice));
+
+                            // Thêm vào thông báo phòng (Room-specific)
+                            String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+                            roomNotifications.add(0, new network.NotificationManager.NotificationItem(
+                                "💰 Lượt #" + bidCount + ": " + topBidder + " đặt $" + newPrice, timeStr));
                         });
 
-                        network.NotificationManager.getInstance().addNotification("💰 " + topBidder + " vừa đặt giá: $" + newPrice);
+                        // Global notification (Account wide)
+                        network.NotificationManager.getInstance().addNotification("📢 [" + auction.getItem().getName() + "] - " + topBidder + " vừa đặt $" + newPrice);
                     }
-
-                    Platform.runLater(this::resetRoundTimer);
-                    updateChartRealTime(newPrice, topBidder);
-                }
-            }
-        });
-
-        // Lắng nghe lệnh BROADCAST_ROUND_FINISHED
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_ROUND_FINISHED, (message) -> {
-            String[] parts = message.split(Protocol.SEPARATOR);
-            if (parts.length >= 2) {
-                String auctionId = parts[1];
-
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
-                    Platform.runLater(() -> {
-                        System.out.println("[Round] Vòng kết thúc! Người chiến thắng: " + roundWinner + " với giá: " + currentRoundHighestPrice);
-                        if (roundWinner.isEmpty()) {
-                            roundWinner = "Không có ai";
-                        }
-                    });
-
-                    resetRoundForNewBidding();
                 }
             }
         });
@@ -257,7 +298,6 @@ public class InRoomController implements Initializable {
                         }
                         totalTimeRemaining += addedSeconds;
                         updateTotalTimeDisplay();
-                        System.out.println("⏳ [Anti-Sniping] Thời gian đã được cộng thêm " + addedSeconds + "s");
                         AlertHelper.showInfo("Gia hạn", "Có người đặt giá phút chót! Thời gian cộng thêm " + addedSeconds + "s");
                         network.NotificationManager.getInstance().addNotification("⏳ Thời gian được gia hạn thêm " + addedSeconds + "s");
                     });
@@ -276,8 +316,6 @@ public class InRoomController implements Initializable {
                 if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     Platform.runLater(() -> {
                         stopAllTimers();
-                        System.out.println("[Auction] Phiên đấu giá kết thúc!");
-                        System.out.println("[Result] Người chiến thắng: " + finalWinner + " với giá: " + finalPrice);
                         AlertHelper.showInfo("Kết quả đấu giá",
                                 "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + finalPrice);
                         network.NotificationManager.getInstance().addNotification("🏆 Phiên đấu giá KẾT THÚC! Người thắng: " + finalWinner);
@@ -310,8 +348,6 @@ public class InRoomController implements Initializable {
         });
     }
 
-    // === CÁC HÀM QUẢN LÝ TIMER ===
-
     private void startTotalTimer() {
         if (totalTimelineTimer != null) {
             totalTimelineTimer.stop();
@@ -326,7 +362,6 @@ public class InRoomController implements Initializable {
                         updateTotalTimeDisplay();
                         
                         if (totalTimeRemaining <= 0) {
-                            System.out.println("[Timer] Phiên đấu giá hết thời gian!");
                             stopAllTimers();
                         }
                     }
@@ -337,60 +372,12 @@ public class InRoomController implements Initializable {
         totalTimelineTimer.play();
     }
 
-    private void startRoundTimer() {
-        if (roundTimelineTimer != null) {
-            roundTimelineTimer.stop();
-        }
-
-        roundTimelineTimer = new Timeline(new KeyFrame(
-                Duration.seconds(1),
-                event -> {
-                    if (roundTimeRemaining > 0) {
-                        roundTimeRemaining--;
-                        updateRoundTimeDisplay();
-                    } else {
-                        System.out.println("[Timer] Hết thời gian lượt, vòng kết thúc!");
-                        resetRoundForNewBidding();
-                    }
-                }
-        ));
-
-        roundTimelineTimer.setCycleCount(Timeline.INDEFINITE);
-        roundTimelineTimer.play();
-    }
-
-    private void resetRoundTimer() {
-        roundTimeRemaining = ROUND_DURATION;
-        if (roundTimelineTimer != null) {
-            roundTimelineTimer.stop();
-        }
-        startRoundTimer();
-    }
-
-    private void resetRoundForNewBidding() {
-        // Không reset bidCount ở đây để biểu đồ chạy tiếp tục
-        currentRoundHighestPrice = 0;
-        roundWinner = "";
-        roundTimeRemaining = ROUND_DURATION;
-
-        if (totalTimeRemaining > 0 && roundTimelineTimer != null) {
-            roundTimelineTimer.stop();
-            Platform.runLater(this::startRoundTimer);
-        }
-    }
-
     private void stopAllTimers() {
         if (totalTimelineTimer != null) {
             totalTimelineTimer.stop();
             totalTimelineTimer = null;
         }
-        if (roundTimelineTimer != null) {
-            roundTimelineTimer.stop();
-            roundTimelineTimer = null;
-        }
     }
-
-    // === CÁC HÀM CẬP NHẬT GIAO DIỆN ===
 
     private void updateTotalTimeDisplay() {
         Platform.runLater(() -> {
@@ -400,20 +387,11 @@ public class InRoomController implements Initializable {
         });
     }
 
-    private void updateRoundTimeDisplay() {
-        Platform.runLater(() -> {
-            if (roundTimeLabel != null) {
-                roundTimeLabel.setText(formatTime(roundTimeRemaining));
-            }
-        });
-    }
-
     private void updateTopBidder(String bidderName) {
         currentTopBidder = bidderName;
         Platform.runLater(() -> {
             if (topBidderLabel != null) {
                 topBidderLabel.setText(bidderName);
-                System.out.println("[Bidder] Cập nhật người đấu giá cao nhất vòng: " + bidderName);
             }
         });
     }
@@ -424,11 +402,7 @@ public class InRoomController implements Initializable {
         return String.format("%02d:%02d", minutes, secs);
     }
 
-    private void updateChartRealTime(double newPrice, String topBidder) {
-        Platform.runLater(() -> {
-            System.out.println("[Update] Giá mới: " + newPrice + "$ bởi " + topBidder + " | Giá cao nhất vòng: " + currentRoundHighestPrice);
-        });
-    }
+
 
     private void updateBalanceDisplay(double balance) {
         Platform.runLater(() -> {
@@ -457,17 +431,23 @@ public class InRoomController implements Initializable {
         });
     }
 
-    // === XỬ LÝ SỰ KIỆN TỪ GIAO DIỆN ===
-
     @FXML
     private void handlePlaceBid() {
         try {
-            if (bidAmountField.getText().isEmpty()) return;
+            String bidText = bidAmountField.getText().trim();
+            if (view.utility.ValidationHelper.isEmpty(bidText)) return;
+
             if (currentAuctionId == null) {
                 AlertHelper.showWarning("Lỗi", "Chưa xác định được phòng đấu giá!");
                 return;
             }
-            double amount = Double.parseDouble(bidAmountField.getText());
+
+            if (!view.utility.ValidationHelper.isValidStartPrice(bidText)) {
+                AlertHelper.showWarning("Lỗi dữ liệu", "Vui lòng nhập số tiền hợp lệ và lớn hơn 0!");
+                return;
+            }
+
+            double amount = Double.parseDouble(bidText);
 
             // Sử dụng ClientNetworkManager thay vì socket riêng
             String request = Protocol.REQ_BID + Protocol.DELIMITER +
@@ -487,6 +467,15 @@ public class InRoomController implements Initializable {
     @FXML
     private void exitRoom(ActionEvent event) {
         stopAllTimers();
+        
+        // GIẢI PHÓNG BỘ NHỚ: Xóa các listener để không bị rò rỉ khi ra/vào phòng nhiều lần
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_NEW_BID);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_ROUND_FINISHED);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_TIME_EXTENDED);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_AUCTION_FINISHED);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_BID);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.RES_UPDATE_BALANCE);
+
         Stage stage = (Stage) priceChart.getScene().getWindow();
         SceneManager.goToBaseMenu(stage);
     }

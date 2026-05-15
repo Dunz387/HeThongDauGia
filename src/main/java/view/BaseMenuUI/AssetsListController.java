@@ -135,13 +135,32 @@ public class AssetsListController implements Initializable {
 
                 dialog.setResultConverter(dialogButton -> {
                     if (dialogButton == updateButtonType) {
+                        String name = nameField.getText().trim();
+                        String desc = descField.getText().trim();
+                        String price = priceField.getText().trim();
+                        String duration = timeField.getText().trim();
+
+                        // VALIDATION TRƯỚC KHI GỬI
+                        if (view.utility.ValidationHelper.isEmpty(name)) {
+                            view.utility.AlertHelper.showWarning("Lỗi", "Tên sản phẩm không được để trống!");
+                            return null;
+                        }
+                        if (!view.utility.ValidationHelper.isValidStartPrice(price)) {
+                            view.utility.AlertHelper.showWarning("Lỗi", "Giá khởi điểm phải là số dương!");
+                            return null;
+                        }
+                        if (!view.utility.ValidationHelper.isValidDuration(duration)) {
+                            view.utility.AlertHelper.showWarning("Lỗi", "Thời lượng phải là số nguyên dương!");
+                            return null;
+                        }
+
                         return shared.Protocol.REQ_UPDATE_ITEM + shared.Protocol.DELIMITER + 
                                selected.getId() + shared.Protocol.DELIMITER + 
-                               nameField.getText() + shared.Protocol.DELIMITER + 
-                               descField.getText().replace("\n", " ") + shared.Protocol.DELIMITER + 
+                               name + shared.Protocol.DELIMITER + 
+                               desc.replace("\n", " ") + shared.Protocol.DELIMITER + 
                                typeBox.getValue() + shared.Protocol.DELIMITER + 
-                               priceField.getText() + shared.Protocol.DELIMITER + 
-                               timeField.getText(); // Thêm thời gian vào command
+                               price + shared.Protocol.DELIMITER + 
+                               duration;
                     }
                     return null;
                 });

@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ArtifactsWorkspaceSettings">
-    <artifacts-to-build>
-      <artifact name="HeThongDauGia:jar" />
-    </artifacts-to-build>
-  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29630cb3-8303-45f8-ba5d-eadca0659df0" name="Changes" comment="sửa tinh chỉnh toàn diện">
+    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/AuctionObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/AuctionObserver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dao/AuctionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/AuctionDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/NotificationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/NotificationManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/SellerInRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/SellerInRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/LoginView/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/LoginView/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/RegisterView/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/RegisterView/RegisterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/AssetsListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/AssetsListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/SellerUI/CreateItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/SellerUI/CreateItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/AuctionNetworkHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/AuctionNetworkHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/SellerInRoomView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/SellerInRoomView.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/auction/AuctionTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/user/BidderTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,11 +54,14 @@
     <commands />
     <urls />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
 }</component>
-  <component name="ProjectId" id="3DXLeRIVrn9Jc1y0jLSHrxU4KES" />
+  <component name="ProjectId" id="3DiAQxBzMu7FikpI6TW4Xq7b2EU" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
@@ -61,15 +72,12 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ADMIN/Downloads/HeThongDauGia&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
 }</component>
@@ -106,15 +114,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
@@ -131,68 +130,12 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="29630cb3-8303-45f8-ba5d-eadca0659df0" name="Changes" comment="" />
-      <created>1778423563446</created>
+      <changelist id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="" />
+      <created>1778754503779</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1778423563446</updated>
+      <updated>1778754503779</updated>
     </task>
-    <task id="LOCAL-00001" summary="sửa lại 1 chút ở ghi chú thông tin">
-      <option name="closed" value="true" />
-      <created>1778602019264</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1778602019264</updated>
-    </task>
-    <task id="LOCAL-00002" summary="sửa lại cải tiến toàn bộ dự án liên quan đến auction in room và role">
-      <option name="closed" value="true" />
-      <created>1778685189718</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1778685189718</updated>
-    </task>
-    <task id="LOCAL-00003" summary="sửa 1 chút cách role hoạt động">
-      <option name="closed" value="true" />
-      <created>1778687685757</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1778687685757</updated>
-    </task>
-    <task id="LOCAL-00004" summary="sửa tinh chỉnh toàn diện">
-      <option name="closed" value="true" />
-      <created>1778691481496</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1778691481496</updated>
-    </task>
-    <task id="LOCAL-00005" summary="sửa tinh chỉnh toàn diện">
-      <option name="closed" value="true" />
-      <created>1778746931774</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1778746931774</updated>
-    </task>
-    <task id="LOCAL-00006" summary="sửa tinh chỉnh toàn diện">
-      <option name="closed" value="true" />
-      <created>1778747001210</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1778747001210</updated>
-    </task>
-    <option name="localTasksCounter" value="7" />
     <servers />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="sửa lại 1 chút ở ghi chú thông tin" />
-    <MESSAGE value="sửa lại cải tiến toàn bộ dự án liên quan đến auction in room và role" />
-    <MESSAGE value="sửa 1 chút cách role hoạt động" />
-    <MESSAGE value="sửa tinh chỉnh toàn diện" />
-    <option name="LAST_COMMIT_MESSAGE" value="sửa tinh chỉnh toàn diện" />
   </component>
 </project>

@@ -151,19 +151,19 @@
       <Pane fx:id="darkOverlay" style="-fx-background-color: rgba(0,0,0,0.5);" visible="false" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
 
       <!-- ========== NOTIFICATION SIDE PANEL ========== -->
-      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" fitToWidth="true" prefWidth="300.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" fitToWidth="true" prefWidth="400.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <content>
             <VBox spacing="0" style="-fx-background-color: #ffffff;">
                <children>
                   <HBox alignment="CENTER_LEFT" style="-fx-background-color: #1a1a1a; -fx-padding: 16 14;">
                      <children>
-                        <Label text="🔔 Thông Báo" style="-fx-text-fill: #d4cd3d; -fx-font-size: 16px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                        <Label text="🔔 Thông báo" style="-fx-text-fill: #d4cd3d; -fx-font-size: 16px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
                      </children>
                   </HBox>
                   <Separator />
                   <TableView fx:id="tableNotifications" prefHeight="500.0" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="colNotifContent" prefWidth="180.0" text="Nội dung" />
+                        <TableColumn fx:id="colNotifContent" prefWidth="280.0" text="Nội dung" />
                         <TableColumn fx:id="colNotifTime" prefWidth="116.0" text="Thời gian" />
                      </columns>
                   </TableView>

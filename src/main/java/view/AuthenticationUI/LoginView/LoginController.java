@@ -19,10 +19,10 @@ public class LoginController {
 
     @FXML
     private void loginButtonClicked(ActionEvent event) {
-        String username = txtUsername.getText();
-        String password = txtPassword.getText();
+        String username = txtUsername.getText().trim();
+        String password = txtPassword.getText().trim();
 
-        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+        if (view.utility.ValidationHelper.isEmpty(username) || view.utility.ValidationHelper.isEmpty(password)) {
             AlertHelper.showWarning("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!");
             return;
         }
@@ -48,6 +48,9 @@ public class LoginController {
 
                     // Lưu thông tin phiên đăng nhập
                     SessionManager.getInstance().setSession(userId, userName, role, balance);
+
+                    // T10: Load lại lịch sử thông báo của tài khoản từ DB
+                    network.NotificationManager.getInstance().loadFromDatabase(userId);
 
                     // Phân luồng theo Role
                     if ("ADMIN".equals(role)) {

@@ -34,6 +34,9 @@ public class AuctionNetworkHelper {
      * @param filter Bộ lọc (VD: chỉ hiển thị RUNNING). Null = hiển thị tất cả.
      */
     public static void registerAuctionListListener(TableView<Auction> table, Predicate<Auction> filter) {
+        // GIẢI PHÓNG BỘ NHỚ: Xóa listener cũ của bảng đấu giá nếu có
+        ClientNetworkManager.getInstance().clearAuctionListListeners();
+
         // T7: Dùng addAuctionListListener thay vì setAuctionListListener
         ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
