@@ -109,20 +109,19 @@ public class BaseMenuController implements Initializable {
             // T10: Cho phép tự động xuống dòng và tự động giãn độ cao dòng
             colNotifContent.setCellFactory(tc -> {
                 javafx.scene.control.TableCell<network.NotificationManager.NotificationItem, String> cell = new javafx.scene.control.TableCell<>() {
-                    private final javafx.scene.control.Label label = new javafx.scene.control.Label();
+                    private final javafx.scene.text.Text textNode = new javafx.scene.text.Text();
                     {
-                        label.setWrapText(true);
-                        // Liên kết độ rộng của nhãn với độ rộng của cột để ép xuống dòng
-                        label.prefWidthProperty().bind(tc.widthProperty().subtract(10));
-                        setGraphic(label);
+                        textNode.wrappingWidthProperty().bind(tc.widthProperty().subtract(10));
+                        textNode.setStyle("-fx-fill: #333333; -fx-font-family: 'Segoe UI'; -fx-font-size: 13px;");
+                        setGraphic(textNode);
                     }
                     @Override
                     protected void updateItem(String item, boolean empty) {
                         super.updateItem(item, empty);
                         if (empty || item == null) {
-                            label.setText(null);
+                            textNode.setText(null);
                         } else {
-                            label.setText(item);
+                            textNode.setText(item);
                         }
                     }
                 };

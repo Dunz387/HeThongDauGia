@@ -79,6 +79,7 @@
 .btn-primary:hover {
     -fx-background-color: linear-gradient(to right, #f59542, #ea7f33);
     -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.5), 14, 0, 0, 5);
+    -fx-translate-y: -1;
 }
 
 .btn-primary:pressed {
@@ -118,6 +119,7 @@
 .btn-gold:hover {
     -fx-background-color: linear-gradient(to right, #e0d94a, #d4cd3d);
     -fx-effect: dropshadow(gaussian, rgba(212, 205, 61, 0.6), 14, 0, 0, 5);
+    -fx-translate-y: -1;
 }
 
 .btn-accent {
@@ -300,6 +302,9 @@
 
 .table-view .placeholder .label {
     -fx-text-fill: #aaaaaa;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-font-family: "Segoe UI";
 }
 
 /* --- SCROLL PANE --- */
@@ -534,6 +539,7 @@
 
 .btn-danger:hover {
     -fx-background-color: #c0392b;
+    -fx-translate-y: -1;
 }
 
 .btn-danger:pressed {
@@ -554,6 +560,7 @@
 
 .btn-success:hover {
     -fx-background-color: #219a52;
+    -fx-translate-y: -1;
 }
 
 /* --- WARNING BUTTON --- */

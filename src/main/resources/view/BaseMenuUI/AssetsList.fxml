@@ -30,7 +30,9 @@
                      <Label text="Quản lý và theo dõi tất cả tài sản trong hệ thống đấu giá" style="-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 13px; -fx-font-family: 'Segoe UI';" />
                   </children>
                </VBox>
-               <Button mnemonicParsing="false" onAction="#openChoiceMenu" text="+ Đấu Giá Mới" style="-fx-background-color: linear-gradient(to right, #ea7f33, #d46b20); -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-background-radius: 25; -fx-padding: 10 28; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.4), 10, 0, 0, 3);" />
+               <Button mnemonicParsing="false" onAction="#openChoiceMenu" text="+ Đấu Giá Mới" style="-fx-background-color: linear-gradient(to right, #ea7f33, #d46b20); -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-background-radius: 25; -fx-padding: 10 28; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(234,127,51,0.4), 10, 0, 0, 3);">
+                  <tooltip><javafx.scene.control.Tooltip text="Tạo một phiên đấu giá mới cho tài sản của bạn"/></tooltip>
+               </Button>
             </children>
          </HBox>
 
@@ -43,7 +45,9 @@
                <Label text="🚗 Xe cộ" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
                <Label text="🎨 Nghệ thuật" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-family: 'Segoe UI';" />
                <Region HBox.hgrow="ALWAYS" />
-               <Button mnemonicParsing="false" onAction="#goToAssetsListButtonClicked" text="🔄 Làm Mới" style="-fx-background-color: transparent; -fx-text-fill: #666666; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: #d0d0d0; -fx-border-radius: 16; -fx-background-radius: 16; -fx-padding: 4 14; -fx-cursor: hand;" />
+               <Button mnemonicParsing="false" onAction="#goToAssetsListButtonClicked" text="🔄 Làm Mới" style="-fx-background-color: transparent; -fx-text-fill: #666666; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: #d0d0d0; -fx-border-radius: 16; -fx-background-radius: 16; -fx-padding: 4 14; -fx-cursor: hand;">
+                  <tooltip><javafx.scene.control.Tooltip text="Tải lại danh sách tài sản"/></tooltip>
+               </Button>
             </children>
          </HBox>
 
@@ -53,6 +57,7 @@
                <VBox VBox.vgrow="ALWAYS" style="-fx-background-color: #ffffff; -fx-background-radius: 14; -fx-padding: 0; -fx-border-color: #e8e8e0; -fx-border-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);">
                   <children>
                      <TableView fx:id="tableAssets" VBox.vgrow="ALWAYS">
+                        <placeholder><Label text="Chưa có tài sản nào" styleClass="placeholder-label"/></placeholder>
                         <columnResizePolicy>
                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                         </columnResizePolicy>
@@ -87,9 +92,9 @@
       <Pane fx:id="darkOverlay" style="-fx-background-color: rgba(0,0,0,0.5);" visible="false" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
 
       <!-- ========== NOTIFICATION SIDE PANEL ========== -->
-      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" fitToWidth="true" prefWidth="300.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <ScrollPane fx:id="notificationMenu" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" prefWidth="400.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <content>
-            <VBox spacing="0" style="-fx-background-color: #ffffff;">
+            <VBox spacing="0" style="-fx-background-color: #ffffff;" VBox.vgrow="ALWAYS">
                <children>
                   <HBox alignment="CENTER_LEFT" style="-fx-background-color: #1a1a1a; -fx-padding: 16 14;">
                      <children>
@@ -97,10 +102,11 @@
                      </children>
                   </HBox>
                   <Separator />
-                  <TableView prefHeight="500.0" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="tableNotifications" VBox.vgrow="ALWAYS">
+                     <placeholder><Label text="Chưa có thông báo" styleClass="placeholder-label"/></placeholder>
                      <columns>
-                        <TableColumn prefWidth="180.0" text="Nội dung" />
-                        <TableColumn prefWidth="116.0" text="Thời gian" />
+                        <TableColumn fx:id="colNotifContent" prefWidth="280.0" text="Nội dung" />
+                        <TableColumn fx:id="colNotifTime" prefWidth="116.0" text="Thời gian" />
                      </columns>
                   </TableView>
                </children>

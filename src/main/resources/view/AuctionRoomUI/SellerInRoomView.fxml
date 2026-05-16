@@ -81,6 +81,7 @@
          <children>
             <Label text="📜 Lịch sử giá" style="-fx-text-fill: #1a1a1a; -fx-font-size: 14px; -fx-font-weight: 900;" />
             <TableView fx:id="tableBidHistory" prefHeight="300.0" VBox.vgrow="ALWAYS">
+               <placeholder><Label text="Chưa có lượt đặt giá nào" styleClass="placeholder-label"/></placeholder>
                <columns>
                   <TableColumn fx:id="colRound" prefWidth="55.0" text="Lượt" />
                   <TableColumn fx:id="colBidPrice" prefWidth="120.0" text="Giá ($)" />

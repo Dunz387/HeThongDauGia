@@ -37,6 +37,11 @@ public class AssetsListController implements Initializable {
     @FXML private TableColumn<Auction, String> colStatus;
     @FXML private TableColumn<Auction, String> colSeller;
 
+    // Notifications
+    @FXML private TableView<network.NotificationManager.NotificationItem> tableNotifications;
+    @FXML private TableColumn<network.NotificationManager.NotificationItem, String> colNotifContent;
+    @FXML private TableColumn<network.NotificationManager.NotificationItem, String> colNotifTime;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Cấu hình bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
@@ -64,7 +69,36 @@ public class AssetsListController implements Initializable {
             return false;
         });
 
-        // Thêm Context Menu cho tính năng Sửa/Xóa của Seller/Admin
+        // Cấu hình bảng thông báo
+        if (tableNotifications != null) {
+            colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
+            colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
+            
+            colNotifContent.setCellFactory(tc -> {
+                javafx.scene.control.TableCell<network.NotificationManager.NotificationItem, String> cell = new javafx.scene.control.TableCell<>() {
+                    private final javafx.scene.text.Text textNode = new javafx.scene.text.Text();
+                    {
+                        textNode.wrappingWidthProperty().bind(tc.widthProperty().subtract(10));
+                        textNode.setStyle("-fx-fill: #333333; -fx-font-family: 'Segoe UI'; -fx-font-size: 13px;");
+                        setGraphic(textNode);
+                    }
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            textNode.setText(null);
+                        } else {
+                            textNode.setText(item);
+                        }
+                    }
+                };
+                return cell;
+            });
+            
+            tableNotifications.setItems(network.NotificationManager.getInstance().getNotifications());
+            tableNotifications.setFixedCellSize(-1); // Tự động giãn dòng
+        }
+
         setupContextMenu();
         setupNetworkListeners();
     }

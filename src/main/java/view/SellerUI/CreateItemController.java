@@ -26,6 +26,10 @@ public class CreateItemController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         choiceType.getItems().addAll("Đồ điện", "Xe cộ", "Nghệ thuật");
         choiceType.setValue(null);
+
+        txtItemName.setOnAction(event -> txtStartPrice.requestFocus());
+        txtStartPrice.setOnAction(event -> txtDuration.requestFocus());
+        txtDuration.setOnAction(event -> txtDescription.requestFocus());
     }
 
     @FXML

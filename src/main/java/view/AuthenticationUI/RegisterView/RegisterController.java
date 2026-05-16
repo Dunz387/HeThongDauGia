@@ -25,6 +25,10 @@ public class RegisterController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         cbRole.setItems(FXCollections.observableArrayList("Người Mua (Bidder)", "Người Bán (Seller)"));
         cbRole.getSelectionModel().selectFirst();
+
+        txtUsername.setOnAction(event -> txtPassword.requestFocus());
+        txtPassword.setOnAction(event -> cbRole.requestFocus());
+        cbRole.setOnAction(event -> registerButtonClicked(null));
     }
 
     @FXML

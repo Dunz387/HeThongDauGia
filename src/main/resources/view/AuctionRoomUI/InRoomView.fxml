@@ -87,6 +87,7 @@
          <children>
             <Label text="📜 Lịch sử giá" style="-fx-text-fill: #1a1a1a; -fx-font-size: 13px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
             <TableView fx:id="historyTableView" prefHeight="180.0" VBox.vgrow="SOMETIMES">
+               <placeholder><Label text="Chưa có lượt đặt giá nào" styleClass="placeholder-label"/></placeholder>
                <columns>
                   <TableColumn fx:id="colHistoryRound" prefWidth="50.0" text="Lượt" />
                   <TableColumn fx:id="colHistoryPrice" prefWidth="110.0" text="Giá ($)" />
@@ -95,6 +96,7 @@
             <Separator />
             <Label text="🔔 Thông báo" style="-fx-text-fill: #1a1a1a; -fx-font-size: 13px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
             <TableView fx:id="notificationTableView" prefHeight="180.0" VBox.vgrow="ALWAYS">
+               <placeholder><Label text="Chưa có thông báo" styleClass="placeholder-label"/></placeholder>
                <columns>
                   <TableColumn fx:id="colNotifTime" prefWidth="65.0" text="Thời gian" />
                   <TableColumn fx:id="colNotifContent" prefWidth="250.0" text="Nội dung" />

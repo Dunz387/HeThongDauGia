@@ -103,19 +103,19 @@ public class InRoomController implements Initializable {
         // T10: Cho phép tự động xuống dòng và tự động giãn độ cao dòng trong phòng
         colNotifContent.setCellFactory(tc -> {
             javafx.scene.control.TableCell<network.NotificationManager.NotificationItem, String> cell = new javafx.scene.control.TableCell<>() {
-                private final javafx.scene.control.Label label = new javafx.scene.control.Label();
+                private final javafx.scene.text.Text textNode = new javafx.scene.text.Text();
                 {
-                    label.setWrapText(true);
-                    label.prefWidthProperty().bind(tc.widthProperty().subtract(10));
-                    setGraphic(label);
+                    textNode.wrappingWidthProperty().bind(tc.widthProperty().subtract(10));
+                    textNode.setStyle("-fx-fill: #333333; -fx-font-family: 'Segoe UI'; -fx-font-size: 13px;");
+                    setGraphic(textNode);
                 }
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty || item == null) {
-                        label.setText(null);
+                        textNode.setText(null);
                     } else {
-                        label.setText(item);
+                        textNode.setText(item);
                     }
                 }
             };
@@ -143,6 +143,11 @@ public class InRoomController implements Initializable {
                 }
                 @Override public Number fromString(String string) { return 0; }
             });
+        }
+
+        // Bổ sung: Nhấn Enter để gửi giá
+        if (bidAmountField != null) {
+            bidAmountField.setOnAction(event -> handlePlaceBid());
         }
 
         registerNetworkListeners();

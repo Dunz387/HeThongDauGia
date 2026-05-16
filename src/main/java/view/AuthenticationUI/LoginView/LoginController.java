@@ -18,6 +18,12 @@ public class LoginController {
     @FXML private TextField txtPassword;
 
     @FXML
+    public void initialize() {
+        txtUsername.setOnAction(event -> txtPassword.requestFocus());
+        txtPassword.setOnAction(this::loginButtonClicked);
+    }
+
+    @FXML
     private void loginButtonClicked(ActionEvent event) {
         String username = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
