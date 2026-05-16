@@ -14,6 +14,10 @@ public class Bidder extends User {
         return balance;
     }
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     // Tính toán số tiền thực sự có thể dùng
     public double getAvailableBalance() {
         return balance - lockedBalance;

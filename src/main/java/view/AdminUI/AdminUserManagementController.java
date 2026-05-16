@@ -55,21 +55,44 @@ public class AdminUserManagementController implements Initializable {
         colStatus.setCellValueFactory(cellData ->
                 new SimpleStringProperty(StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
 
-        // === CỘT HÀNH ĐỘNG: NÚT KHÓA / MỞ KHÓA ===
+        // === CỘT HÀNH ĐỘNG: NÚT KHÓA / MỞ KHÓA & SỬA TIỀN ===
         colAction.setCellFactory(col -> new TableCell<>() {
             private final Button btnToggle = new Button();
+            private final Button btnEditBalance = new Button("💰 Sửa tiền");
+            private final HBox container = new HBox(8, btnToggle, btnEditBalance);
 
             {
                 btnToggle.setOnAction(event -> {
                     User user = getTableView().getItems().get(getIndex());
                     boolean currentlyActive = user.isActive();
-                    // Gửi lệnh: BAN_USER;;;userId;;;newStatus (true=mở khóa, false=khóa)
                     String request = Protocol.REQ_BAN_USER + Protocol.DELIMITER
                             + user.getId() + Protocol.DELIMITER
-                            + (!currentlyActive); // Đảo ngược trạng thái
-
+                            + (!currentlyActive);
                     ClientNetworkManager.getInstance().sendData(request);
                 });
+
+                btnEditBalance.setOnAction(event -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    double currentVal = (user instanceof Bidder ? ((Bidder)user).getBalance() : (user instanceof Seller ? ((Seller)user).getBalance() : 0.0));
+                    TextInputDialog dialog = new TextInputDialog(String.format("%.0f", currentVal));
+                    dialog.setTitle("Điều chỉnh số dư");
+                    dialog.setHeaderText("Người dùng: " + user.getUsername());
+                    dialog.setContentText("Nhập số dư mới ($):");
+
+                    dialog.showAndWait().ifPresent(input -> {
+                        try {
+                            double newBalance = Double.parseDouble(input);
+                            String request = Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER 
+                                    + user.getId() + Protocol.DELIMITER + newBalance;
+                            ClientNetworkManager.getInstance().sendData(request);
+                        } catch (NumberFormatException e) {
+                            AlertHelper.showError("Lỗi", "Vui lòng nhập số hợp lệ!");
+                        }
+                    });
+                });
+                
+                btnEditBalance.getStyleClass().setAll("btn-primary");
+                container.setAlignment(javafx.geometry.Pos.CENTER);
             }
 
             @Override
@@ -79,7 +102,6 @@ public class AdminUserManagementController implements Initializable {
                     setGraphic(null);
                 } else {
                     User user = getTableView().getItems().get(getIndex());
-                    // Không cho phép khóa chính Admin
                     if ("ADMIN".equals(user.getRole().name())) {
                         setGraphic(null);
                     } else {
@@ -90,7 +112,7 @@ public class AdminUserManagementController implements Initializable {
                             btnToggle.setText("🔓 Mở khóa");
                             btnToggle.getStyleClass().setAll("btn-success");
                         }
-                        setGraphic(btnToggle);
+                        setGraphic(container);
                     }
                 }
             }
@@ -106,6 +128,18 @@ public class AdminUserManagementController implements Initializable {
                     AlertHelper.showInfo("Hệ thống", "Đã cập nhật trạng thái người dùng thành công!");
                 } else {
                     AlertHelper.showError("Lỗi", parts.length >= 3 ? parts[2] : "Không thể thực hiện thao tác");
+                }
+            });
+        });
+
+        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_UPDATE_USER_BALANCE, (response) -> {
+            String[] parts = response.split(Protocol.SEPARATOR);
+            Platform.runLater(() -> {
+                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
+                    AlertHelper.showInfo("Hệ thống", "Đã cập nhật số dư người dùng thành công!");
+                } else {
+                    AlertHelper.showError("Lỗi", parts.length >= 3 ? parts[2] : "Không thể cập nhật số dư");
                 }
             });
         });

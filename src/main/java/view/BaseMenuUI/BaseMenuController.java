@@ -133,6 +133,7 @@ public class BaseMenuController implements Initializable {
         }
 
         // Lắng nghe các sự kiện quan trọng để đẩy thông báo ra ngoài màn hình chính
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.BROADCAST_AUCTION_START);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_START, (message) -> {
             String[] parts = message.split(shared.Protocol.SEPARATOR);
             if (parts.length >= 2) {
@@ -140,6 +141,7 @@ public class BaseMenuController implements Initializable {
             }
         });
 
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.BROADCAST_AUCTION_FINISHED);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
             String[] parts = message.split(shared.Protocol.SEPARATOR);
             if (parts.length >= 2) {
@@ -166,6 +168,7 @@ public class BaseMenuController implements Initializable {
         });
 
         // Đăng ký Listener phản hồi giao dịch
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_DEPOSIT);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_DEPOSIT, (message) -> {
             String[] parts = message.split(shared.Protocol.SEPARATOR);
             if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
@@ -176,6 +179,7 @@ public class BaseMenuController implements Initializable {
             }
         });
 
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_WITHDRAW);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_WITHDRAW, (message) -> {
             String[] parts = message.split(shared.Protocol.SEPARATOR);
             if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {

@@ -23,6 +23,7 @@ public class AuctionServer implements AuctionObserver {
     private static final int PORT = 8080;
     private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private AuctionManager manager;
+    private final java.util.concurrent.ExecutorService broadcastExecutor = java.util.concurrent.Executors.newFixedThreadPool(4);
 
     // Room tracking: AuctionID -> Set of ClientHandlers currently in that room
     private java.util.Map<String, java.util.Set<ClientHandler>> roomParticipants = new java.util.concurrent.ConcurrentHashMap<>();
@@ -96,27 +97,33 @@ public class AuctionServer implements AuctionObserver {
 
     // Hàm Broadcast gửi một thông điệp (chuỗi) tới tất cả Client đang online
     public void broadcast(String message) {
-        for (ClientHandler client : clients) {
-            client.sendData(message);
-        }
+        broadcastExecutor.submit(() -> {
+            for (ClientHandler client : clients) {
+                client.sendData(message);
+            }
+        });
     }
 
     // THÊM MỚI: Hàm Broadcast gửi DANH SÁCH tài sản mới nhất cho tất cả Client
     public void broadcastAuctionList() {
-        List<Auction> list = manager.getAllAuctions();
-        for (ClientHandler client : clients) {
-            client.sendData(Protocol.RES_AUCTION_LIST);
-            client.sendData(list);
-        }
+        broadcastExecutor.submit(() -> {
+            List<Auction> list = manager.getAllAuctions();
+            for (ClientHandler client : clients) {
+                client.sendData(Protocol.RES_AUCTION_LIST);
+                client.sendData(list);
+            }
+        });
     }
 
     // THÊM MỚI: Hàm Broadcast gửi DANH SÁCH USER mới nhất cho tất cả Client (Real-time cho Admin)
     public void broadcastUserList() {
-        List<User> list = manager.getAllUsers();
-        for (ClientHandler client : clients) {
-            client.sendData(Protocol.RES_USER_LIST);
-            client.sendData(list);
-        }
+        broadcastExecutor.submit(() -> {
+            List<User> list = manager.getAllUsers();
+            for (ClientHandler client : clients) {
+                client.sendData(Protocol.RES_USER_LIST);
+                client.sendData(list);
+            }
+        });
     }
 
     // --- ROOM MANAGEMENT ---
@@ -151,6 +158,20 @@ public class AuctionServer implements AuctionObserver {
                 client.sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + balance);
             }
         }
+    }
+
+    /**
+     * Kiểm tra xem một User đã có phiên đăng nhập nào đang hoạt động chưa.
+     */
+    public boolean isUserLoggedIn(String userId) {
+        if (userId == null) return false;
+        for (ClientHandler client : clients) {
+            User u = client.getLoggedInUser();
+            if (u != null && userId.equals(u.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Xử lý sự kiện khi có giá mới (từ AuctionObserver)

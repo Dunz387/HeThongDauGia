@@ -45,13 +45,18 @@ public class ClientNetworkManager {
         return instance;
     }
 
+    public synchronized boolean isConnected() {
+        return socket != null && !socket.isClosed() && socket.isConnected();
+    }
+
     public synchronized boolean connect(String ip, int port) {
-        if (socket != null && !socket.isClosed()) {
+        if (isConnected()) {
             LOGGER.info("ℹ️ Đã có kết nối sẵn sàng.");
             return true;
         }
         try {
             socket = new Socket(ip, port);
+            socket.setSoTimeout(0); // Không timeout cho việc đọc
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
@@ -60,7 +65,7 @@ public class ClientNetworkManager {
             LOGGER.info("✅ Đã kết nối thành công tới Server!");
             return true;
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "❌ Lỗi kết nối tới Server", e);
+            LOGGER.log(Level.SEVERE, "❌ Lỗi kết nối tới Server: " + e.getMessage());
             return false;
         }
     }

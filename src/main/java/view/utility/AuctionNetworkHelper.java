@@ -60,6 +60,7 @@ public class AuctionNetworkHelper {
      * Đăng ký lắng nghe BROADCAST_NEW_BID để tự động refresh danh sách.
      */
     public static void registerBidUpdateRefresh() {
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_NEW_BID);
         ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_NEW_BID, (message) -> {
             ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
         });

@@ -33,32 +33,23 @@ public class LoginController {
             return;
         }
 
-        // T7: Lấy Stage ngay tại đây từ sự kiện để tránh lỗi Null sau này trong callback
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        String request = Protocol.REQ_LOGIN + Protocol.DELIMITER + username + Protocol.DELIMITER + password;
 
-        // 1. Chuẩn bị yêu cầu
-        String request = Protocol.REQ_LOGIN + Protocol.DELIMITER + username.trim() + Protocol.DELIMITER + password.trim();
-
-        // 2. ĐĂNG KÝ CALLBACK
-        // T7: Xóa các listener cũ để tránh việc callback chạy nhiều lần (Memory leak & Bug)
+        // T7: Xóa các listener cũ
         ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_LOGIN);
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_LOGIN, (response) -> {
             String[] parts = response.split(Protocol.SEPARATOR);
             Platform.runLater(() -> {
                 if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                    // Parse thông tin user từ response
                     String role = parts.length >= 3 ? parts[2] : "";
                     String userId = parts.length >= 4 ? parts[3] : "";
                     String userName = parts.length >= 5 ? parts[4] : "";
                     double balance = parts.length >= 6 ? Double.parseDouble(parts[5]) : 0.0;
 
-                    // Lưu thông tin phiên đăng nhập
                     SessionManager.getInstance().setSession(userId, userName, role, balance);
-
-                    // T10: Load lại lịch sử thông báo của tài khoản từ DB
                     network.NotificationManager.getInstance().loadFromDatabase(userId);
 
-                    // Phân luồng theo Role
                     if ("ADMIN".equals(role)) {
                         SceneManager.goToAdminDashboard(stage);
                     } else {
@@ -70,9 +61,28 @@ public class LoginController {
             });
         });
 
-        // 3. Gửi đi
-        ClientNetworkManager.getInstance().sendData(request);
+        // Chạy kết nối và gửi dữ liệu trong thread riêng để không treo UI
+        new Thread(() -> {
+            try {
+                if (!ClientNetworkManager.getInstance().isConnected()) {
+                    LOGGER.info("🔄 Đang thử kết nối lại tới Server...");
+                    if (!ClientNetworkManager.getInstance().connect("localhost", 8080)) {
+                        Platform.runLater(() -> AlertHelper.showError("Lỗi", "Không thể kết nối tới Server. Hãy đảm bảo Server đang chạy!"));
+                        return;
+                    }
+                }
+                
+                boolean sent = ClientNetworkManager.getInstance().sendData(request);
+                if (!sent) {
+                    Platform.runLater(() -> AlertHelper.showError("Lỗi", "Không thể gửi yêu cầu đăng nhập. Thử lại sau!"));
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> AlertHelper.showError("Lỗi hệ thống", "Đã xảy ra lỗi khi đăng nhập: " + e.getMessage()));
+            }
+        }).start();
     }
+    
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(LoginController.class.getName());
 
     @FXML
     private void registerLinkClicked(ActionEvent event) {

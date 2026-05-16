@@ -94,18 +94,18 @@ public class InRoomController implements Initializable {
         if (priceChart.getXAxis() instanceof NumberAxis) {
             NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
             xAxis.setMinorTickVisible(false);
+            xAxis.setMinorTickCount(0);
             xAxis.setTickUnit(1.0);
-            xAxis.setAutoRanging(false); // Chuyển sang manual để kiểm soát mốc chia
+            xAxis.setAutoRanging(false);
             xAxis.setLowerBound(0);
-            xAxis.setUpperBound(10); // Khởi tạo ban đầu
+            xAxis.setUpperBound(10);
             
             xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
                 @Override public String toString(Number object) {
                     double val = object.doubleValue();
-                    if (val < -0.01) return "";
-                    // Chỉ hiện nhãn nếu giá trị là số nguyên (hoặc cực gần số nguyên)
                     if (Math.abs(val - Math.round(val)) < 0.0001) {
                         int intVal = (int) Math.round(val);
+                        if (intVal < 0) return "";
                         if (intVal == 0) return "BĐ";
                         return String.valueOf(intVal);
                     }
@@ -114,6 +114,13 @@ public class InRoomController implements Initializable {
                 @Override public Number fromString(String string) { return 0; }
             });
         }
+
+        if (priceChart.getYAxis() instanceof NumberAxis) {
+            NumberAxis yAxis = (NumberAxis) priceChart.getYAxis();
+            yAxis.setAnimated(false); // Quan trọng: Số cực lớn không nên chạy animation
+            yAxis.setForceZeroInRange(false); // Không ép mốc 0 để đồ thị zoom sát vào vùng giá cao
+        }
+        priceChart.setAnimated(false); // Tắt hoàn toàn animation để tránh lỗi treo với số khổng lồ
 
         // CSS Styling cho Chart (màu sắc hiện đại)
         priceChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent;");
@@ -157,20 +164,6 @@ public class InRoomController implements Initializable {
             topBidderLabel.setText(currentTopBidder);
         }
 
-        // Cấu hình Trục X chỉ hiển thị số nguyên (Lượt đặt giá)
-        if (priceChart.getXAxis() instanceof javafx.scene.chart.NumberAxis) {
-            javafx.scene.chart.NumberAxis xAxis = (javafx.scene.chart.NumberAxis) priceChart.getXAxis();
-            xAxis.setMinorTickCount(0);
-            xAxis.setTickUnit(1);
-            xAxis.setAutoRanging(true); // Để tự động giãn trục X theo lượt đặt giá
-            xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
-                @Override public String toString(Number object) {
-                    if (object.doubleValue() == 0) return "S"; // S đại diện cho Starting
-                    return String.format("%.0f", object.doubleValue());
-                }
-                @Override public Number fromString(String string) { return 0; }
-            });
-        }
 
         // Bổ sung: Nhấn Enter để gửi giá
         if (bidAmountField != null) {
@@ -202,8 +195,7 @@ public class InRoomController implements Initializable {
 
         // === KHÔI PHỤC LỊCH SỬ GIÁ, BIỂU ĐỒ VÀ THÔNG BÁO ===
         Platform.runLater(() -> {
-            boolean wasAnimated = priceChart.getAnimated();
-            priceChart.setAnimated(false); // Tắt animation để load nhanh và không bị hiệu ứng lạ
+            priceChart.setAnimated(false); // Đảm bảo tắt animation
             
             priceSeries.getData().clear();
             historyData.clear();
@@ -249,11 +241,6 @@ public class InRoomController implements Initializable {
             }
 
             updateIncrementDisplay(currentHighestPrice);
-            
-            // Bật lại animation cho các lượt đặt giá tiếp theo
-            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(Duration.millis(500));
-            pause.setOnFinished(e -> priceChart.setAnimated(wasAnimated));
-            pause.play();
         });
         
         updateBalanceDisplay(network.SessionManager.getInstance().getBalance());
@@ -315,7 +302,7 @@ public class InRoomController implements Initializable {
 
                             // Thêm vào thông báo phòng (Room-specific) với format đồng bộ
                             String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
-                            String notificationMsg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " đặt $" + newPrice;
+                            String notificationMsg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " đặt $" + String.format("%,.0f", newPrice);
                             roomNotifications.add(0, new network.NotificationManager.NotificationItem(notificationMsg, timeStr));
                         });
 
@@ -371,9 +358,20 @@ public class InRoomController implements Initializable {
                 if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     Platform.runLater(() -> {
                         stopAllTimers();
+                        updateTopBidder(finalWinner);
+                        
+                        String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+                        String finishMsg = "🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: " + finalWinner + " ($" + String.format("%,.0f", finalPrice) + ")";
+                        roomNotifications.add(0, new network.NotificationManager.NotificationItem(finishMsg, timeStr));
+                        
                         AlertHelper.showInfo("Kết quả đấu giá",
-                                "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + finalPrice);
+                                "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + String.format("%,.0f", finalPrice));
                         network.NotificationManager.getInstance().addNotification("🏆 Phiên đấu giá KẾT THÚC! Người thắng: " + finalWinner);
+
+                        // Tự động out ra ngoài sau khi đấu giá kết thúc (trừ Admin)
+                        if (!network.SessionManager.getInstance().isAdmin()) {
+                            exitRoom(null);
+                        }
                     });
                 }
             }

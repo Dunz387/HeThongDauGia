@@ -77,10 +77,28 @@ public class AuctionManager {
     }
 
     public boolean banUser(String targetUserId, boolean status) {
-        for (User u : users) {
-            if (u.getId().equals(targetUserId)) {
-                u.setActive(status); // 1. Cập nhật RAM ngay lập tức
-                return AdminDAO.setUserActiveStatus(targetUserId, status); // 2. Cập nhật xuống DB
+        synchronized (users) {
+            for (User u : users) {
+                if (u.getId().equals(targetUserId)) {
+                    u.setActive(status); // 1. Cập nhật RAM ngay lập tức
+                    return AdminDAO.setUserActiveStatus(targetUserId, status); // 2. Cập nhật xuống DB
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean updateUserBalanceForce(String targetUserId, double newBalance) {
+        synchronized (users) {
+            for (User u : users) {
+                if (u.getId().equals(targetUserId)) {
+                    // Cập nhật RAM
+                    if (u instanceof Bidder) ((Bidder) u).setBalance(newBalance);
+                    else if (u instanceof Seller) ((Seller) u).setBalance(newBalance);
+                    
+                    // Cập nhật DB
+                    return UserDAO.updateUserBalance(targetUserId, newBalance);
+                }
             }
         }
         return false;

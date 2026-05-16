@@ -264,6 +264,7 @@ public class AssetsListController implements Initializable {
     }
 
     private void setupNetworkListeners() {
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_UPDATE_ITEM);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_UPDATE_ITEM, msg -> {
             String[] parts = msg.split(shared.Protocol.SEPARATOR);
             if (parts.length > 1) {
@@ -278,6 +279,7 @@ public class AssetsListController implements Initializable {
             }
         });
 
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_DELETE_ITEM);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_DELETE_ITEM, msg -> {
             String[] parts = msg.split(shared.Protocol.SEPARATOR);
             if (parts.length > 1) {
@@ -293,6 +295,7 @@ public class AssetsListController implements Initializable {
         });
 
         // Đăng ký lắng nghe số dư phản hồi (nếu cần alert riêng cho trang này)
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_DEPOSIT);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_DEPOSIT, (message) -> {
             String[] parts = message.split(shared.Protocol.SEPARATOR);
             if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
@@ -300,6 +303,7 @@ public class AssetsListController implements Initializable {
             }
         });
 
+        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_WITHDRAW);
         network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_WITHDRAW, (message) -> {
             String[] parts = message.split(shared.Protocol.SEPARATOR);
             if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {

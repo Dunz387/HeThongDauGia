@@ -78,7 +78,13 @@ public class SellerInRoomController implements Initializable {
         priceSeries = new XYChart.Series<>();
         priceSeries.setName("Biến động giá ($)");
         priceChart.getData().add(priceSeries);
-        priceChart.setAnimated(true);
+        priceChart.setAnimated(false); // Tắt animation mặc định để tránh lỗi với số lớn
+
+        if (priceChart.getYAxis() instanceof NumberAxis) {
+            NumberAxis yAxis = (NumberAxis) priceChart.getYAxis();
+            yAxis.setAnimated(false); // Quan trọng: Số cực lớn không nên chạy animation
+            yAxis.setForceZeroInRange(false); // Không ép mốc 0 để đồ thị zoom sát vào vùng giá cao
+        }
 
         // === KHỞI TẠO BẢNG LỊCH SỬ GIÁ ===
         colRound.setCellValueFactory(cellData ->
@@ -114,6 +120,7 @@ public class SellerInRoomController implements Initializable {
         if (priceChart.getXAxis() instanceof NumberAxis) {
             NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
             xAxis.setMinorTickVisible(false);
+            xAxis.setMinorTickCount(0);
             xAxis.setTickUnit(1.0);
             xAxis.setAutoRanging(false); 
             xAxis.setLowerBound(0);
@@ -122,9 +129,9 @@ public class SellerInRoomController implements Initializable {
             xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
                 @Override public String toString(Number object) {
                     double val = object.doubleValue();
-                    if (val < -0.01) return "";
                     if (Math.abs(val - Math.round(val)) < 0.0001) {
                         int intVal = (int) Math.round(val);
+                        if (intVal < 0) return "";
                         if (intVal == 0) return "BĐ";
                         return String.valueOf(intVal);
                     }
@@ -165,7 +172,7 @@ public class SellerInRoomController implements Initializable {
                         lblRounds.setText(String.valueOf(bidCount));
                         updateIncrementDisplay(newPrice);
                         if (auction != null) {
-                            String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + newPrice;
+                            String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + String.format("%,.0f", newPrice);
                             String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                             
                             // Cập nhật bảng thông báo tại phòng
@@ -198,7 +205,6 @@ public class SellerInRoomController implements Initializable {
             }
         });
 
-        // Lắng nghe kết thúc phiên
         ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
             String[] parts = message.split(Protocol.SEPARATOR);
             if (parts.length >= 2) {
@@ -208,8 +214,20 @@ public class SellerInRoomController implements Initializable {
                 if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
                     Platform.runLater(() -> {
                         stopAllTimers();
+                        lblCurrentPrice.setText(String.format("%,.0f $", finalPrice));
+                        topBidderLabel.setText(winner);
+                        
+                        String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+                        String finishMsg = "🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: " + winner + " ($" + String.format("%,.0f", finalPrice) + ")";
+                        roomNotifications.add(0, new network.NotificationManager.NotificationItem(finishMsg, timeStr));
+                        
                         AlertHelper.showInfo("Phiên đấu giá kết thúc!",
-                                "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + finalPrice + " $");
+                                "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + String.format("%,.0f $", finalPrice));
+
+                        // Tự động out ra ngoài sau khi đấu giá kết thúc (trừ Admin)
+                        if (!network.SessionManager.getInstance().isAdmin()) {
+                            exitRoom(null);
+                        }
                     });
                 }
             }
@@ -255,6 +273,9 @@ public class SellerInRoomController implements Initializable {
 
         // === KHÔI PHỤC DỮ LIỆU ĐẤU GIÁ ===
         Platform.runLater(() -> {
+            boolean wasAnimated = priceChart.getAnimated();
+            priceChart.setAnimated(false); // Tắt animation để load nhanh và không bị hiệu ứng lạ
+            
             priceSeries.getData().clear();
             bidHistory.clear();
             
@@ -274,8 +295,8 @@ public class SellerInRoomController implements Initializable {
 
             if (auction.getHighestBidder() != null) {
                  currentHighestPrice = auction.getCurrentPrice();
-                 if (lblCurrentPrice != null) lblCurrentPrice.setText(String.format("%.0f $", currentHighestPrice));
-                 if (lblEarnings != null) lblEarnings.setText(String.format("%.0f $", currentHighestPrice));
+                 if (lblCurrentPrice != null) lblCurrentPrice.setText(String.format("%,.0f $", currentHighestPrice));
+                 if (lblEarnings != null) lblEarnings.setText(String.format("%,.0f $", currentHighestPrice));
                  if (topBidderLabel != null) topBidderLabel.setText(auction.getHighestBidder().getUsername());
                  if (lblRounds != null) lblRounds.setText(String.valueOf(bidCount));
             } else {
@@ -289,7 +310,7 @@ public class SellerInRoomController implements Initializable {
                 for (model.auction.BidTransaction tx : history) {
                     tempCount++;
                     String timeStr = tx.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
-                    String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + tempCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + tx.getBidAmount();
+                    String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + tempCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + String.format("%,.0f", tx.getBidAmount());
                     roomNotifications.add(0, new network.NotificationManager.NotificationItem(msg, timeStr));
                 }
             }

@@ -98,6 +98,9 @@ public class ClientHandler implements Runnable {
                         case Protocol.REQ_LEAVE_ROOM:
                             if (parts.length >= 2) handleLeaveRoom(parts[1]);
                             break;
+                        case Protocol.REQ_UPDATE_USER_BALANCE:
+                            if (parts.length >= 3) handleUpdateUserBalance(parts[1], parts[2]);
+                            break;
                     }
                 }
             }
@@ -112,8 +115,16 @@ public class ClientHandler implements Runnable {
 
     // --- NHÓM LỆNH XÁC THỰC ---
     private void handleLogin(String u, String p) {
-        loggedInUser = manager.authenticateUser(u, p);
-        if (loggedInUser != null) {
+        User user = manager.authenticateUser(u, p);
+        if (user != null) {
+            // T18: NGĂN CHẶN ĐĂNG NHẬP CHỒNG (Multi-session check)
+            if (server.isUserLoggedIn(user.getId())) {
+                sendData(Protocol.REQ_LOGIN + Protocol.DELIMITER + Protocol.RES_FAIL 
+                        + Protocol.DELIMITER + "Tài khoản này hiện đang đăng nhập ở một nơi khác!");
+                return;
+            }
+
+            loggedInUser = user;
             // Trả về: LOGIN;;;SUCCESS;;;ROLE;;;userId;;;username;;;balance
             double balance = 0.0;
             if (loggedInUser instanceof Bidder) balance = ((Bidder) loggedInUser).getAvailableBalance();
@@ -308,7 +319,26 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    // THÊM MỚI: Xóa phiên đấu giá cưỡng chế (Admin)
+    private void handleUpdateUserBalance(String targetId, String newBalanceStr) {
+        if (loggedInUser instanceof Admin) {
+            try {
+                double newBalance = Double.parseDouble(newBalanceStr);
+                if (manager.updateUserBalanceForce(targetId, newBalance)) {
+                    sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                    // Broadcast danh sách User mới cho tất cả Admin
+                    server.broadcastUserList();
+                    // Cập nhật realtime cho chính User bị đổi tiền (nếu họ đang online)
+                    server.sendBalanceUpdateToUser(targetId, newBalance);
+                } else {
+                    sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy người dùng!");
+                }
+            } catch (Exception e) {
+                sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền không hợp lệ.");
+            }
+        } else {
+            sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Admin mới được thực hiện!");
+        }
+    }
     private void handleDeleteAuction(String auctionId) {
         if (loggedInUser instanceof Admin) {
             if (manager.deleteAuctionForce(auctionId)) {

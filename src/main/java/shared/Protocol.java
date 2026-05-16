@@ -35,6 +35,7 @@ public class Protocol {
     public static final String REQ_GET_USERS = "GET_USERS";
     public static final String REQ_BAN_USER = "BAN_USER";
     public static final String REQ_DELETE_AUCTION = "DELETE_AUCTION";
+    public static final String REQ_UPDATE_USER_BALANCE = "UPDATE_USER_BALANCE";
 
     // =================================================================
     // 3. NHÓM LỆNH SERVER TRẢ VỀ (RESPONSE 1-1)
