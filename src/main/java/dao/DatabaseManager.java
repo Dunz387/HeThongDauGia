@@ -3,8 +3,11 @@ package dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseManager {
+    private static final Logger LOGGER = Logger.getLogger(DatabaseManager.class.getName());
 
     public static void initializeDatabase() {
         String createUsersTable = """
@@ -72,9 +75,9 @@ public class DatabaseManager {
 
             stmt.execute(createBidTransactionsTable);
             stmt.execute(createNotificationsTable);
-            System.out.println("✅ Database SQLite đã được khởi tạo thành công!");
+            LOGGER.info("✅ Database SQLite đã được khởi tạo thành công!");
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi tạo bảng Database: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi tạo bảng Database", e);
         }
     }
 }

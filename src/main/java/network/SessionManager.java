@@ -2,12 +2,14 @@ package network;
 
 import javafx.beans.property.*;
 import model.user.Role;
+import java.util.logging.Logger;
 
 /**
  * Singleton lưu trữ thông tin phiên đăng nhập của user hiện tại trên Client.
  * Sử dụng JavaFX Properties để các Controller có thể bind dữ liệu realtime.
  */
 public class SessionManager {
+    private static final Logger LOGGER = Logger.getLogger(SessionManager.class.getName());
     private static final SessionManager instance = new SessionManager();
 
     private final StringProperty userId = new SimpleStringProperty();
@@ -31,7 +33,7 @@ public class SessionManager {
         this.role.set(Role.valueOf(roleStr));
         this.balance.set(balance);
         this.loggedIn.set(true);
-        System.out.println("✅ [Session] Đã lưu phiên: " + username + " (" + roleStr + ") | Balance: $" + balance);
+        LOGGER.info(String.format("✅ [Session] Đã lưu phiên: %s (%s) | Balance: $%.2f", username, roleStr, balance));
     }
 
     /**
@@ -50,7 +52,7 @@ public class SessionManager {
         this.role.set(null);
         this.balance.set(0);
         this.loggedIn.set(false);
-        System.out.println("🚪 [Session] Đã xóa phiên đăng nhập.");
+        LOGGER.info("🚪 [Session] Đã xóa phiên đăng nhập.");
     }
 
     // --- Property Getters (cho việc Binding) ---

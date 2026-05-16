@@ -15,8 +15,11 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AuctionServer implements AuctionObserver {
+    private static final Logger LOGGER = Logger.getLogger(AuctionServer.class.getName());
     private static final int PORT = 8080;
     private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private AuctionManager manager;
@@ -64,7 +67,7 @@ public class AuctionServer implements AuctionObserver {
 
         new Thread(() -> {
             Scanner s = new Scanner(System.in);
-            System.out.println("Hệ thống Server đã sẵn sàng. Gõ 'exit' để tắt.");
+            LOGGER.info("Hệ thống Server đã sẵn sàng. Gõ 'exit' để tắt.");
             while (s.hasNextLine()) {
                 if ("exit".equalsIgnoreCase(s.nextLine())) System.exit(0);
             }
@@ -73,17 +76,17 @@ public class AuctionServer implements AuctionObserver {
         try (ServerSocket serverSocket = new ServerSocket()) {
             serverSocket.setReuseAddress(true);
             serverSocket.bind(new InetSocketAddress(PORT));
-            System.out.println("[SERVER] Đang lắng nghe tại cổng " + PORT);
+            LOGGER.info("[SERVER] Đang lắng nghe tại cổng " + PORT);
 
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Có kết nối mới: " + socket.getInetAddress());
+                LOGGER.info("Có kết nối mới: " + socket.getInetAddress());
                 ClientHandler handler = new ClientHandler(socket, this, manager);
                 clients.add(handler);
                 new Thread(handler).start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Lỗi khi khởi chạy Server", e);
         }
     }
 
@@ -158,7 +161,7 @@ public class AuctionServer implements AuctionObserver {
                 newPrice + Protocol.DELIMITER +
                 topBidderName;
 
-        System.out.println("📢 [BROADCAST] Đã phát sóng giá mới: " + message);
+        LOGGER.info("📢 [BROADCAST] Đã phát sóng giá mới: " + message);
         broadcast(message);
 
         // T11: Cập nhật số dư cho người vừa bị vượt giá (nếu có)
@@ -171,7 +174,7 @@ public class AuctionServer implements AuctionObserver {
     public void onTimeExtended(Auction auction, int addedSeconds) {
         String message = Protocol.BROADCAST_TIME_EXTENDED + Protocol.DELIMITER +
                 auction.getId() + Protocol.DELIMITER + addedSeconds;
-        System.out.println("📢 [BROADCAST] Gia hạn phiên đấu giá " + auction.getId() + " thêm " + addedSeconds + "s");
+        LOGGER.info("📢 [BROADCAST] Gia hạn phiên đấu giá " + auction.getId() + " thêm " + addedSeconds + "s");
         broadcast(message);
     }
 }

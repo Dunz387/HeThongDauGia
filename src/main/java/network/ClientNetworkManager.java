@@ -12,8 +12,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientNetworkManager {
+    private static final Logger LOGGER = Logger.getLogger(ClientNetworkManager.class.getName());
     private static volatile ClientNetworkManager instance; // T18: volatile cho thread-safe
     private Socket socket;
     private ObjectOutputStream out;
@@ -50,10 +53,10 @@ public class ClientNetworkManager {
             in = new ObjectInputStream(socket.getInputStream());
 
             startListeningThread();
-            System.out.println("✅ Đã kết nối thành công tới Server!");
+            LOGGER.info("✅ Đã kết nối thành công tới Server!");
             return true;
         } catch (Exception e) {
-            System.err.println("❌ Lỗi kết nối tới Server: " + e.getMessage()); // T12: log error
+            LOGGER.log(Level.SEVERE, "❌ Lỗi kết nối tới Server", e);
             return false;
         }
     }
@@ -65,7 +68,7 @@ public class ClientNetworkManager {
                 out.flush();
             }
         } catch (Exception e) {
-            System.err.println("❌ Lỗi gửi dữ liệu: " + e.getMessage()); // T12: log error
+            LOGGER.log(Level.SEVERE, "❌ Lỗi gửi dữ liệu", e);
         }
     }
 
@@ -164,7 +167,7 @@ public class ClientNetworkManager {
                                 try {
                                     listener.accept(message);
                                 } catch (Exception e) {
-                                    System.err.println("❌ Lỗi trong listener [" + command + "]: " + e.getMessage()); // T12
+                                    LOGGER.log(Level.WARNING, "❌ Lỗi trong listener [" + command + "]", e);
                                 }
                             }
                         }
@@ -189,7 +192,7 @@ public class ClientNetworkManager {
                                 try {
                                     listener.accept(userList);
                                 } catch (Exception e) {
-                                    System.err.println("❌ Lỗi trong userListListener: " + e.getMessage()); // T12
+                                    LOGGER.log(Level.WARNING, "❌ Lỗi trong userListListener", e);
                                 }
                             }
                         } else {
@@ -199,14 +202,14 @@ public class ClientNetworkManager {
                                 try {
                                     listener.accept(auctionList);
                                 } catch (Exception e) {
-                                    System.err.println("❌ Lỗi trong auctionListListener: " + e.getMessage()); // T12
+                                    LOGGER.log(Level.WARNING, "❌ Lỗi trong auctionListListener", e);
                                 }
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                System.err.println("❌ Mất kết nối tới Server: " + e.getMessage()); // T12: log chi tiết
+                LOGGER.log(Level.SEVERE, "❌ Mất kết nối tới Server", e);
             }
         });
         listenerThread.setDaemon(true);

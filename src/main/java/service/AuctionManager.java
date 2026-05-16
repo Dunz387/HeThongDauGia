@@ -18,8 +18,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AuctionManager {
+    private static final Logger LOGGER = Logger.getLogger(AuctionManager.class.getName());
     private static final AuctionManager instance = new AuctionManager();
     private List<User> users;
     private List<Auction> auctions;
@@ -110,7 +113,7 @@ public class AuctionManager {
                         itemField.setAccessible(true);
                         itemField.set(a, newItem);
                     } catch (Exception e) {
-                        System.err.println("Lỗi đổi loại sản phẩm: " + e.getMessage());
+                        LOGGER.log(Level.SEVERE, "Lỗi đổi loại sản phẩm", e);
                     }
                 }
 
@@ -167,7 +170,7 @@ public class AuctionManager {
                             itemField.setAccessible(true);
                             itemField.set(a, newItem);
                         } catch (Exception e) {
-                             System.err.println("Lỗi đổi loại sản phẩm: " + e.getMessage());
+                             LOGGER.log(Level.SEVERE, "Lỗi đổi loại sản phẩm", e);
                         }
                     }
                     
@@ -280,12 +283,13 @@ public class AuctionManager {
                         ((Seller) seller).receivePayment(winPrice);
                         UserDAO.updateUserBalance(seller.getId(), ((Seller) seller).getBalance());
                     }
-                    System.out.println("💰 [THANH TOÁN] Đã chuyển " + winPrice + " từ " + highestBidder.getUsername() + " cho " + (seller != null ? seller.getUsername() : "Hệ thống"));
+                    LOGGER.info(String.format("💰 [THANH TOÁN] Đã chuyển %.2f từ %s cho %s", 
+                        winPrice, highestBidder.getUsername(), (seller != null ? seller.getUsername() : "Hệ thống")));
                 }
             }
 
             AuctionDAO.updateAuction(auction);
-            System.out.println("✅ [AuctionManager] Phiên " + auction.getId() + " đã kết thúc.");
+            LOGGER.info(String.format("✅ [AuctionManager] Phiên %s đã kết thúc.", auction.getId()));
 
             // Thông báo Server để broadcast cho tất cả Client
             if (auctionFinishedCallback != null) {

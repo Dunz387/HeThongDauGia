@@ -8,12 +8,15 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Quản lý việc chuyển đổi Scene (thay đổi giao diện nhưng giữ nguyên cửa sổ)
  * Sử dụng cho việc chuyển màn hình chính (Login -> Register -> BaseMenu, v.v)
  */
 public class SceneManager {
+    private static final Logger LOGGER = Logger.getLogger(SceneManager.class.getName());
 
     /**
      * Chuyển Scene dựa trên Stage
@@ -23,7 +26,7 @@ public class SceneManager {
      */
     public static void switchScene(Stage stage, String fxmlPath, String title) {
         if (stage == null) {
-            System.err.println("⚠️ Cảnh báo: Stage bị null khi cố gắng chuyển sang " + fxmlPath);
+            LOGGER.warning("⚠️ Cảnh báo: Stage bị null khi cố gắng chuyển sang " + fxmlPath);
             return;
         }
         try {
@@ -43,8 +46,7 @@ public class SceneManager {
             stage.show();
 
         } catch (IOException e) {
-            System.err.println("❌ Không thể tải màn hình từ đường dẫn: " + fxmlPath);
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "❌ Không thể tải màn hình từ đường dẫn: " + fxmlPath, e);
         }
     }
 
@@ -57,7 +59,7 @@ public class SceneManager {
      */
     public static <T> T switchSceneAndGetController(Stage stage, String fxmlPath, String title) {
         if (stage == null) {
-            System.err.println("⚠️ Cảnh báo: Stage bị null khi cố gắng chuyển sang " + fxmlPath);
+            LOGGER.warning("⚠️ Cảnh báo: Stage bị null khi cố gắng chuyển sang " + fxmlPath);
             return null;
         }
         try {
@@ -77,8 +79,7 @@ public class SceneManager {
             return loader.getController();
 
         } catch (IOException e) {
-            System.err.println("❌ Không thể tải màn hình từ đường dẫn: " + fxmlPath);
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "❌ Không thể tải màn hình từ đường dẫn: " + fxmlPath, e);
             return null;
         }
     }

@@ -8,8 +8,11 @@ import model.user.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserDAO {
+    private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
 
     public static boolean saveUser(User user) {
         String sql = "INSERT INTO users(id, username, password, role, balance, isActive) VALUES(?,?,?,?,?,?)";
@@ -26,7 +29,7 @@ public class UserDAO {
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi lưu user: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi lưu user", e);
             return false;
         }
     }
@@ -54,7 +57,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi load users từ DB: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi load users từ DB", e);
         }
         return users;
     }
@@ -67,7 +70,7 @@ public class UserDAO {
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) { 
-            System.err.println("❌ Lỗi cập nhật số dư user: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi cập nhật số dư user", e);
             return false; 
         }
     }
@@ -83,7 +86,7 @@ public class UserDAO {
             pstmt.setString(3, user.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) { 
-            System.err.println("❌ Lỗi cập nhật user: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi cập nhật user", e);
             return false; 
         }
     }

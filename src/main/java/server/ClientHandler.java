@@ -13,8 +13,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientHandler implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger(ClientHandler.class.getName());
     private Socket socket;
     private AuctionServer server;
     private AuctionManager manager;
@@ -99,6 +102,7 @@ public class ClientHandler implements Runnable {
                 }
             }
         } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Lỗi khi xử lý Client: " + socket.getInetAddress(), e);
             if (currentRoomId != null) {
                 server.leaveRoom(currentRoomId, this);
             }
@@ -180,7 +184,7 @@ public class ClientHandler implements Runnable {
             String startMessage = Protocol.BROADCAST_AUCTION_START + Protocol.DELIMITER
                     + auction.getId() + Protocol.DELIMITER + dur;
             server.broadcast(startMessage);
-            System.out.println("📢 [BROADCAST] Phiên đấu giá bắt đầu: " + auction.getId() + " | Thời gian: " + dur + " phút");
+            LOGGER.info(String.format("📢 [BROADCAST] Phiên đấu giá bắt đầu: %s | Thời gian: %d phút", auction.getId(), dur));
 
         } catch (Exception e) {
             sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL);
@@ -364,14 +368,14 @@ public class ClientHandler implements Runnable {
         }
         currentRoomId = auctionId;
         server.joinRoom(auctionId, this);
-        System.out.println("👤 User " + (loggedInUser != null ? loggedInUser.getUsername() : "Guest") + " đã vào phòng " + auctionId);
+        LOGGER.info(String.format("👤 User %s đã vào phòng %s", (loggedInUser != null ? loggedInUser.getUsername() : "Guest"), auctionId));
     }
 
     private void handleLeaveRoom(String auctionId) {
         if (currentRoomId != null && currentRoomId.equals(auctionId)) {
             server.leaveRoom(auctionId, this);
             currentRoomId = null;
-            System.out.println("👤 User " + (loggedInUser != null ? loggedInUser.getUsername() : "Guest") + " đã rời phòng " + auctionId);
+            LOGGER.info(String.format("👤 User %s đã rời phòng %s", (loggedInUser != null ? loggedInUser.getUsername() : "Guest"), auctionId));
         }
     }
 
@@ -388,7 +392,7 @@ public class ClientHandler implements Runnable {
                 out.flush();
             }
         } catch (Exception e) {
-            System.err.println("Lỗi gửi dữ liệu tới Client: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Lỗi gửi dữ liệu tới Client", e);
         }
     }
 }

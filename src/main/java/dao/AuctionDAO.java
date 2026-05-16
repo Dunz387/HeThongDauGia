@@ -11,8 +11,11 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AuctionDAO {
+    private static final Logger LOGGER = Logger.getLogger(AuctionDAO.class.getName());
 
     public static boolean saveAuction(Auction auction) {
         String sql = "INSERT INTO auctions(id, item_name, item_description, item_type, starting_price, current_price, bid_increment, end_time, status, seller_id) VALUES(?,?,?,?,?,?,?,?,?,?)";
@@ -41,7 +44,7 @@ public class AuctionDAO {
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi lưu auction: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi lưu auction", e);
             return false;
         }
     }
@@ -65,7 +68,7 @@ public class AuctionDAO {
             pstmt.setString(9, auction.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi cập nhật auction: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi cập nhật auction", e);
             return false;
         }
     }
@@ -80,7 +83,7 @@ public class AuctionDAO {
             pstmt.setString(5, tx.getTimestamp().toString());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi lưu bid transaction: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi lưu bid transaction", e);
             return false;
         }
     }
@@ -150,7 +153,7 @@ public class AuctionDAO {
                 list.add(auction);
             }
         } catch (Exception e) {
-            System.err.println("❌ Lỗi load auctions từ DB: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi load auctions từ DB", e);
         }
         return list;
     }
@@ -180,7 +183,7 @@ public class AuctionDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi load bid history cho " + auction.getId() + ": " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi load bid history cho " + auction.getId(), e);
         }
     }
     public static boolean updateItemOwner(String auctionId, String newOwnerId) {
@@ -190,7 +193,7 @@ public class AuctionDAO {
             pstmt.setString(2, auctionId);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("? L?i c?p nh?t ch? s? h?u item: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi cập nhật chủ sở hữu item", e);
             return false;
         }
     }

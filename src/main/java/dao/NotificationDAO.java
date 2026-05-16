@@ -4,8 +4,11 @@ import network.NotificationManager;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NotificationDAO {
+    private static final Logger LOGGER = Logger.getLogger(NotificationDAO.class.getName());
     public static void saveNotification(String userId, String content, String type) {
         String sql = "INSERT INTO notifications(id, user_id, content, timestamp, type) VALUES(?,?,?,?,?)";
         try (Connection conn = DBConnection.getConnection();
@@ -17,7 +20,7 @@ public class NotificationDAO {
             pstmt.setString(5, type);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi lưu thông báo: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi lưu thông báo", e);
         }
     }
 
@@ -38,7 +41,7 @@ public class NotificationDAO {
                 list.add(new NotificationManager.NotificationItem(content, timeStr));
             }
         } catch (SQLException e) {
-            System.err.println("❌ Lỗi load thông báo: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "❌ Lỗi load thông báo", e);
         }
         return list;
     }
