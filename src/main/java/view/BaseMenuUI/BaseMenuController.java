@@ -17,7 +17,6 @@ import view.utility.NotificationMenuHandler;
 import view.utility.SceneManager;
 import view.utility.WindowManager;
 import view.utility.AlertHelper;
-import view.utility.ValidationHelper;
 import javafx.scene.control.TextInputDialog;
 import java.util.Optional;
 
@@ -245,15 +244,9 @@ public class BaseMenuController implements Initializable {
             dialog.setContentText("Số tiền ($):");
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(amount -> {
-                String trimmedAmount = amount.trim();
-                if (trimmedAmount.isEmpty()) return;
-                
-                if (!ValidationHelper.isValidAmount(trimmedAmount)) {
-                    AlertHelper.showError("Lỗi nạp tiền", "Số tiền nạp không được là số âm hoặc bằng 0!");
-                    return;
+                if (!amount.trim().isEmpty()) {
+                    network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_DEPOSIT + shared.Protocol.DELIMITER + amount.trim());
                 }
-                
-                network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_DEPOSIT + shared.Protocol.DELIMITER + trimmedAmount);
             });
         } else if (network.SessionManager.getInstance().isSeller()) {
             TextInputDialog dialog = new TextInputDialog();
@@ -262,15 +255,9 @@ public class BaseMenuController implements Initializable {
             dialog.setContentText("Số tiền ($):");
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(amount -> {
-                String trimmedAmount = amount.trim();
-                if (trimmedAmount.isEmpty()) return;
-
-                if (!ValidationHelper.isValidAmount(trimmedAmount)) {
-                    AlertHelper.showError("Lỗi rút tiền", "Số tiền rút không được là số âm hoặc bằng 0!");
-                    return;
+                if (!amount.trim().isEmpty()) {
+                    network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_WITHDRAW + shared.Protocol.DELIMITER + amount.trim());
                 }
-                
-                network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_WITHDRAW + shared.Protocol.DELIMITER + trimmedAmount);
             });
         }
     }

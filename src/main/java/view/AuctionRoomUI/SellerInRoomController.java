@@ -114,7 +114,6 @@ public class SellerInRoomController implements Initializable {
         if (priceChart.getXAxis() instanceof NumberAxis) {
             NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
             xAxis.setMinorTickVisible(false);
-            xAxis.setMinorTickCount(0);
             xAxis.setTickUnit(1.0);
             xAxis.setAutoRanging(false); 
             xAxis.setLowerBound(0);
@@ -123,10 +122,9 @@ public class SellerInRoomController implements Initializable {
             xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
                 @Override public String toString(Number object) {
                     double val = object.doubleValue();
-                    // Chỉ hiện nhãn nếu giá trị là số nguyên (hoặc cực gần số nguyên)
+                    if (val < -0.01) return "";
                     if (Math.abs(val - Math.round(val)) < 0.0001) {
                         int intVal = (int) Math.round(val);
-                        if (intVal < 0) return "";
                         if (intVal == 0) return "BĐ";
                         return String.valueOf(intVal);
                     }

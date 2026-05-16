@@ -94,19 +94,18 @@ public class InRoomController implements Initializable {
         if (priceChart.getXAxis() instanceof NumberAxis) {
             NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
             xAxis.setMinorTickVisible(false);
-            xAxis.setMinorTickCount(0);
             xAxis.setTickUnit(1.0);
-            xAxis.setAutoRanging(false); // Chuyển sang manual để tránh bị nhảy mốc 0.5, 1.5...
+            xAxis.setAutoRanging(false); // Chuyển sang manual để kiểm soát mốc chia
             xAxis.setLowerBound(0);
             xAxis.setUpperBound(10); // Khởi tạo ban đầu
             
             xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
                 @Override public String toString(Number object) {
                     double val = object.doubleValue();
+                    if (val < -0.01) return "";
                     // Chỉ hiện nhãn nếu giá trị là số nguyên (hoặc cực gần số nguyên)
                     if (Math.abs(val - Math.round(val)) < 0.0001) {
                         int intVal = (int) Math.round(val);
-                        if (intVal < 0) return "";
                         if (intVal == 0) return "BĐ";
                         return String.valueOf(intVal);
                     }
@@ -158,6 +157,20 @@ public class InRoomController implements Initializable {
             topBidderLabel.setText(currentTopBidder);
         }
 
+        // Cấu hình Trục X chỉ hiển thị số nguyên (Lượt đặt giá)
+        if (priceChart.getXAxis() instanceof javafx.scene.chart.NumberAxis) {
+            javafx.scene.chart.NumberAxis xAxis = (javafx.scene.chart.NumberAxis) priceChart.getXAxis();
+            xAxis.setMinorTickCount(0);
+            xAxis.setTickUnit(1);
+            xAxis.setAutoRanging(true); // Để tự động giãn trục X theo lượt đặt giá
+            xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+                @Override public String toString(Number object) {
+                    if (object.doubleValue() == 0) return "S"; // S đại diện cho Starting
+                    return String.format("%.0f", object.doubleValue());
+                }
+                @Override public Number fromString(String string) { return 0; }
+            });
+        }
 
         // Bổ sung: Nhấn Enter để gửi giá
         if (bidAmountField != null) {
@@ -542,17 +555,8 @@ public class InRoomController implements Initializable {
                 String[] parts = result.get().split(",");
                 if (parts.length == 2) {
                     try {
-                        String maxBidStr = parts[0].trim();
-                        String incrementStr = parts[1].trim();
-
-                        if (!view.utility.ValidationHelper.isValidAmount(maxBidStr) || 
-                            !view.utility.ValidationHelper.isValidAmount(incrementStr)) {
-                            AlertHelper.showWarning("Lỗi dữ liệu", "Max Bid và Bước nhảy phải là số dương!");
-                            return;
-                        }
-
-                        double maxBid = Double.parseDouble(maxBidStr);
-                        double increment = Double.parseDouble(incrementStr);
+                        double maxBid = Double.parseDouble(parts[0].trim());
+                        double increment = Double.parseDouble(parts[1].trim());
                         
                         String request = Protocol.REQ_AUTOBID + Protocol.DELIMITER +
                                          currentAuctionId + Protocol.DELIMITER +
