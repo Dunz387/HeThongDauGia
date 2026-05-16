@@ -127,13 +127,10 @@ public class Auction extends Entity implements AuctionSubject {
     }
 
     public List<BidTransaction> getBidHistory() {
-        if (bidHistory == null)
-            bidHistory = new ArrayList<>();
         return bidHistory;
     }
 
     public void registerAutoBid(Bidder bidder, double maxBid, double increment) {
-        if (autoBids == null) autoBids = new PriorityQueue<>();
         autoBids.add(new AutoBidConfig(bidder, maxBid, increment, System.currentTimeMillis()));
         triggerAutoBidding();
     }
@@ -141,7 +138,7 @@ public class Auction extends Entity implements AuctionSubject {
     private transient boolean isAutoBidding = false;
 
     public void triggerAutoBidding() {
-        if (autoBids == null || autoBids.isEmpty() || isAutoBidding) return;
+        if (autoBids.isEmpty() || isAutoBidding) return;
         
         isAutoBidding = true;
         try {

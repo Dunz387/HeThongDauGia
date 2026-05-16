@@ -24,9 +24,9 @@ import java.util.logging.Logger;
 public class AuctionManager {
     private static final Logger LOGGER = Logger.getLogger(AuctionManager.class.getName());
     private static final AuctionManager instance = new AuctionManager();
-    private List<User> users;
-    private List<Auction> auctions;
-    private ScheduledExecutorService scheduler;
+    private final List<User> users;
+    private final List<Auction> auctions;
+    private final ScheduledExecutorService scheduler;
 
     // Callback để thông báo Server khi phiên đấu giá kết thúc
     private BiConsumer<Auction, User> auctionFinishedCallback = null;
