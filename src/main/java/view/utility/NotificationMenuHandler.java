@@ -16,7 +16,7 @@ public class NotificationMenuHandler {
     private final Pane darkOverlay;
     private final ScrollPane notificationMenu;
     private final double menuWidth;
-    private boolean isOpen = false;
+    private boolean isOpen;
     
     private Timeline currentAnimation; 
 

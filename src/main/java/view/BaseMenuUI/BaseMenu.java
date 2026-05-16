@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class BaseMenu extends Application {
     @Override
     public void start(Stage BaseMenuStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/BaseMenuUI/BaseMenu.fxml"));
+        Parent root = FXMLLoader.load(java.util.Objects.requireNonNull(getClass().getResource("/view/BaseMenuUI/BaseMenu.fxml")));
         Scene scene = new Scene(root, 1050, 680);
 
         BaseMenuStage.setTitle("Base Menu");

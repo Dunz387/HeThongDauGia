@@ -84,7 +84,7 @@ public class CreateItemController implements Initializable {
                     AlertHelper.showInfo("Thành công", "Đã đăng bán sản phẩm lên sàn!");
                     Stage mainStage = (Stage) currentStage.getOwner();
                     currentStage.close();
-                    view.utility.WindowManager.openSellerAuctionListWindow(mainStage != null ? mainStage : null);
+                    view.utility.WindowManager.openSellerAuctionListWindow(mainStage);
                 } else {
                     AlertHelper.showError("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định");
                 }

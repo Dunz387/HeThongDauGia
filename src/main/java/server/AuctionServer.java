@@ -79,7 +79,7 @@ public class AuctionServer implements AuctionObserver {
             serverSocket.bind(new InetSocketAddress(PORT));
             LOGGER.info("[SERVER] Đang lắng nghe tại cổng " + PORT);
 
-            while (true) {
+            while (true) { // NOSONAR: Server must run indefinitely
                 Socket socket = serverSocket.accept();
                 LOGGER.info("Có kết nối mới: " + socket.getInetAddress());
                 ClientHandler handler = new ClientHandler(socket, this, manager);

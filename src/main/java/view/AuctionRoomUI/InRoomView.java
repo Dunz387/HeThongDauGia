@@ -13,7 +13,7 @@ public class InRoomView extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/AuctionRoomUI/InRoomView.fxml"));
+        Parent root = FXMLLoader.load(java.util.Objects.requireNonNull(getClass().getResource("/view/AuctionRoomUI/InRoomView.fxml")));
         primaryStage.setTitle("Phòng Đấu Giá");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

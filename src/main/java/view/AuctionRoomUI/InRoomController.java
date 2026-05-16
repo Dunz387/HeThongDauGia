@@ -259,7 +259,7 @@ public class InRoomController implements Initializable {
                 String auctionId = parts[1];
                 int durationMinutes = Integer.parseInt(parts[2]);
 
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
                     totalTimeRemaining = durationMinutes * 60;
                     currentHighestPrice = 0;
 
@@ -275,7 +275,7 @@ public class InRoomController implements Initializable {
             if (parts.length >= 4) {
                 String auctionId = parts[1];
 
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
                     double newPrice = Double.parseDouble(parts[2]);
                     String topBidder = parts[3];
 
@@ -320,7 +320,7 @@ public class InRoomController implements Initializable {
             if (parts.length >= 3) {
                 String auctionId = parts[1];
                 String count = parts[2];
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
                     System.out.println("👥 [Phòng " + auctionId + "] Số người đang xem: " + count);
                 }
             }
@@ -333,7 +333,7 @@ public class InRoomController implements Initializable {
                 String auctionId = parts[1];
                 int addedSeconds = Integer.parseInt(parts[2]);
 
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
                     Platform.runLater(() -> {
                         if (auctionEndTime != null) {
                             auctionEndTime = auctionEndTime.plusSeconds(addedSeconds);
@@ -355,7 +355,7 @@ public class InRoomController implements Initializable {
                 String finalWinner = parts.length > 2 ? parts[2] : "Không có";
                 double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
 
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
                     Platform.runLater(() -> {
                         stopAllTimers();
                         updateTopBidder(finalWinner);

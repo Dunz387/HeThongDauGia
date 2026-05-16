@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 public class AssetsListView extends Application {
     @Override
     public void start(Stage AssetsListViewStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/BaseMenuUI/AssetsList.fxml"));
+        Parent root = FXMLLoader.load(java.util.Objects.requireNonNull(getClass().getResource("/view/BaseMenuUI/AssetsList.fxml")));
         Scene scene = new Scene(root);
 
         AssetsListViewStage.setTitle("Assets List View");

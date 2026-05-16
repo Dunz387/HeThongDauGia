@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class Register extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Register.fxml"));
+        Parent root = FXMLLoader.load(java.util.Objects.requireNonNull(getClass().getResource("Register.fxml")));
         primaryStage.setTitle("Register");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

@@ -1,6 +1,7 @@
 package model.base;
 import java.io.Serializable;
 public abstract class Entity implements Serializable{
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
     protected String id;
 
