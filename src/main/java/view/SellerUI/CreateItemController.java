@@ -91,7 +91,9 @@ public class CreateItemController implements Initializable {
             });
         });
 
-        ClientNetworkManager.getInstance().sendData(request);
+        if (!ClientNetworkManager.getInstance().sendData(request)) {
+            AlertHelper.showError("Lỗi kết nối", "Không thể gửi yêu cầu tới Server. Vui lòng kiểm tra kết nối mạng!");
+        }
     }
 
     @FXML

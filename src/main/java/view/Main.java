@@ -15,7 +15,7 @@ public class Main {
 
         // --- PHẦN THÊM MỚI: KẾT NỐI MẠNG ---
         LOGGER.info("Đang kết nối đến Server...");
-        boolean isConnected = ClientNetworkManager.getInstance().connect("localhost", 8080);
+        boolean isConnected = ClientNetworkManager.getInstance().connect("0.tcp.ap.ngrok.io", 12456);
 
         if (!isConnected) {
             LOGGER.severe("❌ LỖI: Không tìm thấy Server. Vui lòng chạy AuctionServer.java trước rồi khởi động lại App!");

@@ -384,15 +384,15 @@ public class ClientHandler implements Runnable {
     }
 
     // --- HÀM GỬI DỮ LIỆU ---
-    public void sendData(Object data) {
+    public synchronized void sendData(Object data) {
         try {
-            if (out != null) {
+            if (out != null && socket != null && !socket.isClosed()) {
                 out.writeObject(data);
                 out.reset(); // Xóa cache để dữ liệu sau không bị trùng lặp
                 out.flush();
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Lỗi gửi dữ liệu tới Client", e);
+            LOGGER.log(Level.SEVERE, "Lỗi gửi dữ liệu tới Client: " + socket.getInetAddress(), e);
         }
     }
 }

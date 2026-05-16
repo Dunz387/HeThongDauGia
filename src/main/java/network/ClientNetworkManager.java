@@ -45,7 +45,11 @@ public class ClientNetworkManager {
         return instance;
     }
 
-    public boolean connect(String ip, int port) {
+    public synchronized boolean connect(String ip, int port) {
+        if (socket != null && !socket.isClosed()) {
+            LOGGER.info("ℹ️ Đã có kết nối sẵn sàng.");
+            return true;
+        }
         try {
             socket = new Socket(ip, port);
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -61,14 +65,36 @@ public class ClientNetworkManager {
         }
     }
 
-    public void sendData(Object data) {
+    public synchronized boolean sendData(Object data) {
         try {
-            if (out != null) {
+            if (out != null && socket != null && !socket.isClosed()) {
                 out.writeObject(data);
+                out.reset(); // T18: Xóa cache để tránh memory leak và lỗi tham chiếu
                 out.flush();
+                return true;
+            } else {
+                LOGGER.warning("⚠️ Không thể gửi dữ liệu: Chưa kết nối tới Server.");
+                return false;
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "❌ Lỗi gửi dữ liệu", e);
+            disconnect(); // T18: Tự động ngắt kết nối nếu gặp lỗi nghiêm trọng
+            return false;
+        }
+    }
+
+    public synchronized void disconnect() {
+        try {
+            if (out != null) out.close();
+            if (in != null) in.close();
+            if (socket != null) socket.close();
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Lỗi khi đóng kết nối", e);
+        } finally {
+            out = null;
+            in = null;
+            socket = null;
+            LOGGER.info("🔌 Đã ngắt kết nối tới Server.");
         }
     }
 
@@ -210,6 +236,7 @@ public class ClientNetworkManager {
                 }
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "❌ Mất kết nối tới Server", e);
+                disconnect();
             }
         });
         listenerThread.setDaemon(true);

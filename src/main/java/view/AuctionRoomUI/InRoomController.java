@@ -255,7 +255,9 @@ public class InRoomController implements Initializable {
         updateBalanceDisplay(network.SessionManager.getInstance().getBalance());
         
         // Gửi yêu cầu tham gia phòng để Server tính số người tham gia
-        ClientNetworkManager.getInstance().sendData(Protocol.REQ_JOIN_ROOM + Protocol.DELIMITER + currentAuctionId);
+        if (!ClientNetworkManager.getInstance().sendData(Protocol.REQ_JOIN_ROOM + Protocol.DELIMITER + currentAuctionId)) {
+            LOGGER.warning("❌ Không thể tham gia phòng: Lỗi kết nối mạng.");
+        }
     }
 
     private void registerNetworkListeners() {
@@ -498,7 +500,9 @@ public class InRoomController implements Initializable {
                              currentAuctionId + Protocol.DELIMITER +
                              amount;
 
-            ClientNetworkManager.getInstance().sendData(request);
+            if (!ClientNetworkManager.getInstance().sendData(request)) {
+                AlertHelper.showError("Lỗi kết nối", "Không thể đặt giá. Vui lòng kiểm tra kết nối mạng!");
+            }
 
             // Xóa rỗng ô nhập sau khi gửi
             bidAmountField.clear();
@@ -554,7 +558,9 @@ public class InRoomController implements Initializable {
                                          currentAuctionId + Protocol.DELIMITER +
                                          maxBid + Protocol.DELIMITER +
                                          increment;
-                        ClientNetworkManager.getInstance().sendData(request);
+                        if (!ClientNetworkManager.getInstance().sendData(request)) {
+                            AlertHelper.showError("Lỗi kết nối", "Không thể đăng ký auto-bid!");
+                        }
                         AlertHelper.showInfo("Thành công", "Đã đăng ký auto-bid!");
                         return;
                     } catch (NumberFormatException e) {

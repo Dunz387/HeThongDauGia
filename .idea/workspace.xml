@@ -5,23 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="hoàn thiện dự án 99%">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/qodana_code_quality.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/qodana.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/maven.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/AuctionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/AuctionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/NotificationDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/NotificationDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/SessionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/SceneManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/SceneManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/WindowManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/WindowManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +131,23 @@
       <option name="project" value="LOCAL" />
       <updated>1778928606559</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="hoàn thiện dự án 99%">
+      <option name="closed" value="true" />
+      <created>1778932368722</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778932368722</updated>
+    </task>
+    <task id="LOCAL-00004" summary="hoàn thiện dự án 99%">
+      <option name="closed" value="true" />
+      <created>1778932428730</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1778932428730</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
