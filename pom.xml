@@ -38,6 +38,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
@@ -102,6 +108,9 @@
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
                     <mainClass>${main.class}</mainClass>
+                    <options>
+                        <option>--enable-native-access=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
 
@@ -159,6 +168,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
+                    <argLine>--enable-native-access=ALL-UNNAMED</argLine>
                     <useModulePath>false</useModulePath>
                     <includes>
                         <include>**/Test*.java</include>

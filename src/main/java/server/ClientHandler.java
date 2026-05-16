@@ -104,12 +104,27 @@ public class ClientHandler implements Runnable {
                     }
                 }
             }
+        } catch (java.io.EOFException | java.net.SocketException e) {
+            // Đây là lỗi ngắt kết nối bình thường khi Client đóng app đột ngột
+            LOGGER.info("🔌 Client đã ngắt kết nối: " + socket.getInetAddress());
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Lỗi khi xử lý Client: " + socket.getInetAddress(), e);
+            LOGGER.log(Level.SEVERE, "❌ Lỗi không xác định khi xử lý Client: " + socket.getInetAddress(), e);
+        } finally {
+            cleanup();
+        }
+    }
+
+    private void cleanup() {
+        try {
             if (currentRoomId != null) {
                 server.leaveRoom(currentRoomId, this);
             }
             server.removeClient(this);
+            if (in != null) in.close();
+            if (out != null) out.close();
+            if (socket != null && !socket.isClosed()) socket.close();
+        } catch (java.io.IOException e) {
+            LOGGER.log(Level.FINE, "Lỗi khi đóng tài nguyên client", e);
         }
     }
 

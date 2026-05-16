@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="hoàn thiện dự án 99,67%" />
+    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="hoàn thiện dự án 99,7%">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,13 +61,14 @@
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Application.AuctionServer">
     <configuration name="AuctionServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="server.AuctionServer" />
       <module name="HeThongDauGia" />
       <option name="PROGRAM_PARAMETERS" value="$MAVEN_REPOSITORY$" />
+      <option name="VM_PARAMETERS" value="--enable-native-access=ALL-UNNAMED" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="server.*" />
@@ -90,10 +95,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.AuctionServer" />
+      <item itemvalue="Application.Main" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="Application.AuctionServer" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -192,13 +201,22 @@
       <option name="project" value="LOCAL" />
       <updated>1778950437259</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="hoàn thiện dự án 99,7%">
+      <option name="closed" value="true" />
+      <created>1778950691005</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1778950691005</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="sửa lỗi nâng cấp hệ thống auction room" />
     <MESSAGE value="hoàn thiện dự án 99%" />
     <MESSAGE value="hoàn thiện dự án 99,67%" />
-    <option name="LAST_COMMIT_MESSAGE" value="hoàn thiện dự án 99,67%" />
+    <MESSAGE value="hoàn thiện dự án 99,7%" />
+    <option name="LAST_COMMIT_MESSAGE" value="hoàn thiện dự án 99,7%" />
   </component>
 </project>
