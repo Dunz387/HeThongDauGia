@@ -28,6 +28,8 @@ public class Protocol {
     // Đấu giá (Bidder)
     public static final String REQ_BID = "BID";
     public static final String REQ_AUTOBID = "AUTOBID";
+    public static final String REQ_JOIN_ROOM = "JOIN_ROOM";
+    public static final String REQ_LEAVE_ROOM = "LEAVE_ROOM";
 
     // Quản trị viên (Admin)
     public static final String REQ_GET_USERS = "GET_USERS";
@@ -55,4 +57,5 @@ public class Protocol {
     public static final String BROADCAST_AUCTION_START = "AUCTION_START";
     public static final String BROADCAST_ROUND_FINISHED = "ROUND_FINISHED";
     public static final String BROADCAST_TIME_EXTENDED = "TIME_EXTENDED";
+    public static final String BROADCAST_PARTICIPANTS = "PARTICIPANTS_COUNT";
 }

@@ -15,6 +15,9 @@ import view.utility.AuctionTableConfigurator;
 import view.utility.NotificationMenuHandler;
 import view.utility.SceneManager;
 import view.utility.WindowManager;
+import javafx.scene.control.TextInputDialog;
+import view.utility.AlertHelper;
+import java.util.Optional;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,6 +28,9 @@ public class AssetsListController implements Initializable {
     private NotificationMenuHandler notificationMenuHandler;
 
     @FXML private HBox menuBar;
+    @FXML private javafx.scene.control.Label txtBalance;
+    @FXML private javafx.scene.control.Button btnTransaction;
+
     @FXML private TableView<Auction> tableAssets;
     @FXML private TableColumn<Auction, String> colId;
     @FXML private TableColumn<Auction, String> colItemName;
@@ -44,6 +50,28 @@ public class AssetsListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Cập nhật số dư realtime bằng cách lắng nghe SessionManager
+        if (txtBalance != null) {
+            network.SessionManager.getInstance().balanceProperty().addListener((obs, oldVal, newVal) -> {
+                javafx.application.Platform.runLater(() -> {
+                    txtBalance.setText(String.format("💰 Số dư: $%,.0f", newVal.doubleValue()));
+                });
+            });
+            // Initial value
+            txtBalance.setText(String.format("💰 Số dư: $%,.0f", network.SessionManager.getInstance().getBalance()));
+        }
+
+        if (btnTransaction != null) {
+            if (network.SessionManager.getInstance().isBidder()) {
+                btnTransaction.setText("Nạp tiền");
+            } else if (network.SessionManager.getInstance().isSeller()) {
+                btnTransaction.setText("Rút tiền");
+            } else {
+                btnTransaction.setVisible(false);
+                btnTransaction.setManaged(false);
+            }
+        }
+
         // Cấu hình bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
         AuctionTableConfigurator.configure(colId, colItemName, colDescription, colType, colPrice,
                 colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
@@ -263,6 +291,21 @@ public class AssetsListController implements Initializable {
                 });
             }
         });
+
+        // Đăng ký lắng nghe số dư phản hồi (nếu cần alert riêng cho trang này)
+        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_DEPOSIT, (message) -> {
+            String[] parts = message.split(shared.Protocol.SEPARATOR);
+            if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
+                javafx.application.Platform.runLater(() -> AlertHelper.showInfo("Thành công", "Nạp tiền thành công!"));
+            }
+        });
+
+        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_WITHDRAW, (message) -> {
+            String[] parts = message.split(shared.Protocol.SEPARATOR);
+            if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
+                javafx.application.Platform.runLater(() -> AlertHelper.showInfo("Thành công", "Rút tiền thành công!"));
+            }
+        });
     }
 
     @FXML
@@ -308,5 +351,32 @@ public class AssetsListController implements Initializable {
         // Gửi yêu cầu làm mới danh sách tài sản
         System.out.println("🔄 Đang làm mới danh sách tài sản...");
         AuctionNetworkHelper.requestAuctionList();
+    }
+
+    @FXML
+    private void handleTransaction(ActionEvent event) {
+        if (network.SessionManager.getInstance().isBidder()) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Nạp tiền");
+            dialog.setHeaderText("Nhập số tiền muốn nạp:");
+            dialog.setContentText("Số tiền ($):");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(amount -> {
+                if (!amount.trim().isEmpty()) {
+                    network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_DEPOSIT + shared.Protocol.DELIMITER + amount.trim());
+                }
+            });
+        } else if (network.SessionManager.getInstance().isSeller()) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Rút tiền");
+            dialog.setHeaderText("Nhập số tiền muốn rút:");
+            dialog.setContentText("Số tiền ($):");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(amount -> {
+                if (!amount.trim().isEmpty()) {
+                    network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_WITHDRAW + shared.Protocol.DELIMITER + amount.trim());
+                }
+            });
+        }
     }
 }

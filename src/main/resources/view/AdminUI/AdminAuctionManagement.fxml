@@ -62,6 +62,7 @@
                   <TableColumn fx:id="colPrice" prefWidth="130.0" text="Giá Hiện Tại ($)" />
                   <TableColumn fx:id="colStatus" prefWidth="120.0" text="Trạng Thái" />
                   <TableColumn fx:id="colBidder" prefWidth="140.0" text="Người Đặt Cao Nhất" />
+                  <TableColumn fx:id="colView" prefWidth="100.0" text="Chi Tiết" />
                   <TableColumn fx:id="colAction" prefWidth="100.0" text="Hành Động" />
                </columns>
             </TableView>

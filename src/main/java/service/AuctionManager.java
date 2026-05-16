@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class AuctionManager {
     private static final AuctionManager instance = new AuctionManager();
@@ -25,7 +26,7 @@ public class AuctionManager {
     private ScheduledExecutorService scheduler;
 
     // Callback để thông báo Server khi phiên đấu giá kết thúc
-    private Consumer<Auction> auctionFinishedCallback = null;
+    private BiConsumer<Auction, User> auctionFinishedCallback = null;
     
 
 
@@ -46,7 +47,7 @@ public class AuctionManager {
     /**
      * Đăng ký callback để Server nhận thông báo khi phiên đấu giá kết thúc tự động.
      */
-    public void setAuctionFinishedCallback(Consumer<Auction> callback) {
+    public void setAuctionFinishedCallback(BiConsumer<Auction, User> callback) {
         this.auctionFinishedCallback = callback;
     }
 
@@ -257,19 +258,27 @@ public class AuctionManager {
         if (auction != null && auction.getStatus() == AuctionStatus.RUNNING) {
             auction.setStatus(AuctionStatus.FINISHED);
             
+            // Lấy thông tin Seller ban đầu (trước khi chuyển quyền sở hữu)
+            User seller = auction.getItem().getOwner();
+
             // THỰC HIỆN THANH TOÁN (Phase 3)
             Bidder highestBidder = auction.getHighestBidder();
             if (highestBidder != null) {
                 double winPrice = auction.getCurrentPrice();
-                // Trừ tiền người mua (tiền đã bị giam ở vòng placeBid)
+
+                // Trừ tiền người mua
                 if (highestBidder.deductBalance(winPrice)) {
                     UserDAO.updateUserBalance(highestBidder.getId(), highestBidder.getBalance());
                     
+                    // Chuyển quyền sở hữu tài sản sang cho người mua (RAM)
+                    auction.getItem().setOwner(highestBidder);
+                    // Cập nhật Owner trong DB (Cần AuctionDAO hỗ trợ cập nhật Item Owner)
+                    AuctionDAO.updateItemOwner(auction.getId(), highestBidder.getId());
+                    
                     // Cộng tiền cho người bán
-                    Seller seller = (Seller) auction.getItem().getOwner(); // Cast an toàn vì owner luôn là Seller
-                    if (seller != null) {
-                        seller.receivePayment(winPrice);
-                        UserDAO.updateUserBalance(seller.getId(), seller.getBalance());
+                    if (seller instanceof Seller) {
+                        ((Seller) seller).receivePayment(winPrice);
+                        UserDAO.updateUserBalance(seller.getId(), ((Seller) seller).getBalance());
                     }
                     System.out.println("💰 [THANH TOÁN] Đã chuyển " + winPrice + " từ " + highestBidder.getUsername() + " cho " + (seller != null ? seller.getUsername() : "Hệ thống"));
                 }
@@ -280,7 +289,7 @@ public class AuctionManager {
 
             // Thông báo Server để broadcast cho tất cả Client
             if (auctionFinishedCallback != null) {
-                auctionFinishedCallback.accept(auction);
+                auctionFinishedCallback.accept(auction, seller);
             }
         }
     }

@@ -1,5 +1,5 @@
 package model.item;
-import model.user.Seller;
+import model.user.User;
 
 public class Vehicle extends Item {
 
@@ -8,7 +8,7 @@ public class Vehicle extends Item {
 
     private boolean hasServiceHistory;
 
-    public Vehicle(String id, String name, String description, Seller owner, String engineType, int mileage) {
+    public Vehicle(String id, String name, String description, User owner, String engineType, int mileage) {
         super(id, name, description, owner);
         this.engineType = engineType;
         this.mileage = mileage;

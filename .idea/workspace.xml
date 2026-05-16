@@ -4,31 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
+    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="sửa lỗi nâng cấp hệ thống auction room">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dao/AuctionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/AuctionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/ClientNetworkManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/network/NotificationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/NotificationManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/item/Arts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/item/Arts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/item/Electronics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/item/Electronics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/item/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/item/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/item/ItemFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/item/ItemFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/item/Vehicle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/item/Vehicle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/network/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/network/SessionManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AuctionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/shared/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/shared/Protocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AdminUI/AdminAuctionManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AdminUI/AdminAuctionManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AdminUI/AdminUserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AdminUI/AdminUserManagementController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/SellerInRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/SellerInRoomController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/LoginView/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/LoginView/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/RegisterView/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuthenticationUI/RegisterView/RegisterController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/AssetsListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/AssetsListController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/BaseMenuController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/SellerUI/CreateItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/SellerUI/CreateItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/AuctionNetworkHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/AuctionNetworkHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/UserInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/BaseMenuUI/UserInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/AdminUI/AdminAuctionManagement.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AdminUI/AdminAuctionManagement.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/SellerInRoomView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/SellerInRoomView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/BaseMenu.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/model/auction/AuctionTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/model/user/BidderTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/AssetsList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/BaseMenuUI/AssetsList.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,6 +135,19 @@
       <option name="presentableId" value="Default" />
       <updated>1778754503779</updated>
     </task>
+    <task id="LOCAL-00001" summary="sửa lỗi nâng cấp hệ thống auction room">
+      <option name="closed" value="true" />
+      <created>1778817083409</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1778817083409</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="sửa lỗi nâng cấp hệ thống auction room" />
+    <option name="LAST_COMMIT_MESSAGE" value="sửa lỗi nâng cấp hệ thống auction room" />
   </component>
 </project>

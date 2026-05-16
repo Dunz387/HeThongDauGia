@@ -33,6 +33,7 @@ public class AdminAuctionManagementController implements Initializable {
     @FXML private TableColumn<Auction, Double> colPrice;
     @FXML private TableColumn<Auction, String> colStatus;
     @FXML private TableColumn<Auction, String> colBidder;
+    @FXML private TableColumn<Auction, Void> colView;
     @FXML private TableColumn<Auction, Void> colAction;
 
     @Override
@@ -48,6 +49,25 @@ public class AdminAuctionManagementController implements Initializable {
         colBidder.setCellValueFactory(cellData -> {
             var bidder = cellData.getValue().getHighestBidder();
             return new SimpleStringProperty(bidder != null ? bidder.getUsername() : "Chưa có");
+        });
+
+        // === CỘT XEM CHI TIẾT ===
+        colView.setCellFactory(col -> new TableCell<>() {
+            private final Button btnView = new Button("👁️ Chi tiết");
+            {
+                btnView.getStyleClass().add("btn-info");
+                btnView.setOnAction(event -> {
+                    Auction auction = getTableView().getItems().get(getIndex());
+                    Stage stage = (Stage) btnView.getScene().getWindow();
+                    SceneManager.goToSellerInRoom(stage, auction);
+                });
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) setGraphic(null);
+                else setGraphic(btnView);
+            }
         });
 
         // === CỘT HÀNH ĐỘNG: NÚT XÓA PHIÊN ĐẤU GIÁ ===
@@ -67,19 +87,6 @@ public class AdminAuctionManagementController implements Initializable {
                     if (result.isPresent() && result.get() == ButtonType.OK) {
                         String request = Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + auction.getId();
 
-                        // ĐĂNG KÝ CALLBACK
-                        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_DELETE_AUCTION, (response) -> {
-                            String[] parts = response.split(Protocol.SEPARATOR);
-                            Platform.runLater(() -> {
-                                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                                    AlertHelper.showInfo("Thành công", "Đã xóa phiên đấu giá: " + auction.getId());
-                                } else {
-                                    AlertHelper.showError("Thất bại",
-                                            parts.length >= 3 ? parts[2] : "Lỗi không xác định");
-                                }
-                            });
-                        });
-
                         ClientNetworkManager.getInstance().sendData(request);
                     }
                 });
@@ -94,6 +101,19 @@ public class AdminAuctionManagementController implements Initializable {
                     setGraphic(btnDelete);
                 }
             }
+        });
+
+        // === LẮNG NGHE KẾT QUẢ XÓA PHIÊN (GLOBAL) ===
+        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_DELETE_AUCTION, (response) -> {
+            String[] parts = response.split(Protocol.SEPARATOR);
+            Platform.runLater(() -> {
+                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
+                    AlertHelper.showInfo("Hệ thống", "Đã xóa phiên đấu giá thành công!");
+                } else {
+                    AlertHelper.showError("Lỗi", parts.length >= 3 ? parts[2] : "Không thể xóa phiên đấu giá");
+                }
+            });
         });
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER (REAL-TIME) ===

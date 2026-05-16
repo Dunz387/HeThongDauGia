@@ -86,8 +86,31 @@ public class InRoomController implements Initializable {
         priceSeries = new XYChart.Series<>();
         priceSeries.setName("Diễn biến giá ($)");
         priceChart.getData().add(priceSeries);
-        priceChart.setAnimated(true); // Cho mượt mà
-        
+        // Cấu hình trục X
+        if (priceChart.getXAxis() instanceof NumberAxis) {
+            NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
+            xAxis.setMinorTickVisible(false);
+            xAxis.setTickUnit(1.0);
+            xAxis.setAutoRanging(false); // Chuyển sang manual để kiểm soát mốc chia
+            xAxis.setLowerBound(0);
+            xAxis.setUpperBound(10); // Khởi tạo ban đầu
+            
+            xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+                @Override public String toString(Number object) {
+                    double val = object.doubleValue();
+                    if (val < -0.01) return "";
+                    // Chỉ hiện nhãn nếu giá trị là số nguyên (hoặc cực gần số nguyên)
+                    if (Math.abs(val - Math.round(val)) < 0.0001) {
+                        int intVal = (int) Math.round(val);
+                        if (intVal == 0) return "BĐ";
+                        return String.valueOf(intVal);
+                    }
+                    return "";
+                }
+                @Override public Number fromString(String string) { return 0; }
+            });
+        }
+
         // CSS Styling cho Chart (màu sắc hiện đại)
         priceChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent;");
         
@@ -197,10 +220,11 @@ public class InRoomController implements Initializable {
                     // Cập nhật bảng lịch sử
                     historyData.add(0, new HistoryItem(bidCount, tx.getBidAmount()));
                     
-                    // Phục hồi thông báo từ lịch sử phòng
+                    // Phục hồi thông báo từ lịch sử phòng với format đồng bộ
                     String timeStr = tx.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+                    String itemName = auction.getItem().getName();
                     roomNotifications.add(0, new network.NotificationManager.NotificationItem(
-                        "📌 " + tx.getBidder().getUsername() + " đã đặt $" + tx.getBidAmount(), timeStr));
+                        "📢 [" + itemName + "] - Lượt #" + bidCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + tx.getBidAmount(), timeStr));
                 }
             }
 
@@ -213,6 +237,13 @@ public class InRoomController implements Initializable {
                 updateTopBidder("Chưa có");
             }
             
+            // Cập nhật mốc đồ thị
+            if (priceChart.getXAxis() instanceof NumberAxis) {
+                NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
+                xAxis.setUpperBound(Math.max(10, bidCount + 2));
+                xAxis.setLowerBound(Math.max(0, bidCount - 15)); // Giữ tối đa 15 lượt gần nhất nếu nhiều quá
+            }
+
             updateIncrementDisplay(currentHighestPrice);
             
             // Bật lại animation cho các lượt đặt giá tiếp theo
@@ -222,6 +253,9 @@ public class InRoomController implements Initializable {
         });
         
         updateBalanceDisplay(network.SessionManager.getInstance().getBalance());
+        
+        // Gửi yêu cầu tham gia phòng để Server tính số người tham gia
+        ClientNetworkManager.getInstance().sendData(Protocol.REQ_JOIN_ROOM + Protocol.DELIMITER + currentAuctionId);
     }
 
     private void registerNetworkListeners() {
@@ -260,14 +294,11 @@ public class InRoomController implements Initializable {
                         // Cập nhật biểu đồ theo lượt đấu (Trục X)
                         bidCount++;
                         Platform.runLater(() -> {
-                            // Tắt tạm autoRanging để tránh trục bị nhảy giật cục làm mất hiệu ứng chéo
+                            // Manual Ranging để khống chế mốc chia tuyệt đối
                             if (priceChart.getXAxis() instanceof NumberAxis) {
                                 NumberAxis xAxis = (NumberAxis) priceChart.getXAxis();
-                                if (bidCount > 5) { // Chỉ can thiệp khi đã có một số điểm nhất định
-                                    xAxis.setAutoRanging(false);
-                                    xAxis.setLowerBound(Math.max(0, bidCount - 10)); // Giữ khung nhìn 10 lượt gần nhất
-                                    xAxis.setUpperBound(bidCount + 1);
-                                }
+                                xAxis.setUpperBound(Math.max(10, bidCount + 1));
+                                xAxis.setLowerBound(Math.max(0, bidCount - 15));
                             }
 
                             // Tạo điểm mới. LineChart sẽ nối chéo từ (bidCount-1, oldPrice) sang (bidCount, newPrice)
@@ -276,15 +307,28 @@ public class InRoomController implements Initializable {
                             // Thêm vào bảng lịch sử giá
                             historyData.add(0, new HistoryItem(bidCount, newPrice));
 
-                            // Thêm vào thông báo phòng (Room-specific)
+                            // Thêm vào thông báo phòng (Room-specific) với format đồng bộ
                             String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
-                            roomNotifications.add(0, new network.NotificationManager.NotificationItem(
-                                "💰 Lượt #" + bidCount + ": " + topBidder + " đặt $" + newPrice, timeStr));
+                            String notificationMsg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " đặt $" + newPrice;
+                            roomNotifications.add(0, new network.NotificationManager.NotificationItem(notificationMsg, timeStr));
                         });
 
                         // Global notification (Account wide)
-                        network.NotificationManager.getInstance().addNotification("📢 [" + auction.getItem().getName() + "] - " + topBidder + " vừa đặt $" + newPrice);
+                        String globalMsg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + newPrice;
+                        network.NotificationManager.getInstance().addNotification(globalMsg);
                     }
+                }
+            }
+        });
+
+        // Lắng nghe số người tham gia phòng
+        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_PARTICIPANTS, (message) -> {
+            String[] parts = message.split(Protocol.SEPARATOR);
+            if (parts.length >= 3) {
+                String auctionId = parts[1];
+                String count = parts[2];
+                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
+                    System.out.println("👥 [Phòng " + auctionId + "] Số người đang xem: " + count);
                 }
             }
         });
@@ -342,14 +386,9 @@ public class InRoomController implements Initializable {
             });
         });
 
-        // Lắng nghe cập nhật số dư (Real-time)
-        ClientNetworkManager.getInstance().registerListener(Protocol.RES_UPDATE_BALANCE, (message) -> {
-            String[] parts = message.split(Protocol.SEPARATOR);
-            if (parts.length >= 2) {
-                double newBalance = Double.parseDouble(parts[1]);
-                network.SessionManager.getInstance().setBalance(newBalance);
-                updateBalanceDisplay(newBalance);
-            }
+        // Cập nhật số dư realtime bằng cách lắng nghe SessionManager
+        network.SessionManager.getInstance().balanceProperty().addListener((obs, oldVal, newVal) -> {
+            updateBalanceDisplay(newVal.doubleValue());
         });
     }
 
@@ -480,6 +519,12 @@ public class InRoomController implements Initializable {
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_AUCTION_FINISHED);
         ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_BID);
         ClientNetworkManager.getInstance().clearListeners(Protocol.RES_UPDATE_BALANCE);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_PARTICIPANTS);
+
+        // Gửi thông báo rời phòng
+        if (currentAuctionId != null) {
+            ClientNetworkManager.getInstance().sendData(Protocol.REQ_LEAVE_ROOM + Protocol.DELIMITER + currentAuctionId);
+        }
 
         Stage stage = (Stage) priceChart.getScene().getWindow();
         SceneManager.goToBaseMenu(stage);

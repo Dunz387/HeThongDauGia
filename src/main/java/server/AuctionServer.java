@@ -21,6 +21,9 @@ public class AuctionServer implements AuctionObserver {
     private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private AuctionManager manager;
 
+    // Room tracking: AuctionID -> Set of ClientHandlers currently in that room
+    private java.util.Map<String, java.util.Set<ClientHandler>> roomParticipants = new java.util.concurrent.ConcurrentHashMap<>();
+
     public static void main(String[] args) {
         new AuctionServer().startServer();
     }
@@ -34,7 +37,7 @@ public class AuctionServer implements AuctionObserver {
         }
 
         // Đăng ký callback để broadcast AUCTION_FINISHED khi phiên kết thúc tự động
-        manager.setAuctionFinishedCallback((finishedAuction) -> {
+        manager.setAuctionFinishedCallback((Auction finishedAuction, User originalSeller) -> {
             String winnerName = (finishedAuction.getHighestBidder() != null)
                     ? finishedAuction.getHighestBidder().getUsername() : "Không có";
             double finalPrice = finishedAuction.getCurrentPrice();
@@ -44,21 +47,16 @@ public class AuctionServer implements AuctionObserver {
                     + winnerName + Protocol.DELIMITER
                     + finalPrice;
 
-            System.out.println("📢 [BROADCAST] Phiên đấu giá kết thúc: " + finishedAuction.getId()
-                    + " | Người thắng: " + winnerName + " | Giá: $" + finalPrice);
             broadcast(finishMessage);
-
-            // Cập nhật danh sách cho tất cả Client
             broadcastAuctionList();
 
-            // T11: Cập nhật số dư cho Người thắng và Người bán
+            // Cập nhật số dư realtime cho Người thắng và Người bán
             Bidder winner = finishedAuction.getHighestBidder();
             if (winner != null) {
                 sendBalanceUpdateToUser(winner.getId(), winner.getBalance());
             }
-            Seller seller = (Seller) finishedAuction.getItem().getOwner();
-            if (seller != null) {
-                sendBalanceUpdateToUser(seller.getId(), seller.getBalance());
+            if (originalSeller instanceof Seller) {
+                sendBalanceUpdateToUser(originalSeller.getId(), ((Seller) originalSeller).getBalance());
             }
         });
 
@@ -116,6 +114,32 @@ public class AuctionServer implements AuctionObserver {
             client.sendData(Protocol.RES_USER_LIST);
             client.sendData(list);
         }
+    }
+
+    // --- ROOM MANAGEMENT ---
+    public void joinRoom(String auctionId, ClientHandler client) {
+        roomParticipants.computeIfAbsent(auctionId, k -> java.util.Collections.synchronizedSet(new java.util.HashSet<>()))
+                        .add(client);
+        broadcastParticipantsCount(auctionId);
+    }
+
+    public void leaveRoom(String auctionId, ClientHandler client) {
+        java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);
+        if (participants != null) {
+            participants.remove(client);
+            if (participants.isEmpty()) {
+                roomParticipants.remove(auctionId);
+            } else {
+                broadcastParticipantsCount(auctionId);
+            }
+        }
+    }
+
+    public void broadcastParticipantsCount(String auctionId) {
+        java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);
+        int count = (participants != null) ? participants.size() : 0;
+        String message = Protocol.BROADCAST_PARTICIPANTS + Protocol.DELIMITER + auctionId + Protocol.DELIMITER + count;
+        broadcast(message);
     }
 
     public void sendBalanceUpdateToUser(String userId, double balance) {

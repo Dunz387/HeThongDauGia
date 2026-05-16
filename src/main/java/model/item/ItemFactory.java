@@ -1,10 +1,10 @@
 package model.item;
 
-import model.user.Seller;
+import model.user.User;
 
 public class ItemFactory {
 
-    public static Item createItem(String itemType, String id, String name, String description, Seller owner, String extra1, int extra2) {
+    public static Item createItem(String itemType, String id, String name, String description, User owner, String extra1, int extra2) {
         if (itemType == null) return null;
 
         switch (itemType.toUpperCase()) {

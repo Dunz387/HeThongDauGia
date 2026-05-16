@@ -110,23 +110,23 @@ public class AuctionDAO {
                 String sellerId = rs.getString("seller_id");
                 String bidderId = rs.getString("highest_bidder_id");
 
-                // Tìm Seller thực tế từ danh sách users đã load
-                Seller seller = null;
+                // Tìm Owner thực tế từ danh sách users đã load (có thể là Seller hoặc Bidder)
+                User owner = null;
                 if (sellerId != null) {
                     for (User u : loadedUsers) {
-                        if (u.getId().equals(sellerId) && u instanceof Seller) {
-                            seller = (Seller) u;
+                        if (u.getId().equals(sellerId)) {
+                            owner = u;
                             break;
                         }
                     }
                 }
-                // Nếu không tìm thấy Seller, dùng placeholder
-                if (seller == null) {
-                    seller = new Seller("S-TEMP", "System", "123", 0.0);
+                // Nếu không tìm thấy Owner, dùng placeholder
+                if (owner == null) {
+                    owner = new Seller("U-TEMP", "System", "123", 0.0);
                 }
 
                 model.item.Item tempItem = ItemFactory.createItem(
-                        itemType, "ITEM-" + id, itemName, itemDesc, seller, "Unknown", 0);
+                        itemType, "ITEM-" + id, itemName, itemDesc, owner, "Unknown", 0);
 
                 Auction auction = new Auction(id, tempItem, startingPrice, bidIncrement, LocalDateTime.parse(endTimeStr));
                 auction.setStatus(AuctionStatus.valueOf(statusStr));
@@ -183,4 +183,15 @@ public class AuctionDAO {
             System.err.println("❌ Lỗi load bid history cho " + auction.getId() + ": " + e.getMessage());
         }
     }
-}
+    public static boolean updateItemOwner(String auctionId, String newOwnerId) {
+        String sql = "UPDATE auctions SET seller_id = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newOwnerId);
+            pstmt.setString(2, auctionId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("? L?i c?p nh?t ch? s? h?u item: " + e.getMessage());
+            return false;
+        }
+    }
+}

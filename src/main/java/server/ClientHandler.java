@@ -19,6 +19,7 @@ public class ClientHandler implements Runnable {
     private AuctionServer server;
     private AuctionManager manager;
     private User loggedInUser = null;
+    private String currentRoomId = null; // ID của phòng đấu giá đang tham gia
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
@@ -88,10 +89,19 @@ public class ClientHandler implements Runnable {
                         case Protocol.REQ_WITHDRAW:
                             if (parts.length >= 2) handleWithdraw(parts[1]);
                             break;
+                        case Protocol.REQ_JOIN_ROOM:
+                            if (parts.length >= 2) handleJoinRoom(parts[1]);
+                            break;
+                        case Protocol.REQ_LEAVE_ROOM:
+                            if (parts.length >= 2) handleLeaveRoom(parts[1]);
+                            break;
                     }
                 }
             }
         } catch (Exception e) {
+            if (currentRoomId != null) {
+                server.leaveRoom(currentRoomId, this);
+            }
             server.removeClient(this);
         }
     }
@@ -345,6 +355,28 @@ public class ClientHandler implements Runnable {
         } catch (Exception e) {
             sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền không hợp lệ.");
         }
+    }
+
+    private void handleJoinRoom(String auctionId) {
+        // Nếu đang ở phòng khác, rời phòng đó trước
+        if (currentRoomId != null && !currentRoomId.equals(auctionId)) {
+            server.leaveRoom(currentRoomId, this);
+        }
+        currentRoomId = auctionId;
+        server.joinRoom(auctionId, this);
+        System.out.println("👤 User " + (loggedInUser != null ? loggedInUser.getUsername() : "Guest") + " đã vào phòng " + auctionId);
+    }
+
+    private void handleLeaveRoom(String auctionId) {
+        if (currentRoomId != null && currentRoomId.equals(auctionId)) {
+            server.leaveRoom(auctionId, this);
+            currentRoomId = null;
+            System.out.println("👤 User " + (loggedInUser != null ? loggedInUser.getUsername() : "Guest") + " đã rời phòng " + auctionId);
+        }
+    }
+
+    public String getUserId() {
+        return (loggedInUser != null) ? loggedInUser.getId() : null;
     }
 
     // --- HÀM GỬI DỮ LIỆU ---

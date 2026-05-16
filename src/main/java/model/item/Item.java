@@ -1,14 +1,14 @@
 package model.item;
 import model.base.Entity;
-import model.user.Seller;
+import model.user.User;
 
 public abstract class Item extends Entity {
     private String name;
     private String description;
-    private Seller owner;
+    private User owner;
     private String imagePath;
 
-    public Item(String id, String name, String description, Seller owner) {
+    public Item(String id, String name, String description, User owner) {
         super(id);
         this.name = name;
         this.description = description;
@@ -23,7 +23,8 @@ public abstract class Item extends Entity {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Seller getOwner() { return owner; }
+    public User getOwner() { return owner; }
+    public void setOwner(User owner) { this.owner = owner; }
 
     public String getImagePath() { return imagePath; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }
@@ -31,7 +32,7 @@ public abstract class Item extends Entity {
 
     public abstract String getDetails();
 
-    public static Item createItem(String itemType, String id, String name, String description, Seller owner, String extra1, int extra2) {
+    public static Item createItem(String itemType, String id, String name, String description, User owner, String extra1, int extra2) {
         if (itemType == null) return null;
 
         switch (itemType.toUpperCase()) {

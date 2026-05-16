@@ -158,10 +158,10 @@ public class BaseMenuController implements Initializable {
             }
         });
 
-        // Đăng ký lắng nghe số dư realtime
-        network.ClientNetworkManager.getInstance().addBalanceListener(newBalance -> {
+        // Cập nhật số dư realtime bằng cách lắng nghe SessionManager
+        network.SessionManager.getInstance().balanceProperty().addListener((obs, oldVal, newVal) -> {
             javafx.application.Platform.runLater(() -> {
-                txtBalance.setText(String.format("💰 Số dư: $%,.0f", newBalance));
+                txtBalance.setText(String.format("💰 Số dư: $%,.0f", newVal.doubleValue()));
             });
         });
 

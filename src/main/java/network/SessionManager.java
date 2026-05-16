@@ -1,19 +1,20 @@
 package network;
 
+import javafx.beans.property.*;
 import model.user.Role;
 
 /**
  * Singleton lưu trữ thông tin phiên đăng nhập của user hiện tại trên Client.
- * Được cập nhật khi login thành công, và được đọc bởi tất cả Controller.
+ * Sử dụng JavaFX Properties để các Controller có thể bind dữ liệu realtime.
  */
 public class SessionManager {
     private static final SessionManager instance = new SessionManager();
 
-    private String userId;
-    private String username;
-    private Role role;
-    private double balance;
-    private boolean loggedIn = false;
+    private final StringProperty userId = new SimpleStringProperty();
+    private final StringProperty username = new SimpleStringProperty();
+    private final ObjectProperty<Role> role = new SimpleObjectProperty<>();
+    private final DoubleProperty balance = new SimpleDoubleProperty(0);
+    private final BooleanProperty loggedIn = new SimpleBooleanProperty(false);
 
     private SessionManager() {}
 
@@ -25,58 +26,69 @@ public class SessionManager {
      * Lưu thông tin user sau khi login thành công.
      */
     public void setSession(String userId, String username, String roleStr, double balance) {
-        this.userId = userId;
-        this.username = username;
-        this.role = Role.valueOf(roleStr);
-        this.balance = balance;
-        this.loggedIn = true;
+        this.userId.set(userId);
+        this.username.set(username);
+        this.role.set(Role.valueOf(roleStr));
+        this.balance.set(balance);
+        this.loggedIn.set(true);
         System.out.println("✅ [Session] Đã lưu phiên: " + username + " (" + roleStr + ") | Balance: $" + balance);
+    }
+
+    /**
+     * Cập nhật số dư.
+     */
+    public void updateBalance(double newBalance) {
+        this.balance.set(newBalance);
     }
 
     /**
      * Xóa phiên khi logout.
      */
-    public void updateBalance(double newBalance) {
-        this.balance = newBalance;
-    }
-
     public void clearSession() {
-        this.userId = null;
-        this.username = null;
-        this.role = null;
-        this.balance = 0;
-        this.loggedIn = false;
+        this.userId.set(null);
+        this.username.set(null);
+        this.role.set(null);
+        this.balance.set(0);
+        this.loggedIn.set(false);
         System.out.println("🚪 [Session] Đã xóa phiên đăng nhập.");
     }
 
-    //Getters
+    // --- Property Getters (cho việc Binding) ---
 
-    public String getUserId() { return userId; }
-    public String getUsername() { return username; }
-    public Role getRole() { return role; }
-    public double getBalance() { return balance; }
-    public boolean isLoggedIn() { return loggedIn; }
+    public StringProperty userIdProperty() { return userId; }
+    public StringProperty usernameProperty() { return username; }
+    public ObjectProperty<Role> roleProperty() { return role; }
+    public DoubleProperty balanceProperty() { return balance; }
+    public BooleanProperty loggedInProperty() { return loggedIn; }
 
-    public void setBalance(double balance) { this.balance = balance; }
+    // --- Standard Getters/Setters ---
+
+    public String getUserId() { return userId.get(); }
+    public String getUsername() { return username.get(); }
+    public Role getRole() { return role.get(); }
+    public double getBalance() { return balance.get(); }
+    public boolean isLoggedIn() { return loggedIn.get(); }
+
+    public void setBalance(double balance) { this.balance.set(balance); }
 
     /**
      * Kiểm tra user hiện tại có phải Admin không.
      */
     public boolean isAdmin() {
-        return role == Role.ADMIN;
+        return role.get() == Role.ADMIN;
     }
 
     /**
      * Kiểm tra user hiện tại có phải Seller không.
      */
     public boolean isSeller() {
-        return role == Role.SELLER;
+        return role.get() == Role.SELLER;
     }
 
     /**
      * Kiểm tra user hiện tại có phải Bidder không.
      */
     public boolean isBidder() {
-        return role == Role.BIDDER;
+        return role.get() == Role.BIDDER;
     }
 }

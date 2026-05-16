@@ -68,21 +68,6 @@ public class AdminUserManagementController implements Initializable {
                             + user.getId() + Protocol.DELIMITER
                             + (!currentlyActive); // Đảo ngược trạng thái
 
-                    // ĐĂNG KÝ CALLBACK
-                    ClientNetworkManager.getInstance().registerListener(Protocol.REQ_BAN_USER, (response) -> {
-                        String[] parts = response.split(Protocol.SEPARATOR);
-                        Platform.runLater(() -> {
-                            if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                                AlertHelper.showInfo("Thành công",
-                                        currentlyActive ? "Đã khóa tài khoản: " + user.getUsername()
-                                                : "Đã mở khóa tài khoản: " + user.getUsername());
-                            } else {
-                                AlertHelper.showError("Thất bại",
-                                        parts.length >= 3 ? parts[2] : "Lỗi không xác định");
-                            }
-                        });
-                    });
-
                     ClientNetworkManager.getInstance().sendData(request);
                 });
             }
@@ -109,6 +94,20 @@ public class AdminUserManagementController implements Initializable {
                     }
                 }
             }
+        });
+
+        // === LẮNG NGHE KẾT QUẢ KHÓA/MỞ KHÓA (GLOBAL) ===
+        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_BAN_USER, (response) -> {
+            String[] parts = response.split(Protocol.SEPARATOR);
+            Platform.runLater(() -> {
+                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    // Cập nhật lại danh sách ngay lập tức
+                    ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
+                    AlertHelper.showInfo("Hệ thống", "Đã cập nhật trạng thái người dùng thành công!");
+                } else {
+                    AlertHelper.showError("Lỗi", parts.length >= 3 ? parts[2] : "Không thể thực hiện thao tác");
+                }
+            });
         });
 
         // === LẮNG NGHE DANH SÁCH USER TỪ SERVER (REAL-TIME) ===

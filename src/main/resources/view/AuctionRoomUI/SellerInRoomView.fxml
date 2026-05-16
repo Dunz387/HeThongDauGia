@@ -80,11 +80,20 @@
       <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-background-color: #faf9f0; -fx-padding: 12;">
          <children>
             <Label text="📜 Lịch sử giá" style="-fx-text-fill: #1a1a1a; -fx-font-size: 14px; -fx-font-weight: 900;" />
-            <TableView fx:id="tableBidHistory" prefHeight="300.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tableBidHistory" prefHeight="160.0" VBox.vgrow="SOMETIMES">
                <placeholder><Label text="Chưa có lượt đặt giá nào" styleClass="placeholder-label"/></placeholder>
                <columns>
                   <TableColumn fx:id="colRound" prefWidth="55.0" text="Lượt" />
                   <TableColumn fx:id="colBidPrice" prefWidth="120.0" text="Giá ($)" />
+               </columns>
+            </TableView>
+            <Separator />
+            <Label text="🔔 Thông báo" style="-fx-text-fill: #1a1a1a; -fx-font-size: 14px; -fx-font-weight: 900;" />
+            <TableView fx:id="notificationTableView" prefHeight="200.0" VBox.vgrow="ALWAYS">
+               <placeholder><Label text="Chưa có thông báo" styleClass="placeholder-label"/></placeholder>
+               <columns>
+                  <TableColumn fx:id="colNotifTime" prefWidth="65.0" text="Giờ" />
+                  <TableColumn fx:id="colNotifContent" prefWidth="250.0" text="Nội dung" />
                </columns>
             </TableView>
          </children>
@@ -108,7 +117,7 @@
             <Separator orientation="VERTICAL" />
             <VBox alignment="CENTER" spacing="4">
                <children>
-                  <Label text="🔄 Số vòng" style="-fx-text-fill: #888; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                  <Label text="🔄 Lượt đấu giá" style="-fx-text-fill: #888; -fx-font-size: 14px; -fx-font-weight: bold;" />
                   <Label fx:id="lblRounds" text="0" style="-fx-text-fill: #1a1a1a; -fx-font-size: 28px; -fx-font-weight: 900;" />
                </children>
             </VBox>

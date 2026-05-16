@@ -1,5 +1,5 @@
 package model.item;
-import model.user.Seller;
+import model.user.User;
 
 public class Arts extends Item {
 
@@ -8,7 +8,7 @@ public class Arts extends Item {
 
     private boolean isAuthenticated;
 
-    public Arts(String id, String name, String description, Seller owner, String artist, int creationYear) {
+    public Arts(String id, String name, String description, User owner, String artist, int creationYear) {
         super(id, name, description, owner);
         this.artist = artist;
         this.creationYear = creationYear;

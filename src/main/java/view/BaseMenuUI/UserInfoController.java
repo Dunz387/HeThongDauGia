@@ -26,17 +26,15 @@ public class UserInfoController implements Initializable {
         // Đăng ký lắng nghe danh sách auction để đếm tài sản
         network.ClientNetworkManager.getInstance().addAuctionListListener(this::updateAssetsCount);
         
-        // Đăng ký lắng nghe số dư realtime
-        network.ClientNetworkManager.getInstance().addBalanceListener(this::updateBalanceUI);
-        
-        // Gửi yêu cầu lấy dữ liệu mới nhất từ server
-        network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_GET_AUCTIONS);
-    }
-
-    private void updateBalanceUI(Double newBalance) {
-        javafx.application.Platform.runLater(() -> {
-            lblBalance.setText("$" + String.format("%.2f", newBalance));
+        // Cập nhật số dư realtime bằng cách lắng nghe SessionManager
+        SessionManager.getInstance().balanceProperty().addListener((obs, oldVal, newVal) -> {
+            javafx.application.Platform.runLater(() -> {
+                lblBalance.setText("$" + String.format("%.2f", newVal.doubleValue()));
+            });
         });
+        
+        // Gửi yêu cầu lấy dữ liệu mới nhất từ server để cập nhật số lượng tài sản
+        network.ClientNetworkManager.getInstance().sendData(shared.Protocol.REQ_GET_AUCTIONS);
     }
 
     private void loadUserData() {
@@ -46,7 +44,7 @@ public class UserInfoController implements Initializable {
             lblId.setText("ID: " + session.getUserId());
             lblBalance.setText("$" + String.format("%.2f", session.getBalance()));
             lblRole.setText(session.getRole().toString());
-            lblAssetsCount.setText("0 sản phẩm");
+            lblAssetsCount.setText("Đang tải...");
         }
     }
 
@@ -54,8 +52,21 @@ public class UserInfoController implements Initializable {
         if (auctionList == null) return;
         
         String currentUserId = SessionManager.getInstance().getUserId();
+        // Tài sản sở hữu: 
+        // 1. Những item mình THẮNG (Auction FINISHED & mình là Highest Bidder)
+        // 2. Những item mình ĐANG BÁN (Auction chưa FINISHED & mình là Owner)
         long count = auctionList.stream()
-            .filter(a -> a.getItem().getOwner() != null && a.getItem().getOwner().getId().equals(currentUserId))
+            .filter(a -> {
+                boolean isWinner = a.getStatus() == model.auction.AuctionStatus.FINISHED &&
+                                   a.getHighestBidder() != null &&
+                                   a.getHighestBidder().getId().equals(currentUserId);
+                
+                boolean isCurrentSeller = a.getStatus() != model.auction.AuctionStatus.FINISHED &&
+                                          a.getItem().getOwner() != null &&
+                                          a.getItem().getOwner().getId().equals(currentUserId);
+                
+                return isWinner || isCurrentSeller;
+            })
             .count();
             
         javafx.application.Platform.runLater(() -> {
@@ -67,7 +78,6 @@ public class UserInfoController implements Initializable {
     private void closeWindow(ActionEvent event) {
         // Hủy lắng nghe trước khi đóng để tránh memory leak
         network.ClientNetworkManager.getInstance().removeAuctionListListener(this::updateAssetsCount);
-        network.ClientNetworkManager.getInstance().removeBalanceListener(this::updateBalanceUI);
         
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();

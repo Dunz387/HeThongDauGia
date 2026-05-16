@@ -128,7 +128,9 @@
             </MenuButton>
             <Button mnemonicParsing="false" onAction="#notificationClicked" prefHeight="60.0" styleClass="nav-btn" text="🔔 Thông Báo" />
             <Region HBox.hgrow="ALWAYS" />
-            <Label text="💰 Số dư: $100,000" style="-fx-text-fill: #d4cd3d; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-padding: 6 12; -fx-background-color: rgba(212,205,61,0.1); -fx-background-radius: 20;" />
+            <Label fx:id="txtBalance" style="-fx-text-fill: #d4cd3d; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-padding: 6 12; -fx-background-color: rgba(212,205,61,0.1); -fx-background-radius: 20;" text="💰 Số dư: $0" />
+            <Region prefWidth="6.0" />
+            <Button fx:id="btnTransaction" mnemonicParsing="false" onAction="#handleTransaction" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-border-color: rgba(255,255,255,0.35); -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 6 12; -fx-cursor: hand;" text="Nạp/Rút" />
             <Region prefWidth="6.0" />
             <MenuButton alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" text="👤 Tài Khoản">
                <items>
