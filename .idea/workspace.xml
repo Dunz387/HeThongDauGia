@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="hoàn thiện dự án 99%" />
+    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="hoàn thiện dự án 99,67%" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -176,12 +176,29 @@
       <option name="project" value="LOCAL" />
       <updated>1778946909173</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="hoàn thiện dự án 99%">
+      <option name="closed" value="true" />
+      <created>1778950028748</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1778950028748</updated>
+    </task>
+    <task id="LOCAL-00010" summary="hoàn thiện dự án 99,67%">
+      <option name="closed" value="true" />
+      <created>1778950437259</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1778950437259</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="sửa lỗi nâng cấp hệ thống auction room" />
     <MESSAGE value="hoàn thiện dự án 99%" />
-    <option name="LAST_COMMIT_MESSAGE" value="hoàn thiện dự án 99%" />
+    <MESSAGE value="hoàn thiện dự án 99,67%" />
+    <option name="LAST_COMMIT_MESSAGE" value="hoàn thiện dự án 99,67%" />
   </component>
 </project>

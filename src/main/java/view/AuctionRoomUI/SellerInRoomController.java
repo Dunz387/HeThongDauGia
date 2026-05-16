@@ -239,7 +239,7 @@ public class SellerInRoomController implements Initializable {
             if (parts.length >= 3) {
                 String auctionId = parts[1];
                 String count = parts[2];
-                if (currentAuctionId != null && auctionId.equals(this.currentAuctionId)) {
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
                     Platform.runLater(() -> {
                         if (lblParticipants != null) lblParticipants.setText(count + " người");
                     });

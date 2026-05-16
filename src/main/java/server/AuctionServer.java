@@ -23,6 +23,7 @@ public class AuctionServer implements AuctionObserver {
     private static final int PORT = 8080;
     private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private AuctionManager manager;
+    private volatile boolean isRunning = true;
     private final java.util.concurrent.ExecutorService broadcastExecutor = java.util.concurrent.Executors.newFixedThreadPool(4);
 
     // Room tracking: AuctionID -> Set of ClientHandlers currently in that room
@@ -79,7 +80,7 @@ public class AuctionServer implements AuctionObserver {
             serverSocket.bind(new InetSocketAddress(PORT));
             LOGGER.info("[SERVER] Đang lắng nghe tại cổng " + PORT);
 
-            while (true) { // NOSONAR: Server must run indefinitely
+            while (isRunning) {
                 Socket socket = serverSocket.accept();
                 LOGGER.info("Có kết nối mới: " + socket.getInetAddress());
                 ClientHandler handler = new ClientHandler(socket, this, manager);
