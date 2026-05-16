@@ -23,8 +23,12 @@ import view.utility.SceneManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class InRoomController implements Initializable {
+    private static final Logger LOGGER = Logger.getLogger(InRoomController.class.getName());
 
     @FXML
     private javafx.scene.chart.AreaChart<Number, Number> priceChart;
