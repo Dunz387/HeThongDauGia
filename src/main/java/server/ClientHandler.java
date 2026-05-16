@@ -327,6 +327,10 @@ public class ClientHandler implements Runnable {
     private void handleDeposit(String amountStr) {
         try {
             double amount = Double.parseDouble(amountStr);
+            if (amount <= 0) {
+                sendData(Protocol.REQ_DEPOSIT + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền nạp phải lớn hơn 0!");
+                return;
+            }
             if (loggedInUser instanceof Bidder) {
                 Bidder bidder = (Bidder) loggedInUser;
                 bidder.addBalance(amount);
@@ -344,6 +348,10 @@ public class ClientHandler implements Runnable {
     private void handleWithdraw(String amountStr) {
         try {
             double amount = Double.parseDouble(amountStr);
+            if (amount <= 0) {
+                sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền rút phải lớn hơn 0!");
+                return;
+            }
             if (loggedInUser instanceof Seller) {
                 Seller seller = (Seller) loggedInUser;
                 if (seller.deductBalance(amount)) {

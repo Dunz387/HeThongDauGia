@@ -54,6 +54,18 @@ public class ValidationHelper {
     }
 
     /**
+     * Kiểm tra số tiền giao dịch (phải là số thực và > 0).
+     */
+    public static boolean isValidAmount(String amountStr) {
+        try {
+            double amount = Double.parseDouble(amountStr);
+            return amount > 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
      * Kiểm tra một chuỗi có trống hay không (sau khi trim).
      */
     public static boolean isEmpty(String value) {

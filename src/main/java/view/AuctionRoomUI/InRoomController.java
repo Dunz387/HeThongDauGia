@@ -555,8 +555,17 @@ public class InRoomController implements Initializable {
                 String[] parts = result.get().split(",");
                 if (parts.length == 2) {
                     try {
-                        double maxBid = Double.parseDouble(parts[0].trim());
-                        double increment = Double.parseDouble(parts[1].trim());
+                        String maxBidStr = parts[0].trim();
+                        String incrementStr = parts[1].trim();
+
+                        if (!view.utility.ValidationHelper.isValidAmount(maxBidStr) || 
+                            !view.utility.ValidationHelper.isValidAmount(incrementStr)) {
+                            AlertHelper.showWarning("Lỗi dữ liệu", "Max Bid và Bước nhảy phải là số dương!");
+                            return;
+                        }
+
+                        double maxBid = Double.parseDouble(maxBidStr);
+                        double increment = Double.parseDouble(incrementStr);
                         
                         String request = Protocol.REQ_AUTOBID + Protocol.DELIMITER +
                                          currentAuctionId + Protocol.DELIMITER +
