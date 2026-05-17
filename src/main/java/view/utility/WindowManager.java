@@ -54,4 +54,46 @@ public class WindowManager {
     public static void openSellerAuctionListWindow(Stage owner) {
         openWindow("/view/SellerUI/SellerAuctionList.fxml", "Phiên đấu giá của bạn", owner);
     }
+
+    // THÊM MỚI: Mở phòng đấu giá (dưới dạng popup)
+    public static void openInRoomWindow(model.auction.Auction auction) {
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/AuctionRoomUI/InRoomView.fxml"));
+            Parent root = loader.load();
+            view.AuctionRoomUI.InRoomController controller = loader.getController();
+            controller.setAuction(auction);
+            
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Phòng Đấu Giá: " + auction.getItem().getName());
+            // Đóng cửa sổ sẽ kích hoạt sự kiện thoát phòng
+            stage.setOnCloseRequest(e -> {
+                if (controller != null) controller.exitRoom(null);
+            });
+            stage.show();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi mở phòng đấu giá", e);
+        }
+    }
+
+    // THÊM MỚI: Mở phòng đấu giá dưới góc độ người bán/Admin (dưới dạng popup)
+    public static void openSellerInRoomWindow(model.auction.Auction auction) {
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/AuctionRoomUI/SellerInRoomView.fxml"));
+            Parent root = loader.load();
+            view.AuctionRoomUI.SellerInRoomController controller = loader.getController();
+            controller.setAuction(auction);
+            
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Quản Lý Phòng Đấu Giá: " + auction.getItem().getName());
+            // Đóng cửa sổ sẽ kích hoạt sự kiện thoát phòng
+            stage.setOnCloseRequest(e -> {
+                if (controller != null) controller.exitRoom(null);
+            });
+            stage.show();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi mở quản lý phòng đấu giá", e);
+        }
+    }
 }

@@ -211,6 +211,18 @@ public class ClientNetworkManager {
                                 listener.accept(newBalance);
                             }
                         }
+                        
+                        // THÊM MỚI: Xử lý lệnh FORCE_LOGOUT
+                        if (command.equals(Protocol.BROADCAST_FORCE_LOGOUT)) {
+                            javafx.application.Platform.runLater(() -> {
+                                SessionManager.getInstance().clearSession();
+                                javafx.stage.Stage window = (javafx.stage.Stage) javafx.stage.Window.getWindows().stream().filter(javafx.stage.Window::isShowing).findFirst().orElse(null);
+                                if (window != null) {
+                                    view.utility.SceneManager.goToLogin(window);
+                                    view.utility.AlertHelper.showError("Thông báo", parts.length >= 2 ? parts[1] : "Tài khoản của bạn đã bị đăng xuất!");
+                                }
+                            });
+                        }
                     } else if (serverData instanceof List) {
                         // Phân loại List dựa trên header đã nhận trước đó
                         String header = pendingListHeader;

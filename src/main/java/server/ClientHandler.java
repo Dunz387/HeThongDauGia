@@ -22,7 +22,7 @@ public class ClientHandler implements Runnable {
     private AuctionServer server;
     private AuctionManager manager;
     private User loggedInUser = null;
-    private String currentRoomId = null; // ID của phòng đấu giá đang tham gia
+    private java.util.Set<String> currentRoomIds = java.util.concurrent.ConcurrentHashMap.newKeySet(); // Hỗ trợ tham gia nhiều phòng cùng lúc
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
@@ -81,6 +81,9 @@ public class ClientHandler implements Runnable {
                         case Protocol.REQ_BAN_USER:
                             if (parts.length >= 3) handleBanUser(parts[1], parts[2]);
                             break;
+                        case Protocol.REQ_KICK_USER:
+                            if (parts.length >= 3) handleKickUser(parts[1], parts[2]);
+                            break;
                         // THÊM MỚI: Xử lý xóa phiên đấu giá (Admin)
                         case Protocol.REQ_DELETE_AUCTION:
                             if (parts.length >= 2) handleDeleteAuction(parts[1]);
@@ -116,9 +119,10 @@ public class ClientHandler implements Runnable {
 
     private void cleanup() {
         try {
-            if (currentRoomId != null) {
-                server.leaveRoom(currentRoomId, this);
+            for (String roomId : currentRoomIds) {
+                server.leaveRoom(roomId, this);
             }
+            currentRoomIds.clear();
             server.removeClient(this);
             if (in != null) in.close();
             if (out != null) out.close();
@@ -324,6 +328,10 @@ public class ClientHandler implements Runnable {
             boolean isEnable = Boolean.parseBoolean(statusStr); // true = mở khóa, false = khóa
             if (manager.banUser(targetId, isEnable)) {
                 sendData(Protocol.REQ_BAN_USER + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                // THÊM MỚI: Ép người dùng đăng xuất nếu đang online và bị khóa
+                if (!isEnable) {
+                    server.forceLogoutUser(targetId);
+                }
                 // THÊM MỚI: Broadcast danh sách User mới cho tất cả Admin (real-time)
                 server.broadcastUserList();
             } else {
@@ -358,6 +366,8 @@ public class ClientHandler implements Runnable {
         if (loggedInUser instanceof Admin) {
             if (manager.deleteAuctionForce(auctionId)) {
                 sendData(Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+                // THÊM MỚI: Kick người dùng ra khỏi phòng
+                server.broadcastRoomKicked(auctionId, "Phiên đấu giá đã bị Admin xóa!");
                 // Broadcast danh sách đấu giá mới cho tất cả (real-time)
                 server.broadcastAuctionList();
             } else {
@@ -365,6 +375,12 @@ public class ClientHandler implements Runnable {
             }
         } else {
             sendData(Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ Admin mới được thực hiện!");
+        }
+    }
+
+    private void handleKickUser(String auctionId, String targetUsername) {
+        if (loggedInUser instanceof Admin) {
+            server.kickUserFromRoom(auctionId, targetUsername);
         }
     }
 
@@ -407,19 +423,17 @@ public class ClientHandler implements Runnable {
     }
 
     private void handleJoinRoom(String auctionId) {
-        // Nếu đang ở phòng khác, rời phòng đó trước
-        if (currentRoomId != null && !currentRoomId.equals(auctionId)) {
-            server.leaveRoom(currentRoomId, this);
+        if (!currentRoomIds.contains(auctionId)) {
+            currentRoomIds.add(auctionId);
+            server.joinRoom(auctionId, this);
+            LOGGER.info(String.format("👤 User %s đã vào phòng %s", (loggedInUser != null ? loggedInUser.getUsername() : "Guest"), auctionId));
         }
-        currentRoomId = auctionId;
-        server.joinRoom(auctionId, this);
-        LOGGER.info(String.format("👤 User %s đã vào phòng %s", (loggedInUser != null ? loggedInUser.getUsername() : "Guest"), auctionId));
     }
 
     private void handleLeaveRoom(String auctionId) {
-        if (currentRoomId != null && currentRoomId.equals(auctionId)) {
+        if (currentRoomIds.contains(auctionId)) {
             server.leaveRoom(auctionId, this);
-            currentRoomId = null;
+            currentRoomIds.remove(auctionId);
             LOGGER.info(String.format("👤 User %s đã rời phòng %s", (loggedInUser != null ? loggedInUser.getUsername() : "Guest"), auctionId));
         }
     }

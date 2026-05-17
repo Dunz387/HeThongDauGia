@@ -36,6 +36,7 @@ public class Protocol {
     public static final String REQ_BAN_USER = "BAN_USER";
     public static final String REQ_DELETE_AUCTION = "DELETE_AUCTION";
     public static final String REQ_UPDATE_USER_BALANCE = "UPDATE_USER_BALANCE";
+    public static final String REQ_KICK_USER = "KICK_USER";
 
     // =================================================================
     // 3. NHÓM LỆNH SERVER TRẢ VỀ (RESPONSE 1-1)
@@ -59,4 +60,6 @@ public class Protocol {
     public static final String BROADCAST_ROUND_FINISHED = "ROUND_FINISHED";
     public static final String BROADCAST_TIME_EXTENDED = "TIME_EXTENDED";
     public static final String BROADCAST_PARTICIPANTS = "PARTICIPANTS_COUNT";
+    public static final String BROADCAST_ROOM_KICKED = "ROOM_KICKED";
+    public static final String BROADCAST_FORCE_LOGOUT = "FORCE_LOGOUT";
 }

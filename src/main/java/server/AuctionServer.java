@@ -206,4 +206,46 @@ public class AuctionServer implements AuctionObserver {
         LOGGER.info("📢 [BROADCAST] Gia hạn phiên đấu giá " + auction.getId() + " thêm " + addedSeconds + "s");
         broadcast(message);
     }
+
+    // THÊM MỚI: Kick toàn bộ người dùng trong phòng
+    public void broadcastRoomKicked(String auctionId, String reason) {
+        java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);
+        if (participants != null) {
+            String message = Protocol.BROADCAST_ROOM_KICKED + Protocol.DELIMITER + auctionId + Protocol.DELIMITER + reason;
+            for (ClientHandler client : participants) {
+                client.sendData(message);
+            }
+            // Không xóa roomParticipants ở đây vì Client sẽ tự gửi lệnh LEAVE_ROOM
+        }
+    }
+
+    // THÊM MỚI: Kick 1 người dùng cụ thể khỏi phòng
+    public void kickUserFromRoom(String auctionId, String targetUsername) {
+        java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);
+        if (participants != null) {
+            for (ClientHandler client : participants) {
+                User u = client.getLoggedInUser();
+                if (u != null && targetUsername.equals(u.getUsername())) {
+                    String message = Protocol.BROADCAST_ROOM_KICKED + Protocol.DELIMITER + auctionId + Protocol.DELIMITER + "Bạn đã bị quản trị viên đuổi khỏi phòng!";
+                    client.sendData(message);
+                    LOGGER.info("Bị đuổi: " + u.getUsername() + " khỏi phòng " + auctionId);
+                    // Không xóa khỏi participants ở đây vì Client sẽ nhận thông báo và gửi LEAVE_ROOM
+                    break; // Giả sử username là duy nhất
+                }
+            }
+        }
+    }
+
+    // THÊM MỚI: Ép đăng xuất một user cụ thể (dùng khi Ban)
+    public void forceLogoutUser(String targetUserId) {
+        for (ClientHandler client : clients) {
+            User u = client.getLoggedInUser();
+            if (u != null && targetUserId.equals(u.getId())) {
+                String message = Protocol.BROADCAST_FORCE_LOGOUT + Protocol.DELIMITER + "Tài khoản của bạn đã bị cấm bởi hệ thống!";
+                client.sendData(message);
+                LOGGER.info("Force logout: " + u.getUsername());
+                break;
+            }
+        }
+    }
 }

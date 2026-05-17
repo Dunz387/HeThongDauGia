@@ -377,6 +377,21 @@ public class InRoomController implements Initializable {
             }
         });
 
+        // THÊM MỚI: Lắng nghe lệnh KICK
+        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_ROOM_KICKED, (message) -> {
+            String[] parts = message.split(Protocol.SEPARATOR);
+            if (parts.length >= 3) {
+                String auctionId = parts[1];
+                String reason = parts[2];
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
+                    Platform.runLater(() -> {
+                        AlertHelper.showWarning("Rời phòng", reason);
+                        exitRoom(null);
+                    });
+                }
+            }
+        });
+
         // Lắng nghe kết quả lệnh BID
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_BID, (response) -> {
             String[] parts = response.split(Protocol.SEPARATOR);
@@ -515,7 +530,7 @@ public class InRoomController implements Initializable {
     }
 
     @FXML
-    private void exitRoom(ActionEvent event) {
+    public void exitRoom(ActionEvent event) {
         stopAllTimers();
         
         // GIẢI PHÓNG BỘ NHỚ: Xóa các listener để không bị rò rỉ khi ra/vào phòng nhiều lần
@@ -526,14 +541,18 @@ public class InRoomController implements Initializable {
         ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_BID);
         ClientNetworkManager.getInstance().clearListeners(Protocol.RES_UPDATE_BALANCE);
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_PARTICIPANTS);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_ROOM_KICKED);
 
         // Gửi thông báo rời phòng
         if (currentAuctionId != null) {
             ClientNetworkManager.getInstance().sendData(Protocol.REQ_LEAVE_ROOM + Protocol.DELIMITER + currentAuctionId);
         }
 
+        // Đóng cửa sổ hiện tại
         Stage stage = (Stage) priceChart.getScene().getWindow();
-        SceneManager.goToBaseMenu(stage);
+        if (stage != null) {
+            stage.close();
+        }
     }
 
     @FXML

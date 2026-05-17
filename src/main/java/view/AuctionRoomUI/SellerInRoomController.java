@@ -143,6 +143,35 @@ public class SellerInRoomController implements Initializable {
 
         // === ĐĂNG KÝ LẮNG NGHE TỪ SERVER ===
         registerNetworkListeners();
+
+        // THÊM MỚI: Thêm nút Kick User cho Admin
+        if (network.SessionManager.getInstance().isAdmin()) {
+            javafx.scene.control.Button btnKick = new javafx.scene.control.Button("Đuổi người dùng");
+            btnKick.getStyleClass().setAll("btn-danger");
+            btnKick.setStyle("-fx-font-weight: bold; -fx-padding: 5 15;");
+            btnKick.setOnAction(e -> handleKickUser());
+            Platform.runLater(() -> {
+                if (lblRoomId != null && lblRoomId.getParent() instanceof javafx.scene.layout.VBox) {
+                    ((javafx.scene.layout.VBox) lblRoomId.getParent()).getChildren().add(btnKick);
+                }
+            });
+        }
+    }
+
+    // THÊM MỚI: Xử lý Kick
+    private void handleKickUser() {
+        javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
+        dialog.setTitle("Đuổi người dùng");
+        dialog.setHeaderText("Đuổi người dùng khỏi phòng đấu giá");
+        dialog.setContentText("Nhập username:");
+
+        java.util.Optional<String> result = dialog.showAndWait();
+        result.ifPresent(username -> {
+            if (!username.trim().isEmpty()) {
+                ClientNetworkManager.getInstance().sendData(Protocol.REQ_KICK_USER + Protocol.DELIMITER + currentAuctionId + Protocol.DELIMITER + username.trim());
+                AlertHelper.showInfo("Hệ thống", "Đã gửi yêu cầu đuổi " + username.trim());
+            }
+        });
     }
 
     private void registerNetworkListeners() {
@@ -246,6 +275,21 @@ public class SellerInRoomController implements Initializable {
                 }
             }
         });
+
+        // THÊM MỚI: Lắng nghe lệnh KICK
+        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_ROOM_KICKED, (message) -> {
+            String[] parts = message.split(Protocol.SEPARATOR);
+            if (parts.length >= 3) {
+                String auctionId = parts[1];
+                String reason = parts[2];
+                if (java.util.Objects.equals(auctionId, currentAuctionId)) {
+                    Platform.runLater(() -> {
+                        AlertHelper.showWarning("Rời phòng", reason);
+                        exitRoom(null);
+                    });
+                }
+            }
+        });
     }
 
     /**
@@ -327,25 +371,24 @@ public class SellerInRoomController implements Initializable {
     }
 
     @FXML
-    private void exitRoom(ActionEvent event) {
+    public void exitRoom(ActionEvent event) {
         stopAllTimers();
         
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_NEW_BID);
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_TIME_EXTENDED);
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_AUCTION_FINISHED);
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_PARTICIPANTS);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_ROOM_KICKED);
 
         // Gửi thông báo rời phòng
         if (currentAuctionId != null) {
             ClientNetworkManager.getInstance().sendData(Protocol.REQ_LEAVE_ROOM + Protocol.DELIMITER + currentAuctionId);
         }
 
+        // Đóng cửa sổ (Popup)
         Stage stage = (Stage) priceChart.getScene().getWindow();
-        
-        if (network.SessionManager.getInstance().isAdmin()) {
-            SceneManager.goToAdminAuctionManagement(stage);
-        } else {
-            SceneManager.goToBaseMenu(stage);
+        if (stage != null) {
+            stage.close();
         }
     }
 
