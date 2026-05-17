@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="hoàn thiện dự án 99,7%" />
+    <list default="true" id="1f7bdbf0-d9a9-4897-81cb-56f7d936d58b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Application2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/AuctionRoomUI/InRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/AuctionRoomUI/InRoomView.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,7 +23,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -30,41 +40,36 @@
     <commands />
     <urls />
   </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
-  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
 }</component>
-  <component name="ProjectId" id="3DiAQxBzMu7FikpI6TW4Xq7b2EU" />
+  <component name="ProjectId" id="3Dpq8QuENGcbsib6RbDpqaum0dE" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AuctionServer.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AuctionServer.executor": "Run",
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "to.speed.mode.migration.done": "true"
   }
-}</component>
-  <component name="RunManager" selected="Application.AuctionServer">
+}]]></component>
+  <component name="RunManager" selected="Application.Main">
     <configuration name="AuctionServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="25 (2)" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="server.AuctionServer" />
       <module name="HeThongDauGia" />
       <option name="PROGRAM_PARAMETERS" value="$MAVEN_REPOSITORY$" />
-      <option name="VM_PARAMETERS" value="--enable-native-access=ALL-UNNAMED" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="server.*" />
@@ -91,14 +96,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Application.AuctionServer" />
-      <item itemvalue="Application.Main" />
-    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.AuctionServer" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.AuctionServer" />
       </list>
     </recent_temporary>
   </component>
@@ -111,116 +112,12 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="3ccf8185-3dbe-46d6-ae74-8898fa17845f" name="Changes" comment="" />
-      <created>1778754503779</created>
+      <changelist id="1f7bdbf0-d9a9-4897-81cb-56f7d936d58b" name="Changes" comment="" />
+      <created>1778989199870</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1778754503779</updated>
+      <updated>1778989199870</updated>
     </task>
-    <task id="LOCAL-00001" summary="sửa lỗi nâng cấp hệ thống auction room">
-      <option name="closed" value="true" />
-      <created>1778817083409</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1778817083409</updated>
-    </task>
-    <task id="LOCAL-00002" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778928606559</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1778928606559</updated>
-    </task>
-    <task id="LOCAL-00003" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778932368722</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1778932368722</updated>
-    </task>
-    <task id="LOCAL-00004" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778932428730</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1778932428730</updated>
-    </task>
-    <task id="LOCAL-00005" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778941631380</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1778941631380</updated>
-    </task>
-    <task id="LOCAL-00006" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778941746460</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1778941746460</updated>
-    </task>
-    <task id="LOCAL-00007" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778946368420</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1778946368420</updated>
-    </task>
-    <task id="LOCAL-00008" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778946909173</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1778946909173</updated>
-    </task>
-    <task id="LOCAL-00009" summary="hoàn thiện dự án 99%">
-      <option name="closed" value="true" />
-      <created>1778950028748</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1778950028748</updated>
-    </task>
-    <task id="LOCAL-00010" summary="hoàn thiện dự án 99,67%">
-      <option name="closed" value="true" />
-      <created>1778950437259</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1778950437259</updated>
-    </task>
-    <task id="LOCAL-00011" summary="hoàn thiện dự án 99,7%">
-      <option name="closed" value="true" />
-      <created>1778950691005</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1778950691005</updated>
-    </task>
-    <task id="LOCAL-00012" summary="hoàn thiện dự án 99,7%">
-      <option name="closed" value="true" />
-      <created>1778951575674</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1778951575674</updated>
-    </task>
-    <option name="localTasksCounter" value="13" />
     <servers />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="sửa lỗi nâng cấp hệ thống auction room" />
-    <MESSAGE value="hoàn thiện dự án 99%" />
-    <MESSAGE value="hoàn thiện dự án 99,67%" />
-    <MESSAGE value="hoàn thiện dự án 99,7%" />
-    <option name="LAST_COMMIT_MESSAGE" value="hoàn thiện dự án 99,7%" />
   </component>
 </project>

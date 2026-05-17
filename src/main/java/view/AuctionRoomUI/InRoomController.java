@@ -50,6 +50,9 @@ public class InRoomController implements Initializable {
     
     @FXML
     private Label bidIncrementLabel;
+
+    @FXML
+    private javafx.scene.control.ToggleButton autoBidToggleButton;
     
     // Notifications & History Table
     @FXML private TableView<NotificationManager.NotificationItem> notificationTableView;
@@ -405,6 +408,35 @@ public class InRoomController implements Initializable {
             });
         });
 
+        // Lắng nghe kết quả lệnh AUTOBID
+        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_AUTOBID, (response) -> {
+            String[] parts = response.split(Protocol.SEPARATOR);
+            Platform.runLater(() -> {
+                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
+                    if (parts.length > 2 && parts[2].equals("CANCEL")) {
+                        AlertHelper.showInfo("Auto-bid", "Đã tắt tính năng đặt giá tự động.");
+                        if (autoBidToggleButton != null) {
+                            autoBidToggleButton.setSelected(false);
+                            autoBidToggleButton.setText("Tắt");
+                        }
+                    } else {
+                        AlertHelper.showInfo("Auto-bid", "Đã bật tính năng đặt giá tự động thành công!");
+                        if (autoBidToggleButton != null) {
+                            autoBidToggleButton.setSelected(true);
+                            autoBidToggleButton.setText("Bật");
+                        }
+                    }
+                } else {
+                    String reason = (parts.length >= 3) ? parts[2] : "Lỗi không xác định";
+                    AlertHelper.showWarning("Auto-bid thất bại", reason);
+                    if (autoBidToggleButton != null) {
+                        autoBidToggleButton.setSelected(false);
+                        autoBidToggleButton.setText("Tắt");
+                    }
+                }
+            });
+        });
+
         // Cập nhật số dư realtime bằng cách lắng nghe SessionManager
         network.SessionManager.getInstance().balanceProperty().addListener((obs, oldVal, newVal) -> {
             updateBalanceDisplay(newVal.doubleValue());
@@ -539,6 +571,7 @@ public class InRoomController implements Initializable {
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_TIME_EXTENDED);
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_AUCTION_FINISHED);
         ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_BID);
+        ClientNetworkManager.getInstance().clearListeners(Protocol.REQ_AUTOBID);
         ClientNetworkManager.getInstance().clearListeners(Protocol.RES_UPDATE_BALANCE);
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_PARTICIPANTS);
         ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_ROOM_KICKED);
@@ -561,34 +594,31 @@ public class InRoomController implements Initializable {
         if (btn.isSelected()) {
             btn.setText("Bật");
             
-            // Show dialog to enter maxBid and increment
+            // Show dialog to enter maxBid
             javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
             dialog.setTitle("Cấu hình Auto-Bid");
-            dialog.setHeaderText("Nhập Max Bid và Increment (cách nhau bởi dấu phẩy)\nVí dụ: 5000,100");
-            dialog.setContentText("Cấu hình:");
+            dialog.setHeaderText("Nhập giá tối đa bạn sẵn sàng trả (Max Bid)\nBước nhảy giá sẽ được tự động tính toán tối ưu theo thời gian thực (10%)");
+            dialog.setContentText("Giá tối đa ($):");
 
             java.util.Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
-                String[] parts = result.get().split(",");
-                if (parts.length == 2) {
-                    try {
-                        double maxBid = Double.parseDouble(parts[0].trim());
-                        double increment = Double.parseDouble(parts[1].trim());
-                        
+                try {
+                    double maxBid = Double.parseDouble(result.get().trim());
+                    if (maxBid <= 0) {
+                        AlertHelper.showWarning("Lỗi", "Vui lòng nhập số lớn hơn 0!");
+                    } else {
                         String request = Protocol.REQ_AUTOBID + Protocol.DELIMITER +
                                          currentAuctionId + Protocol.DELIMITER +
-                                         maxBid + Protocol.DELIMITER +
-                                         increment;
+                                         maxBid;
                         if (!ClientNetworkManager.getInstance().sendData(request)) {
                             AlertHelper.showError("Lỗi kết nối", "Không thể đăng ký auto-bid!");
+                            btn.setSelected(false);
+                            btn.setText("Tắt");
                         }
-                        AlertHelper.showInfo("Thành công", "Đã đăng ký auto-bid!");
                         return;
-                    } catch (NumberFormatException e) {
-                        AlertHelper.showWarning("Lỗi", "Vui lòng nhập số hợp lệ!");
                     }
-                } else {
-                    AlertHelper.showWarning("Lỗi", "Vui lòng nhập đúng định dạng (VD: 5000,100)!");
+                } catch (NumberFormatException e) {
+                    AlertHelper.showWarning("Lỗi", "Vui lòng nhập số hợp lệ!");
                 }
             }
             // If failed or cancelled, uncheck
@@ -596,7 +626,14 @@ public class InRoomController implements Initializable {
             btn.setText("Tắt");
         } else {
             btn.setText("Tắt");
-            // Trong thực tế cần có lệnh hủy auto-bid, ở đây ta có thể đơn giản bỏ qua
+            String request = Protocol.REQ_AUTOBID + Protocol.DELIMITER +
+                             currentAuctionId + Protocol.DELIMITER +
+                             "CANCEL";
+            if (!ClientNetworkManager.getInstance().sendData(request)) {
+                AlertHelper.showError("Lỗi kết nối", "Không thể hủy đăng ký auto-bid!");
+                btn.setSelected(true);
+                btn.setText("Bật");
+            }
         }
     }
 }

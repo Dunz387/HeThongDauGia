@@ -73,7 +73,7 @@ public class ClientHandler implements Runnable {
                             if (parts.length >= 3) handleBid(parts[1], parts[2]);
                             break;
                         case Protocol.REQ_AUTOBID:
-                            if (parts.length >= 4) handleAutoBid(parts[1], parts[2], parts[3]);
+                            if (parts.length >= 3) handleAutoBid(parts[1], parts[2], parts.length >= 4 ? parts[3] : null);
                             break;
                         case Protocol.REQ_GET_USERS:
                             handleGetUsers();
@@ -103,6 +103,9 @@ public class ClientHandler implements Runnable {
                             break;
                         case Protocol.REQ_UPDATE_USER_BALANCE:
                             if (parts.length >= 3) handleUpdateUserBalance(parts[1], parts[2]);
+                            break;
+                        case Protocol.REQ_LOGOUT:
+                            handleLogout();
                             break;
                     }
                 }
@@ -294,8 +297,6 @@ public class ClientHandler implements Runnable {
                 sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Chỉ người mua mới được đặt auto-bid!");
                 return;
             }
-            double maxBid = Double.parseDouble(maxBidStr);
-            double increment = Double.parseDouble(incrementStr);
             Bidder bidder = (Bidder) loggedInUser;
 
             Auction auction = manager.getAuctionById(auctionId);
@@ -304,8 +305,20 @@ public class ClientHandler implements Runnable {
                 return;
             }
 
+            if ("CANCEL".equalsIgnoreCase(maxBidStr)) {
+                auction.cancelAutoBid(bidder);
+                sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + "CANCEL");
+                return;
+            }
+
+            double maxBid = Double.parseDouble(maxBidStr);
+            double increment = 0.0;
+            if (incrementStr != null && !incrementStr.trim().isEmpty()) {
+                increment = Double.parseDouble(incrementStr);
+            }
+
             auction.registerAutoBid(bidder, maxBid, increment);
-            sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
+            sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + "REGISTER");
             
         } catch (Exception e) {
             sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Lỗi hệ thống auto-bid.");
@@ -436,6 +449,20 @@ public class ClientHandler implements Runnable {
             currentRoomIds.remove(auctionId);
             LOGGER.info(String.format("👤 User %s đã rời phòng %s", (loggedInUser != null ? loggedInUser.getUsername() : "Guest"), auctionId));
         }
+    }
+
+    private void handleLogout() {
+        LOGGER.info("🚪 User logged out: " + (loggedInUser != null ? loggedInUser.getUsername() : "Guest"));
+        try {
+            for (String roomId : currentRoomIds) {
+                server.leaveRoom(roomId, this);
+            }
+            currentRoomIds.clear();
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Lỗi khi rời phòng đấu giá lúc logout", e);
+        }
+        loggedInUser = null;
+        sendData(Protocol.REQ_LOGOUT + Protocol.DELIMITER + Protocol.RES_SUCCESS);
     }
 
     public String getUserId() {

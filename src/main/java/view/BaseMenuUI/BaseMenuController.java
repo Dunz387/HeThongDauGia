@@ -213,6 +213,7 @@ public class BaseMenuController implements Initializable {
 
     @FXML
     private void backToLoiginButtonClicked(ActionEvent event) {
+        network.ClientNetworkManager.getInstance().logout();
         Stage stage = (Stage) menuBar.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
     }

@@ -193,9 +193,14 @@ public class AuctionServer implements AuctionObserver {
         LOGGER.info("📢 [BROADCAST] Đã phát sóng giá mới: " + message);
         broadcast(message);
 
-        // T11: Cập nhật số dư cho người vừa bị vượt giá (nếu có)
+        // T11: Cập nhật số dư cho người vừa bị vượt giá (nếu có - đã được giải phóng số tiền phong tỏa)
         if (previousBidder != null) {
             sendBalanceUpdateToUser(previousBidder.getId());
+        }
+        
+        // Cập nhật số dư cho người giữ giá cao nhất mới (đã bị phong tỏa số tiền đặt giá mới)
+        if (auction.getHighestBidder() != null) {
+            sendBalanceUpdateToUser(auction.getHighestBidder().getId());
         }
     }
 

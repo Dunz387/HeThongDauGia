@@ -147,6 +147,7 @@ public class AdminAuctionManagementController implements Initializable {
 
     @FXML
     private void logoutClicked(ActionEvent event) {
+        ClientNetworkManager.getInstance().logout();
         Stage stage = (Stage) menuBar.getScene().getWindow();
         SceneManager.goToLogin(stage);
     }

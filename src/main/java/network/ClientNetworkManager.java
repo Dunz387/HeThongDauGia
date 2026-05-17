@@ -103,6 +103,13 @@ public class ClientNetworkManager {
         }
     }
 
+    public synchronized void logout() {
+        if (isConnected()) {
+            sendData(Protocol.REQ_LOGOUT);
+        }
+        SessionManager.getInstance().clearSession();
+    }
+
     // T7: ĐĂNG KÝ CALLBACK CHO STRING — Hỗ trợ NHIỀU listener cho cùng 1 command
     public void registerListener(String command, Consumer<String> listener) {
         messageListeners.computeIfAbsent(command, k -> new CopyOnWriteArrayList<>()).add(listener);

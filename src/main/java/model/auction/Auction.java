@@ -131,43 +131,84 @@ public class Auction extends Entity implements AuctionSubject {
     }
 
     public void registerAutoBid(Bidder bidder, double maxBid, double increment) {
-        autoBids.add(new AutoBidConfig(bidder, maxBid, increment, System.currentTimeMillis()));
-        triggerAutoBidding();
+        if (lock == null) {
+            lock = new ReentrantLock();
+        }
+        lock.lock();
+        try {
+            if (autoBids == null) {
+                autoBids = new PriorityQueue<>();
+            }
+            // Hủy cấu hình auto-bid cũ của bidder này nếu có để tránh trùng lặp
+            autoBids.removeIf(config -> config.bidder.getId().equals(bidder.getId()));
+            
+            autoBids.add(new AutoBidConfig(bidder, maxBid, increment, System.currentTimeMillis()));
+            triggerAutoBidding();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void cancelAutoBid(Bidder bidder) {
+        if (lock == null) {
+            lock = new ReentrantLock();
+        }
+        lock.lock();
+        try {
+            if (autoBids == null) {
+                autoBids = new PriorityQueue<>();
+            }
+            autoBids.removeIf(config -> config.bidder.getId().equals(bidder.getId()));
+        } finally {
+            lock.unlock();
+        }
     }
 
     private transient boolean isAutoBidding = false;
 
     public void triggerAutoBidding() {
-        if (autoBids.isEmpty() || isAutoBidding) return;
-        
-        isAutoBidding = true;
+        if (lock == null) {
+            lock = new ReentrantLock();
+        }
+        lock.lock();
         try {
-            while (true) {
-                // Cần copy ra một danh sách tạm để duyệt qua PriorityQueue
-                List<AutoBidConfig> activeAutoBids = new ArrayList<>(autoBids);
-                activeAutoBids.sort(null); // Sắp xếp theo registerTime
-                
-                boolean bidPlacedThisIteration = false;
-                for (AutoBidConfig config : activeAutoBids) {
-                    // Nếu người này đang là người giữ giá cao nhất thì không cần tự động đặt
-                    if (this.highestBidder != null && this.highestBidder.getId().equals(config.bidder.getId())) continue;
+            if (autoBids == null) {
+                autoBids = new PriorityQueue<>();
+            }
+            if (autoBids.isEmpty() || isAutoBidding) return;
+            
+            isAutoBidding = true;
+            try {
+                while (true) {
+                    // Cần copy ra một danh sách tạm để duyệt qua PriorityQueue
+                    List<AutoBidConfig> activeAutoBids = new ArrayList<>(autoBids);
+                    activeAutoBids.sort(null); // Sắp xếp theo registerTime
                     
-                    double nextBid = this.currentPrice + Math.max(config.increment, getDynamicIncrement());
-                    // Chỉ đặt nếu giá tiếp theo <= maxBid
-                    if (nextBid <= config.maxBid) {
-                        try {
-                            placeBid(config.bidder, nextBid);
-                            bidPlacedThisIteration = true;
-                            break; // Phá vỡ vòng lặp để lượt while tiếp theo xử lý
-                        } catch (Exception e) {
-                            // Auto-bid thất bại (không đủ tiền, v.v.), có thể xóa khỏi autoBids nếu muốn
+                    boolean bidPlacedThisIteration = false;
+                    for (AutoBidConfig config : activeAutoBids) {
+                        // Nếu người này đang là người giữ giá cao nhất thì không cần tự động đặt
+                        if (this.highestBidder != null && this.highestBidder.getId().equals(config.bidder.getId())) continue;
+                        
+                        double nextBid = this.currentPrice + Math.max(config.increment, getDynamicIncrement());
+                        // Chỉ đặt nếu giá tiếp theo <= maxBid
+                        if (nextBid <= config.maxBid) {
+                            try {
+                                placeBid(config.bidder, nextBid);
+                                bidPlacedThisIteration = true;
+                                break; // Phá vỡ vòng lặp để lượt while tiếp theo xử lý
+                            } catch (Exception e) {
+                                // Auto-bid thất bại (không đủ tiền, v.v.), xóa khỏi danh sách autoBids
+                                autoBids.remove(config);
+                            }
                         }
                     }
+                    if (!bidPlacedThisIteration) break;
                 }
-                if (!bidPlacedThisIteration) break;
+            } finally {
+                isAutoBidding = false;
             }
         } finally {
-            isAutoBidding = false;
+            lock.unlock();
         }
     }
 

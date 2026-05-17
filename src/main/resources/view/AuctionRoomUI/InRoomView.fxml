@@ -109,7 +109,7 @@
       <VBox alignment="CENTER" spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-background-color: #faf9f0; -fx-padding: 12; -fx-border-color: #e8e8e0; -fx-border-width: 0 1 0 0;">
          <children>
             <Label text="Đấu giá tự động" style="-fx-text-fill: #666666; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
-            <ToggleButton mnemonicParsing="false" text="Tắt" onAction="#handleAutoBidToggle" />
+            <ToggleButton fx:id="autoBidToggleButton" mnemonicParsing="false" text="Tắt" onAction="#handleAutoBidToggle" />
         </children>
       </VBox>
 

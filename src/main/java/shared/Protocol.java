@@ -30,6 +30,7 @@ public class Protocol {
     public static final String REQ_AUTOBID = "AUTOBID";
     public static final String REQ_JOIN_ROOM = "JOIN_ROOM";
     public static final String REQ_LEAVE_ROOM = "LEAVE_ROOM";
+    public static final String REQ_LOGOUT = "LOGOUT";
 
     // Quản trị viên (Admin)
     public static final String REQ_GET_USERS = "GET_USERS";
