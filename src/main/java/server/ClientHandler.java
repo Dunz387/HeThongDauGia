@@ -343,7 +343,7 @@ public class ClientHandler implements Runnable {
                     // Broadcast danh sách User mới cho tất cả Admin
                     server.broadcastUserList();
                     // Cập nhật realtime cho chính User bị đổi tiền (nếu họ đang online)
-                    server.sendBalanceUpdateToUser(targetId, newBalance);
+                    server.sendBalanceUpdateToUser(targetId);
                 } else {
                     sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy người dùng!");
                 }

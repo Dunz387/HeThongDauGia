@@ -58,10 +58,10 @@ public class AuctionServer implements AuctionObserver {
             // Cập nhật số dư realtime cho Người thắng và Người bán
             Bidder winner = finishedAuction.getHighestBidder();
             if (winner != null) {
-                sendBalanceUpdateToUser(winner.getId(), winner.getBalance());
+                sendBalanceUpdateToUser(winner.getId());
             }
             if (originalSeller instanceof Seller) {
-                sendBalanceUpdateToUser(originalSeller.getId(), ((Seller) originalSeller).getBalance());
+                sendBalanceUpdateToUser(originalSeller.getId());
             }
         });
 
@@ -153,9 +153,16 @@ public class AuctionServer implements AuctionObserver {
         broadcast(message);
     }
 
-    public void sendBalanceUpdateToUser(String userId, double balance) {
+    public void sendBalanceUpdateToUser(String userId) {
         for (ClientHandler client : clients) {
-            if (client.getLoggedInUser() != null && client.getLoggedInUser().getId().equals(userId)) {
+            User user = client.getLoggedInUser();
+            if (user != null && user.getId().equals(userId)) {
+                double balance = 0.0;
+                if (user instanceof Bidder) {
+                    balance = ((Bidder) user).getAvailableBalance();
+                } else if (user instanceof Seller) {
+                    balance = ((Seller) user).getBalance();
+                }
                 client.sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + balance);
             }
         }
@@ -188,7 +195,7 @@ public class AuctionServer implements AuctionObserver {
 
         // T11: Cập nhật số dư cho người vừa bị vượt giá (nếu có)
         if (previousBidder != null) {
-            sendBalanceUpdateToUser(previousBidder.getId(), previousBidder.getAvailableBalance());
+            sendBalanceUpdateToUser(previousBidder.getId());
         }
     }
 
