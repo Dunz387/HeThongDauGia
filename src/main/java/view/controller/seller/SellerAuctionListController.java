@@ -1,8 +1,6 @@
 package view.controller.seller;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,29 +25,42 @@ import java.util.ResourceBundle;
  */
 public class SellerAuctionListController implements Initializable {
 
-    @FXML private TableView<Auction> tableMyAuction;
-    @FXML private TableColumn<Auction, String> colId;
-    @FXML private TableColumn<Auction, String> colName;
-    @FXML private TableColumn<Auction, String> colDescription;
-    @FXML private TableColumn<Auction, String> colType;
-    @FXML private TableColumn<Auction, Double> colPrice;
-    @FXML private TableColumn<Auction, Integer> colBidCount;
-    @FXML private TableColumn<Auction, String> colHighestBidder;
-    @FXML private TableColumn<Auction, String> colEndTime;
-    @FXML private TableColumn<Auction, String> colStatus;
-    @FXML private TableColumn<Auction, String> colSeller;
-    @FXML private Button btnMonitor;
+    @FXML
+    private TableView<Auction> tableMyAuction;
+    @FXML
+    private TableColumn<Auction, String> colId;
+    @FXML
+    private TableColumn<Auction, String> colName;
+    @FXML
+    private TableColumn<Auction, String> colDescription;
+    @FXML
+    private TableColumn<Auction, String> colType;
+    @FXML
+    private TableColumn<Auction, Double> colPrice;
+    @FXML
+    private TableColumn<Auction, Integer> colBidCount;
+    @FXML
+    private TableColumn<Auction, String> colHighestBidder;
+    @FXML
+    private TableColumn<Auction, String> colEndTime;
+    @FXML
+    private TableColumn<Auction, String> colStatus;
+    @FXML
+    private TableColumn<Auction, String> colSeller;
+    @FXML
+    private Button btnMonitor;
 
     private Auction latestAuction = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // === CẤU HÌNH CỘT BẢNG ===
-        AuctionTableConfigurator.configure(colId, colName, colDescription, colType, colPrice,
-                colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
+        AuctionTableConfigurator.configure(colId, colName, colDescription, colType, colPrice, colBidCount,
+                colHighestBidder, colEndTime, colStatus, colSeller);
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER ===
-        ClientNetworkManager.getInstance().clearAuctionListListeners(); ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
+        ClientNetworkManager.getInstance().clearAuctionListListeners();
+        ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
             if (listFromServer != null && !listFromServer.isEmpty()) {
                 latestAuction = listFromServer.get(listFromServer.size() - 1);
                 Platform.runLater(() -> {

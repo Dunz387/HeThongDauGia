@@ -1,13 +1,10 @@
 package view.utility;
 
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 
 /**
- * Helper class cấu hình biểu đồ giá đấu giá.
- * Trích xuất từ InRoomController và SellerInRoomController (DRY).
+ * Helper class cấu hình biểu đồ giá đấu giá. Trích xuất từ InRoomController và
+ * SellerInRoomController (DRY).
  */
 public class ChartHelper {
 
@@ -33,17 +30,24 @@ public class ChartHelper {
             xAxis.setUpperBound(10);
 
             xAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
-                @Override public String toString(Number object) {
+                @Override
+                public String toString(Number object) {
                     double val = object.doubleValue();
                     if (Math.abs(val - Math.round(val)) < 0.0001) {
                         int intVal = (int) Math.round(val);
-                        if (intVal < 0) return "";
-                        if (intVal == 0) return "BĐ";
+                        if (intVal < 0)
+                            return "";
+                        if (intVal == 0)
+                            return "BĐ";
                         return String.valueOf(intVal);
                     }
                     return "";
                 }
-                @Override public Number fromString(String string) { return 0; }
+
+                @Override
+                public Number fromString(String string) {
+                    return 0;
+                }
             });
         }
 
@@ -69,10 +73,14 @@ public class ChartHelper {
      */
     public static double calculateMinIncrement(double currentPrice) {
         double increment = currentPrice * 0.1;
-        if (increment < 1) return 1.0;
-        else if (increment < 10) return Math.floor(increment);
-        else if (increment < 100) return Math.floor(increment / 5) * 5;
-        else return Math.floor(increment / 10) * 10;
+        if (increment < 1)
+            return 1.0;
+        else if (increment < 10)
+            return Math.floor(increment);
+        else if (increment < 100)
+            return Math.floor(increment / 5) * 5;
+        else
+            return Math.floor(increment / 10) * 10;
     }
 
     /**

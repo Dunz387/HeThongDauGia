@@ -25,27 +25,39 @@ import java.util.ResourceBundle;
 
 public class AdminAuctionManagementController implements Initializable {
 
-    @FXML private HBox menuBar;
-    @FXML private TableView<Auction> tableAuctions;
-    @FXML private TableColumn<Auction, Integer> colSTT;
-    @FXML private TableColumn<Auction, String> colId;
-    @FXML private TableColumn<Auction, String> colName;
-    @FXML private TableColumn<Auction, Double> colPrice;
-    @FXML private TableColumn<Auction, String> colStatus;
-    @FXML private TableColumn<Auction, String> colBidder;
-    @FXML private TableColumn<Auction, Void> colView;
-    @FXML private TableColumn<Auction, Void> colAction;
+    @FXML
+    private HBox menuBar;
+    @FXML
+    private TableView<Auction> tableAuctions;
+    @FXML
+    private TableColumn<Auction, Integer> colSTT;
+    @FXML
+    private TableColumn<Auction, String> colId;
+    @FXML
+    private TableColumn<Auction, String> colName;
+    @FXML
+    private TableColumn<Auction, Double> colPrice;
+    @FXML
+    private TableColumn<Auction, String> colStatus;
+    @FXML
+    private TableColumn<Auction, String> colBidder;
+    @FXML
+    private TableColumn<Auction, Void> colView;
+    @FXML
+    private TableColumn<Auction, Void> colAction;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // === CẤU HÌNH CÁC CỘT BẢNG ===
-        colSTT.setCellValueFactory(cellData ->
-                new SimpleIntegerProperty(tableAuctions.getItems().indexOf(cellData.getValue()) + 1).asObject());
+        colSTT.setCellValueFactory(
+                cellData -> new SimpleIntegerProperty(tableAuctions.getItems().indexOf(cellData.getValue()) + 1)
+                        .asObject());
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
-        colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
-        colStatus.setCellValueFactory(cellData ->
-                new SimpleStringProperty(StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
+        colPrice.setCellValueFactory(
+                cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
+        colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(
+                StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
         colBidder.setCellValueFactory(cellData -> {
             var bidder = cellData.getValue().getHighestBidder();
             return new SimpleStringProperty(bidder != null ? bidder.getUsername() : "Chưa có");
@@ -62,11 +74,14 @@ public class AdminAuctionManagementController implements Initializable {
                     view.utility.WindowManager.openSellerInRoomWindow(auction);
                 });
             }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) setGraphic(null);
-                else setGraphic(btnView);
+                if (empty)
+                    setGraphic(null);
+                else
+                    setGraphic(btnView);
             }
         });
 
@@ -81,8 +96,8 @@ public class AdminAuctionManagementController implements Initializable {
 
                     // Xác nhận trước khi xóa (SRP: delegate sang AlertHelper)
                     Optional<ButtonType> result = AlertHelper.showConfirmation("Xác nhận xóa",
-                            "Bạn có chắc muốn xóa phiên đấu giá này?\n" +
-                            "Mã phiên: " + auction.getId() + "\nSản phẩm: " + auction.getItem().getName());
+                            "Bạn có chắc muốn xóa phiên đấu giá này?\n" + "Mã phiên: " + auction.getId()
+                                    + "\nSản phẩm: " + auction.getItem().getName());
 
                     if (result.isPresent() && result.get() == ButtonType.OK) {
                         String request = Protocol.REQ_DELETE_AUCTION + Protocol.DELIMITER + auction.getId();
@@ -117,7 +132,8 @@ public class AdminAuctionManagementController implements Initializable {
         });
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER (REAL-TIME) ===
-        ClientNetworkManager.getInstance().clearAuctionListListeners(); ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
+        ClientNetworkManager.getInstance().clearAuctionListListeners();
+        ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
                 Platform.runLater(() -> {
                     ObservableList<Auction> data = FXCollections.observableArrayList(listFromServer);
