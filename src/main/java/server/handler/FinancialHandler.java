@@ -24,6 +24,10 @@ public class FinancialHandler {
     public void handleDeposit(String amountStr) {
         try {
             double amount = Double.parseDouble(amountStr);
+            if (amount <= 0) {
+                clientHandler.sendData(Protocol.REQ_DEPOSIT + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền nạp phải lớn hơn 0.");
+                return;
+            }
             if (getUser() instanceof Bidder) {
                 Bidder bidder = (Bidder) getUser();
                 bidder.addBalance(amount);
@@ -41,6 +45,10 @@ public class FinancialHandler {
     public void handleWithdraw(String amountStr) {
         try {
             double amount = Double.parseDouble(amountStr);
+            if (amount <= 0) {
+                clientHandler.sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền rút phải lớn hơn 0.");
+                return;
+            }
             if (getUser() instanceof Seller) {
                 Seller seller = (Seller) getUser();
                 if (seller.deductBalance(amount)) {

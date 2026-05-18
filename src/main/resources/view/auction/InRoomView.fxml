@@ -115,7 +115,7 @@
 
       <HBox alignment="CENTER" spacing="14" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-background-color: #ffffff; -fx-border-color: #e8e8e0; -fx-border-width: 1 0 0 0; -fx-padding: 16;">
          <children>
-            <Label text="💵 Đặt bước giá:" style="-fx-text-fill: #1a1a1a; -fx-font-size: 15px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+            <Label text="💵 Nhập giá đặt:" style="-fx-text-fill: #1a1a1a; -fx-font-size: 15px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
             <TextField fx:id="bidAmountField" prefHeight="40.0" prefWidth="220.0" promptText="Nhập số tiền đặt giá" />
             <Button mnemonicParsing="false" onAction="#handlePlaceBid" prefHeight="40.0" prefWidth="160.0" styleClass="btn-primary" text="🔨 Đặt giá" />
          </children>

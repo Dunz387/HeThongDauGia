@@ -31,7 +31,20 @@ public class MenuHelper {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText("Số tiền ($):");
-        return dialog.showAndWait().map(String::trim).filter(s -> !s.isEmpty());
+        Optional<String> result = dialog.showAndWait().map(String::trim).filter(s -> !s.isEmpty());
+        if (result.isPresent()) {
+            try {
+                double val = Double.parseDouble(result.get());
+                if (val <= 0) {
+                    AlertHelper.showWarning("Lỗi nhập liệu", "Vui lòng nhập số tiền lớn hơn 0!");
+                    return Optional.empty();
+                }
+            } catch (NumberFormatException e) {
+                AlertHelper.showWarning("Lỗi nhập liệu", "Vui lòng nhập số tiền hợp lệ!");
+                return Optional.empty();
+            }
+        }
+        return result;
     }
 
     /**

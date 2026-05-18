@@ -54,6 +54,7 @@ public class SellerInRoomController implements Initializable {
     private String currentAuctionId = null;
     private double currentHighestPrice = 0;
     private AuctionRoomHelper roomHelper;
+    private final ObservableList<String> activeParticipants = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -90,16 +91,93 @@ public class SellerInRoomController implements Initializable {
     }
 
     private void handleKickUser() {
-        javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
-        dialog.setTitle("Đuổi người dùng");
-        dialog.setHeaderText("Đuổi người dùng khỏi phòng đấu giá");
-        dialog.setContentText("Nhập username:");
-        dialog.showAndWait().ifPresent(username -> {
-            if (!username.trim().isEmpty()) {
-                ClientNetworkManager.getInstance().sendData(Protocol.REQ_KICK_USER + Protocol.DELIMITER + currentAuctionId + Protocol.DELIMITER + username.trim());
-                AlertHelper.showInfo("Hệ thống", "Đã gửi yêu cầu đuổi " + username.trim());
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Quản lý người dùng trong phòng");
+        popupStage.initOwner(priceChart.getScene().getWindow());
+        popupStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+
+        javafx.scene.layout.VBox layout = new javafx.scene.layout.VBox(15);
+        layout.setPadding(new javafx.geometry.Insets(20));
+        layout.setStyle("-fx-background-color: #faf9f0;");
+
+        Label titleLabel = new Label("👥 Người dùng trong phòng");
+        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-font-family: 'Segoe UI';");
+
+        javafx.scene.control.ListView<String> listView = new javafx.scene.control.ListView<>(activeParticipants);
+        listView.setPrefHeight(300);
+        listView.setPrefWidth(350);
+        listView.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e8e8e0;");
+
+        listView.setCellFactory(param -> new javafx.scene.control.ListCell<String>() {
+            private final javafx.scene.layout.HBox hbox = new javafx.scene.layout.HBox(10);
+            private final Label nameLabel = new Label();
+            private final javafx.scene.control.Button kickBtn = new javafx.scene.control.Button("Đuổi");
+            private final javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+
+            {
+                hbox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+                kickBtn.getStyleClass().setAll("btn-danger");
+                kickBtn.setStyle("-fx-font-size: 11px; -fx-padding: 3 10; -fx-font-weight: bold; -fx-cursor: hand;");
+                nameLabel.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-weight: 500; -fx-text-fill: #333333;");
+                hbox.getChildren().addAll(nameLabel, spacer, kickBtn);
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    nameLabel.setText(item);
+                    String currentUsername = network.SessionManager.getInstance().getUsername();
+                    if (item.equals(currentUsername)) {
+                        kickBtn.setVisible(false);
+                    } else {
+                        kickBtn.setVisible(true);
+                        kickBtn.setOnAction(e -> {
+                            javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+                            confirm.setTitle("Xác nhận đuổi");
+                            confirm.setHeaderText(null);
+                            confirm.setContentText("Bạn có chắc chắn muốn đuổi '" + item + "' khỏi phòng?");
+                            confirm.initOwner(popupStage);
+                            confirm.showAndWait().ifPresent(response -> {
+                                if (response == javafx.scene.control.ButtonType.OK) {
+                                    ClientNetworkManager.getInstance().sendData(
+                                        Protocol.REQ_KICK_USER + Protocol.DELIMITER + currentAuctionId + Protocol.DELIMITER + item
+                                    );
+                                    AlertHelper.showInfo("Thành công", "Đã gửi yêu cầu đuổi " + item);
+                                }
+                            });
+                        });
+                    }
+                    setGraphic(hbox);
+                }
             }
         });
+
+        Label placeholder = new Label("Chưa có người dùng nào khác");
+        placeholder.setStyle("-fx-text-fill: #999; -fx-font-family: 'Segoe UI';");
+        listView.setPlaceholder(placeholder);
+
+        javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("Đóng");
+        closeBtn.getStyleClass().setAll("btn-primary");
+        closeBtn.setStyle("-fx-padding: 6 18; -fx-font-weight: bold; -fx-cursor: hand;");
+        closeBtn.setOnAction(e -> popupStage.close());
+
+        javafx.scene.layout.HBox btnContainer = new javafx.scene.layout.HBox(closeBtn);
+        btnContainer.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+
+        layout.getChildren().addAll(titleLabel, listView, btnContainer);
+
+        javafx.scene.Scene scene = new javafx.scene.Scene(layout);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/view/styles.css").toExternalForm());
+        } catch (Exception ignored) {}
+
+        popupStage.setScene(scene);
+        popupStage.show();
     }
 
     private void registerNetworkListeners() {
@@ -111,8 +189,8 @@ public class SellerInRoomController implements Initializable {
                 currentHighestPrice = newPrice;
 
                 Platform.runLater(() -> {
-                    lblCurrentPrice.setText(String.format("%.0f $", newPrice));
-                    lblEarnings.setText(String.format("%.0f $", newPrice));
+                    lblCurrentPrice.setText(ChartHelper.formatDouble(newPrice) + " $");
+                    lblEarnings.setText(ChartHelper.formatDouble(newPrice) + " $");
                     topBidderLabel.setText(topBidder);
                     bidCount++;
                     ChartHelper.updateXAxisBounds(priceChart, bidCount);
@@ -122,7 +200,7 @@ public class SellerInRoomController implements Initializable {
                     lblRounds.setText(String.valueOf(bidCount));
                     updateIncrementDisplay(newPrice);
                     if (auction != null) {
-                        String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + String.format("%,.0f", newPrice);
+                        String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + ChartHelper.formatDouble(newPrice);
                         String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                         roomNotifications.add(0, new NotificationManager.NotificationItem(msg, timeStr));
                         NotificationManager.getInstance().addNotification(msg);
@@ -138,13 +216,25 @@ public class SellerInRoomController implements Initializable {
                 double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
                 Platform.runLater(() -> {
                     if (roomHelper != null) roomHelper.stopTimer();
-                    lblCurrentPrice.setText(String.format("%,.0f $", finalPrice));
+                    lblCurrentPrice.setText(ChartHelper.formatDouble(finalPrice) + " $");
                     topBidderLabel.setText(winner);
                     String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                     roomNotifications.add(0, new NotificationManager.NotificationItem(
-                        "🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: " + winner + " ($" + String.format("%,.0f", finalPrice) + ")", timeStr));
-                    AlertHelper.showInfo("Phiên đấu giá kết thúc!", "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + String.format("%,.0f $", finalPrice));
+                        "🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: " + winner + " ($" + ChartHelper.formatDouble(finalPrice) + ")", timeStr));
+                    AlertHelper.showInfo("Phiên đấu giá kết thúc!", "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + ChartHelper.formatDouble(finalPrice) + " $");
                     if (!network.SessionManager.getInstance().isAdmin()) exitRoom(null);
+                });
+            }
+        });
+
+        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_PARTICIPANTS, (message) -> {
+            String[] parts = message.split(Protocol.DELIMITER);
+            if (parts.length >= 3 && java.util.Objects.equals(parts[1], currentAuctionId)) {
+                Platform.runLater(() -> {
+                    activeParticipants.clear();
+                    for (int i = 3; i < parts.length; i++) {
+                        activeParticipants.add(parts[i]);
+                    }
                 });
             }
         });
@@ -199,8 +289,8 @@ public class SellerInRoomController implements Initializable {
 
             if (auction.getHighestBidder() != null) {
                 currentHighestPrice = auction.getCurrentPrice();
-                if (lblCurrentPrice != null) lblCurrentPrice.setText(String.format("%,.0f $", currentHighestPrice));
-                if (lblEarnings != null) lblEarnings.setText(String.format("%,.0f $", currentHighestPrice));
+                if (lblCurrentPrice != null) lblCurrentPrice.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
+                if (lblEarnings != null) lblEarnings.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
                 if (topBidderLabel != null) topBidderLabel.setText(auction.getHighestBidder().getUsername());
                 if (lblRounds != null) lblRounds.setText(String.valueOf(bidCount));
             } else {
@@ -214,7 +304,7 @@ public class SellerInRoomController implements Initializable {
                     tempCount++;
                     String timeStr = tx.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                     roomNotifications.add(0, new NotificationManager.NotificationItem(
-                        "📢 [" + auction.getItem().getName() + "] - Lượt #" + tempCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + String.format("%,.0f", tx.getBidAmount()), timeStr));
+                        "📢 [" + auction.getItem().getName() + "] - Lượt #" + tempCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + ChartHelper.formatDouble(tx.getBidAmount()), timeStr));
                 }
             }
 
@@ -236,6 +326,6 @@ public class SellerInRoomController implements Initializable {
 
     private void updateIncrementDisplay(double currentPrice) {
         double roundedIncrement = ChartHelper.calculateMinIncrement(currentPrice);
-        Platform.runLater(() -> { if (lblMinStep != null) lblMinStep.setText(String.format("%,.0f $", roundedIncrement)); });
+        Platform.runLater(() -> { if (lblMinStep != null) lblMinStep.setText(ChartHelper.formatDouble(roundedIncrement) + " $"); });
     }
 }

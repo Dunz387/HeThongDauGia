@@ -149,8 +149,18 @@ public class AuctionServer implements AuctionObserver {
     public void broadcastParticipantsCount(String auctionId) {
         java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);
         int count = (participants != null) ? participants.size() : 0;
-        String message = Protocol.BROADCAST_PARTICIPANTS + Protocol.DELIMITER + auctionId + Protocol.DELIMITER + count;
-        broadcast(message);
+        StringBuilder sb = new StringBuilder(Protocol.BROADCAST_PARTICIPANTS)
+                .append(Protocol.DELIMITER).append(auctionId)
+                .append(Protocol.DELIMITER).append(count);
+        if (participants != null) {
+            for (ClientHandler client : participants) {
+                User user = client.getLoggedInUser();
+                if (user != null) {
+                    sb.append(Protocol.DELIMITER).append(user.getUsername());
+                }
+            }
+        }
+        broadcast(sb.toString());
     }
 
     public void sendBalanceUpdateToUser(String userId) {

@@ -162,7 +162,7 @@ public class InRoomController implements Initializable {
                     String timeStr = tx.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                     roomNotifications.add(0,
                             new NotificationManager.NotificationItem("📢 [" + auction.getItem().getName() + "] - Lượt #"
-                                    + bidCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + tx.getBidAmount(),
+                                    + bidCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + view.utility.ChartHelper.formatDouble(tx.getBidAmount()),
                                     timeStr));
                 }
             }
@@ -221,7 +221,7 @@ public class InRoomController implements Initializable {
                         roomNotifications.add(0,
                                 new NotificationManager.NotificationItem(
                                         "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": "
-                                                + topBidder + " đặt $" + String.format("%,.0f", newPrice),
+                                                + topBidder + " đặt $" + view.utility.ChartHelper.formatDouble(newPrice),
                                         timeStr));
                     });
                     NotificationManager.getInstance().addNotification("📢 [" + auction.getItem().getName()
@@ -243,9 +243,9 @@ public class InRoomController implements Initializable {
                             .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                     roomNotifications.add(0,
                             new NotificationManager.NotificationItem("🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: "
-                                    + finalWinner + " ($" + String.format("%,.0f", finalPrice) + ")", timeStr));
+                                    + finalWinner + " ($" + view.utility.ChartHelper.formatDouble(finalPrice) + ")", timeStr));
                     AlertHelper.showInfo("Kết quả đấu giá",
-                            "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + String.format("%,.0f", finalPrice));
+                            "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + view.utility.ChartHelper.formatDouble(finalPrice));
                     NotificationManager.getInstance()
                             .addNotification("🏆 Phiên đấu giá KẾT THÚC! Người thắng: " + finalWinner);
                     if (!network.SessionManager.getInstance().isAdmin())
@@ -306,7 +306,7 @@ public class InRoomController implements Initializable {
     private void updateBalanceDisplay(double balance) {
         Platform.runLater(() -> {
             if (balanceLabel != null)
-                balanceLabel.setText(String.format("%,.0f $", balance));
+                balanceLabel.setText(view.utility.ChartHelper.formatDouble(balance) + " $");
         });
     }
 
@@ -314,9 +314,9 @@ public class InRoomController implements Initializable {
         double roundedIncrement = ChartHelper.calculateMinIncrement(currentPrice);
         Platform.runLater(() -> {
             if (bidIncrementLabel != null)
-                bidIncrementLabel.setText(String.format("%,.0f $", roundedIncrement));
+                bidIncrementLabel.setText(view.utility.ChartHelper.formatDouble(roundedIncrement) + " $");
             if (bidAmountField != null)
-                bidAmountField.setPromptText("Tối thiểu: " + String.format("%,.0f", currentPrice + roundedIncrement));
+                bidAmountField.setPromptText("Tối thiểu: " + view.utility.ChartHelper.formatDouble(currentPrice + roundedIncrement));
         });
     }
 

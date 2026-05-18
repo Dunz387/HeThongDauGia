@@ -89,4 +89,14 @@ public class ChartHelper {
     public static String formatTime(int totalSeconds) {
         return String.format("%02d:%02d", totalSeconds / 60, totalSeconds % 60);
     }
+
+    /**
+     * Format số thực để hiển thị đầy đủ phần thập phân đến chữ số khác 0 cuối cùng,
+     * tránh làm tròn số nguyên và tránh dạng mũ khoa học.
+     */
+    public static String formatDouble(double val) {
+        java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols(java.util.Locale.US);
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0.###########", symbols);
+        return df.format(val);
+    }
 }
