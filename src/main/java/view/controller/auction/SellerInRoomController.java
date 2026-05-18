@@ -197,7 +197,7 @@ public class SellerInRoomController implements Initializable {
                     ChartHelper.updateXAxisBounds(priceChart, bidCount);
                     priceChart.setAnimated(true);
                     priceSeries.getData().add(new XYChart.Data<>(bidCount, newPrice));
-                    bidHistory.add(new double[]{bidCount, newPrice});
+                    bidHistory.add(0, new double[]{bidCount, newPrice});
                     lblRounds.setText(String.valueOf(bidCount));
                     updateIncrementDisplay(newPrice);
                     if (auction != null) {
@@ -284,7 +284,7 @@ public class SellerInRoomController implements Initializable {
                 for (model.auction.BidTransaction tx : history) {
                     this.bidCount++;
                     priceSeries.getData().add(new XYChart.Data<>(bidCount, tx.getBidAmount()));
-                    bidHistory.add(new double[]{bidCount, tx.getBidAmount()});
+                    bidHistory.add(0, new double[]{bidCount, tx.getBidAmount()});
                 }
             }
 

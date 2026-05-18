@@ -51,9 +51,10 @@ public class NotificationFilterHelper {
             if (parts.length >= 2) {
                 String auctionId = parts[1];
                 String winner = parts.length > 2 ? parts[2] : "Không có";
+                double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
                 javafx.application.Platform.runLater(() ->
                         handleNotification(auctionId, tableAuctions,
-                                a -> pushFinishedNotification(a, winner)));
+                                a -> pushFinishedNotification(a, winner, finalPrice)));
             }
         };
         ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_FINISHED, finishedListener);
@@ -76,21 +77,56 @@ public class NotificationFilterHelper {
         ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_NEW_BID, newBidListener);
     }
 
+    private static java.util.List<Auction> latestAllAuctions = new java.util.ArrayList<>();
+    private static boolean isGlobalListListenerRegistered = false;
+
+    private static void registerGlobalListListener() {
+        if (!isGlobalListListenerRegistered) {
+            ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
+                if (listFromServer != null) {
+                    latestAllAuctions = listFromServer;
+                }
+            });
+            isGlobalListListenerRegistered = true;
+        }
+    }
+
+    private static Auction findInLatestList(String auctionId) {
+        if (latestAllAuctions != null) {
+            for (Auction a : latestAllAuctions) {
+                if (a.getId().equals(auctionId)) {
+                    return a;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
-     * Xử lý thông báo chung: tìm auction trong bảng, nếu chưa có thì đợi danh sách cập nhật.
+     * Xử lý thông báo chung: tìm auction trong danh sách thô chưa lọc từ Server.
      */
     private static void handleNotification(String auctionId, TableView<Auction> table,
                                            Consumer<Auction> notificationAction) {
-        Auction auction = findInTable(auctionId, table);
+        registerGlobalListListener();
+        
+        Auction auction = findInLatestList(auctionId);
         if (auction != null) {
             notificationAction.accept(auction);
         } else {
-            // Đăng ký listener tạm thời chờ danh sách cập nhật
+            // Đăng ký listener tạm thời chờ danh sách cập nhật từ Server
             Consumer<List<Auction>> oneTimeListener = new Consumer<>() {
                 @Override
                 public void accept(List<Auction> list) {
                     javafx.application.Platform.runLater(() -> {
-                        Auction a = findInTable(auctionId, table);
+                        Auction a = null;
+                        if (list != null) {
+                            for (Auction item : list) {
+                                if (item.getId().equals(auctionId)) {
+                                    a = item;
+                                    break;
+                                }
+                            }
+                        }
                         if (a != null) {
                             notificationAction.accept(a);
                             ClientNetworkManager.getInstance().removeAuctionListListener(this);
@@ -111,10 +147,10 @@ public class NotificationFilterHelper {
     }
 
     /** Đẩy thông báo phiên kết thúc (đã lọc theo vai trò) */
-    private static void pushFinishedNotification(Auction auction, String winner) {
+    private static void pushFinishedNotification(Auction auction, String winner, double finalPrice) {
         if (RoleBasedFilterHelper.shouldReceiveNotification(auction)) {
             NotificationManager.getInstance()
-                    .addNotification("🏆 [" + auction.getItem().getName() + "] kết thúc. Người thắng: " + winner);
+                    .addNotification("🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! [" + auction.getItem().getName() + "] - Người thắng: " + winner + " ($" + view.utility.ChartHelper.formatDouble(finalPrice) + ")");
         }
     }
 
@@ -130,18 +166,11 @@ public class NotificationFilterHelper {
         }
         
         if (shouldNotify) {
+            int round = (auction.getBidHistory() != null ? auction.getBidHistory().size() : 0) + 1;
             NotificationManager.getInstance()
-                    .addNotification("📢 [" + auction.getItem().getName() + "]: " + topBidder + " vừa đặt $" + view.utility.ChartHelper.formatDouble(newPrice));
+                    .addNotification("📢 [" + auction.getItem().getName() + "] - Lượt #" + round + ": " + topBidder + " vừa đặt $" + view.utility.ChartHelper.formatDouble(newPrice));
         }
     }
 
-    /** Tìm auction trong bảng theo ID */
-    private static Auction findInTable(String auctionId, TableView<Auction> table) {
-        for (Auction a : table.getItems()) {
-            if (a.getId().equals(auctionId)) {
-                return a;
-            }
-        }
-        return null;
-    }
+
 }
