@@ -1,13 +1,11 @@
 package service;
 
-import dao.AdminDAO;
 import dao.AuctionDAO;
 import dao.DatabaseManager;
 import dao.UserDAO;
 import model.auction.Auction;
 import model.auction.AuctionStatus;
 import model.user.Bidder;
-import model.user.Seller;
 import model.user.User;
 
 import java.time.LocalDateTime;
@@ -16,27 +14,28 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Quản lý logic đấu giá: CRUD Auction, xử lý bid, giám sát phiên.
+ * Đã tách User/Admin logic sang UserService và AdminService (SRP).
+ */
 public class AuctionManager {
     private static final Logger LOGGER = Logger.getLogger(AuctionManager.class.getName());
     private static final AuctionManager instance = new AuctionManager();
-    private final List<User> users;
     private final List<Auction> auctions;
     private final ScheduledExecutorService scheduler;
 
     // Callback để thông báo Server khi phiên đấu giá kết thúc
     private BiConsumer<Auction, User> auctionFinishedCallback = null;
-    
-
 
     private AuctionManager() {
         DatabaseManager.initializeDatabase();
-        this.users = UserDAO.loadUsers();
-        this.auctions = AuctionDAO.loadAuctions(this.users);
+        // Đảm bảo UserService khởi tạo trước (load users từ DB)
+        UserService.getInstance();
+        this.auctions = AuctionDAO.loadAuctions(UserService.getInstance().getUsersRef());
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r);
             t.setDaemon(true);
@@ -47,14 +46,9 @@ public class AuctionManager {
 
     public static AuctionManager getInstance() { return instance; }
 
-    /**
-     * Đăng ký callback để Server nhận thông báo khi phiên đấu giá kết thúc tự động.
-     */
     public void setAuctionFinishedCallback(BiConsumer<Auction, User> callback) {
         this.auctionFinishedCallback = callback;
     }
-
-
 
     public List<Auction> getAllAuctions() {
         synchronized (auctions) { return new ArrayList<>(auctions); }
@@ -69,87 +63,11 @@ public class AuctionManager {
         return null;
     }
 
-    // ==========================================
-    // NHÓM QUYỀN CỦA ADMIN
-    // ==========================================
-    public List<User> getAllUsers() {
-        return new ArrayList<>(users); // Trả về danh sách user cho Admin xem
-    }
-
-    public boolean banUser(String targetUserId, boolean status) {
-        synchronized (users) {
-            for (User u : users) {
-                if (u.getId().equals(targetUserId)) {
-                    u.setActive(status); // 1. Cập nhật RAM ngay lập tức
-                    return AdminDAO.setUserActiveStatus(targetUserId, status); // 2. Cập nhật xuống DB
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean updateUserBalanceForce(String targetUserId, double newBalance) {
-        synchronized (users) {
-            for (User u : users) {
-                if (u.getId().equals(targetUserId)) {
-                    // Cập nhật RAM
-                    if (u instanceof Bidder) ((Bidder) u).setBalance(newBalance);
-                    else if (u instanceof Seller) ((Seller) u).setBalance(newBalance);
-                    
-                    // Cập nhật DB
-                    return UserDAO.updateUserBalance(targetUserId, newBalance);
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean deleteAuctionForce(String auctionId) {
+    public void removeAuctionById(String auctionId) {
         synchronized (auctions) {
-            auctions.removeIf(a -> a.getId().equals(auctionId)); // 1. Xóa khỏi RAM
-            return AdminDAO.deleteAuctionForce(auctionId);       // 2. Xóa dưới DB
+            auctions.removeIf(a -> a.getId().equals(auctionId));
         }
     }
-
-    public boolean updateAuctionForce(String auctionId, String newName, String newDesc, String newType, double newPrice, int newDur) {
-        synchronized (auctions) {
-            Auction a = getAuctionById(auctionId);
-            if (a != null) {
-                // Sửa thông tin Item
-                a.getItem().setName(newName);
-                a.getItem().setDescription(newDesc);
-                
-                // Nếu đổi type thì phải tạo Item mới (ItemFactory)
-                String currentType = "ELECTRONICS";
-                if (a.getItem() instanceof model.item.Arts) currentType = "ART";
-                else if (a.getItem() instanceof model.item.Vehicle) currentType = "VEHICLE";
-                
-                if (!currentType.equalsIgnoreCase(newType)) {
-                    model.item.Item newItem = model.item.ItemFactory.createItem(newType, a.getItem().getId(), newName, newDesc, a.getItem().getOwner(), "Unknown", 0);
-                    try {
-                        java.lang.reflect.Field itemField = Auction.class.getDeclaredField("item");
-                        itemField.setAccessible(true);
-                        itemField.set(a, newItem);
-                    } catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "Lỗi đổi loại sản phẩm", e);
-                    }
-                }
-
-                a.setStartingPrice(newPrice);
-                // Nếu chưa ai đặt giá thì cập nhật currentPrice luôn
-                if (a.getBidHistory().isEmpty()) {
-                    a.setCurrentPrice(newPrice);
-                }
-
-                // Cập nhật thời gian kết thúc
-                a.setEndTime(java.time.LocalDateTime.now().plusMinutes(newDur));
-                
-                return AuctionDAO.updateAuction(a);
-            }
-            return false;
-        }
-    }
-    // ==========================================
 
     // ==========================================
     // NHÓM QUYỀN CỦA SELLER
@@ -160,7 +78,7 @@ public class AuctionManager {
             if (a != null && a.getItem().getOwner().getId().equals(sellerId)) {
                 if (a.getStatus() != AuctionStatus.FINISHED && a.getBidHistory().isEmpty()) {
                     auctions.remove(a);
-                    return AdminDAO.deleteAuctionForce(auctionId); // Tạm dùng chung DAO với Admin
+                    return dao.AdminDAO.deleteAuctionForce(auctionId);
                 }
             }
             return false;
@@ -171,16 +89,12 @@ public class AuctionManager {
         synchronized (auctions) {
             Auction a = getAuctionById(auctionId);
             if (a != null && a.getItem().getOwner().getId().equals(sellerId)) {
-                // Chỉ cho sửa nếu chưa có ai đặt giá và phiên chưa kết thúc
                 if (a.getStatus() != AuctionStatus.FINISHED && a.getBidHistory().isEmpty()) {
                     a.getItem().setName(newName);
                     a.getItem().setDescription(newDesc);
-                    
-                    // Xử lý đổi loại sản phẩm
-                    String currentType = "ELECTRONICS";
-                    if (a.getItem() instanceof model.item.Arts) currentType = "ART";
-                    else if (a.getItem() instanceof model.item.Vehicle) currentType = "VEHICLE";
-                    
+
+                    String currentType = model.item.ItemFactory.getItemTypeString(a.getItem());
+
                     if (!currentType.equalsIgnoreCase(newType)) {
                         model.item.Item newItem = model.item.ItemFactory.createItem(newType, a.getItem().getId(), newName, newDesc, a.getItem().getOwner(), "Unknown", 0);
                         try {
@@ -191,7 +105,7 @@ public class AuctionManager {
                              LOGGER.log(Level.SEVERE, "Lỗi đổi loại sản phẩm", e);
                         }
                     }
-                    
+
                     return AuctionDAO.updateAuction(a);
                 }
             }
@@ -199,36 +113,6 @@ public class AuctionManager {
         }
     }
     // ==========================================
-
-    public User authenticateUser(String username, String password) {
-        synchronized (users) {
-            for (User u : users) {
-                if (u.getUsername().equals(username) && u.login(password)) {
-                    // ĐÃ SỬA: Nếu isActive == false (Bị Ban) thì không cho đăng nhập
-                    if (!u.isActive()) return null;
-                    return u;
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean registerNewUser(String username, String password, String role) {
-        synchronized (users) {
-            for (User u : users) {
-                if (u.getUsername().equals(username)) return false;
-            }
-            User newUser;
-            if ("SELLER".equals(role)) {
-                newUser = new Seller("U-" + System.currentTimeMillis(), username, password, 0.0);
-            } else {
-                newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 100000.0);
-            }
-            users.add(newUser);
-            UserDAO.saveUser(newUser);
-            return true;
-        }
-    }
 
     public void registerAuction(Auction auction) {
         if (auction != null) {
@@ -245,7 +129,6 @@ public class AuctionManager {
         try {
             auction.placeBid(bidder, bidAmount);
             AuctionDAO.updateAuction(auction);
-            // Lấy transaction vừa tạo (là phần tử cuối) và lưu vào DB
             java.util.List<model.auction.BidTransaction> history = auction.getBidHistory();
             if (!history.isEmpty()) {
                 dao.AuctionDAO.saveBidTransaction(history.get(history.size() - 1));
@@ -272,36 +155,30 @@ public class AuctionManager {
                     }
                 }
             }
-        }, 0, 1, TimeUnit.SECONDS); // Chạy mỗi 1 giây để kiểm tra chính xác hơn
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     public synchronized void concludeAuction(Auction auction) {
         if (auction != null && auction.getStatus() == AuctionStatus.RUNNING) {
             auction.setStatus(AuctionStatus.FINISHED);
-            
-            // Lấy thông tin Seller ban đầu (trước khi chuyển quyền sở hữu)
+
             User seller = auction.getItem().getOwner();
 
-            // THỰC HIỆN THANH TOÁN (Phase 3)
             Bidder highestBidder = auction.getHighestBidder();
             if (highestBidder != null) {
                 double winPrice = auction.getCurrentPrice();
 
-                // Trừ tiền người mua
                 if (highestBidder.deductBalance(winPrice)) {
                     UserDAO.updateUserBalance(highestBidder.getId(), highestBidder.getBalance());
-                    
-                    // Chuyển quyền sở hữu tài sản sang cho người mua (RAM)
+
                     auction.getItem().setOwner(highestBidder);
-                    // Cập nhật Owner trong DB (Cần AuctionDAO hỗ trợ cập nhật Item Owner)
                     AuctionDAO.updateItemOwner(auction.getId(), highestBidder.getId());
-                    
-                    // Cộng tiền cho người bán
-                    if (seller instanceof Seller) {
-                        ((Seller) seller).receivePayment(winPrice);
-                        UserDAO.updateUserBalance(seller.getId(), ((Seller) seller).getBalance());
+
+                    if (seller instanceof model.user.Seller) {
+                        ((model.user.Seller) seller).receivePayment(winPrice);
+                        UserDAO.updateUserBalance(seller.getId(), ((model.user.Seller) seller).getBalance());
                     }
-                    LOGGER.info(String.format("💰 [THANH TOÁN] Đã chuyển %.2f từ %s cho %s", 
+                    LOGGER.info(String.format("💰 [THANH TOÁN] Đã chuyển %.2f từ %s cho %s",
                         winPrice, highestBidder.getUsername(), (seller != null ? seller.getUsername() : "Hệ thống")));
                 }
             }
@@ -309,10 +186,9 @@ public class AuctionManager {
             AuctionDAO.updateAuction(auction);
             LOGGER.info(String.format("✅ [AuctionManager] Phiên %s đã kết thúc.", auction.getId()));
 
-            // Thông báo Server để broadcast cho tất cả Client
             if (auctionFinishedCallback != null) {
                 auctionFinishedCallback.accept(auction, seller);
             }
         }
     }
-}
+}

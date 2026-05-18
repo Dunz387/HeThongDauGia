@@ -1,40 +1,48 @@
 package view;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import network.ClientNetworkManager;
-import view.AuthenticationUI.LoginView.Login;
-import java.util.logging.Logger;
-// import view.AuthenticationUI.RegisterView.Register;
-// import view.BaseMenuUI.BaseMenu;
-// import view.BaseMenuUI.AssetsListView;
 
-public class Main {
+import java.util.logging.Logger;
+
+/**
+ * Entry point chính của ứng dụng.
+ * Kết hợp khởi tạo mạng, xử lý ngoại lệ, và khởi chạy giao diện Login.
+ */
+public class Main extends Application {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
-    public static void main(String[] args) {
-        // --- PHẦN THÊM MỚI: XỬ LÝ NGOẠI LỆ TOÀN CỤC ---
-        view.utility.GlobalExceptionHandler.setupHandler();
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(java.util.Objects.requireNonNull(getClass().getResource("/view/auth/Login.fxml")));
+        Scene scene = new Scene(root, 950, 560);
 
-        // --- PHẦN THÊM MỚI: KẾT NỐI MẠNG ---
+        primaryStage.setTitle("Login");
+        primaryStage.setMinWidth(700);
+        primaryStage.setMinHeight(450);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        // Xử lý ngoại lệ toàn cục
+        shared.GlobalExceptionHandler.setupHandler();
+
+        // Kết nối mạng
         LOGGER.info("Đang kết nối đến Server...");
         boolean isConnected = ClientNetworkManager.getInstance().connect("localhost", 8080);
 
         if (!isConnected) {
             LOGGER.severe(
                     "❌ LỖI: Không tìm thấy Server. Vui lòng chạy AuctionServer.java trước rồi khởi động lại App!");
-            return; // Dừng khởi chạy giao diện nếu không có mạng
+            return;
         }
-        // ------------------------------------
 
-        // Run Login: (Khởi chạy màn hình đầu tiên)
-        Login.main(args);
-
-        // Run Register: (Đã đóng)
-        // Register.main(args);
-
-        // Run BaseMenu: (Đã đóng vì phải Login thành công mới được vào)
-        // BaseMenu.main(args);
-
-        // Run AssetsListView: (Đã đóng)
-        // AssetsListView.main(args);
+        // Khởi chạy giao diện Login
+        launch(args);
     }
 }

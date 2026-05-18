@@ -5,8 +5,7 @@ public class Protocol {
     // 1. KÝ TỰ PHÂN CÁCH ĐƯỜNG TRUYỀN (Đã sửa lỗi dùng dấu |)
     // =================================================================
     // Sử dụng chuỗi đặc biệt ";;;" để không bao giờ bị trùng với dữ liệu người dùng nhập
-    public static final String SEPARATOR = ";;;"; // Dùng cho hàm split()
-    public static final String DELIMITER = ";;;"; // Dùng để nối chuỗi
+    public static final String DELIMITER = ";;;"; // Ký tự phân cách đường truyền
 
     // =================================================================
     // 2. NHÓM LỆNH TỪ CLIENT GỬI LÊN (REQUEST)

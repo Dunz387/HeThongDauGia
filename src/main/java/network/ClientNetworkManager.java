@@ -22,18 +22,18 @@ public class ClientNetworkManager {
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    // T7: Chuyển từ single listener sang DANH SÁCH listeners để nhiều Controller cùng nhận broadcast
+    // Danh sách các listener xử lý tin nhắn text từ Server
     private Map<String, List<Consumer<String>>> messageListeners = new ConcurrentHashMap<>();
     private List<Consumer<List<Auction>>> auctionListListeners = new CopyOnWriteArrayList<>();
     private List<Consumer<List<User>>> userListListeners = new CopyOnWriteArrayList<>();
     private List<Consumer<Double>> balanceListeners = new CopyOnWriteArrayList<>();
 
-    // Header đang chờ để phân biệt loại List khi nhận từ Server
+    // Lưu tạm cờ (header) để phân loại danh sách nhận từ Server
     private volatile String pendingListHeader = null;
 
     private ClientNetworkManager() {}
 
-    // T18: Thread-safe Singleton với double-checked locking
+    // Khởi tạo Singleton an toàn (Thread-safe)
     public static ClientNetworkManager getInstance() {
         if (instance == null) {
             synchronized (ClientNetworkManager.class) {
@@ -74,7 +74,7 @@ public class ClientNetworkManager {
         try {
             if (out != null && socket != null && !socket.isClosed()) {
                 out.writeObject(data);
-                out.reset(); // T18: Xóa cache để tránh memory leak và lỗi tham chiếu
+                out.reset(); // Xóa cache để tránh lỗi tham chiếu và rò rỉ bộ nhớ
                 out.flush();
                 return true;
             } else {
@@ -83,7 +83,7 @@ public class ClientNetworkManager {
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "❌ Lỗi gửi dữ liệu", e);
-            disconnect(); // T18: Tự động ngắt kết nối nếu gặp lỗi nghiêm trọng
+            disconnect(); // Ngắt kết nối nếu xảy ra lỗi nghiêm trọng
             return false;
         }
     }
@@ -110,7 +110,7 @@ public class ClientNetworkManager {
         SessionManager.getInstance().clearSession();
     }
 
-    // T7: ĐĂNG KÝ CALLBACK CHO STRING — Hỗ trợ NHIỀU listener cho cùng 1 command
+    // Đăng ký listener để xử lý các lệnh dạng chuỗi
     public void registerListener(String command, Consumer<String> listener) {
         messageListeners.computeIfAbsent(command, k -> new CopyOnWriteArrayList<>()).add(listener);
     }
@@ -133,7 +133,7 @@ public class ClientNetworkManager {
         messageListeners.remove(command);
     }
 
-    // T7: ĐĂNG KÝ CALLBACK CHO LIST OBJECT — Hỗ trợ NHIỀU listener
+    // Đăng ký listener để nhận danh sách phiên đấu giá
     public void addAuctionListListener(Consumer<List<Auction>> listener) {
         auctionListListeners.add(listener);
     }
@@ -146,17 +146,8 @@ public class ClientNetworkManager {
         auctionListListeners.clear();
     }
 
-    /**
-     * @deprecated Dùng {@link #addAuctionListListener(Consumer)} thay thế.
-     * Phương thức này giữ lại để tương thích ngược, nhưng sẽ XÓA hết listener cũ trước khi thêm mới.
-     */
-    @Deprecated
-    public void setAuctionListListener(Consumer<List<Auction>> listener) {
-        auctionListListeners.clear();
-        auctionListListeners.add(listener);
-    }
 
-    // T7: ĐĂNG KÝ CALLBACK CHO LIST<USER> — Hỗ trợ NHIỀU listener
+    // Đăng ký listener để nhận danh sách người dùng
     public void addUserListListener(Consumer<List<User>> listener) {
         userListListeners.add(listener);
     }
@@ -165,13 +156,8 @@ public class ClientNetworkManager {
         userListListeners.remove(listener);
     }
 
-    /**
-     * @deprecated Dùng {@link #addUserListListener(Consumer)} thay thế.
-     */
-    @Deprecated
-    public void setUserListListener(Consumer<List<User>> listener) {
+    public void clearUserListListeners() {
         userListListeners.clear();
-        userListListeners.add(listener);
     }
 
     public void addBalanceListener(Consumer<Double> listener) {
@@ -190,7 +176,7 @@ public class ClientNetworkManager {
                 while ((serverData = in.readObject()) != null) {
                     if (serverData instanceof String) {
                         String message = (String) serverData;
-                        String[] parts = message.split(Protocol.SEPARATOR);
+                        String[] parts = message.split(Protocol.DELIMITER);
                         String command = parts[0];
 
                         // Nếu là header báo hiệu danh sách sắp đến, lưu lại để phân loại
@@ -198,7 +184,7 @@ public class ClientNetworkManager {
                             pendingListHeader = command;
                         }
 
-                        // T7: Gọi TẤT CẢ listener đã đăng ký cho command này
+                        // Kích hoạt tất cả listener tương ứng với lệnh
                         List<Consumer<String>> listeners = messageListeners.get(command);
                         if (listeners != null) {
                             for (Consumer<String> listener : listeners) {
@@ -210,7 +196,7 @@ public class ClientNetworkManager {
                             }
                         }
 
-                        // T11: Xử lý riêng lệnh cập nhật số dư
+                        // Xử lý lệnh cập nhật số dư từ Server
                         if (command.equals(Protocol.RES_UPDATE_BALANCE) && parts.length >= 2) {
                             double newBalance = Double.parseDouble(parts[1]);
                             SessionManager.getInstance().updateBalance(newBalance);
@@ -219,24 +205,15 @@ public class ClientNetworkManager {
                             }
                         }
                         
-                        // THÊM MỚI: Xử lý lệnh FORCE_LOGOUT
-                        if (command.equals(Protocol.BROADCAST_FORCE_LOGOUT)) {
-                            javafx.application.Platform.runLater(() -> {
-                                SessionManager.getInstance().clearSession();
-                                javafx.stage.Stage window = (javafx.stage.Stage) javafx.stage.Window.getWindows().stream().filter(javafx.stage.Window::isShowing).findFirst().orElse(null);
-                                if (window != null) {
-                                    view.utility.SceneManager.goToLogin(window);
-                                    view.utility.AlertHelper.showError("Thông báo", parts.length >= 2 ? parts[1] : "Tài khoản của bạn đã bị đăng xuất!");
-                                }
-                            });
-                        }
+                        // Xử lý lệnh FORCE_LOGOUT qua listener pattern (không gọi thẳng View)
+                        // Logic UI sẽ được đăng ký bởi LoginController thông qua registerListener()
                     } else if (serverData instanceof List) {
                         // Phân loại List dựa trên header đã nhận trước đó
                         String header = pendingListHeader;
                         pendingListHeader = null; // Reset ngay sau khi dùng
 
                         if (Protocol.RES_USER_LIST.equals(header)) {
-                            // T7: Thông báo TẤT CẢ user list listener
+                            // Phát danh sách người dùng tới các listener
                             List<User> userList = (List<User>) serverData;
                             for (Consumer<List<User>> listener : userListListeners) {
                                 try {
@@ -246,7 +223,7 @@ public class ClientNetworkManager {
                                 }
                             }
                         } else {
-                            // T7: Thông báo TẤT CẢ auction list listener
+                            // Phát danh sách phiên đấu giá tới các listener
                             List<Auction> auctionList = (List<Auction>) serverData;
                             for (Consumer<List<Auction>> listener : auctionListListeners) {
                                 try {

@@ -104,42 +104,42 @@ public class SceneManager {
      * Chuyển tới màn hình Login
      */
     public static void goToLogin(Stage stage) {
-        switchScene(stage, "/view/AuthenticationUI/LoginView/Login.fxml", "Login");
+        switchScene(stage, "/view/auth/Login.fxml", "Login");
     }
 
     /**
      * Chuyển tới màn hình Register
      */
     public static void goToRegister(Stage stage) {
-        switchScene(stage, "/view/AuthenticationUI/RegisterView/Register.fxml", "Register");
+        switchScene(stage, "/view/auth/Register.fxml", "Register");
     }
 
     /**
      * Chuyển tới màn hình Base Menu (Trang chủ)
      */
     public static void goToBaseMenu(Stage stage) {
-        switchScene(stage, "/view/BaseMenuUI/BaseMenu.fxml", "Trang Chủ");
+        switchScene(stage, "/view/menu/BaseMenu.fxml", "Trang Chủ");
     }
 
     /**
      * Chuyển tới danh sách tài sản
      */
     public static void goToAssetsList(Stage stage) {
-        switchScene(stage, "/view/BaseMenuUI/AssetsList.fxml", "Danh Sách Tài Sản");
+        switchScene(stage, "/view/menu/AssetsList.fxml", "Danh Sách Tài Sản");
     }
 
     /**
      * Chuyển tới danh sách phòng đấu giá
      */
     public static void goToRoomMenu(Stage stage) {
-        switchScene(stage, "/view/AuctionRoomUI/RoomMenuChoice.fxml", "Danh Sách Phòng Đấu Giá");
+        switchScene(stage, "/view/auction/RoomMenuChoice.fxml", "Danh Sách Phòng Đấu Giá");
     }
 
     /**
      * Chuyển tới phòng đấu giá (InRoomView) - KHÔNG truyền auctionId (legacy)
      */
     public static void goToInRoom(Stage stage) {
-        switchScene(stage, "/view/AuctionRoomUI/InRoomView.fxml", "Phòng Đấu Giá");
+        switchScene(stage, "/view/auction/InRoomView.fxml", "Phòng Đấu Giá");
     }
 
     /**
@@ -148,22 +148,22 @@ public class SceneManager {
      * @param auction Đối tượng phiên đấu giá cần tham gia
      */
     public static void goToInRoom(Stage stage, model.auction.Auction auction) {
-        view.AuctionRoomUI.InRoomController controller =
-                switchSceneAndGetController(stage, "/view/AuctionRoomUI/InRoomView.fxml", "Phòng Đấu Giá");
+        view.controller.auction.InRoomController controller =
+                switchSceneAndGetController(stage, "/view/auction/InRoomView.fxml", "Phòng Đấu Giá");
         if (controller != null) {
             controller.setAuction(auction);
         }
     }
 
     public static void goToCreateItem(Stage stage) {
-        switchScene(stage, "/view/SellerUI/CreateItem.fxml", "Đăng bán sản phẩm");
+        switchScene(stage, "/view/seller/CreateItem.fxml", "Đăng bán sản phẩm");
     }
 
     /**
      * Chuyển tới phòng đấu giá dành cho Seller (chỉ theo dõi) - KHÔNG truyền auctionId (legacy)
      */
     public static void goToSellerInRoom(Stage stage) {
-        switchScene(stage, "/view/AuctionRoomUI/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
+        switchScene(stage, "/view/auction/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
     }
 
     /**
@@ -172,8 +172,8 @@ public class SceneManager {
      * @param auction Đối tượng phiên đấu giá cần theo dõi
      */
     public static void goToSellerInRoom(Stage stage, model.auction.Auction auction) {
-        view.AuctionRoomUI.SellerInRoomController controller =
-                switchSceneAndGetController(stage, "/view/AuctionRoomUI/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
+        view.controller.auction.SellerInRoomController controller =
+                switchSceneAndGetController(stage, "/view/auction/SellerInRoomView.fxml", "Phòng Đấu Giá - Người Bán");
         if (controller != null) {
             controller.setAuction(auction);
         }
@@ -185,21 +185,21 @@ public class SceneManager {
      * Chuyển tới Admin Dashboard
      */
     public static void goToAdminDashboard(Stage stage) {
-        switchScene(stage, "/view/AdminUI/AdminDashboard.fxml", "Admin - Tổng Quan");
+        switchScene(stage, "/view/admin/AdminDashboard.fxml", "Admin - Tổng Quan");
     }
 
     /**
      * Chuyển tới màn hình Quản lý Người Dùng (Admin)
      */
     public static void goToAdminUserManagement(Stage stage) {
-        switchScene(stage, "/view/AdminUI/AdminUserManagement.fxml", "Admin - Quản Lý Người Dùng");
+        switchScene(stage, "/view/admin/AdminUserManagement.fxml", "Admin - Quản Lý Người Dùng");
     }
 
     /**
      * Chuyển tới màn hình Quản lý Phiên Đấu Giá (Admin)
      */
     public static void goToAdminAuctionManagement(Stage stage) {
-        switchScene(stage, "/view/AdminUI/AdminAuctionManagement.fxml", "Admin - Quản Lý Đấu Giá");
+        switchScene(stage, "/view/admin/AdminAuctionManagement.fxml", "Admin - Quản Lý Đấu Giá");
     }
 }
 

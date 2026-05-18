@@ -27,10 +27,7 @@ public class AuctionDAO {
             pstmt.setString(2, auction.getItem().getName());
             pstmt.setString(3, auction.getItem().getDescription());
 
-            String type = "ELECTRONICS";
-            if (auction.getItem() instanceof model.item.Arts) type = "ART";
-            else if (auction.getItem() instanceof model.item.Vehicle) type = "VEHICLE";
-
+            String type = ItemFactory.getItemTypeString(auction.getItem());
             pstmt.setString(4, type);
             pstmt.setDouble(5, auction.getStartingPrice());
             pstmt.setDouble(6, auction.getCurrentPrice());
@@ -59,9 +56,7 @@ public class AuctionDAO {
             pstmt.setString(5, auction.getItem().getName());
             pstmt.setString(6, auction.getItem().getDescription());
             
-            String type = "ELECTRONICS";
-            if (auction.getItem() instanceof model.item.Arts) type = "ART";
-            else if (auction.getItem() instanceof model.item.Vehicle) type = "VEHICLE";
+            String type = ItemFactory.getItemTypeString(auction.getItem());
             pstmt.setString(7, type);
             
             pstmt.setString(8, auction.getEndTime().toString());

@@ -26,7 +26,7 @@ public class AuctionServer implements AuctionObserver {
     private volatile boolean isRunning = true;
     private final java.util.concurrent.ExecutorService broadcastExecutor = java.util.concurrent.Executors.newFixedThreadPool(4);
 
-    // Room tracking: AuctionID -> Set of ClientHandlers currently in that room
+    // Lưu danh sách người dùng trong từng phòng đấu giá
     private java.util.Map<String, java.util.Set<ClientHandler>> roomParticipants = new java.util.concurrent.ConcurrentHashMap<>();
 
     public static void main(String[] args) {
@@ -36,12 +36,12 @@ public class AuctionServer implements AuctionObserver {
     public void startServer() {
         manager = AuctionManager.getInstance();
 
-        // Lắng nghe tất cả các phiên đấu giá đã load từ Database
+        // Theo dõi tất cả phiên đấu giá từ Database
         for (Auction auction : manager.getAllAuctions()) {
             auction.addObserver(this);
         }
 
-        // Đăng ký callback để broadcast AUCTION_FINISHED khi phiên kết thúc tự động
+        // Gửi thông báo khi phiên đấu giá kết thúc
         manager.setAuctionFinishedCallback((Auction finishedAuction, User originalSeller) -> {
             String winnerName = (finishedAuction.getHighestBidder() != null)
                     ? finishedAuction.getHighestBidder().getUsername() : "Không có";
@@ -55,7 +55,7 @@ public class AuctionServer implements AuctionObserver {
             broadcast(finishMessage);
             broadcastAuctionList();
 
-            // Cập nhật số dư realtime cho Người thắng và Người bán
+            // Cập nhật số dư cho người thắng và người bán
             Bidder winner = finishedAuction.getHighestBidder();
             if (winner != null) {
                 sendBalanceUpdateToUser(winner.getId());
@@ -96,7 +96,7 @@ public class AuctionServer implements AuctionObserver {
         clients.remove(c);
     }
 
-    // Hàm Broadcast gửi một thông điệp (chuỗi) tới tất cả Client đang online
+    // Gửi thông báo tới tất cả người dùng đang online
     public void broadcast(String message) {
         broadcastExecutor.submit(() -> {
             for (ClientHandler client : clients) {
@@ -105,7 +105,7 @@ public class AuctionServer implements AuctionObserver {
         });
     }
 
-    // THÊM MỚI: Hàm Broadcast gửi DANH SÁCH tài sản mới nhất cho tất cả Client
+    // Cập nhật danh sách phiên đấu giá cho tất cả người dùng
     public void broadcastAuctionList() {
         broadcastExecutor.submit(() -> {
             List<Auction> list = manager.getAllAuctions();
@@ -116,10 +116,10 @@ public class AuctionServer implements AuctionObserver {
         });
     }
 
-    // THÊM MỚI: Hàm Broadcast gửi DANH SÁCH USER mới nhất cho tất cả Client (Real-time cho Admin)
+    // Cập nhật danh sách người dùng cho Admin
     public void broadcastUserList() {
         broadcastExecutor.submit(() -> {
-            List<User> list = manager.getAllUsers();
+            List<User> list = service.UserService.getInstance().getAllUsers();
             for (ClientHandler client : clients) {
                 client.sendData(Protocol.RES_USER_LIST);
                 client.sendData(list);
@@ -127,7 +127,7 @@ public class AuctionServer implements AuctionObserver {
         });
     }
 
-    // --- ROOM MANAGEMENT ---
+    // --- QUẢN LÝ PHÒNG ĐẤU GIÁ ---
     public void joinRoom(String auctionId, ClientHandler client) {
         roomParticipants.computeIfAbsent(auctionId, k -> java.util.Collections.synchronizedSet(new java.util.HashSet<>()))
                         .add(client);
@@ -168,9 +168,7 @@ public class AuctionServer implements AuctionObserver {
         }
     }
 
-    /**
-     * Kiểm tra xem một User đã có phiên đăng nhập nào đang hoạt động chưa.
-     */
+    // Kiểm tra người dùng đã đăng nhập chưa
     public boolean isUserLoggedIn(String userId) {
         if (userId == null) return false;
         for (ClientHandler client : clients) {
@@ -182,7 +180,7 @@ public class AuctionServer implements AuctionObserver {
         return false;
     }
 
-    // Xử lý sự kiện khi có giá mới (từ AuctionObserver)
+    // Xử lý khi có lượt đặt giá mới
     @Override
     public void update(Auction auction, double newPrice, String topBidderName, Bidder previousBidder) {
         String message = Protocol.BROADCAST_NEW_BID + Protocol.DELIMITER +
@@ -193,12 +191,12 @@ public class AuctionServer implements AuctionObserver {
         LOGGER.info("📢 [BROADCAST] Đã phát sóng giá mới: " + message);
         broadcast(message);
 
-        // T11: Cập nhật số dư cho người vừa bị vượt giá (nếu có - đã được giải phóng số tiền phong tỏa)
+        // Hoàn tiền cho người vừa bị vượt giá
         if (previousBidder != null) {
             sendBalanceUpdateToUser(previousBidder.getId());
         }
         
-        // Cập nhật số dư cho người giữ giá cao nhất mới (đã bị phong tỏa số tiền đặt giá mới)
+        // Trừ tiền người đang giữ giá cao nhất
         if (auction.getHighestBidder() != null) {
             sendBalanceUpdateToUser(auction.getHighestBidder().getId());
         }
@@ -212,7 +210,7 @@ public class AuctionServer implements AuctionObserver {
         broadcast(message);
     }
 
-    // THÊM MỚI: Kick toàn bộ người dùng trong phòng
+    // Đuổi tất cả người dùng khỏi phòng
     public void broadcastRoomKicked(String auctionId, String reason) {
         java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);
         if (participants != null) {
@@ -224,7 +222,7 @@ public class AuctionServer implements AuctionObserver {
         }
     }
 
-    // THÊM MỚI: Kick 1 người dùng cụ thể khỏi phòng
+    // Đuổi một người dùng cụ thể khỏi phòng
     public void kickUserFromRoom(String auctionId, String targetUsername) {
         java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);
         if (participants != null) {
@@ -241,7 +239,7 @@ public class AuctionServer implements AuctionObserver {
         }
     }
 
-    // THÊM MỚI: Ép đăng xuất một user cụ thể (dùng khi Ban)
+    // Ép người dùng đăng xuất (khi bị khóa tài khoản)
     public void forceLogoutUser(String targetUserId) {
         for (ClientHandler client : clients) {
             User u = client.getLoggedInUser();

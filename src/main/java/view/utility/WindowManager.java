@@ -40,27 +40,27 @@ public class WindowManager {
 
 
     public static void openUserProfileWindow() {
-        openWindow("/view/BaseMenuUI/UserInforView.fxml", "Thông tin cá nhân");
+        openWindow("/view/menu/UserInforView.fxml", "Thông tin cá nhân");
     }
 
     public static void openCreateItemWindow(Stage owner) {
-        openWindow("/view/SellerUI/CreateItem.fxml", "Tạo phiên đấu giá mới", owner);
+        openWindow("/view/seller/CreateItem.fxml", "Tạo phiên đấu giá mới", owner);
     }
 
     public static void openCreateItemWindow() {
-        openWindow("/view/SellerUI/CreateItem.fxml", "Tạo phiên đấu giá mới", null);
+        openWindow("/view/seller/CreateItem.fxml", "Tạo phiên đấu giá mới", null);
     }
 
     public static void openSellerAuctionListWindow(Stage owner) {
-        openWindow("/view/SellerUI/SellerAuctionList.fxml", "Phiên đấu giá của bạn", owner);
+        openWindow("/view/seller/SellerAuctionList.fxml", "Phiên đấu giá của bạn", owner);
     }
 
     // THÊM MỚI: Mở phòng đấu giá (dưới dạng popup)
     public static void openInRoomWindow(model.auction.Auction auction) {
         try {
-            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/AuctionRoomUI/InRoomView.fxml"));
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/auction/InRoomView.fxml"));
             Parent root = loader.load();
-            view.AuctionRoomUI.InRoomController controller = loader.getController();
+            view.controller.auction.InRoomController controller = loader.getController();
             controller.setAuction(auction);
             
             Stage stage = new Stage();
@@ -79,9 +79,9 @@ public class WindowManager {
     // THÊM MỚI: Mở phòng đấu giá dưới góc độ người bán/Admin (dưới dạng popup)
     public static void openSellerInRoomWindow(model.auction.Auction auction) {
         try {
-            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/AuctionRoomUI/SellerInRoomView.fxml"));
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/auction/SellerInRoomView.fxml"));
             Parent root = loader.load();
-            view.AuctionRoomUI.SellerInRoomController controller = loader.getController();
+            view.controller.auction.SellerInRoomController controller = loader.getController();
             controller.setAuction(auction);
             
             Stage stage = new Stage();

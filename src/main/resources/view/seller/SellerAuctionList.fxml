@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane prefHeight="420.0" prefWidth="680.0" style="-fx-background-color: #ffffff;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.seller.SellerAuctionListController">
+   <children>
+      <VBox alignment="TOP_CENTER" spacing="0" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+         <padding><Insets top="28" right="30" bottom="28" left="30"/></padding>
+         <children>
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+               <children>
+                  <Pane prefHeight="44.0" prefWidth="44.0" style="-fx-background-color: rgba(39,174,96,0.15); -fx-background-radius: 22;">
+                     <children>
+                        <Label text="✅" layoutX="10.0" layoutY="6.0" style="-fx-font-size: 20px;" />
+                     </children>
+                  </Pane>
+                  <VBox spacing="2">
+                     <children>
+                        <Label text="Đăng Bán Thành Công!" style="-fx-text-fill: #27ae60; -fx-font-size: 22px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                        <Label text="Sản phẩm của bạn đã được đưa lên sàn đấu giá" style="-fx-text-fill: #888; -fx-font-size: 13px;" />
+                     </children>
+                  </VBox>
+               </children>
+               <VBox.margin><Insets bottom="20"/></VBox.margin>
+            </HBox>
+
+            <!-- Bảng phiên đấu giá của Seller -->
+            <VBox spacing="10" style="-fx-background-color: #faf9f0; -fx-background-radius: 14; -fx-padding: 18; -fx-border-color: #e8e8e0; -fx-border-radius: 14;">
+               <children>
+                  <Label text="🏷️ Phiên đấu giá của bạn" style="-fx-text-fill: #1a1a1a; -fx-font-size: 16px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+                  <TableView fx:id="tableMyAuction" prefHeight="120.0">
+                     <placeholder><Label text="Bạn chưa có phiên đấu giá nào" styleClass="placeholder-label"/></placeholder>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                     <columns>
+                        <TableColumn fx:id="colId" prefWidth="90.0" text="Mã Tài Sản" />
+                        <TableColumn fx:id="colName" prefWidth="120.0" text="Tên Tài Sản" />
+                        <TableColumn fx:id="colDescription" prefWidth="150.0" text="Mô Tả" />
+                        <TableColumn fx:id="colType" prefWidth="90.0" text="Loại SP" />
+                        <TableColumn fx:id="colPrice" prefWidth="100.0" text="Giá Hiện Tại" />
+                        <TableColumn fx:id="colBidCount" prefWidth="70.0" text="Số Lượt Đặt" />
+                        <TableColumn fx:id="colHighestBidder" prefWidth="100.0" text="Người Giữ Giá" />
+                        <TableColumn fx:id="colEndTime" prefWidth="110.0" text="Thời Gian" />
+                        <TableColumn fx:id="colStatus" prefWidth="100.0" text="Trạng Thái" />
+                        <TableColumn fx:id="colSeller" prefWidth="90.0" text="Người Bán" />
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
+
+            <!-- Buttons -->
+            <VBox spacing="10">
+               <VBox.margin><Insets top="18"/></VBox.margin>
+               <children>
+                  <Button fx:id="btnMonitor" mnemonicParsing="false" onAction="#monitorButtonClicked" prefHeight="44.0" prefWidth="620.0" styleClass="btn-primary" text="👁️ THEO DÕI PHIÊN ĐẤU GIÁ">
+                     <tooltip><javafx.scene.control.Tooltip text="Vào phòng đấu giá để theo dõi người mua đặt giá"/></tooltip>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#backToMenuClicked" prefHeight="38.0" prefWidth="620.0" styleClass="btn-secondary" text="← Quay về trang chủ" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

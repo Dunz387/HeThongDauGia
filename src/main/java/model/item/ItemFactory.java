@@ -18,4 +18,10 @@ public class ItemFactory {
                 throw new IllegalArgumentException("Loại sản phẩm không hợp lệ: " + itemType);
         }
     }
+
+    public static String getItemTypeString(Item item) {
+        if (item instanceof Arts) return "ART";
+        if (item instanceof Vehicle) return "VEHICLE";
+        return "ELECTRONICS";
+    }
 }

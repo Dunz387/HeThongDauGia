@@ -15,16 +15,16 @@ public abstract class User extends Entity{
         this.isActive = true;
     }
 
-    public boolean login(String inputPassword){ //Password Authenticator
+    /** Kiểm tra đăng nhập bằng mật khẩu */
+    public boolean login(String inputPassword){
         return this.isActive && this.password.equals(inputPassword);
     }
-    //Setter
+    /** Khóa hoặc mở khóa tài khoản */
     public void setActive(boolean active){
         this.isActive = active;
     }
 
-    //Getters
-
+    // --- Các hàm lấy thông tin (Getters) ---
     public String getUsername(){
         return username;
     }

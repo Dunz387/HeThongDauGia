@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<GridPane prefHeight="560.0" prefWidth="900.0" style="-fx-background-color: #f5f5f0;" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.auction.InRoomController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="160.0" />
+      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="520.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="220.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="360.0" vgrow="ALWAYS" />
+      <RowConstraints minHeight="10.0" prefHeight="120.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <!-- ROW 0: HEADER -->
+      <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-background-color: #1a1a1a;">
+         <children>
+            <Button layoutX="12.0" layoutY="22.0" mnemonicParsing="false" onAction="#exitRoom" text="← Thoát" style="-fx-background-color: transparent; -fx-text-fill: #d4cd3d; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: rgba(212,205,61,0.4); -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6 14;" />
+         </children>
+      </AnchorPane>
+
+      <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: #1a1a1a;">
+         <children>
+            <Label text="🏛️ Phòng Đấu Giá" style="-fx-text-fill: #ffffff; -fx-font-size: 28px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+            <Label fx:id="roomIdLabel" text="ID phòng: ---" style="-fx-text-fill: #999999; -fx-font-size: 13px; -fx-font-family: 'Segoe UI';" />
+         </children>
+      </VBox>
+
+      <VBox alignment="CENTER" spacing="4" GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-background-color: #1a1a1a; -fx-padding: 8;">
+         <children>
+            <Label text="Tổng thời gian còn lại" style="-fx-text-fill: #999999; -fx-font-size: 11px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+            <Label fx:id="totalTimeLabel" text="00:00" style="-fx-text-fill: #ea7f33; -fx-font-size: 34px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+         </children>
+      </VBox>
+
+      <!-- ROW 1: MAIN -->
+      <VBox alignment="TOP_CENTER" spacing="14" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-background-color: #faf9f0; -fx-padding: 18 12; -fx-border-color: #e8e8e0; -fx-border-width: 0 1 0 0;">
+         <children>
+            <VBox alignment="CENTER" spacing="4" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 14; -fx-border-color: #e8e8e0; -fx-border-radius: 12;">
+               <children>
+                  <Label text="Số dư" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+                  <Label fx:id="balanceLabel" text="0 $" style="-fx-text-fill: #ea7f33; -fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+               </children>
+            </VBox>
+            <Separator />
+            <VBox alignment="CENTER" spacing="4" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 14; -fx-border-color: #e8e8e0; -fx-border-radius: 12;">
+               <children>
+                  <Label text="Bước giá" style="-fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+                  <Label text="tối thiểu" style="-fx-text-fill: #888888; -fx-font-size: 11px; -fx-font-family: 'Segoe UI';" />
+                  <Label fx:id="bidIncrementLabel" text="0 $" style="-fx-text-fill: #d4cd3d; -fx-font-size: 22px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+
+      <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color: #ffffff; -fx-padding: 8;">
+         <children>
+            <AreaChart fx:id="priceChart" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" title="Biểu đồ biến động giá" style="-fx-background-color: #ffffff;">
+               <xAxis>
+                  <NumberAxis label="Lượt đặt giá" side="BOTTOM" forceZeroInRange="false" minorTickCount="0" tickUnit="1" animated="true" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis animated="true" label="Giá ($)" side="LEFT" />
+               </yAxis>
+            </AreaChart>
+         </children>
+      </AnchorPane>
+
+      <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-background-color: #faf9f0; -fx-padding: 10; -fx-border-color: #e8e8e0; -fx-border-width: 0 0 0 1;">
+         <children>
+            <Label text="📜 Lịch sử giá" style="-fx-text-fill: #1a1a1a; -fx-font-size: 13px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+            <TableView fx:id="historyTableView" prefHeight="180.0" VBox.vgrow="SOMETIMES">
+               <placeholder><Label text="Chưa có lượt đặt giá nào" styleClass="placeholder-label"/></placeholder>
+               <columns>
+                  <TableColumn fx:id="colHistoryRound" prefWidth="50.0" text="Lượt" />
+                  <TableColumn fx:id="colHistoryPrice" prefWidth="110.0" text="Giá ($)" />
+               </columns>
+            </TableView>
+            <Separator />
+            <Label text="🔔 Thông báo" style="-fx-text-fill: #1a1a1a; -fx-font-size: 13px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI';" />
+            <TableView fx:id="notificationTableView" prefHeight="180.0" VBox.vgrow="ALWAYS">
+               <placeholder><Label text="Chưa có thông báo" styleClass="placeholder-label"/></placeholder>
+               <columns>
+                  <TableColumn fx:id="colNotifTime" prefWidth="65.0" text="Thời gian" />
+                  <TableColumn fx:id="colNotifContent" prefWidth="250.0" text="Nội dung" />
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
+
+      <!-- ROW 2: CONTROLS -->
+      <VBox alignment="CENTER" spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-background-color: #faf9f0; -fx-padding: 12; -fx-border-color: #e8e8e0; -fx-border-width: 0 1 0 0;">
+         <children>
+            <Label text="Đấu giá tự động" style="-fx-text-fill: #666666; -fx-font-size: 13px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+            <ToggleButton fx:id="autoBidToggleButton" mnemonicParsing="false" text="Tắt" onAction="#handleAutoBidToggle" />
+        </children>
+      </VBox>
+
+      <HBox alignment="CENTER" spacing="14" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-background-color: #ffffff; -fx-border-color: #e8e8e0; -fx-border-width: 1 0 0 0; -fx-padding: 16;">
+         <children>
+            <Label text="💵 Đặt bước giá:" style="-fx-text-fill: #1a1a1a; -fx-font-size: 15px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+            <TextField fx:id="bidAmountField" prefHeight="40.0" prefWidth="220.0" promptText="Nhập số tiền đặt giá" />
+            <Button mnemonicParsing="false" onAction="#handlePlaceBid" prefHeight="40.0" prefWidth="160.0" styleClass="btn-primary" text="🔨 Đặt giá" />
+         </children>
+      </HBox>
+
+      <VBox alignment="CENTER" spacing="4" GridPane.columnIndex="2" GridPane.rowIndex="2" style="-fx-background-color: rgba(234,127,51,0.08); -fx-border-color: #ea7f33; -fx-border-radius: 0; -fx-padding: 12;">
+         <children>
+            <Label text="👑 Cao nhất" style="-fx-text-fill: #ea7f33; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" />
+            <Label fx:id="topBidderLabel" text="Chưa có" style="-fx-text-fill: #1a1a1a; -fx-font-size: 14px; -fx-font-weight: 900; -fx-font-family: 'Segoe UI'; -fx-text-alignment: center;" wrapText="true" />
+         </children>
+      </VBox>
+   </children>
+</GridPane>

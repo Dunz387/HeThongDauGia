@@ -26,10 +26,10 @@ public class Auction extends Entity implements AuctionSubject {
 
     private List<BidTransaction> bidHistory;
     
-    // T10: Lưu lại thời gian có hoạt động (đặt giá) gần nhất để tính giờ vòng đấu
+    // Lưu thời gian đặt giá gần nhất
     private transient LocalDateTime lastActivityTime = LocalDateTime.now();
 
-    // Dùng transient để bỏ qua khi lưu file/gửi mạng
+    // Dùng transient để bỏ qua khi tuần tự hóa (Serialize)
     private transient List<AuctionObserver> observers;
     private transient ReentrantLock lock = new ReentrantLock();
 
@@ -87,8 +87,8 @@ public class Auction extends Entity implements AuctionSubject {
     }
 
     /**
-     * Setter cho currentPrice — dùng khi khôi phục dữ liệu từ DB.
-     * KHÔNG dùng trong logic đấu giá bình thường (dùng placeBid() thay thế).
+     * Thiết lập giá hiện tại (chỉ dùng khi tải từ DB).
+     * Không dùng trong logic đấu giá (sử dụng placeBid).
      */
     public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
@@ -103,8 +103,8 @@ public class Auction extends Entity implements AuctionSubject {
     }
 
     /**
-     * Setter cho highestBidder — dùng khi khôi phục dữ liệu từ DB.
-     * KHÔNG dùng trong logic đấu giá bình thường (dùng placeBid() thay thế).
+     * Thiết lập người trả giá cao nhất (chỉ dùng khi tải từ DB).
+     * Không dùng trong logic đấu giá (sử dụng placeBid).
      */
     public void setHighestBidder(Bidder highestBidder) {
         this.highestBidder = highestBidder;
@@ -139,7 +139,7 @@ public class Auction extends Entity implements AuctionSubject {
             if (autoBids == null) {
                 autoBids = new PriorityQueue<>();
             }
-            // Hủy cấu hình auto-bid cũ của bidder này nếu có để tránh trùng lặp
+            // Xóa cấu hình tự động đặt giá cũ của người dùng này
             autoBids.removeIf(config -> config.bidder.getId().equals(bidder.getId()));
             
             autoBids.add(new AutoBidConfig(bidder, maxBid, increment, System.currentTimeMillis()));
@@ -180,24 +180,24 @@ public class Auction extends Entity implements AuctionSubject {
             isAutoBidding = true;
             try {
                 while (true) {
-                    // Cần copy ra một danh sách tạm để duyệt qua PriorityQueue
+                    // Sao chép danh sách để duyệt qua hàng đợi
                     List<AutoBidConfig> activeAutoBids = new ArrayList<>(autoBids);
                     activeAutoBids.sort(null); // Sắp xếp theo registerTime
                     
                     boolean bidPlacedThisIteration = false;
                     for (AutoBidConfig config : activeAutoBids) {
-                        // Nếu người này đang là người giữ giá cao nhất thì không cần tự động đặt
+                        // Bỏ qua nếu người này đang giữ giá cao nhất
                         if (this.highestBidder != null && this.highestBidder.getId().equals(config.bidder.getId())) continue;
                         
                         double nextBid = this.currentPrice + Math.max(config.increment, getDynamicIncrement());
-                        // Chỉ đặt nếu giá tiếp theo <= maxBid
+                        // Chỉ đặt giá nếu mức giá tiếp theo <= giá tối đa
                         if (nextBid <= config.maxBid) {
                             try {
                                 placeBid(config.bidder, nextBid);
                                 bidPlacedThisIteration = true;
-                                break; // Phá vỡ vòng lặp để lượt while tiếp theo xử lý
+                                break; // Dừng vòng lặp để xử lý lượt tiếp theo
                             } catch (Exception e) {
-                                // Auto-bid thất bại (không đủ tiền, v.v.), xóa khỏi danh sách autoBids
+                                // Xóa khỏi danh sách nếu tự động đặt giá thất bại
                                 autoBids.remove(config);
                             }
                         }
@@ -213,12 +213,10 @@ public class Auction extends Entity implements AuctionSubject {
     }
 
     public double getDynamicIncrement() {
-        // Quy tắc bước nhảy 10% (Universal Auction Language)
         // Bước giá tối thiểu = 10% giá hiện tại
         double increment = this.currentPrice * 0.1;
         
-        // Làm tròn bước giá cho đẹp (Ví dụ: 10.5 -> 10, 155 -> 150 hoặc 160)
-        // Ở đây ta có thể làm tròn xuống hàng đơn vị hoặc hàng chục tùy quy mô
+        // Làm tròn bước giá cho dễ nhìn
         if (increment < 1) return 1.0;
         if (increment < 10) return Math.floor(increment);
         if (increment < 100) return Math.floor(increment / 5) * 5;
@@ -263,10 +261,10 @@ public class Auction extends Entity implements AuctionSubject {
             
             this.lastActivityTime = LocalDateTime.now(); // Cập nhật thời gian khi có bid mới
 
-            // Báo cho Server biết có người vừa đặt giá!
+            // Thông báo cho máy chủ có lượt đặt giá mới
             notifyObservers(previousBidder);
 
-            // Anti-sniping: Nếu còn dưới 30s thì tự động cộng thêm 30s
+            // Chống bắn tỉa: Thêm 30s nếu thời gian còn dưới 30s
             LocalDateTime now = LocalDateTime.now();
             if (this.endTime.minusSeconds(30).isBefore(now) && this.endTime.isAfter(now)) {
                 this.endTime = this.endTime.plusSeconds(30);
@@ -281,13 +279,13 @@ public class Auction extends Entity implements AuctionSubject {
             lock.unlock();
         }
         
-        // Kích hoạt auto-bidding cho người khác (chỉ khi không phải đang trong vòng lặp auto-bid)
+        // Kích hoạt tự động đặt giá cho người khác
         if (!isAutoBidding) {
             triggerAutoBidding();
         }
     }
 
-    // --- CÁC HÀM CỦA AUCTION SUBJECT ---
+    // --- CÁC HÀM OBSERVER ---
     @Override
     public void addObserver(AuctionObserver observer) {
         if (observers == null) {

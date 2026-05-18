@@ -1,0 +1,107 @@
+package view.controller.auction;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import model.auction.Auction;
+import view.utility.AuctionNetworkHelper;
+import view.utility.AuctionTableConfigurator;
+import view.utility.SceneManager;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class RoomMenuChoiceController implements Initializable {
+
+    @FXML private TableView<Auction> tableAuctions;
+    @FXML private TableColumn<Auction, String> colId;
+    @FXML private TableColumn<Auction, String> colName;
+    @FXML private TableColumn<Auction, String> colDescription;
+    @FXML private TableColumn<Auction, String> colType;
+    @FXML private TableColumn<Auction, Double> colPrice;
+    @FXML private TableColumn<Auction, Integer> colBidCount;
+    @FXML private TableColumn<Auction, String> colHighestBidder;
+    @FXML private TableColumn<Auction, String> colEndTime;
+    @FXML private TableColumn<Auction, String> colStatus;
+    @FXML private TableColumn<Auction, String> colSeller;
+
+    @FXML private HBox sellerActionBox;
+    @FXML private Button btnCreateAuction;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (!network.SessionManager.getInstance().isSeller()) {
+            if (sellerActionBox != null) {
+                sellerActionBox.setVisible(false);
+                sellerActionBox.setManaged(false);
+            }
+        }
+        // Cấu hình bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
+        AuctionTableConfigurator.configure(colId, colName, colDescription, colType, colPrice,
+                colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
+
+        // Nhấp đúp để vào phòng đấu giá
+        tableAuctions.setRowFactory(tv -> {
+            TableRow<Auction> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Auction selectedAuction = row.getItem();
+                    System.out.println("🏛️ Đang vào phòng đấu giá: " + selectedAuction.getId());
+                    Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
+                    
+                    if (network.SessionManager.getInstance().isBidder() || network.SessionManager.getInstance().isAdmin()) {
+                        view.utility.WindowManager.openInRoomWindow(selectedAuction);
+                    } else if (network.SessionManager.getInstance().isSeller()) {
+                        if (selectedAuction.getItem().getOwner() != null && selectedAuction.getItem().getOwner().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                            view.utility.WindowManager.openSellerInRoomWindow(selectedAuction);
+                        } else {
+                            view.utility.AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
+                        }
+                    }
+                }
+            });
+            return row;
+        });
+
+        // Đăng ký lắng nghe với bộ lọc theo Role
+        String currentUserId = network.SessionManager.getInstance().getUserId();
+        boolean isAdmin = network.SessionManager.getInstance().isAdmin();
+        boolean isSeller = network.SessionManager.getInstance().isSeller();
+
+        AuctionNetworkHelper.registerAuctionListListener(tableAuctions, a -> {
+            if (isAdmin) return true; // Admin thấy tất cả
+            if (isSeller) {
+                // Seller chỉ hiện phòng đấu giá của mình thôi (đang diễn ra)
+                return a.getItem().getOwner() != null && a.getItem().getOwner().getId().equals(currentUserId) 
+                       && "RUNNING".equals(a.getStatus().name());
+            }
+            // Bidder (Everyone else): Nhìn được everyone room (đang diễn ra)
+            return "RUNNING".equals(a.getStatus().name());
+        });
+
+        // Thêm Context Menu cho tính năng Sửa/Xóa của Seller/Admin
+        setupContextMenu();
+    }
+
+    private void setupContextMenu() {
+        view.utility.AuctionContextMenuHelper.setupContextMenu(tableAuctions);
+    }
+
+    @FXML
+    private void backToBaseMenu(ActionEvent event) {
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        SceneManager.goToBaseMenu(stage);
+    }
+
+    @FXML
+    private void goToCreateItem(ActionEvent event) {
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        view.utility.WindowManager.openCreateItemWindow(stage);
+    }
+}
