@@ -220,6 +220,17 @@ public class AuctionServer implements AuctionObserver {
         broadcast(message);
     }
 
+    @Override
+    public void onAutoBidExpired(Auction auction, Bidder bidder) {
+        for (ClientHandler client : clients) {
+            User u = client.getLoggedInUser();
+            if (u != null && u.getId().equals(bidder.getId())) {
+                client.sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + "CANCEL");
+                break;
+            }
+        }
+    }
+
     // Đuổi tất cả người dùng khỏi phòng
     public void broadcastRoomKicked(String auctionId, String reason) {
         java.util.Set<ClientHandler> participants = roomParticipants.get(auctionId);

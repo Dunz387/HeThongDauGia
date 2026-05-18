@@ -176,33 +176,81 @@ public class Auction extends Entity implements AuctionSubject {
                 autoBids = new PriorityQueue<>();
             }
             if (autoBids.isEmpty() || isAutoBidding) return;
-            
+
             isAutoBidding = true;
             try {
-                while (true) {
-                    // Sao chép danh sách để duyệt qua hàng đợi
-                    List<AutoBidConfig> activeAutoBids = new ArrayList<>(autoBids);
-                    activeAutoBids.sort(null); // Sắp xếp theo registerTime
-                    
-                    boolean bidPlacedThisIteration = false;
-                    for (AutoBidConfig config : activeAutoBids) {
-                        // Bỏ qua nếu người này đang giữ giá cao nhất
-                        if (this.highestBidder != null && this.highestBidder.getId().equals(config.bidder.getId())) continue;
-                        
-                        double nextBid = this.currentPrice + Math.max(config.increment, getDynamicIncrement());
-                        // Chỉ đặt giá nếu mức giá tiếp theo <= giá tối đa
-                        if (nextBid <= config.maxBid) {
+                // Chỉ giữ lại các cấu hình có maxBid lớn hơn giá hiện tại.
+                // Các cấu hình đã bị vượt giá sẽ được xóa khỏi hàng đợi và thông báo tắt Auto-Bid về client.
+                List<AutoBidConfig> expiredConfigs = new ArrayList<>();
+                for (AutoBidConfig config : autoBids) {
+                    if (config.maxBid <= this.currentPrice) {
+                        expiredConfigs.add(config);
+                    }
+                }
+                for (AutoBidConfig expired : expiredConfigs) {
+                    autoBids.remove(expired);
+                    notifyAutoBidExpired(expired.bidder);
+                }
+
+                // Sử dụng giải thuật Proxy Bidding chuyên nghiệp
+                List<AutoBidConfig> activeList = new ArrayList<>(autoBids);
+                if (activeList.isEmpty()) return;
+
+                // Sắp xếp các cấu hình:
+                // 1. maxBid giảm dần (ai đặt giá cao hơn sẽ ưu tiên thắng)
+                // 2. registerTime tăng dần (nếu cùng maxBid, ai đăng ký trước sẽ thắng)
+                activeList.sort((c1, c2) -> {
+                    if (c1.maxBid != c2.maxBid) {
+                        return Double.compare(c2.maxBid, c1.maxBid);
+                    }
+                    return Long.compare(c1.registerTime, c2.registerTime);
+                });
+
+                AutoBidConfig winner = activeList.get(0);
+                if (activeList.size() == 1) {
+                    // Chỉ có 1 người tự động đặt giá hợp lệ
+                    if (this.highestBidder == null || !this.highestBidder.getId().equals(winner.bidder.getId())) {
+                        double nextBid = this.currentPrice + Math.max(winner.increment, getDynamicIncrement());
+                        if (nextBid <= winner.maxBid) {
                             try {
-                                placeBid(config.bidder, nextBid);
-                                bidPlacedThisIteration = true;
-                                break; // Dừng vòng lặp để xử lý lượt tiếp theo
+                                placeBid(winner.bidder, nextBid);
                             } catch (Exception e) {
-                                // Xóa khỏi danh sách nếu tự động đặt giá thất bại
-                                autoBids.remove(config);
+                                autoBids.remove(winner);
+                                notifyAutoBidExpired(winner.bidder);
                             }
                         }
                     }
-                    if (!bidPlacedThisIteration) break;
+                } else {
+                    // Có từ 2 người cạnh tranh tự động đặt giá trở lên
+                    AutoBidConfig challenger = activeList.get(1);
+                    double targetBid;
+                    if (winner.maxBid == challenger.maxBid) {
+                        // Trường hợp bằng giá max: Người đăng ký trước thắng ở đúng mức giá max
+                        targetBid = winner.maxBid;
+                    } else {
+                        // Trường hợp lệch giá max: Người có max cao hơn thắng ở mức giá = max của người kia + bước nhảy
+                        double minIncrement = getDynamicIncrement();
+                        targetBid = challenger.maxBid + Math.max(winner.increment, minIncrement);
+                        // Đảm bảo không vượt quá maxBid của người thắng
+                        if (targetBid > winner.maxBid) {
+                            targetBid = winner.maxBid;
+                        }
+                        // Đảm bảo tuân thủ bước giá tối thiểu so với giá hiện tại
+                        double minRequired = this.currentPrice + minIncrement;
+                        if (targetBid < minRequired) {
+                            targetBid = minRequired;
+                        }
+                    }
+
+                    // Chỉ đặt giá nếu người thắng chưa phải là người giữ giá cao nhất OR giá hiện tại chưa đạt targetBid
+                    if (this.highestBidder == null || !this.highestBidder.getId().equals(winner.bidder.getId()) || this.currentPrice < targetBid) {
+                        try {
+                            placeBid(winner.bidder, targetBid);
+                        } catch (Exception e) {
+                            autoBids.remove(winner);
+                            notifyAutoBidExpired(winner.bidder);
+                        }
+                    }
                 }
             } finally {
                 isAutoBidding = false;
@@ -308,6 +356,14 @@ public class Auction extends Entity implements AuctionSubject {
             for (AuctionObserver obs : observers) {
                 String topBidderName = (highestBidder != null) ? highestBidder.getUsername() : "Chưa có";
                 obs.update(this, this.currentPrice, topBidderName, previousBidder);
+            }
+        }
+    }
+
+    public void notifyAutoBidExpired(Bidder bidder) {
+        if (observers != null) {
+            for (AuctionObserver obs : observers) {
+                obs.onAutoBidExpired(this, bidder);
             }
         }
     }
