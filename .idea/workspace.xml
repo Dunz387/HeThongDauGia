@@ -5,9 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="sửa lại tinh chỉnh 99.9%">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/AuctionObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/AuctionObserver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/AuctionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/user/Bidder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/user/Bidder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/handler/AdminHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/handler/AdminHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/RoomMenuChoiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/RoomMenuChoiceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/menu/AssetsListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/menu/AssetsListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/menu/BaseMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/menu/BaseMenuController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/menu/UserInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/menu/UserInfoController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +89,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Launcher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Launcher" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="view.Launcher" />
       <module name="HeThongDauGia" />
       <extension name="coverage">
@@ -149,7 +156,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779123559752</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="sửa lại tinh chỉnh 99.9%">
+      <option name="closed" value="true" />
+      <created>1779124498465</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779124498465</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

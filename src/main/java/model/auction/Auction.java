@@ -179,8 +179,7 @@ public class Auction extends Entity implements AuctionSubject {
 
             isAutoBidding = true;
             try {
-                // Chỉ giữ lại các cấu hình có maxBid lớn hơn giá hiện tại.
-                // Các cấu hình đã bị vượt giá sẽ được xóa khỏi hàng đợi và thông báo tắt Auto-Bid về client.
+                // Bước 1: Dọn dẹp trước khi chạy - Xóa các cấu hình đã bị vượt giá từ trước
                 List<AutoBidConfig> expiredConfigs = new ArrayList<>();
                 for (AutoBidConfig config : autoBids) {
                     if (config.maxBid <= this.currentPrice) {
@@ -251,6 +250,18 @@ public class Auction extends Entity implements AuctionSubject {
                             notifyAutoBidExpired(winner.bidder);
                         }
                     }
+                }
+
+                // Bước 2: Dọn dẹp sau khi chạy - Quét và xóa các cấu hình đã hết hạn/chạm trần sau lượt đặt giá mới
+                List<AutoBidConfig> expiredConfigsAfter = new ArrayList<>();
+                for (AutoBidConfig config : autoBids) {
+                    if (config.maxBid <= this.currentPrice) {
+                        expiredConfigsAfter.add(config);
+                    }
+                }
+                for (AutoBidConfig expired : expiredConfigsAfter) {
+                    autoBids.remove(expired);
+                    notifyAutoBidExpired(expired.bidder);
                 }
             } finally {
                 isAutoBidding = false;

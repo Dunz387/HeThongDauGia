@@ -23,6 +23,10 @@ public class Bidder extends User {
         return balance - lockedBalance;
     }
 
+    public double getLockedBalance() {
+        return lockedBalance;
+    }
+
     // Khóa tiền khi đặt giá thành công
     public synchronized boolean lockBalance(double amount) {
         if (amount > 0 && getAvailableBalance() >= amount) {

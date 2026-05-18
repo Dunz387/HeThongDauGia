@@ -77,25 +77,8 @@ public class AssetsListController implements Initializable {
 
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
 
-        // Đăng ký lắng nghe danh sách đấu giá từ Server với bộ lọc theo Role
-        String currentUserId = network.SessionManager.getInstance().getUserId();
-        boolean isAdmin = network.SessionManager.getInstance().isAdmin();
-        boolean isSeller = network.SessionManager.getInstance().isSeller();
-        boolean isBidder = network.SessionManager.getInstance().isBidder();
-
-        AuctionNetworkHelper.registerAuctionListListener(tableAssets, a -> {
-            if (isAdmin)
-                return true; // Admin thấy tất cả
-            if (isSeller) {
-                // Seller thấy những đồ của mình đăng bán (đang bán/đã bán)
-                return a.getItem().getOwner() != null && a.getItem().getOwner().getId().equals(currentUserId);
-            }
-            if (isBidder) {
-                // Bidder thấy những room đã/đang đặt giá vào
-                return a.getBidHistory().stream().anyMatch(t -> t.getBidder().getId().equals(currentUserId));
-            }
-            return false;
-        });
+        // Đăng ký lắng nghe danh sách đấu giá từ Server với bộ lọc theo Role (SRP: delegate sang RoleBasedFilterHelper)
+        AuctionNetworkHelper.registerAuctionListListener(tableAssets, view.utility.RoleBasedFilterHelper.getAssetsFilter());
 
         // Cấu hình bảng thông báo
         if (tableNotifications != null) {

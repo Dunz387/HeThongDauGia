@@ -13,7 +13,9 @@ import javafx.stage.Stage;
 import model.auction.Auction;
 import view.utility.AuctionTableConfigurator;
 import view.utility.MenuHelper;
+import view.utility.NotificationFilterHelper;
 import view.utility.NotificationMenuHandler;
+import view.utility.RoleBasedFilterHelper;
 import view.utility.SceneManager;
 import view.utility.WindowManager;
 import view.utility.AlertHelper;
@@ -103,8 +105,8 @@ public class BaseMenuController implements Initializable {
             return row;
         });
 
-        // Đăng ký lắng nghe danh sách đấu giá từ Server
-        view.utility.AuctionNetworkHelper.registerAuctionListListener(tableAuctions);
+        // Đăng ký lắng nghe danh sách đấu giá từ Server với bộ lọc theo Role (SRP: delegate sang RoleBasedFilterHelper)
+        view.utility.AuctionNetworkHelper.registerAuctionListListener(tableAuctions, RoleBasedFilterHelper.getRoomFilter());
 
         // Cấu hình bảng thông báo
         if (tableNotifications != null) {
@@ -117,37 +119,8 @@ public class BaseMenuController implements Initializable {
             tableNotifications.setFixedCellSize(-1);
         }
 
-        // Lắng nghe các sự kiện quan trọng để đẩy thông báo ra ngoài màn hình chính
-        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.BROADCAST_AUCTION_START);
-        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_START,
-                (message) -> {
-                    String[] parts = message.split(shared.Protocol.DELIMITER);
-                    if (parts.length >= 2) {
-                        network.NotificationManager.getInstance()
-                                .addNotification("🚀 Một phiên đấu giá mới (" + parts[1] + ") đã bắt đầu!");
-                    }
-                });
-
-        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.BROADCAST_AUCTION_FINISHED);
-        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.BROADCAST_AUCTION_FINISHED,
-                (message) -> {
-                    String[] parts = message.split(shared.Protocol.DELIMITER);
-                    if (parts.length >= 2) {
-                        String auctionId = parts[1];
-                        String winner = parts.length > 2 ? parts[2] : "Không có";
-
-                        // Tìm tên sản phẩm từ bảng
-                        String itemName = auctionId;
-                        for (Auction a : tableAuctions.getItems()) {
-                            if (a.getId().equals(auctionId)) {
-                                itemName = a.getItem().getName();
-                                break;
-                            }
-                        }
-                        network.NotificationManager.getInstance()
-                                .addNotification("🏆 [" + itemName + "] kết thúc. Người thắng: " + winner);
-                    }
-                });
+        // Lắng nghe thông báo đấu giá với bộ lọc theo Role (SRP: delegate sang NotificationFilterHelper)
+        NotificationFilterHelper.registerNotificationListeners(tableAuctions);
 
         // Cập nhật số dư realtime — đã đăng ký bởi MenuHelper.setupBalanceLabel()
 

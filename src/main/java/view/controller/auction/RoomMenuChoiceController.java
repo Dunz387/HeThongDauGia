@@ -69,21 +69,8 @@ public class RoomMenuChoiceController implements Initializable {
             return row;
         });
 
-        // Đăng ký lắng nghe với bộ lọc theo Role
-        String currentUserId = network.SessionManager.getInstance().getUserId();
-        boolean isAdmin = network.SessionManager.getInstance().isAdmin();
-        boolean isSeller = network.SessionManager.getInstance().isSeller();
-
-        AuctionNetworkHelper.registerAuctionListListener(tableAuctions, a -> {
-            if (isAdmin) return true; // Admin thấy tất cả
-            if (isSeller) {
-                // Seller chỉ hiện phòng đấu giá của mình thôi (đang diễn ra)
-                return a.getItem().getOwner() != null && a.getItem().getOwner().getId().equals(currentUserId) 
-                       && "RUNNING".equals(a.getStatus().name());
-            }
-            // Bidder (Everyone else): Nhìn được everyone room (đang diễn ra)
-            return "RUNNING".equals(a.getStatus().name());
-        });
+        // Đăng ký lắng nghe với bộ lọc theo Role (SRP: delegate sang RoleBasedFilterHelper)
+        AuctionNetworkHelper.registerAuctionListListener(tableAuctions, view.utility.RoleBasedFilterHelper.getRoomFilter());
 
         // Thêm Context Menu cho tính năng Sửa/Xóa của Seller/Admin
         setupContextMenu();

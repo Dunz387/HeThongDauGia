@@ -33,14 +33,22 @@ public class AdminService {
         return false;
     }
 
-    public boolean updateUserBalanceForce(String targetUserId, double newBalance) {
+    public String updateUserBalanceForce(String targetUserId, double newBalance) {
         User u = UserService.getInstance().findUserById(targetUserId);
         if (u != null) {
-            if (u instanceof Bidder) ((Bidder) u).setBalance(newBalance);
-            else if (u instanceof Seller) ((Seller) u).setBalance(newBalance);
-            return UserDAO.updateUserBalance(targetUserId, newBalance);
+            if (u instanceof Bidder) {
+                Bidder bidder = (Bidder) u;
+                if (bidder.getLockedBalance() > 0) {
+                    return "Người dùng đang có $" + String.format("%.2f", bidder.getLockedBalance()) + " bị khóa trong các phiên đấu giá!";
+                }
+                bidder.setBalance(newBalance);
+            } else if (u instanceof Seller) {
+                ((Seller) u).setBalance(newBalance);
+            }
+            boolean ok = UserDAO.updateUserBalance(targetUserId, newBalance);
+            return ok ? "SUCCESS" : "Lỗi lưu số dư vào cơ sở dữ liệu!";
         }
-        return false;
+        return "Không tìm thấy người dùng!";
     }
 
     public boolean deleteAuctionForce(String auctionId) {

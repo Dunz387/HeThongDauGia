@@ -51,23 +51,8 @@ public class UserInfoController implements Initializable {
     private void updateAssetsCount(java.util.List<model.auction.Auction> auctionList) {
         if (auctionList == null) return;
         
-        String currentUserId = SessionManager.getInstance().getUserId();
-        // Tài sản sở hữu: 
-        // 1. Những item mình THẮNG (Auction FINISHED & mình là Highest Bidder)
-        // 2. Những item mình ĐANG BÁN (Auction chưa FINISHED & mình là Owner)
-        long count = auctionList.stream()
-            .filter(a -> {
-                boolean isWinner = a.getStatus() == model.auction.AuctionStatus.FINISHED &&
-                                   a.getHighestBidder() != null &&
-                                   a.getHighestBidder().getId().equals(currentUserId);
-                
-                boolean isCurrentSeller = a.getStatus() != model.auction.AuctionStatus.FINISHED &&
-                                          a.getItem().getOwner() != null &&
-                                          a.getItem().getOwner().getId().equals(currentUserId);
-                
-                return isWinner || isCurrentSeller;
-            })
-            .count();
+        // SRP: delegate sang RoleBasedFilterHelper để đồng bộ logic với bảng tài sản
+        long count = view.utility.RoleBasedFilterHelper.countAssets(auctionList);
             
         javafx.application.Platform.runLater(() -> {
             lblAssetsCount.setText(count + " sản phẩm");

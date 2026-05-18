@@ -57,14 +57,19 @@ public class AdminHandler {
         if (getUser() instanceof Admin) {
             try {
                 double newBalance = Double.parseDouble(newBalanceStr);
-                if (AdminService.getInstance().updateUserBalanceForce(targetId, newBalance)) {
+                if (newBalance < 0) {
+                    clientHandler.sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số dư không thể là số âm!");
+                    return;
+                }
+                String result = AdminService.getInstance().updateUserBalanceForce(targetId, newBalance);
+                if ("SUCCESS".equals(result)) {
                     clientHandler.sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_SUCCESS);
                     server.broadcastUserList();
                     server.sendBalanceUpdateToUser(targetId);
                 } else {
-                    clientHandler.sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Không tìm thấy người dùng!");
+                    clientHandler.sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + result);
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 clientHandler.sendData(Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + "Số tiền không hợp lệ.");
             }
         } else {
