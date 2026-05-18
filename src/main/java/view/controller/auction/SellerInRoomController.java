@@ -171,7 +171,10 @@ public class SellerInRoomController implements Initializable {
 
         javafx.scene.Scene scene = new javafx.scene.Scene(layout);
         try {
-            scene.getStylesheets().add(getClass().getResource("/view/styles.css").toExternalForm());
+            java.net.URL cssResource = getClass().getResource("/view/styles.css");
+            if (cssResource != null) {
+                scene.getStylesheets().add(cssResource.toExternalForm());
+            }
         } catch (Exception ignored) {}
 
         popupStage.setScene(scene);
@@ -230,9 +233,7 @@ public class SellerInRoomController implements Initializable {
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 Platform.runLater(() -> {
                     activeParticipants.clear();
-                    for (int i = 3; i < parts.length; i++) {
-                        activeParticipants.add(parts[i]);
-                    }
+                    activeParticipants.addAll(java.util.Arrays.asList(parts).subList(3, parts.length));
                 });
             }
         });
