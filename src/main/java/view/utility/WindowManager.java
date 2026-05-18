@@ -68,7 +68,7 @@ public class WindowManager {
             stage.setTitle("Phòng Đấu Giá: " + auction.getItem().getName());
             // Đóng cửa sổ sẽ kích hoạt sự kiện thoát phòng
             stage.setOnCloseRequest(e -> {
-                if (controller != null) controller.exitRoom(null);
+                controller.exitRoom(null);
             });
             stage.show();
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class WindowManager {
             stage.setTitle("Quản Lý Phòng Đấu Giá: " + auction.getItem().getName());
             // Đóng cửa sổ sẽ kích hoạt sự kiện thoát phòng
             stage.setOnCloseRequest(e -> {
-                if (controller != null) controller.exitRoom(null);
+                controller.exitRoom(null);
             });
             stage.show();
         } catch (Exception e) {

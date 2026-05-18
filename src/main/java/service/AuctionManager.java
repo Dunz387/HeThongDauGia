@@ -33,8 +33,7 @@ public class AuctionManager {
 
     private AuctionManager() {
         DatabaseManager.initializeDatabase();
-        // Đảm bảo UserService khởi tạo trước (load users từ DB)
-        UserService.getInstance();
+        // Đảm bảo UserService khởi tạo trước (load users từ DB) để nạp danh sách đấu giá
         this.auctions = AuctionDAO.loadAuctions(UserService.getInstance().getUsersRef());
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r);
