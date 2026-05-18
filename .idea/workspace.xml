@@ -4,17 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="sửa lại tinh chỉnh 99.9%">
+    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="refractor code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/user/Bidder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/user/Bidder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/handler/AdminHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/handler/AdminHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/RoomMenuChoiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/RoomMenuChoiceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auth/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auth/RegisterController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/menu/AssetsListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/menu/AssetsListController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/menu/BaseMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/menu/BaseMenuController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/menu/UserInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/menu/UserInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/AuctionNetworkHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/AuctionNetworkHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/NotificationFilterHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/NotificationFilterHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/RoleBasedFilterHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/RoleBasedFilterHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,12 +165,21 @@
       <option name="project" value="LOCAL" />
       <updated>1779124498465</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="refractor code">
+      <option name="closed" value="true" />
+      <created>1779132085153</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1779132085153</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="sửa lại tinh chỉnh 99.9%" />
-    <option name="LAST_COMMIT_MESSAGE" value="sửa lại tinh chỉnh 99.9%" />
+    <MESSAGE value="refractor code" />
+    <option name="LAST_COMMIT_MESSAGE" value="refractor code" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

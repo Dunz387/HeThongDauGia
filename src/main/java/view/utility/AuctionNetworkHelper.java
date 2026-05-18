@@ -56,14 +56,19 @@ public class AuctionNetworkHelper {
         requestAuctionList();
     }
 
+    private static java.util.function.Consumer<String> bidUpdateListener;
+
     /**
      * Đăng ký lắng nghe BROADCAST_NEW_BID để tự động refresh danh sách.
      */
     public static void registerBidUpdateRefresh() {
-        ClientNetworkManager.getInstance().clearListeners(Protocol.BROADCAST_NEW_BID);
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_NEW_BID, (message) -> {
+        if (bidUpdateListener != null) {
+            ClientNetworkManager.getInstance().removeListener(Protocol.BROADCAST_NEW_BID, bidUpdateListener);
+        }
+        bidUpdateListener = (message) -> {
             ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
-        });
+        };
+        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_NEW_BID, bidUpdateListener);
     }
 
     /**

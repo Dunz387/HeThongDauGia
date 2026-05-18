@@ -87,16 +87,16 @@ public class BaseMenuController implements Initializable {
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
 
                     if (network.SessionManager.getInstance().isBidder()) {
-                        SceneManager.goToInRoom(currentStage, selectedAuction);
+                        view.utility.WindowManager.openInRoomWindow(selectedAuction);
                     } else if (network.SessionManager.getInstance().isSeller()) {
                         if (selectedAuction.getItem().getOwner() != null && selectedAuction.getItem().getOwner().getId()
                                 .equals(network.SessionManager.getInstance().getUserId())) {
-                            SceneManager.goToSellerInRoom(currentStage, selectedAuction);
+                            view.utility.WindowManager.openSellerInRoomWindow(selectedAuction);
                         } else {
                             AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
                         }
                     } else if (network.SessionManager.getInstance().isAdmin()) {
-                        SceneManager.goToInRoom(currentStage, selectedAuction);
+                        view.utility.WindowManager.openInRoomWindow(selectedAuction);
                     } else {
                         AlertHelper.showWarning("Quyền truy cập", "Bạn không có quyền tham gia!");
                     }
@@ -156,7 +156,7 @@ public class BaseMenuController implements Initializable {
 
     @FXML
     private void joinBidding(ActionEvent event) {
-        Stage currentStage = (Stage) menuBar.getScene().getWindow();
+        Stage currentStage = (Stage) txtBalance.getScene().getWindow();
         SceneManager.goToRoomMenu(currentStage);
     }
 
@@ -166,26 +166,26 @@ public class BaseMenuController implements Initializable {
             AlertHelper.showWarning("Quyền truy cập", "Chỉ người bán (Seller) mới có thể tạo phiên đấu giá!");
             return;
         }
-        Stage currentStage = (Stage) menuBar.getScene().getWindow();
+        Stage currentStage = (Stage) txtBalance.getScene().getWindow();
         WindowManager.openCreateItemWindow(currentStage);
     }
 
     @FXML
     private void backToLoiginButtonClicked(ActionEvent event) {
         network.ClientNetworkManager.getInstance().logout();
-        Stage stage = (Stage) menuBar.getScene().getWindow();
+        Stage stage = (Stage) txtBalance.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/auth/Login.fxml", "Login");
     }
 
     @FXML
     private void backToRegisterButtonClicked(ActionEvent event) {
-        Stage stage = (Stage) menuBar.getScene().getWindow();
+        Stage stage = (Stage) txtBalance.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/auth/Register.fxml", "Register");
     }
 
     @FXML
     private void goToAssetsListButtonClicked(ActionEvent event) {
-        Stage stage = (Stage) menuBar.getScene().getWindow();
+        Stage stage = (Stage) txtBalance.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/menu/AssetsList.fxml", "Danh Sách Tài Sản");
     }
 

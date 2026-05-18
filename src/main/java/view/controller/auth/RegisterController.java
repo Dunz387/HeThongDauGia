@@ -28,7 +28,6 @@ public class RegisterController implements Initializable {
 
         txtUsername.setOnAction(event -> txtPassword.requestFocus());
         txtPassword.setOnAction(event -> cbRole.requestFocus());
-        cbRole.setOnAction(event -> registerButtonClicked(null));
     }
 
     @FXML
@@ -54,8 +53,8 @@ public class RegisterController implements Initializable {
             return;
         }
 
-        // T7: Lấy Stage ngay tại đây từ sự kiện để tránh lỗi Null trong callback
-        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        // Lấy Stage an toàn từ một Node có sẵn trong giao diện (bảo đảm không bao giờ Null)
+        Stage stage = (Stage) txtUsername.getScene().getWindow();
 
         String role = cbRole.getValue() != null && cbRole.getValue().contains("Seller") ? "SELLER" : "BIDDER";
 

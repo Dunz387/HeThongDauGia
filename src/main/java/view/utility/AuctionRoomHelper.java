@@ -71,17 +71,32 @@ public class AuctionRoomHelper {
         totalTimeRemaining += addedSeconds;
     }
 
+    private java.util.Map<String, java.util.List<java.util.function.Consumer<String>>> roomListeners = new java.util.HashMap<>();
+
+    /**
+     * Đăng ký listener và lưu trữ để có thể dọn dẹp an toàn khi thoát phòng (tránh xóa nhầm listener global).
+     */
+    public void registerRoomListener(String protocolKey, java.util.function.Consumer<String> listener) {
+        ClientNetworkManager.getInstance().registerListener(protocolKey, listener);
+        roomListeners.computeIfAbsent(protocolKey, k -> new java.util.ArrayList<>()).add(listener);
+    }
+
     // === EXIT ROOM ===
 
     /**
      * Cleanup listeners, gửi LEAVE_ROOM, đóng window.
-     * @param protocolKeys Danh sách Protocol key cần clear listener
      */
-    public void exitRoom(javafx.stage.Stage stage, String... protocolKeys) {
+    public void exitRoom(javafx.stage.Stage stage) {
         stopTimer();
-        for (String key : protocolKeys) {
-            ClientNetworkManager.getInstance().clearListeners(key);
+        
+        // Chỉ xóa các listener của riêng phòng này
+        for (java.util.Map.Entry<String, java.util.List<java.util.function.Consumer<String>>> entry : roomListeners.entrySet()) {
+            for (java.util.function.Consumer<String> listener : entry.getValue()) {
+                ClientNetworkManager.getInstance().removeListener(entry.getKey(), listener);
+            }
         }
+        roomListeners.clear();
+
         if (auctionId != null) {
             ClientNetworkManager.getInstance().sendData(Protocol.REQ_LEAVE_ROOM + Protocol.DELIMITER + auctionId);
         }
@@ -94,7 +109,7 @@ public class AuctionRoomHelper {
      * Đăng ký listener BROADCAST_TIME_EXTENDED chung.
      */
     public void registerTimeExtendedListener(Runnable onExtend) {
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_TIME_EXTENDED, (message) -> {
+        registerRoomListener(Protocol.BROADCAST_TIME_EXTENDED, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], auctionId)) {
                 int addedSeconds = Integer.parseInt(parts[2]);
@@ -108,7 +123,7 @@ public class AuctionRoomHelper {
      * Đăng ký listener BROADCAST_PARTICIPANTS chung.
      */
     public void registerParticipantsListener(java.util.function.Consumer<String> onCount) {
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_PARTICIPANTS, (message) -> {
+        registerRoomListener(Protocol.BROADCAST_PARTICIPANTS, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], auctionId)) {
                 if (onCount != null) Platform.runLater(() -> onCount.accept(parts[2]));
@@ -120,11 +135,11 @@ public class AuctionRoomHelper {
      * Đăng ký listener BROADCAST_ROOM_KICKED chung.
      */
     public void registerRoomKickedListener(Runnable onKicked) {
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_ROOM_KICKED, (message) -> {
+        registerRoomListener(Protocol.BROADCAST_ROOM_KICKED, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], auctionId)) {
                 Platform.runLater(() -> {
-                    AlertHelper.showWarning("Rời phòng", parts[2]);
+                    view.utility.AlertHelper.showWarning("Rời phòng", parts[2]);
                     if (onKicked != null) onKicked.run();
                 });
             }

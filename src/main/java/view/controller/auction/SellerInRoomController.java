@@ -74,8 +74,6 @@ public class SellerInRoomController implements Initializable {
         colNotifContent.setCellFactory(new WrappingTextCellFactory());
         notificationTableView.setItems(roomNotifications);
 
-        registerNetworkListeners();
-
         // Nút Kick User cho Admin
         if (network.SessionManager.getInstance().isAdmin()) {
             javafx.scene.control.Button btnKick = new javafx.scene.control.Button("Đuổi người dùng");
@@ -181,7 +179,7 @@ public class SellerInRoomController implements Initializable {
     }
 
     private void registerNetworkListeners() {
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_NEW_BID, (message) -> {
+        roomHelper.registerRoomListener(Protocol.BROADCAST_NEW_BID, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 4 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 double newPrice = Double.parseDouble(parts[2]);
@@ -209,7 +207,7 @@ public class SellerInRoomController implements Initializable {
             }
         });
 
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
+        roomHelper.registerRoomListener(Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 2 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 String winner = parts.length > 2 ? parts[2] : "Không có";
@@ -227,7 +225,7 @@ public class SellerInRoomController implements Initializable {
             }
         });
 
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_PARTICIPANTS, (message) -> {
+        roomHelper.registerRoomListener(Protocol.BROADCAST_PARTICIPANTS, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 Platform.runLater(() -> {
@@ -267,6 +265,8 @@ public class SellerInRoomController implements Initializable {
         });
         roomHelper.registerParticipantsListener(count -> { if (lblParticipants != null) lblParticipants.setText(count + " người"); });
         roomHelper.registerRoomKickedListener(() -> exitRoom(null));
+
+        registerNetworkListeners();
 
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_JOIN_ROOM + Protocol.DELIMITER + currentAuctionId);
 
@@ -317,10 +317,7 @@ public class SellerInRoomController implements Initializable {
     public void exitRoom(ActionEvent event) {
         if (roomHelper != null) {
             Stage stage = (Stage) priceChart.getScene().getWindow();
-            roomHelper.exitRoom(stage,
-                Protocol.BROADCAST_NEW_BID, Protocol.BROADCAST_TIME_EXTENDED,
-                Protocol.BROADCAST_AUCTION_FINISHED, Protocol.BROADCAST_PARTICIPANTS,
-                Protocol.BROADCAST_ROOM_KICKED);
+            roomHelper.exitRoom(stage);
         }
     }
 

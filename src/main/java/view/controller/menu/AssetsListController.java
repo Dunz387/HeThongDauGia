@@ -93,6 +93,9 @@ public class AssetsListController implements Initializable {
 
         setupContextMenu();
         setupNetworkListeners();
+        
+        // Đăng ký nhận thông báo real-time (tương tự như BaseMenu)
+        view.utility.NotificationFilterHelper.registerNotificationListeners(tableAssets);
     }
 
     private void setupContextMenu() {
@@ -159,7 +162,7 @@ public class AssetsListController implements Initializable {
                     "Chỉ người bán (Seller) mới có thể tạo phiên đấu giá!");
             return;
         }
-        Stage currentStage = (Stage) menuBar.getScene().getWindow();
+        Stage currentStage = (Stage) txtBalance.getScene().getWindow();
         WindowManager.openCreateItemWindow(currentStage);
     }
 
@@ -175,20 +178,20 @@ public class AssetsListController implements Initializable {
 
     @FXML
     private void backToBaseMenuButtonClicked(ActionEvent event) {
-        Stage stage = (Stage) menuBar.getScene().getWindow();
+        Stage stage = (Stage) txtBalance.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/menu/BaseMenu.fxml", "Base Menu");
     }
 
     @FXML
     private void backToLoiginButtonClicked(ActionEvent event) {
         network.ClientNetworkManager.getInstance().logout();
-        Stage stage = (Stage) menuBar.getScene().getWindow();
+        Stage stage = (Stage) txtBalance.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/auth/Login.fxml", "Login");
     }
 
     @FXML
     private void backToRegisterButtonClicked(ActionEvent event) {
-        Stage stage = (Stage) menuBar.getScene().getWindow();
+        Stage stage = (Stage) txtBalance.getScene().getWindow();
         SceneManager.switchScene(stage, "/view/auth/Register.fxml", "Register");
     }
 

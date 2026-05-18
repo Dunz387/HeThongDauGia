@@ -110,8 +110,6 @@ public class InRoomController implements Initializable {
             topBidderLabel.setText(currentTopBidder);
         if (bidAmountField != null)
             bidAmountField.setOnAction(event -> handlePlaceBid());
-
-        registerNetworkListeners();
     }
 
     public void setAuction(model.auction.Auction auction) {
@@ -142,6 +140,9 @@ public class InRoomController implements Initializable {
         roomHelper.registerParticipantsListener(
                 count -> System.out.println("👥 [Phòng " + currentAuctionId + "] Số người đang xem: " + count));
         roomHelper.registerRoomKickedListener(() -> exitRoom(null));
+
+        // Đăng ký các network listener sau khi roomHelper đã được khởi tạo
+        registerNetworkListeners();
 
         // Khôi phục lịch sử
         Platform.runLater(() -> {
@@ -188,7 +189,7 @@ public class InRoomController implements Initializable {
     }
 
     private void registerNetworkListeners() {
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_AUCTION_START, (message) -> {
+        roomHelper.registerRoomListener(Protocol.BROADCAST_AUCTION_START, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 int durationMinutes = Integer.parseInt(parts[2]);
@@ -201,7 +202,7 @@ public class InRoomController implements Initializable {
             }
         });
 
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_NEW_BID, (message) -> {
+        roomHelper.registerRoomListener(Protocol.BROADCAST_NEW_BID, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 4 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 double newPrice = Double.parseDouble(parts[2]);
@@ -224,13 +225,11 @@ public class InRoomController implements Initializable {
                                                 + topBidder + " đặt $" + view.utility.ChartHelper.formatDouble(newPrice),
                                         timeStr));
                     });
-                    NotificationManager.getInstance().addNotification("📢 [" + auction.getItem().getName()
-                            + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + newPrice);
                 }
             }
         });
 
-        ClientNetworkManager.getInstance().registerListener(Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
+        roomHelper.registerRoomListener(Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 2 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 String finalWinner = parts.length > 2 ? parts[2] : "Không có";
@@ -246,8 +245,6 @@ public class InRoomController implements Initializable {
                                     + finalWinner + " ($" + view.utility.ChartHelper.formatDouble(finalPrice) + ")", timeStr));
                     AlertHelper.showInfo("Kết quả đấu giá",
                             "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + view.utility.ChartHelper.formatDouble(finalPrice));
-                    NotificationManager.getInstance()
-                            .addNotification("🏆 Phiên đấu giá KẾT THÚC! Người thắng: " + finalWinner);
                     if (!network.SessionManager.getInstance().isAdmin())
                         exitRoom(null);
                 });
@@ -350,10 +347,7 @@ public class InRoomController implements Initializable {
     public void exitRoom(ActionEvent event) {
         if (roomHelper != null) {
             Stage stage = (Stage) priceChart.getScene().getWindow();
-            roomHelper.exitRoom(stage, Protocol.BROADCAST_NEW_BID, Protocol.BROADCAST_ROUND_FINISHED,
-                    Protocol.BROADCAST_TIME_EXTENDED, Protocol.BROADCAST_AUCTION_FINISHED, Protocol.REQ_BID,
-                    Protocol.REQ_AUTOBID, Protocol.RES_UPDATE_BALANCE, Protocol.BROADCAST_PARTICIPANTS,
-                    Protocol.BROADCAST_ROOM_KICKED);
+            roomHelper.exitRoom(stage);
         }
     }
 
