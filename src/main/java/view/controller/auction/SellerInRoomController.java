@@ -27,6 +27,9 @@ import java.util.ResourceBundle;
 /**
  * Controller cho màn hình Seller theo dõi phiên đấu giá của mình.
  * Chỉ xem, không đặt giá.
+ * 
+ * [DESIGN PATTERN APPLIED]
+ * - Model-View-Controller (MVC): Đóng vai trò là Controller điều khiển luồng dữ liệu từ Model (Auction, Notification) để cập nhật View (SellerInRoomView.fxml).
  */
 public class SellerInRoomController implements Initializable {
     @FXML private Label lblRoomId;
@@ -204,7 +207,8 @@ public class SellerInRoomController implements Initializable {
                         String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + ChartHelper.formatDouble(newPrice);
                         String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                         roomNotifications.add(0, new NotificationManager.NotificationItem(msg, timeStr));
-                        NotificationManager.getInstance().addNotification(msg);
+                        // Không gọi NotificationManager.addNotification() ở đây
+                        // vì NotificationFilterHelper đã xử lý đẩy thông báo lên BaseMenu (tránh trùng lặp)
                     }
                 });
             }
@@ -296,6 +300,10 @@ public class SellerInRoomController implements Initializable {
                 if (lblRounds != null) lblRounds.setText(String.valueOf(bidCount));
             } else {
                 currentHighestPrice = auction.getStartingPrice();
+                if (lblCurrentPrice != null) lblCurrentPrice.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
+                if (lblEarnings != null) lblEarnings.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
+                if (topBidderLabel != null) topBidderLabel.setText("Chưa có");
+                if (lblRounds != null) lblRounds.setText("0");
             }
 
             roomNotifications.clear();

@@ -22,6 +22,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+/**
+ * Controller cho màn hình Bidder theo dõi và tham gia đặt giá trong phòng đấu giá.
+ * 
+ * [DESIGN PATTERN APPLIED]
+ * - Model-View-Controller (MVC): Đóng vai trò Controller để xử lý các hành động của người dùng (như nhấn nút "Đặt giá"), tương tác với Model và View.
+ */
 public class InRoomController implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(InRoomController.class.getName());
 
@@ -174,6 +180,11 @@ public class InRoomController implements Initializable {
             } else {
                 currentHighestPrice = auction.getStartingPrice();
                 updateTopBidder("Chưa có");
+            }
+
+            // Luôn hiển thị giá hiện tại (dù có bidder hay chưa)
+            if (bidAmountField != null) {
+                bidAmountField.setPromptText("Tối thiểu: " + ChartHelper.formatDouble(currentHighestPrice + ChartHelper.calculateMinIncrement(currentHighestPrice)));
             }
 
             ChartHelper.updateXAxisBounds(priceChart, bidCount);

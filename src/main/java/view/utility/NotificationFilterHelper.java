@@ -11,6 +11,11 @@ import java.util.function.Consumer;
 /**
  * Xử lý lọc và phân phối thông báo đấu giá theo vai trò người dùng (SRP).
  * Tách từ BaseMenuController để tuân thủ Single Responsibility Principle.
+ * 
+ * [DESIGN PATTERN APPLIED]
+ * - Observer Pattern: Đăng ký lắng nghe các sự kiện broadcast từ Server (ClientNetworkManager).
+ * - Command / Strategy Pattern: Sử dụng `Consumer<Auction> notificationAction` để đóng gói các hành động tạo thông báo khác nhau (Start, Finished, New Bid) truyền vào `handleNotification`.
+ * - Facade Pattern: Cung cấp giao diện đơn giản (`registerNotificationListeners`) ẩn đi logic xử lý đồng bộ danh sách và mạng phức tạp bên dưới.
  */
 public class NotificationFilterHelper {
 
@@ -27,6 +32,8 @@ public class NotificationFilterHelper {
      * @param tableAuctions Bảng dữ liệu phiên đấu giá hiện tại (dùng để tra cứu thông tin)
      */
     public static void registerNotificationListeners(TableView<Auction> tableAuctions) {
+        registerGlobalListListener();
+
         // === PHIÊN ĐẤU GIÁ BẮT ĐẦU ===
         if (startListener != null) {
             ClientNetworkManager.getInstance().removeListener(shared.Protocol.BROADCAST_AUCTION_START, startListener);
@@ -110,6 +117,17 @@ public class NotificationFilterHelper {
         registerGlobalListListener();
         
         Auction auction = findInLatestList(auctionId);
+        
+        // Cố gắng tìm trong bảng hiện tại nếu không thấy trong latestAllAuctions (để tránh race condition)
+        if (auction == null && table != null && table.getItems() != null) {
+            for (Auction a : table.getItems()) {
+                if (a.getId().equals(auctionId)) {
+                    auction = a;
+                    break;
+                }
+            }
+        }
+
         if (auction != null) {
             notificationAction.accept(auction);
         } else {

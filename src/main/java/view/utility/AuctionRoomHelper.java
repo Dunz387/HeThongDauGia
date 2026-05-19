@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
  * - Network listener chung (TIME_EXTENDED, PARTICIPANTS, ROOM_KICKED)
  * 
  * Trích xuất để tuân thủ DRY.
+ * 
+ * [DESIGN PATTERN APPLIED]
+ * - Facade Pattern: Đóng gói các logic phức tạp về đếm ngược thời gian và quản lý listener mạng (Network Listeners) vào một lớp duy nhất, cung cấp các API đơn giản cho các Controller sử dụng (như `initTimer`, `startTimer`, `exitRoom`).
+ * - Observer Pattern: Cung cấp cơ chế đăng ký callback (`Runnable`, `Consumer`) để các Controller lắng nghe và phản hồi khi có sự kiện (như `setOnTimeUpdate`, `registerParticipantsListener`).
  */
 public class AuctionRoomHelper {
     private Timeline totalTimelineTimer;
