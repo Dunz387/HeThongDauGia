@@ -85,17 +85,15 @@ public class NotificationFilterHelper {
     }
 
     private static java.util.List<Auction> latestAllAuctions = new java.util.ArrayList<>();
-    private static boolean isGlobalListListenerRegistered = false;
+    private static final java.util.function.Consumer<java.util.List<Auction>> globalListListener = (listFromServer) -> {
+        if (listFromServer != null) {
+            latestAllAuctions = listFromServer;
+        }
+    };
 
     private static void registerGlobalListListener() {
-        if (!isGlobalListListenerRegistered) {
-            ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
-                if (listFromServer != null) {
-                    latestAllAuctions = listFromServer;
-                }
-            });
-            isGlobalListListenerRegistered = true;
-        }
+        ClientNetworkManager.getInstance().removeAuctionListListener(globalListListener);
+        ClientNetworkManager.getInstance().addAuctionListListener(globalListListener);
     }
 
     private static Auction findInLatestList(String auctionId) {
@@ -189,6 +187,4 @@ public class NotificationFilterHelper {
                     .addNotification("📢 [" + auction.getItem().getName() + "] - Lượt #" + round + ": " + topBidder + " vừa đặt $" + view.utility.ChartHelper.formatDouble(newPrice));
         }
     }
-
-
 }
