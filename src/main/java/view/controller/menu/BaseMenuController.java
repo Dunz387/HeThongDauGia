@@ -89,7 +89,7 @@ public class BaseMenuController implements Initializable {
                     if (network.SessionManager.getInstance().isBidder()) {
                         view.utility.WindowManager.openInRoomWindow(selectedAuction);
                     } else if (network.SessionManager.getInstance().isSeller()) {
-                        if (selectedAuction.getItem().getOwner() != null && selectedAuction.getItem().getOwner().getId()
+                        if (selectedAuction.getSeller() != null && selectedAuction.getSeller().getId()
                                 .equals(network.SessionManager.getInstance().getUserId())) {
                             view.utility.WindowManager.openSellerInRoomWindow(selectedAuction);
                         } else {

@@ -42,8 +42,8 @@ public class AuctionContextMenuHelper {
             Auction selected = table.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 boolean isAdmin = SessionManager.getInstance().isAdmin();
-                boolean isOwner = selected.getItem().getOwner() != null && 
-                                 selected.getItem().getOwner().getId().equals(SessionManager.getInstance().getUserId());
+                boolean isOwner = selected.getSeller() != null && 
+                                 selected.getSeller().getId().equals(SessionManager.getInstance().getUserId());
 
                 if (!isAdmin && !isOwner) {
                     AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể sửa thông tin của chính mình!");
@@ -58,8 +58,8 @@ public class AuctionContextMenuHelper {
             Auction selected = table.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 boolean isAdmin = SessionManager.getInstance().isAdmin();
-                boolean isOwner = selected.getItem().getOwner() != null && 
-                                 selected.getItem().getOwner().getId().equals(SessionManager.getInstance().getUserId());
+                boolean isOwner = selected.getSeller() != null && 
+                                 selected.getSeller().getId().equals(SessionManager.getInstance().getUserId());
 
                 if (!isAdmin && !isOwner) {
                     AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xóa phiên của chính mình!");

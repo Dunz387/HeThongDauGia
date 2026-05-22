@@ -58,7 +58,7 @@ public class RoomMenuChoiceController implements Initializable {
                     if (network.SessionManager.getInstance().isBidder() || network.SessionManager.getInstance().isAdmin()) {
                         view.utility.WindowManager.openInRoomWindow(selectedAuction);
                     } else if (network.SessionManager.getInstance().isSeller()) {
-                        if (selectedAuction.getItem().getOwner() != null && selectedAuction.getItem().getOwner().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                        if (selectedAuction.getSeller() != null && selectedAuction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
                             view.utility.WindowManager.openSellerInRoomWindow(selectedAuction);
                         } else {
                             view.utility.AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");

@@ -5,6 +5,7 @@ import exception.InvalidBidException;
 import model.base.Entity;
 import model.item.Item;
 import model.user.Bidder;
+import model.user.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ public class Auction extends Entity implements AuctionSubject {
     private double startingPrice;
     private double currentPrice;
     private double bidIncrement;
+
+    // Lưu người bán gốc (không thay đổi khi chuyển quyền sở hữu item)
+    private User seller;
 
     private Bidder highestBidder;
     private LocalDateTime endTime;
@@ -62,6 +66,7 @@ public class Auction extends Entity implements AuctionSubject {
         this.currentPrice = startingPrice;
         this.bidIncrement = bidIncrement;
         this.endTime = endTime;
+        this.seller = item.getOwner(); // Lưu người bán gốc từ owner của item
 
         this.highestBidder = null;
         this.status = AuctionStatus.OPEN;
@@ -72,6 +77,16 @@ public class Auction extends Entity implements AuctionSubject {
 
     public Item getItem() {
         return item;
+    }
+
+    /** Lấy người bán gốc (không bị thay đổi khi chuyển quyền sở hữu item) */
+    public User getSeller() {
+        return seller != null ? seller : item.getOwner();
+    }
+
+    /** Thiết lập người bán gốc (chỉ dùng khi tải từ DB) */
+    public void setSeller(User seller) {
+        this.seller = seller;
     }
 
     public double getStartingPrice() {

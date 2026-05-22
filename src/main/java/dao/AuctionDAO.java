@@ -35,8 +35,8 @@ public class AuctionDAO {
             pstmt.setString(8, auction.getEndTime().toString());
             pstmt.setString(9, auction.getStatus().toString());
 
-            // Lưu seller_id từ Item owner
-            String sellerId = (auction.getItem().getOwner() != null) ? auction.getItem().getOwner().getId() : null;
+            // Lưu seller_id từ người bán gốc
+            String sellerId = (auction.getSeller() != null) ? auction.getSeller().getId() : null;
             pstmt.setString(10, sellerId);
 
             return pstmt.executeUpdate() > 0;

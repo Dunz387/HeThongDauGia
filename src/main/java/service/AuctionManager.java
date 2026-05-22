@@ -161,7 +161,7 @@ public class AuctionManager {
         if (auction != null && auction.getStatus() == AuctionStatus.RUNNING) {
             auction.setStatus(AuctionStatus.FINISHED);
 
-            User seller = auction.getItem().getOwner();
+            User seller = auction.getSeller();
 
             Bidder highestBidder = auction.getHighestBidder();
             if (highestBidder != null) {
@@ -171,7 +171,7 @@ public class AuctionManager {
                     UserDAO.updateUserBalance(highestBidder.getId(), highestBidder.getBalance());
 
                     auction.getItem().setOwner(highestBidder);
-                    AuctionDAO.updateItemOwner(auction.getId(), highestBidder.getId());
+                    // Không cập nhật seller_id trong DB - giữ nguyên người bán gốc
 
                     if (seller instanceof model.user.Seller) {
                         ((model.user.Seller) seller).receivePayment(winPrice);

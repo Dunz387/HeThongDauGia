@@ -69,7 +69,7 @@ public class AuctionTableConfigurator {
                                 cellData.getValue().getStatus().name())));
 
         colSeller.setCellValueFactory(cellData -> {
-            var owner = cellData.getValue().getItem().getOwner();
+            var owner = cellData.getValue().getSeller();
             return new SimpleStringProperty(owner != null ? owner.getUsername() : "—");
         });
     }

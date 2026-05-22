@@ -86,11 +86,11 @@ public class RoleBasedFilterHelper {
     // PHƯƠNG THỨC NỀN TẢNG (Private)
     // ============================
 
-    /** Sản phẩm đang được Seller đăng bán (chưa kết thúc & mình là chủ sở hữu) */
+    /** Sản phẩm đang được Seller đăng bán (chưa kết thúc & mình là người bán gốc) */
     private static boolean isOwnedBySeller(Auction a, String userId) {
         return a.getStatus() != AuctionStatus.FINISHED &&
-               a.getItem().getOwner() != null &&
-               a.getItem().getOwner().getId().equals(userId);
+               a.getSeller() != null &&
+               a.getSeller().getId().equals(userId);
     }
 
     /** Sản phẩm Bidder đã đấu giá thắng cuộc (đã kết thúc & mình là người trả giá cao nhất) */
@@ -100,10 +100,10 @@ public class RoleBasedFilterHelper {
                a.getHighestBidder().getId().equals(userId);
     }
 
-    /** Kiểm tra mình là chủ sở hữu sản phẩm */
+    /** Kiểm tra mình là người bán gốc của sản phẩm */
     private static boolean isOwner(Auction a, String userId) {
-        return a.getItem().getOwner() != null &&
-               a.getItem().getOwner().getId().equals(userId);
+        return a.getSeller() != null &&
+               a.getSeller().getId().equals(userId);
     }
 
     /** Kiểm tra mình có tham gia đặt giá trong phiên này không */
