@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.util.Duration;
+import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
 
@@ -87,10 +88,15 @@ public class AuctionRoomHelper {
 
     // === EXIT ROOM ===
 
+    private boolean cleaned = false;
+
     /**
-     * Cleanup listeners, gửi LEAVE_ROOM, đóng window.
+     * Chỉ dọn dẹp (stop timer, xóa listener, gửi LEAVE_ROOM).
+     * Không đóng/chuyển window. Dùng khi window đang tự đóng (onCloseRequest).
      */
-    public void exitRoom(javafx.stage.Stage stage) {
+    public void cleanup() {
+        if (cleaned) return;
+        cleaned = true;
         stopTimer();
         
         // Chỉ xóa các listener của riêng phòng này
@@ -104,7 +110,22 @@ public class AuctionRoomHelper {
         if (auctionId != null) {
             ClientNetworkManager.getInstance().sendData(Protocol.REQ_LEAVE_ROOM + Protocol.DELIMITER + auctionId);
         }
-        if (stage != null) stage.close();
+    }
+
+    /**
+     * Cleanup + đóng/chuyển window. Dùng khi bấm nút "Thoát".
+     */
+    public void exitRoom(Stage stage) {
+        cleanup();
+        if (stage != null) {
+            if (stage.getOwner() != null) {
+                // Popup window → đóng bình thường
+                stage.close();
+            } else {
+                // Main stage → quay về BaseMenu thay vì đóng
+                SceneManager.goToBaseMenu(stage);
+            }
+        }
     }
 
     // === COMMON NETWORK LISTENERS ===

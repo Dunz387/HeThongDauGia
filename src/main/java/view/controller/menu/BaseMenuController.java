@@ -87,16 +87,16 @@ public class BaseMenuController implements Initializable {
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
 
                     if (network.SessionManager.getInstance().isBidder()) {
-                        view.utility.WindowManager.openInRoomWindow(selectedAuction);
+                        view.utility.WindowManager.openInRoomWindow(selectedAuction, currentStage);
                     } else if (network.SessionManager.getInstance().isSeller()) {
                         if (selectedAuction.getSeller() != null && selectedAuction.getSeller().getId()
                                 .equals(network.SessionManager.getInstance().getUserId())) {
-                            view.utility.WindowManager.openSellerInRoomWindow(selectedAuction);
+                            view.utility.WindowManager.openSellerInRoomWindow(selectedAuction, currentStage);
                         } else {
                             AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
                         }
                     } else if (network.SessionManager.getInstance().isAdmin()) {
-                        view.utility.WindowManager.openInRoomWindow(selectedAuction);
+                        view.utility.WindowManager.openInRoomWindow(selectedAuction, currentStage);
                     } else {
                         AlertHelper.showWarning("Quyền truy cập", "Bạn không có quyền tham gia!");
                     }

@@ -219,7 +219,8 @@ public class InRoomController implements Initializable {
                 double newPrice = Double.parseDouble(parts[2]);
                 String topBidder = parts[3];
 
-                if (newPrice > currentHighestPrice) {
+                // Cho phép cập nhật ngay cả khi giá giảm (rollback do Admin ban user)
+                if (newPrice != currentHighestPrice || !topBidder.equals(currentTopBidder)) {
                     currentHighestPrice = newPrice;
                     updateTopBidder(topBidder);
                     updateIncrementDisplay(newPrice);
@@ -232,8 +233,8 @@ public class InRoomController implements Initializable {
                                 .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                         roomNotifications.add(0,
                                 new NotificationManager.NotificationItem(
-                                        "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": "
-                                                + topBidder + " đặt $" + view.utility.ChartHelper.formatDouble(newPrice),
+                                        "📢 [" + auction.getItem().getName() + "] Cập nhật giá: "
+                                                + topBidder + " - $" + view.utility.ChartHelper.formatDouble(newPrice),
                                         timeStr));
                     });
                 }
@@ -354,10 +355,23 @@ public class InRoomController implements Initializable {
         }
     }
 
+    private boolean isExiting = false;
+
+    public void cleanupRoom() {
+        if (roomHelper != null) {
+            roomHelper.cleanup();
+        }
+    }
+
     @FXML
     public void exitRoom(ActionEvent event) {
+        if (isExiting) return;
+        isExiting = true;
         if (roomHelper != null) {
-            Stage stage = (Stage) priceChart.getScene().getWindow();
+            Stage stage = null;
+            if (priceChart != null && priceChart.getScene() != null && priceChart.getScene().getWindow() instanceof Stage) {
+                stage = (Stage) priceChart.getScene().getWindow();
+            }
             roomHelper.exitRoom(stage);
         }
     }

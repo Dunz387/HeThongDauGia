@@ -287,14 +287,10 @@ public class Auction extends Entity implements AuctionSubject {
     }
 
     public double getDynamicIncrement() {
-        // Bước giá tối thiểu = 10% giá hiện tại
+        // Bước giá tối thiểu = 10% giá hiện tại, làm tròn chuẩn (>=0.5 lên, <0.5 xuống)
         double increment = this.currentPrice * 0.1;
-        
-        // Làm tròn bước giá cho dễ nhìn
         if (increment < 1) return 1.0;
-        if (increment < 10) return Math.floor(increment);
-        if (increment < 100) return Math.floor(increment / 5) * 5;
-        return Math.floor(increment / 10) * 10;
+        return Math.round(increment);
     }
 
     public void placeBid(Bidder bidder, double bidAmount) throws InvalidBidException, AuctionClosedException {
@@ -377,6 +373,43 @@ public class Auction extends Entity implements AuctionSubject {
         }
     }
 
+    public void removeBidsOfUser(String userId) {
+        if (lock == null) {
+            lock = new ReentrantLock();
+        }
+        lock.lock();
+        try {
+            boolean removed = false;
+            
+            // Lọc bỏ auto-bids
+            if (autoBids != null) {
+                removed |= autoBids.removeIf(config -> config.bidder.getId().equals(userId));
+            }
+
+            // Lọc bỏ lịch sử đặt giá
+            if (bidHistory != null) {
+                removed |= bidHistory.removeIf(tx -> tx.getBidder().getId().equals(userId));
+            }
+            
+            if (removed) {
+                // Tính toán lại currentPrice và highestBidder
+                if (bidHistory == null || bidHistory.isEmpty()) {
+                    this.currentPrice = this.startingPrice;
+                    this.highestBidder = null;
+                } else {
+                    BidTransaction lastValidBid = bidHistory.get(bidHistory.size() - 1);
+                    this.currentPrice = lastValidBid.getBidAmount();
+                    this.highestBidder = lastValidBid.getBidder();
+                }
+                this.lastActivityTime = LocalDateTime.now();
+                
+                // Phát sóng lại thay đổi (rollback)
+                notifyObservers(null);
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
     public void notifyObservers(Bidder previousBidder) {
         if (observers != null) {
             for (AuctionObserver obs : observers) {

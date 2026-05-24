@@ -265,9 +265,8 @@ public class AuctionServer implements AuctionObserver {
         for (ClientHandler client : clients) {
             User u = client.getLoggedInUser();
             if (u != null && targetUserId.equals(u.getId())) {
-                String message = Protocol.BROADCAST_FORCE_LOGOUT + Protocol.DELIMITER + "Tài khoản của bạn đã bị cấm bởi hệ thống!";
-                client.sendData(message);
                 LOGGER.info("Force logout: " + u.getUsername());
+                client.forceLogout("Tài khoản của bạn đã bị cấm bởi hệ thống!");
                 break;
             }
         }

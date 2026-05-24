@@ -322,10 +322,23 @@ public class SellerInRoomController implements Initializable {
         });
     }
 
+    private boolean isExiting = false;
+
+    public void cleanupRoom() {
+        if (roomHelper != null) {
+            roomHelper.cleanup();
+        }
+    }
+
     @FXML
     public void exitRoom(ActionEvent event) {
+        if (isExiting) return;
+        isExiting = true;
         if (roomHelper != null) {
-            Stage stage = (Stage) priceChart.getScene().getWindow();
+            Stage stage = null;
+            if (priceChart != null && priceChart.getScene() != null && priceChart.getScene().getWindow() instanceof Stage) {
+                stage = (Stage) priceChart.getScene().getWindow();
+            }
             roomHelper.exitRoom(stage);
         }
     }

@@ -75,12 +75,7 @@ public class ChartHelper {
         double increment = currentPrice * 0.1;
         if (increment < 1)
             return 1.0;
-        else if (increment < 10)
-            return Math.floor(increment);
-        else if (increment < 100)
-            return Math.floor(increment / 5) * 5;
-        else
-            return Math.floor(increment / 10) * 10;
+        return Math.round(increment);
     }
 
     /**

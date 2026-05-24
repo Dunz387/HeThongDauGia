@@ -28,10 +28,23 @@ public class LoginController {
             String[] parts = message.split(Protocol.DELIMITER);
             Platform.runLater(() -> {
                 SessionManager.getInstance().clearSession();
-                javafx.stage.Stage window = (javafx.stage.Stage) javafx.stage.Window.getWindows().stream()
-                        .filter(javafx.stage.Window::isShowing).findFirst().orElse(null);
-                if (window != null) {
-                    SceneManager.goToLogin(window);
+                
+                // Đóng tất cả các popup (cửa sổ có owner) và tìm cửa sổ chính
+                Stage mainWindow = null;
+                java.util.List<javafx.stage.Window> openWindows = new java.util.ArrayList<>(javafx.stage.Window.getWindows());
+                for (javafx.stage.Window w : openWindows) {
+                    if (w instanceof Stage) {
+                        Stage s = (Stage) w;
+                        if (s.getOwner() != null) {
+                            s.close(); // Đóng popup
+                        } else if (mainWindow == null && s.isShowing()) {
+                            mainWindow = s; // Lấy cửa sổ chính
+                        }
+                    }
+                }
+                
+                if (mainWindow != null) {
+                    SceneManager.goToLogin(mainWindow);
                     AlertHelper.showError("Thông báo", parts.length >= 2 ? parts[1] : "Tài khoản của bạn đã bị đăng xuất!");
                 }
             });

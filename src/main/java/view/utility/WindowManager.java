@@ -56,7 +56,7 @@ public class WindowManager {
     }
 
     // THÊM MỚI: Mở phòng đấu giá (dưới dạng popup)
-    public static void openInRoomWindow(model.auction.Auction auction) {
+    public static void openInRoomWindow(model.auction.Auction auction, Stage owner) {
         try {
             FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/auction/InRoomView.fxml"));
             Parent root = loader.load();
@@ -64,12 +64,13 @@ public class WindowManager {
             controller.setAuction(auction);
             
             Stage stage = new Stage();
+            if (owner != null) {
+                stage.initOwner(owner);
+            }
             stage.setScene(new Scene(root));
             stage.setTitle("Phòng Đấu Giá: " + auction.getItem().getName());
-            // Đóng cửa sổ sẽ kích hoạt sự kiện thoát phòng
-            stage.setOnCloseRequest(e -> {
-                controller.exitRoom(null);
-            });
+            // Đóng cửa sổ: chỉ dọn dẹp, JavaFX tự đóng window
+            stage.setOnCloseRequest(e -> controller.cleanupRoom());
             stage.show();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi mở phòng đấu giá", e);
@@ -77,7 +78,7 @@ public class WindowManager {
     }
 
     // THÊM MỚI: Mở phòng đấu giá dưới góc độ người bán/Admin (dưới dạng popup)
-    public static void openSellerInRoomWindow(model.auction.Auction auction) {
+    public static void openSellerInRoomWindow(model.auction.Auction auction, Stage owner) {
         try {
             FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/view/auction/SellerInRoomView.fxml"));
             Parent root = loader.load();
@@ -85,12 +86,13 @@ public class WindowManager {
             controller.setAuction(auction);
             
             Stage stage = new Stage();
+            if (owner != null) {
+                stage.initOwner(owner);
+            }
             stage.setScene(new Scene(root));
             stage.setTitle("Quản Lý Phòng Đấu Giá: " + auction.getItem().getName());
-            // Đóng cửa sổ sẽ kích hoạt sự kiện thoát phòng
-            stage.setOnCloseRequest(e -> {
-                controller.exitRoom(null);
-            });
+            // Đóng cửa sổ: chỉ dọn dẹp, JavaFX tự đóng window
+            stage.setOnCloseRequest(e -> controller.cleanupRoom());
             stage.show();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi mở quản lý phòng đấu giá", e);

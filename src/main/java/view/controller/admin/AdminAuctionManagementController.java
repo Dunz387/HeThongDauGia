@@ -71,7 +71,7 @@ public class AdminAuctionManagementController implements Initializable {
                 btnView.setOnAction(event -> {
                     Auction auction = getTableView().getItems().get(getIndex());
                     Stage stage = (Stage) btnView.getScene().getWindow();
-                    view.utility.WindowManager.openSellerInRoomWindow(auction);
+                    view.utility.WindowManager.openSellerInRoomWindow(auction, stage);
                 });
             }
 

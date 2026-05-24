@@ -182,6 +182,19 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    public void forceLogout(String message) {
+        try {
+            for (String roomId : currentRoomIds) {
+                server.leaveRoom(roomId, this);
+            }
+            currentRoomIds.clear();
+        } catch (Exception e) {
+            LOGGER.warning("Lỗi khi rời phòng đấu giá lúc force logout");
+        }
+        loggedInUser = null;
+        sendData(Protocol.BROADCAST_FORCE_LOGOUT + Protocol.DELIMITER + message);
+    }
+
     public synchronized void sendData(Object data) {
         try {
             if (out != null && socket != null && !socket.isClosed()) {

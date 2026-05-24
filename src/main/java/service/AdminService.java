@@ -28,7 +28,15 @@ public class AdminService {
         User u = UserService.getInstance().findUserById(targetUserId);
         if (u != null) {
             u.setActive(status);
-            return AdminDAO.setUserActiveStatus(targetUserId, status);
+            boolean success = AdminDAO.setUserActiveStatus(targetUserId, status);
+            if (success && !status) { // Nếu ban (status = false)
+                for (Auction auction : AuctionManager.getInstance().getAllAuctions()) {
+                    if (auction.getStatus() == AuctionStatus.RUNNING) {
+                        auction.removeBidsOfUser(targetUserId);
+                    }
+                }
+            }
+            return success;
         }
         return false;
     }
