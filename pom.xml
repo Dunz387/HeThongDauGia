@@ -226,23 +226,11 @@
     </build>
 
     <profiles>
-        <!--
-            Profile đóng gói .exe bằng jpackage
-            Chạy: mvn clean package -Ppackage-exe -DskipTests
-
-            Kết quả:
-              target/dist/HeThongDauGiaClient/  → chứa Client .exe
-              target/dist/HeThongDauGiaServer/  → chứa Server .exe
-        -->
+        <!-- PROFILE CHO WINDOWS -->
         <profile>
-            <id>package-exe</id>
+            <id>package-windows</id>
             <build>
                 <plugins>
-                    <!--
-                        Bước 1: Chuẩn bị thư mục input cho jpackage
-                        - client-package-input/: chứa project jar (đổi tên → client.jar) + tất cả dependency
-                        - server-package-input/: chứa project jar (đổi tên → server.jar) + tất cả dependency
-                    -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -251,28 +239,19 @@
                             <execution>
                                 <id>prepare-jpackage-input</id>
                                 <phase>package</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
+                                <goals><goal>run</goal></goals>
                                 <configuration>
                                     <target>
-                                        <!-- Xóa thư mục cũ nếu tồn tại -->
                                         <delete dir="${project.build.directory}/client-package-input" quiet="true"/>
                                         <delete dir="${project.build.directory}/server-package-input" quiet="true"/>
                                         <delete dir="${project.build.directory}/dist" quiet="true"/>
-
-                                        <!-- Tạo thư mục input cho Client -->
                                         <mkdir dir="${project.build.directory}/client-package-input"/>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                              tofile="${project.build.directory}/client-package-input/client.jar"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/client-package-input/client.jar"/>
                                         <copy todir="${project.build.directory}/client-package-input">
                                             <fileset dir="${project.build.directory}/libs"/>
                                         </copy>
-
-                                        <!-- Tạo thư mục input cho Server -->
                                         <mkdir dir="${project.build.directory}/server-package-input"/>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                              tofile="${project.build.directory}/server-package-input/server.jar"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/server-package-input/server.jar"/>
                                         <copy todir="${project.build.directory}/server-package-input">
                                             <fileset dir="${project.build.directory}/libs"/>
                                         </copy>
@@ -287,70 +266,41 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <version>3.1.0</version>
                         <executions>
-                            <!-- Đóng gói Client .exe -->
                             <execution>
                                 <id>jpackage-client</id>
                                 <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
+                                <goals><goal>exec</goal></goals>
                                 <configuration>
                                     <executable>${java.home}/bin/jpackage</executable>
                                     <arguments>
-                                        <argument>--type</argument>
-                                        <argument>app-image</argument>
-                                        <argument>--input</argument>
-                                        <argument>${project.build.directory}/client-package-input</argument>
-                                        <argument>--dest</argument>
-                                        <argument>${project.build.directory}/dist</argument>
-                                        <argument>--name</argument>
-                                        <argument>HeThongDauGiaClient</argument>
-                                        <argument>--main-jar</argument>
-                                        <argument>client.jar</argument>
-                                        <argument>--main-class</argument>
-                                        <argument>view.Launcher</argument>
-                                        <argument>--java-options</argument>
-                                        <argument>--enable-native-access=ALL-UNNAMED</argument>
-                                        <argument>--app-version</argument>
-                                        <argument>${project.version.clean}</argument>
-                                        <argument>--vendor</argument>
-                                        <argument>HeThongDauGia Team</argument>
-                                        <argument>--description</argument>
-                                        <argument>Ứng dụng Client - Hệ Thống Đấu Giá</argument>
+                                        <argument>--type</argument><argument>app-image</argument>
+                                        <argument>--input</argument><argument>${project.build.directory}/client-package-input</argument>
+                                        <argument>--dest</argument><argument>${project.build.directory}/dist</argument>
+                                        <argument>--name</argument><argument>HeThongDauGiaClient</argument>
+                                        <argument>--main-jar</argument><argument>client.jar</argument>
+                                        <argument>--main-class</argument><argument>view.Launcher</argument>
+                                        <argument>--java-options</argument><argument>--enable-native-access=ALL-UNNAMED</argument>
+                                        <argument>--app-version</argument><argument>${project.version.clean}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
-                            <!-- Đóng gói Server .exe -->
                             <execution>
                                 <id>jpackage-server</id>
                                 <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
+                                <goals><goal>exec</goal></goals>
                                 <configuration>
                                     <executable>${java.home}/bin/jpackage</executable>
                                     <arguments>
-                                        <argument>--type</argument>
-                                        <argument>app-image</argument>
-                                        <argument>--input</argument>
-                                        <argument>${project.build.directory}/server-package-input</argument>
-                                        <argument>--dest</argument>
-                                        <argument>${project.build.directory}/dist</argument>
-                                        <argument>--name</argument>
-                                        <argument>HeThongDauGiaServer</argument>
-                                        <argument>--main-jar</argument>
-                                        <argument>server.jar</argument>
-                                        <argument>--main-class</argument>
-                                        <argument>server.AuctionServer</argument>
-                                        <argument>--java-options</argument>
-                                        <argument>--enable-native-access=ALL-UNNAMED</argument>
+                                        <argument>--type</argument><argument>app-image</argument>
+                                        <argument>--input</argument><argument>${project.build.directory}/server-package-input</argument>
+                                        <argument>--dest</argument><argument>${project.build.directory}/dist</argument>
+                                        <argument>--name</argument><argument>HeThongDauGiaServer</argument>
+                                        <argument>--main-jar</argument><argument>server.jar</argument>
+                                        <argument>--main-class</argument><argument>server.AuctionServer</argument>
+                                        <argument>--java-options</argument><argument>--enable-native-access=ALL-UNNAMED</argument>
+                                        <!-- Bật console cho server trên windows -->
                                         <argument>--win-console</argument>
-                                        <argument>--app-version</argument>
-                                        <argument>${project.version.clean}</argument>
-                                        <argument>--vendor</argument>
-                                        <argument>HeThongDauGia Team</argument>
-                                        <argument>--description</argument>
-                                        <argument>Ứng dụng Server - Hệ Thống Đấu Giá</argument>
+                                        <argument>--app-version</argument><argument>${project.version.clean}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -358,11 +308,96 @@
                     </plugin>
                 </plugins>
             </build>
+            <properties><project.version.clean>1.0.0</project.version.clean></properties>
+        </profile>
 
-            <properties>
-                <!-- jpackage yêu cầu version dạng x.y.z (không chấp nhận -SNAPSHOT) -->
-                <project.version.clean>1.0.0</project.version.clean>
-            </properties>
+        <!-- PROFILE CHO MACOS -->
+        <profile>
+            <id>package-mac</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-jpackage-input</id>
+                                <phase>package</phase>
+                                <goals><goal>run</goal></goals>
+                                <configuration>
+                                    <target>
+                                        <delete dir="${project.build.directory}/client-package-input" quiet="true"/>
+                                        <delete dir="${project.build.directory}/server-package-input" quiet="true"/>
+                                        <delete dir="${project.build.directory}/dist" quiet="true"/>
+                                        <mkdir dir="${project.build.directory}/client-package-input"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/client-package-input/client.jar"/>
+                                        <copy todir="${project.build.directory}/client-package-input">
+                                            <fileset dir="${project.build.directory}/libs"/>
+                                        </copy>
+                                        <mkdir dir="${project.build.directory}/server-package-input"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/server-package-input/server.jar"/>
+                                        <copy todir="${project.build.directory}/server-package-input">
+                                            <fileset dir="${project.build.directory}/libs"/>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>jpackage-client</id>
+                                <phase>package</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>${java.home}/bin/jpackage</executable>
+                                    <arguments>
+                                        <argument>--type</argument><argument>app-image</argument>
+                                        <argument>--input</argument><argument>${project.build.directory}/client-package-input</argument>
+                                        <argument>--dest</argument><argument>${project.build.directory}/dist</argument>
+                                        <argument>--name</argument><argument>HeThongDauGiaClient</argument>
+                                        <argument>--main-jar</argument><argument>client.jar</argument>
+                                        <argument>--main-class</argument><argument>view.Launcher</argument>
+                                        <argument>--java-options</argument><argument>--enable-native-access=ALL-UNNAMED</argument>
+                                        <argument>--app-version</argument><argument>${project.version.clean}</argument>
+                                        <!-- Thông số bắt buộc cho MacOS -->
+                                        <argument>--mac-package-identifier</argument><argument>com.hethongdaugia.client</argument>
+                                        <argument>--mac-package-name</argument><argument>HeThongDauGiaClient</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>jpackage-server</id>
+                                <phase>package</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>${java.home}/bin/jpackage</executable>
+                                    <arguments>
+                                        <argument>--type</argument><argument>app-image</argument>
+                                        <argument>--input</argument><argument>${project.build.directory}/server-package-input</argument>
+                                        <argument>--dest</argument><argument>${project.build.directory}/dist</argument>
+                                        <argument>--name</argument><argument>HeThongDauGiaServer</argument>
+                                        <argument>--main-jar</argument><argument>server.jar</argument>
+                                        <argument>--main-class</argument><argument>server.AuctionServer</argument>
+                                        <argument>--java-options</argument><argument>--enable-native-access=ALL-UNNAMED</argument>
+                                        <argument>--app-version</argument><argument>${project.version.clean}</argument>
+                                        <!-- Thông số bắt buộc cho MacOS -->
+                                        <argument>--mac-package-identifier</argument><argument>com.hethongdaugia.server</argument>
+                                        <argument>--mac-package-name</argument><argument>HeThongDauGiaServer</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties><project.version.clean>1.0.0</project.version.clean></properties>
         </profile>
     </profiles>
 </project>
