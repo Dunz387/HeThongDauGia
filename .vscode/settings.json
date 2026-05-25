@@ -16,6 +16,6 @@
         "libs\\openjfx-26_windows-x64_bin-sdk\\javafx-sdk-26\\lib\\jfx.incubator.richtext.jar"
     ],
     "java.format.settings.url": ".vscode/java-formatter.xml",
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "java.debug.settings.onBuildFailureProceed": true
 }
