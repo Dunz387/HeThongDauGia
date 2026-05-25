@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" afterDir="false" />
+    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="sửa bug thời gian">
+      <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,7 +213,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779721644902</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="sửa bug thời gian">
+      <option name="closed" value="true" />
+      <created>1779726987556</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1779726987556</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -225,7 +230,8 @@
     <MESSAGE value="refractor code, sửa lỗi" />
     <MESSAGE value="sửa lỗi linh tinh" />
     <MESSAGE value="port full database và server lên cloudserver" />
-    <option name="LAST_COMMIT_MESSAGE" value="port full database và server lên cloudserver" />
+    <MESSAGE value="sửa bug thời gian" />
+    <option name="LAST_COMMIT_MESSAGE" value="sửa bug thời gian" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

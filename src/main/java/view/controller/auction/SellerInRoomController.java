@@ -298,7 +298,7 @@ public class SellerInRoomController implements Initializable {
             } else {
                 currentHighestPrice = auction.getStartingPrice();
                 if (lblCurrentPrice != null) lblCurrentPrice.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
-                if (lblEarnings != null) lblEarnings.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
+                if (lblEarnings != null) lblEarnings.setText("0 $");
                 if (topBidderLabel != null) topBidderLabel.setText("Chưa có");
                 if (lblRounds != null) lblRounds.setText("0");
             }
