@@ -132,10 +132,7 @@ public class InRoomController implements Initializable {
 
         if (auction.getEndTime() != null) {
             roomHelper.initTimer(auction.getEndTime());
-            Platform.runLater(() -> {
-                roomHelper.startTimer();
-                updateTimeLabel();
-            });
+            roomHelper.startTimer();
         }
 
         // Đăng ký common listeners qua helper
@@ -205,8 +202,10 @@ public class InRoomController implements Initializable {
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], currentAuctionId)) {
                 int durationMinutes = Integer.parseInt(parts[2]);
                 if (roomHelper != null) {
-                    roomHelper.initTimer(java.time.LocalDateTime.now().plusMinutes(durationMinutes));
-                    Platform.runLater(() -> roomHelper.startTimer());
+                    Platform.runLater(() -> {
+                        roomHelper.initTimer(java.time.LocalDateTime.now().plusMinutes(durationMinutes));
+                        roomHelper.startTimer();
+                    });
                 }
                 NotificationManager.getInstance()
                         .addNotification("🚀 Phiên đấu giá " + currentAuctionId + " đã BẮT ĐẦU!");
@@ -298,10 +297,8 @@ public class InRoomController implements Initializable {
     }
 
     private void updateTimeLabel() {
-        Platform.runLater(() -> {
-            if (totalTimeLabel != null && roomHelper != null)
-                totalTimeLabel.setText(ChartHelper.formatTime(roomHelper.getTotalTimeRemaining()));
-        });
+        if (totalTimeLabel != null && roomHelper != null)
+            totalTimeLabel.setText(ChartHelper.formatTime(roomHelper.getTotalTimeRemaining()));
     }
 
     private void updateTopBidder(String bidderName) {

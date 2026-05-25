@@ -256,10 +256,7 @@ public class SellerInRoomController implements Initializable {
 
         if (auction.getEndTime() != null) {
             roomHelper.initTimer(auction.getEndTime());
-            Platform.runLater(() -> {
-                roomHelper.startTimer();
-                if (totalTimeLabel != null) totalTimeLabel.setText(ChartHelper.formatTime(roomHelper.getTotalTimeRemaining()));
-            });
+            roomHelper.startTimer();
         }
 
         // Common listeners via helper

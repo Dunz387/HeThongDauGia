@@ -34,7 +34,7 @@ public class Main extends Application {
 
         // Kết nối mạng
         LOGGER.info("Đang kết nối đến Server...");
-        boolean isConnected = ClientNetworkManager.getInstance().connect("159.223.48.211",8080);
+        boolean isConnected = ClientNetworkManager.getInstance().connect("localhost",8080);
 
         if (!isConnected) {
             LOGGER.severe(

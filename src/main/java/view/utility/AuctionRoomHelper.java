@@ -52,19 +52,30 @@ public class AuctionRoomHelper {
 
     public void startTimer() {
         if (totalTimelineTimer != null) totalTimelineTimer.stop();
+
+        // Cập nhật ngay lần đầu trước khi Timeline bắt đầu
+        refreshTimeRemaining();
+        if (onTimeUpdate != null) {
+            onTimeUpdate.run();
+        }
+
         totalTimelineTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            if (auctionEndTime != null) {
-                long seconds = java.time.Duration.between(LocalDateTime.now(), auctionEndTime).getSeconds();
-                totalTimeRemaining = (int) Math.max(0, seconds);
-                if (onTimeUpdate != null) Platform.runLater(onTimeUpdate);
-                if (totalTimeRemaining <= 0) {
-                    stopTimer();
-                    if (onTimerExpired != null) Platform.runLater(onTimerExpired);
-                }
+            refreshTimeRemaining();
+            if (onTimeUpdate != null) onTimeUpdate.run();
+            if (totalTimeRemaining <= 0) {
+                stopTimer();
+                if (onTimerExpired != null) onTimerExpired.run();
             }
         }));
         totalTimelineTimer.setCycleCount(Timeline.INDEFINITE);
         totalTimelineTimer.play();
+    }
+
+    private void refreshTimeRemaining() {
+        if (auctionEndTime != null) {
+            long seconds = java.time.Duration.between(LocalDateTime.now(), auctionEndTime).getSeconds();
+            totalTimeRemaining = (int) Math.max(0, seconds);
+        }
     }
 
     public void stopTimer() {
