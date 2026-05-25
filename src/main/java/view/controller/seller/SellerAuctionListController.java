@@ -59,7 +59,6 @@ public class SellerAuctionListController implements Initializable {
                 colHighestBidder, colEndTime, colStatus, colSeller);
 
         // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER ===
-        ClientNetworkManager.getInstance().clearAuctionListListeners();
         ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
             if (listFromServer != null && !listFromServer.isEmpty()) {
                 latestAuction = listFromServer.get(listFromServer.size() - 1);

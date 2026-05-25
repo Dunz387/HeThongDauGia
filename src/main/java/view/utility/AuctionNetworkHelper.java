@@ -49,6 +49,9 @@ public class AuctionNetworkHelper {
             }
         });
 
+        // Đăng ký lại global listener TRƯỚC KHI request danh sách
+        NotificationFilterHelper.ensureGlobalListenerRegistered();
+
         // Lắng nghe BROADCAST_NEW_BID để tự động cập nhật bảng real-time
         registerBidUpdateRefresh();
 

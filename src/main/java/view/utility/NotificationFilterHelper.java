@@ -91,6 +91,10 @@ public class NotificationFilterHelper {
         }
     };
 
+    public static void ensureGlobalListenerRegistered() {
+        registerGlobalListListener();
+    }
+
     private static void registerGlobalListListener() {
         ClientNetworkManager.getInstance().removeAuctionListListener(globalListListener);
         ClientNetworkManager.getInstance().addAuctionListListener(globalListListener);
@@ -156,7 +160,14 @@ public class NotificationFilterHelper {
 
     /** Đẩy thông báo phiên bắt đầu (đã lọc theo vai trò) */
     private static void pushStartNotification(Auction auction) {
-        if (RoleBasedFilterHelper.shouldReceiveNotification(auction)) {
+        boolean shouldNotify = RoleBasedFilterHelper.shouldReceiveNotification(auction);
+        if (!shouldNotify && network.SessionManager.getInstance().isSeller()) {
+            if (auction.getSeller() != null &&
+                auction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                shouldNotify = true;
+            }
+        }
+        if (shouldNotify) {
             NotificationManager.getInstance()
                     .addNotification("🚀 Một phiên đấu giá mới (" + auction.getItem().getName() + ") đã bắt đầu!");
         }
@@ -164,7 +175,14 @@ public class NotificationFilterHelper {
 
     /** Đẩy thông báo phiên kết thúc (đã lọc theo vai trò) */
     private static void pushFinishedNotification(Auction auction, String winner, double finalPrice) {
-        if (RoleBasedFilterHelper.shouldReceiveNotification(auction)) {
+        boolean shouldNotify = RoleBasedFilterHelper.shouldReceiveNotification(auction);
+        if (!shouldNotify && network.SessionManager.getInstance().isSeller()) {
+            if (auction.getSeller() != null &&
+                auction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                shouldNotify = true;
+            }
+        }
+        if (shouldNotify) {
             NotificationManager.getInstance()
                     .addNotification("🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! [" + auction.getItem().getName() + "] - Người thắng: " + winner + " ($" + view.utility.ChartHelper.formatDouble(finalPrice) + ")");
         }
@@ -177,6 +195,13 @@ public class NotificationFilterHelper {
         // Ta cần ép buộc hiển thị thông báo để họ biết mình vừa đặt giá thành công
         if (!shouldNotify && network.SessionManager.getInstance().isBidder()) {
             if (topBidder.equals(network.SessionManager.getInstance().getUsername())) {
+                shouldNotify = true;
+            }
+        }
+        // Seller fallback: seller always receives bids on their own auction
+        if (!shouldNotify && network.SessionManager.getInstance().isSeller()) {
+            if (auction.getSeller() != null &&
+                auction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
                 shouldNotify = true;
             }
         }
