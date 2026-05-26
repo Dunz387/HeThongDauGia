@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="reset lại database sau test">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="fix lại lỗi thời gian">
       <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -238,7 +236,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779728148874</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fix lại lỗi thời gian">
+      <option name="closed" value="true" />
+      <created>1779770148469</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1779770148469</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -250,7 +256,8 @@
     <MESSAGE value="sửa bug thời gian" />
     <MESSAGE value="sửa bug tiền nhận về" />
     <MESSAGE value="reset lại database sau test" />
-    <option name="LAST_COMMIT_MESSAGE" value="reset lại database sau test" />
+    <MESSAGE value="fix lại lỗi thời gian" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix lại lỗi thời gian" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
