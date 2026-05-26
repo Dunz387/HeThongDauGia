@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="fix lại lỗi thời gian">
+    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="sửa lại chút">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +249,23 @@
       <option name="project" value="LOCAL" />
       <updated>1779770148469</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="sửa lại chút">
+      <option name="closed" value="true" />
+      <created>1779770533422</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1779770533422</updated>
+    </task>
+    <task id="LOCAL-00014" summary="sửa lại chút">
+      <option name="closed" value="true" />
+      <created>1779770551034</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1779770551034</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -257,7 +278,8 @@
     <MESSAGE value="sửa bug tiền nhận về" />
     <MESSAGE value="reset lại database sau test" />
     <MESSAGE value="fix lại lỗi thời gian" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix lại lỗi thời gian" />
+    <MESSAGE value="sửa lại chút" />
+    <option name="LAST_COMMIT_MESSAGE" value="sửa lại chút" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

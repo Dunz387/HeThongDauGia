@@ -248,13 +248,21 @@ public class SellerInRoomController implements Initializable {
         this.currentAuctionId = auction.getId();
         if (lblRoomId != null) lblRoomId.setText("ID phòng: " + auction.getId());
 
+        // Dọn dẹp helper cũ nếu có (tránh timer cũ chạy ngầm)
+        if (roomHelper != null) {
+            roomHelper.cleanup();
+        }
+
         // Khởi tạo helper (DRY)
         roomHelper = new AuctionRoomHelper(currentAuctionId);
         roomHelper.setOnTimeUpdate(() -> {
             if (totalTimeLabel != null) totalTimeLabel.setText(ChartHelper.formatTime(roomHelper.getTotalTimeRemaining()));
         });
 
-        if (auction.getEndTime() != null) {
+        if (auction.getEndTimeEpoch() > 0) {
+            roomHelper.initTimer(auction.getEndTimeEpoch());
+            roomHelper.startTimer();
+        } else if (auction.getEndTime() != null) {
             roomHelper.initTimer(auction.getEndTime());
             roomHelper.startTimer();
         }

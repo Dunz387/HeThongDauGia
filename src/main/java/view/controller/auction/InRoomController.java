@@ -124,13 +124,21 @@ public class InRoomController implements Initializable {
         if (roomIdLabel != null)
             roomIdLabel.setText("ID phòng: " + currentAuctionId);
 
+        // Dọn dẹp helper cũ nếu có (tránh timer cũ chạy ngầm)
+        if (roomHelper != null) {
+            roomHelper.cleanup();
+        }
+
         // Khởi tạo helper (DRY: timer, exit, common listeners)
         roomHelper = new AuctionRoomHelper(currentAuctionId);
         roomHelper.setOnTimeUpdate(() -> updateTimeLabel());
         roomHelper.setOnTimerExpired(() -> {
         });
 
-        if (auction.getEndTime() != null) {
+        if (auction.getEndTimeEpoch() > 0) {
+            roomHelper.initTimer(auction.getEndTimeEpoch());
+            roomHelper.startTimer();
+        } else if (auction.getEndTime() != null) {
             roomHelper.initTimer(auction.getEndTime());
             roomHelper.startTimer();
         }

@@ -24,7 +24,8 @@ import java.time.LocalDateTime;
  */
 public class AuctionRoomHelper {
     private Timeline totalTimelineTimer;
-    private LocalDateTime auctionEndTime;
+    private LocalDateTime auctionEndTime; // (giữ lại cho tương thích nếu cần)
+    private long auctionEndTimeEpoch;
     private int totalTimeRemaining = 0;
     private final String auctionId;
 
@@ -44,10 +45,19 @@ public class AuctionRoomHelper {
 
     // === TIMER ===
 
+    public void initTimer(long endTimeEpoch) {
+        this.auctionEndTimeEpoch = endTimeEpoch;
+        long seconds = (endTimeEpoch - System.currentTimeMillis()) / 1000;
+        this.totalTimeRemaining = (int) Math.max(0, seconds);
+    }
+    
+    // Giữ lại hàm cũ phòng trường hợp lỗi
     public void initTimer(LocalDateTime endTime) {
         this.auctionEndTime = endTime;
-        long seconds = java.time.Duration.between(LocalDateTime.now(), endTime).getSeconds();
-        this.totalTimeRemaining = (int) Math.max(0, seconds);
+        if (endTime != null) {
+            this.auctionEndTimeEpoch = endTime.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
+        refreshTimeRemaining();
     }
 
     public void startTimer() {
@@ -72,8 +82,8 @@ public class AuctionRoomHelper {
     }
 
     private void refreshTimeRemaining() {
-        if (auctionEndTime != null) {
-            long seconds = java.time.Duration.between(LocalDateTime.now(), auctionEndTime).getSeconds();
+        if (auctionEndTimeEpoch > 0) {
+            long seconds = (auctionEndTimeEpoch - System.currentTimeMillis()) / 1000;
             totalTimeRemaining = (int) Math.max(0, seconds);
         }
     }
@@ -83,7 +93,9 @@ public class AuctionRoomHelper {
     }
 
     public void extendTime(int addedSeconds) {
-        if (auctionEndTime != null) auctionEndTime = auctionEndTime.plusSeconds(addedSeconds);
+        if (auctionEndTimeEpoch > 0) {
+            auctionEndTimeEpoch += (addedSeconds * 1000L);
+        }
         totalTimeRemaining += addedSeconds;
     }
 

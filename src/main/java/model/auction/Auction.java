@@ -25,6 +25,7 @@ public class Auction extends Entity implements AuctionSubject {
 
     private Bidder highestBidder;
     private LocalDateTime endTime;
+    private long endTimeEpoch;
     private AuctionStatus status;
     private String reason;
 
@@ -66,6 +67,9 @@ public class Auction extends Entity implements AuctionSubject {
         this.currentPrice = startingPrice;
         this.bidIncrement = bidIncrement;
         this.endTime = endTime;
+        if (endTime != null) {
+            this.endTimeEpoch = endTime.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
         this.seller = item.getOwner(); // Lưu người bán gốc từ owner của item
 
         this.highestBidder = null;
@@ -131,6 +135,13 @@ public class Auction extends Entity implements AuctionSubject {
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+        if (endTime != null) {
+            this.endTimeEpoch = endTime.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
+    }
+
+    public long getEndTimeEpoch() {
+        return endTimeEpoch;
     }
 
     public AuctionStatus getStatus() {
