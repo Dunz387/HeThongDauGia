@@ -27,12 +27,8 @@ public class Auction extends Entity implements AuctionSubject {
     private LocalDateTime endTime;
     private long endTimeEpoch;
     private AuctionStatus status;
-    private String reason;
 
     private List<BidTransaction> bidHistory;
-    
-    // Lưu thời gian đặt giá gần nhất
-    private transient LocalDateTime lastActivityTime = LocalDateTime.now();
 
     // Dùng transient để bỏ qua khi tuần tự hóa (Serialize)
     private transient List<AuctionObserver> observers;
@@ -88,10 +84,6 @@ public class Auction extends Entity implements AuctionSubject {
         return seller != null ? seller : item.getOwner();
     }
 
-    /** Thiết lập người bán gốc (chỉ dùng khi tải từ DB) */
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
 
     public double getStartingPrice() {
         return startingPrice;
@@ -339,8 +331,6 @@ public class Auction extends Entity implements AuctionSubject {
             if (bidHistory == null)
                 bidHistory = new ArrayList<>();
             bidHistory.add(transaction);
-            
-            this.lastActivityTime = LocalDateTime.now(); // Cập nhật thời gian khi có bid mới
 
             // Thông báo cho máy chủ có lượt đặt giá mới
             notifyObservers(previousBidder);
@@ -412,7 +402,6 @@ public class Auction extends Entity implements AuctionSubject {
                     this.currentPrice = lastValidBid.getBidAmount();
                     this.highestBidder = lastValidBid.getBidder();
                 }
-                this.lastActivityTime = LocalDateTime.now();
                 
                 // Phát sóng lại thay đổi (rollback)
                 notifyObservers(null);
@@ -443,12 +432,4 @@ public class Auction extends Entity implements AuctionSubject {
         notifyObservers(null);
     }
 
-    public LocalDateTime getLastActivityTime() {
-        if (lastActivityTime == null) lastActivityTime = LocalDateTime.now();
-        return lastActivityTime;
-    }
-
-    public void updateActivityTime() {
-        this.lastActivityTime = LocalDateTime.now();
-    }
 }
