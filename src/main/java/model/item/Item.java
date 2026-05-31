@@ -22,4 +22,6 @@ public abstract class Item extends Entity {
 
     public User getOwner() { return owner; }
     public void setOwner(User owner) { this.owner = owner; }
+
+    public abstract String getTypeString();
 }

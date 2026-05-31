@@ -44,6 +44,14 @@ public class ClientHandler implements Runnable {
         this.financialHandler = new FinancialHandler(this);
     }
 
+    private static final server.command.CommandRegistry commandRegistry = new server.command.CommandRegistry();
+
+    public AuthHandler getAuthHandler() { return authHandler; }
+    public AuctionHandler getAuctionHandler() { return auctionHandler; }
+    public AdminHandler getAdminHandler() { return adminHandler; }
+    public FinancialHandler getFinancialHandler() { return financialHandler; }
+
+
     public User getLoggedInUser() {
         return loggedInUser;
     }
@@ -85,83 +93,7 @@ public class ClientHandler implements Runnable {
     }
 
     private void routeCommand(String cmd, String[] parts) {
-        switch (cmd) {
-        // Auth
-        case Protocol.REQ_LOGIN:
-            if (parts.length >= 3)
-                authHandler.handleLogin(parts[1], parts[2]);
-            break;
-        case Protocol.REQ_REGISTER:
-            if (parts.length >= 4)
-                authHandler.handleRegister(parts[1], parts[2], parts[3]);
-            else if (parts.length >= 3)
-                authHandler.handleRegister(parts[1], parts[2], "BIDDER");
-            break;
-        case Protocol.REQ_LOGOUT:
-            authHandler.handleLogout();
-            break;
-        // Auction
-        case Protocol.REQ_GET_AUCTIONS:
-            auctionHandler.handleGetAuctions();
-            break;
-        case Protocol.REQ_CREATE_ITEM:
-            if (parts.length >= 6)
-                auctionHandler.handleCreateItem(parts[1], parts[2], parts[3], parts[4], parts[5]);
-            break;
-        case Protocol.REQ_UPDATE_ITEM:
-            if (parts.length >= 7)
-                auctionHandler.handleUpdateItem(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
-            break;
-        case Protocol.REQ_DELETE_ITEM:
-            if (parts.length >= 2)
-                auctionHandler.handleDeleteItem(parts[1]);
-            break;
-        case Protocol.REQ_BID:
-            if (parts.length >= 3)
-                auctionHandler.handleBid(parts[1], parts[2]);
-            break;
-        case Protocol.REQ_AUTOBID:
-            if (parts.length >= 3)
-                auctionHandler.handleAutoBid(parts[1], parts[2], parts.length >= 4 ? parts[3] : null);
-            break;
-        case Protocol.REQ_JOIN_ROOM:
-            if (parts.length >= 2)
-                auctionHandler.handleJoinRoom(parts[1]);
-            break;
-        case Protocol.REQ_LEAVE_ROOM:
-            if (parts.length >= 2)
-                auctionHandler.handleLeaveRoom(parts[1]);
-            break;
-        // Admin
-        case Protocol.REQ_GET_USERS:
-            adminHandler.handleGetUsers();
-            break;
-        case Protocol.REQ_BAN_USER:
-            if (parts.length >= 3)
-                adminHandler.handleBanUser(parts[1], parts[2]);
-            break;
-        case Protocol.REQ_KICK_USER:
-            if (parts.length >= 3)
-                adminHandler.handleKickUser(parts[1], parts[2]);
-            break;
-        case Protocol.REQ_DELETE_AUCTION:
-            if (parts.length >= 2)
-                adminHandler.handleDeleteAuction(parts[1]);
-            break;
-        case Protocol.REQ_UPDATE_USER_BALANCE:
-            if (parts.length >= 3)
-                adminHandler.handleUpdateUserBalance(parts[1], parts[2]);
-            break;
-        // Financial
-        case Protocol.REQ_DEPOSIT:
-            if (parts.length >= 2)
-                financialHandler.handleDeposit(parts[1]);
-            break;
-        case Protocol.REQ_WITHDRAW:
-            if (parts.length >= 2)
-                financialHandler.handleWithdraw(parts[1]);
-            break;
-        }
+        commandRegistry.executeCommand(cmd, parts, this);
     }
 
     private void cleanup() {

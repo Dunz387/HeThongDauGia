@@ -92,10 +92,16 @@ public class AuctionManager {
                     a.getItem().setName(newName);
                     a.getItem().setDescription(newDesc);
 
-                    String currentType = model.item.ItemFactory.getItemTypeString(a.getItem());
+                    String currentType = a.getItem().getTypeString();
 
                     if (!currentType.equalsIgnoreCase(newType)) {
-                        model.item.Item newItem = model.item.ItemFactory.createItem(newType, a.getItem().getId(), newName, newDesc, a.getItem().getOwner(), "Unknown", 0);
+                        model.item.Item newItem = new model.item.ItemBuilder()
+                                .setType(newType)
+                                .setId(a.getItem().getId())
+                                .setName(newName)
+                                .setDescription(newDesc)
+                                .setOwner(a.getItem().getOwner())
+                                .build();
                         try {
                             java.lang.reflect.Field itemField = Auction.class.getDeclaredField("item");
                             itemField.setAccessible(true);

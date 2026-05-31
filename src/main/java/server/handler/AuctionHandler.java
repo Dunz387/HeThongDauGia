@@ -50,8 +50,13 @@ public class AuctionHandler {
             Seller owner = (Seller) getUser();
             String desc = (itemDesc != null) ? itemDesc : "Mô tả sản phẩm";
 
-            model.item.Item item = model.item.ItemFactory.createItem(itemType, "IT-" + System.currentTimeMillis(), name,
-                    desc, owner, "Thông tin thêm", 0);
+            model.item.Item item = new model.item.ItemBuilder()
+                    .setType(itemType)
+                    .setId("IT-" + System.currentTimeMillis())
+                    .setName(name)
+                    .setDescription(desc)
+                    .setOwner(owner)
+                    .build();
             Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0,
                     java.time.LocalDateTime.now().plusMinutes(dur));
             auction.setStatus(AuctionStatus.RUNNING);

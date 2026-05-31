@@ -12,14 +12,11 @@ public class StatusDisplayHelper {
      */
     public static String formatAuctionStatus(String statusName) {
         if (statusName == null) return "—";
-        return switch (statusName) {
-            case "OPEN" -> "⏳ Chưa bắt đầu";
-            case "RUNNING" -> "🔥 Đang diễn ra";
-            case "FINISHED" -> "✅ Đã kết thúc";
-            case "PAID" -> "💰 Đã thanh toán";
-            case "CANCELED" -> "❌ Đã hủy";
-            default -> statusName;
-        };
+        try {
+            return model.auction.AuctionStatus.valueOf(statusName).getDisplayName();
+        } catch (IllegalArgumentException e) {
+            return statusName;
+        }
     }
 
     /**
@@ -40,12 +37,11 @@ public class StatusDisplayHelper {
      */
     public static String formatUserRole(String roleName) {
         if (roleName == null) return "—";
-        return switch (roleName) {
-            case "ADMIN" -> "Quản trị viên";
-            case "SELLER" -> "Người bán";
-            case "BIDDER" -> "Người mua";
-            default -> roleName;
-        };
+        try {
+            return model.user.Role.valueOf(roleName).getDisplayName();
+        } catch (IllegalArgumentException e) {
+            return roleName;
+        }
     }
 
     /**

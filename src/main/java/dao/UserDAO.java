@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class UserDAO {
-    private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
+public class UserDAO extends BaseDAO {
 
     public static boolean saveUser(User user) {
         String sql = "INSERT INTO users(id, username, password, role, balance, isActive) VALUES(?,?,?,?,?,?)";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        return executeUpdate(sql, pstmt -> {
             pstmt.setString(1, user.getId());
             pstmt.setString(2, user.getUsername());
             pstmt.setString(3, user.getPassword());
@@ -26,18 +25,13 @@ public class UserDAO {
             else if (user instanceof Seller) balance = ((Seller) user).getBalance();
             pstmt.setDouble(5, balance);
             pstmt.setInt(6, user.isActive() ? 1 : 0);
-            pstmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "❌ Lỗi lưu user", e);
-            return false;
-        }
+        }, "❌ Lỗi lưu user");
     }
 
     public static List<User> loadUsers() {
-        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        List<User> result = executeQuery(sql, rs -> {
+            List<User> users = new ArrayList<>();
             while (rs.next()) {
                 String id = rs.getString("id");
                 String username = rs.getString("username");
@@ -56,38 +50,29 @@ public class UserDAO {
                     users.add(newUser);
                 }
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "❌ Lỗi load users từ DB", e);
-        }
-        return users;
+            return users;
+        }, "❌ Lỗi load users từ DB");
+        
+        return result != null ? result : new ArrayList<>();
     }
 
     public static boolean updateUserBalance(String userId, double newBalance) {
         String sql = "UPDATE users SET balance = ? WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        return executeUpdate(sql, pstmt -> {
             pstmt.setDouble(1, newBalance);
             pstmt.setString(2, userId);
-            pstmt.executeUpdate();
-            return true;
-        } catch (SQLException e) { 
-            LOGGER.log(Level.SEVERE, "❌ Lỗi cập nhật số dư user", e);
-            return false; 
-        }
+        }, "❌ Lỗi cập nhật số dư user");
     }
 
     public static boolean updateUser(User user) {
         String sql = "UPDATE users SET balance = ?, isActive = ? WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        return executeUpdate(sql, pstmt -> {
             double balance = 0.0;
             if (user instanceof Bidder) balance = ((Bidder)user).getBalance();
             else if (user instanceof Seller) balance = ((Seller)user).getBalance();
             pstmt.setDouble(1, balance);
             pstmt.setInt(2, user.isActive() ? 1 : 0);
             pstmt.setString(3, user.getId());
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) { 
-            LOGGER.log(Level.SEVERE, "❌ Lỗi cập nhật user", e);
-            return false; 
-        }
+        }, "❌ Lỗi cập nhật user");
     }
 }

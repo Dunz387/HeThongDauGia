@@ -1,9 +1,19 @@
 package model.auction;
 
 public enum AuctionStatus {
-    OPEN,       // Vừa tạo, chưa bắt đầu
-    RUNNING,    // Đang diễn ra
-    FINISHED,   // Đã hết giờ (đang chờ thanh toán)
-    PAID,       // Người thắng đã thanh toán xong
-    CANCELED    // Hủy (do không ai mua hoặc lỗi)
+    OPEN("⏳ Chưa bắt đầu"),
+    RUNNING("🔥 Đang diễn ra"),
+    FINISHED("✅ Đã kết thúc"),
+    PAID("💰 Đã thanh toán"),
+    CANCELED("❌ Đã hủy");
+
+    private final String displayName;
+
+    AuctionStatus(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
 }

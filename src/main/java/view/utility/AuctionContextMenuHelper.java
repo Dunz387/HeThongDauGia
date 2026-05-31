@@ -102,7 +102,7 @@ public class AuctionContextMenuHelper {
         descField.setPrefRowCount(3);
         
         ComboBox<String> typeBox = new ComboBox<>(FXCollections.observableArrayList("ELECTRONICS", "ART", "VEHICLE"));
-        String currentType = model.item.ItemFactory.getItemTypeString(selected.getItem());
+        String currentType = selected.getItem().getTypeString();
         typeBox.setValue(currentType);
 
         TextField priceField = new TextField(String.valueOf(selected.getStartingPrice()));

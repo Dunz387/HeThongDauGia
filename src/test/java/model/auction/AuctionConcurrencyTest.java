@@ -26,7 +26,7 @@ public class AuctionConcurrencyTest {
     @BeforeEach
     public void setUp() {
         seller = new Seller("s1", "seller", "pass", 0);
-        testItem = new Electronics("item1", "Test Phone", "A smartphone", seller, "Apple", 12);
+        testItem = new Electronics("item1", "Test Phone", "A smartphone", seller);
         // Bắt đầu một phiên đấu giá ngay bây giờ, kéo dài 1 giờ, giá khởi điểm 100, bước giá 10
         auction = new Auction("a1", testItem, 100.0, 10.0, LocalDateTime.now().plusHours(1));
         auction.setStatus(AuctionStatus.RUNNING); // Phải trong trạng thái RUNNING để đặt giá
