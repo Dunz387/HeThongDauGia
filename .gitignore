@@ -38,3 +38,4 @@ local.properties
 *.pid
 *.seed
 *.pid.lock
+.idea/
