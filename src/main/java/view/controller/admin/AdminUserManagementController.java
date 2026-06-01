@@ -38,6 +38,14 @@ public class AdminUserManagementController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configureColumns();
+        configureActionColumn();
+        registerResponseListeners();
+        registerUserListListener();
+        loadUsers();
+    }
+
+    private void configureColumns() {
         // === CẤU HÌNH CÁC CỘT BẢNG ===
         colSTT.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(tableUsers.getItems().indexOf(cellData.getValue()) + 1).asObject());
@@ -54,8 +62,9 @@ public class AdminUserManagementController implements Initializable {
         });
         colStatus.setCellValueFactory(cellData ->
                 new SimpleStringProperty(StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
+    }
 
-        // === CỘT HÀNH ĐỘNG: NÚT KHÓA / MỞ KHÓA & SỬA TIỀN ===
+    private void configureActionColumn() {
         colAction.setCellFactory(col -> new TableCell<>() {
             private final Button btnToggle = new Button();
             private final Button btnEditBalance = new Button("💰 Sửa tiền");
@@ -117,8 +126,9 @@ public class AdminUserManagementController implements Initializable {
                 }
             }
         });
+    }
 
-        // === LẮNG NGHE KẾT QUẢ KHÓA/MỞ KHÓA (GLOBAL) ===
+    private void registerResponseListeners() {
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_BAN_USER, (response) -> {
             String[] parts = response.split(Protocol.DELIMITER);
             Platform.runLater(() -> {
@@ -143,9 +153,11 @@ public class AdminUserManagementController implements Initializable {
                 }
             });
         });
+    }
 
-        // === LẮNG NGHE DANH SÁCH USER TỪ SERVER (REAL-TIME) ===
-        ClientNetworkManager.getInstance().clearUserListListeners(); ClientNetworkManager.getInstance().addUserListListener((listFromServer) -> {
+    private void registerUserListListener() {
+        ClientNetworkManager.getInstance().clearUserListListeners();
+        ClientNetworkManager.getInstance().addUserListListener((listFromServer) -> {
             if (listFromServer != null) {
                 Platform.runLater(() -> {
                     ObservableList<User> data = FXCollections.observableArrayList(listFromServer);
@@ -154,8 +166,9 @@ public class AdminUserManagementController implements Initializable {
                 });
             }
         });
+    }
 
-        // === GỬI YÊU CẦU LẤY DANH SÁCH KHI VÀO TRANG ===
+    private void loadUsers() {
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
     }
 

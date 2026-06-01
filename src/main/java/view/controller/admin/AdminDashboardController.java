@@ -64,6 +64,14 @@ public class AdminDashboardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configureAuctionColumns();
+        configureUserColumns();
+        registerAuctionListListener();
+        registerUserListListener();
+        loadDashboardData();
+    }
+
+    private void configureAuctionColumns() {
         // === CẤU HÌNH CỘT BẢNG ĐẤU GIÁ ===
         colAucId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colAucName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
@@ -71,17 +79,20 @@ public class AdminDashboardController implements Initializable {
                 cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
         colAucStatus.setCellValueFactory(cellData -> new SimpleStringProperty(
                 StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
+    }
 
-        // === CẤU HÌNH CỘT BẢNG NGƯỜI DÙNG ===
+    private void configureUserColumns() {
         colUserId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         colUserName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
         colUserRole.setCellValueFactory(cellData -> new SimpleStringProperty(
                 StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
         colUserStatus.setCellValueFactory(cellData -> new SimpleStringProperty(
                 StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
+    }
 
-        // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER (REAL-TIME) ===
-        ClientNetworkManager.getInstance().clearAuctionListListeners(); ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
+    private void registerAuctionListListener() {
+        ClientNetworkManager.getInstance().clearAuctionListListeners();
+        ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
                 Platform.runLater(() -> {
                     // Cập nhật thống kê
@@ -100,9 +111,11 @@ public class AdminDashboardController implements Initializable {
                 });
             }
         });
+    }
 
-        // === LẮNG NGHE DANH SÁCH USER TỪ SERVER (REAL-TIME) ===
-        ClientNetworkManager.getInstance().clearUserListListeners(); ClientNetworkManager.getInstance().addUserListListener((listFromServer) -> {
+    private void registerUserListListener() {
+        ClientNetworkManager.getInstance().clearUserListListeners();
+        ClientNetworkManager.getInstance().addUserListListener((listFromServer) -> {
             if (listFromServer != null) {
                 Platform.runLater(() -> {
                     lblTotalUsers.setText(String.valueOf(listFromServer.size()));
@@ -115,8 +128,9 @@ public class AdminDashboardController implements Initializable {
                 });
             }
         });
+    }
 
-        // === GỬI YÊU CẦU LẤY DỮ LIỆU KHI VÀO TRANG ===
+    private void loadDashboardData() {
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
         ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
     }

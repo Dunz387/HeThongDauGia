@@ -48,6 +48,19 @@ public class AdminAuctionManagementController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configureColumns();
+        configureViewColumn();
+        configureActionColumn();
+        registerDeleteListener();
+        registerAuctionListListener();
+        loadAuctions();
+    }
+
+    private void loadAuctions() {
+        ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
+    }
+
+    private void configureColumns() {
         // === CẤU HÌNH CÁC CỘT BẢNG ===
         colSTT.setCellValueFactory(
                 cellData -> new SimpleIntegerProperty(tableAuctions.getItems().indexOf(cellData.getValue()) + 1)
@@ -62,8 +75,9 @@ public class AdminAuctionManagementController implements Initializable {
             var bidder = cellData.getValue().getHighestBidder();
             return new SimpleStringProperty(bidder != null ? bidder.getUsername() : "Chưa có");
         });
+    }
 
-        // === CỘT XEM CHI TIẾT ===
+    private void configureViewColumn() {
         colView.setCellFactory(col -> new TableCell<>() {
             private final Button btnView = new Button("👁️ Chi tiết");
             {
@@ -84,8 +98,9 @@ public class AdminAuctionManagementController implements Initializable {
                     setGraphic(btnView);
             }
         });
+    }
 
-        // === CỘT HÀNH ĐỘNG: NÚT XÓA PHIÊN ĐẤU GIÁ ===
+    private void configureActionColumn() {
         colAction.setCellFactory(col -> new TableCell<>() {
             private final Button btnDelete = new Button("🗑️ Xóa");
 
@@ -117,8 +132,9 @@ public class AdminAuctionManagementController implements Initializable {
                 }
             }
         });
+    }
 
-        // === LẮNG NGHE KẾT QUẢ XÓA PHIÊN (GLOBAL) ===
+    private void registerDeleteListener() {
         ClientNetworkManager.getInstance().registerListener(Protocol.REQ_DELETE_AUCTION, (response) -> {
             String[] parts = response.split(Protocol.DELIMITER);
             Platform.runLater(() -> {
@@ -130,8 +146,9 @@ public class AdminAuctionManagementController implements Initializable {
                 }
             });
         });
+    }
 
-        // === LẮNG NGHE DANH SÁCH ĐẤU GIÁ TỪ SERVER (REAL-TIME) ===
+    private void registerAuctionListListener() {
         ClientNetworkManager.getInstance().clearAuctionListListeners();
         ClientNetworkManager.getInstance().addAuctionListListener((listFromServer) -> {
             if (listFromServer != null) {
@@ -142,9 +159,6 @@ public class AdminAuctionManagementController implements Initializable {
                 });
             }
         });
-
-        // === GỬI YÊU CẦU LẤY DANH SÁCH KHI VÀO TRANG ===
-        ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_AUCTIONS);
     }
 
     // === ĐIỀU HƯỚNG ===
