@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "634f7a17f0f8ab66941c92dcd7d5720b0c41bbb6",
-  "generatedAt": "2026-05-29T12:13:42.881Z",
+  "gitCommitHash": "e681e4bb9e489b769e5155d581de731029ebd3ae",
+  "generatedAt": "2026-06-01T16:06:14.244Z",
   "files": {
     ".github/workflows/ci.yml": {
       "filePath": ".github/workflows/ci.yml",
@@ -42,6 +42,36 @@
       "exports": [],
       "totalLines": 41,
       "hasStructuralAnalysis": false
+    },
+    ".understand-anything/fingerprints.json": {
+      "filePath": ".understand-anything/fingerprints.json",
+      "contentHash": "976879a5f64ae744724c6b80a2452bee26cbaeca63fd1388936b8b98067dd2f4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9786,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/knowledge-graph.json": {
+      "filePath": ".understand-anything/knowledge-graph.json",
+      "contentHash": "c757d5f3c16baa10b031478799613718b54e64c839b94ad1164e8a33235c19e0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19498,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/meta.json": {
+      "filePath": ".understand-anything/meta.json",
+      "contentHash": "a1a06c22f495c76b1249da18169b2daf57d98eb27edcb788a293ffffdd8f05cb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
     },
     "auction.db": {
       "filePath": "auction.db",
@@ -85,12 +115,22 @@
     },
     "README.md": {
       "filePath": "README.md",
-      "contentHash": "7303bc264ec640db282f62fd7fa89fdb98f610236476bc099c465c6d5bfaf3d8",
+      "contentHash": "20a12ef3b16794400e45fbb696e8630e232ce156d696757c1fc8076ffa07e8db",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 130,
+      "totalLines": 183,
+      "hasStructuralAnalysis": true
+    },
+    "REFACTOR.md": {
+      "filePath": "REFACTOR.md",
+      "contentHash": "4c5790740be45ed9d7797e70813ab2001be85d97c97b563fb7d0d118a61870da",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 415,
       "hasStructuralAnalysis": true
     },
     "src/main/java/dao/AdminDAO.java": {
@@ -147,7 +187,7 @@
     },
     "src/main/java/dao/AuctionDAO.java": {
       "filePath": "src/main/java/dao/AuctionDAO.java",
-      "contentHash": "351dc06d7c6e083a7b86e73d934932ad483b956502b022917d47f8ba847e5edb",
+      "contentHash": "dbb8704d711a4fdb016ba490fb050f7d944832256a80c684f39deef595f48bc8",
       "functions": [
         {
           "name": "saveAuction",
@@ -156,7 +196,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 28
+          "lineCount": 20
         },
         {
           "name": "updateAuction",
@@ -165,7 +205,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 21
+          "lineCount": 17
         },
         {
           "name": "saveBidTransaction",
@@ -174,7 +214,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 14
+          "lineCount": 10
         },
         {
           "name": "loadAuctions",
@@ -183,7 +223,7 @@
           ],
           "returnType": "List<Auction>",
           "exported": true,
-          "lineCount": 69
+          "lineCount": 64
         },
         {
           "name": "loadBidHistoryForAuction",
@@ -193,7 +233,7 @@
           ],
           "returnType": "void",
           "exported": false,
-          "lineCount": 28
+          "lineCount": 24
         },
         {
           "name": "updateItemOwner",
@@ -203,7 +243,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 11
+          "lineCount": 7
         }
       ],
       "classes": [
@@ -217,11 +257,9 @@
             "loadBidHistoryForAuction",
             "updateItemOwner"
           ],
-          "properties": [
-            "LOGGER"
-          ],
+          "properties": [],
           "exported": true,
-          "lineCount": 179
+          "lineCount": 150
         }
       ],
       "imports": [
@@ -235,12 +273,6 @@
           "source": "model.auction.AuctionStatus",
           "specifiers": [
             "AuctionStatus"
-          ]
-        },
-        {
-          "source": "model.item.ItemFactory",
-          "specifiers": [
-            "ItemFactory"
           ]
         },
         {
@@ -306,7 +338,111 @@
         "updateItemOwner",
         "AuctionDAO"
       ],
-      "totalLines": 196,
+      "totalLines": 166,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/dao/BaseDAO.java": {
+      "filePath": "src/main/java/dao/BaseDAO.java",
+      "contentHash": "c8239d9248db3da7c179d960cc4f0e81e7bb865a9f8aaa361277e4b0c7d6f12a",
+      "functions": [
+        {
+          "name": "executeUpdate",
+          "params": [
+            "sql",
+            "setter",
+            "errorMessage"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "executeQuery",
+          "params": [
+            "sql",
+            "setter",
+            "extractor",
+            "errorMessage"
+          ],
+          "returnType": "T",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "executeQuery",
+          "params": [
+            "sql",
+            "extractor",
+            "errorMessage"
+          ],
+          "returnType": "T",
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [
+        {
+          "name": "BaseDAO",
+          "methods": [
+            "executeUpdate",
+            "executeQuery",
+            "executeQuery"
+          ],
+          "properties": [
+            "LOGGER"
+          ],
+          "exported": true,
+          "lineCount": 61
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.sql.PreparedStatement",
+          "specifiers": [
+            "PreparedStatement"
+          ]
+        },
+        {
+          "source": "java.sql.ResultSet",
+          "specifiers": [
+            "ResultSet"
+          ]
+        },
+        {
+          "source": "java.sql.SQLException",
+          "specifiers": [
+            "SQLException"
+          ]
+        },
+        {
+          "source": "java.sql.Statement",
+          "specifiers": [
+            "Statement"
+          ]
+        },
+        {
+          "source": "java.util.logging.Level",
+          "specifiers": [
+            "Level"
+          ]
+        },
+        {
+          "source": "java.util.logging.Logger",
+          "specifiers": [
+            "Logger"
+          ]
+        }
+      ],
+      "exports": [
+        "BaseDAO"
+      ],
+      "totalLines": 76,
       "hasStructuralAnalysis": true
     },
     "src/main/java/dao/DatabaseManager.java": {
@@ -525,7 +661,7 @@
     },
     "src/main/java/dao/UserDAO.java": {
       "filePath": "src/main/java/dao/UserDAO.java",
-      "contentHash": "d594f9b8055106e5cce8ba17e92b9c01b354a879b5c575f0ba4efdd1357480ab",
+      "contentHash": "8a8f70f91b88ffcec752813ada255546b48ab65c651827cf644f696fe371162c",
       "functions": [
         {
           "name": "saveUser",
@@ -534,7 +670,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 19
+          "lineCount": 14
         },
         {
           "name": "loadUsers",
@@ -551,7 +687,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 12
+          "lineCount": 7
         },
         {
           "name": "updateUser",
@@ -560,7 +696,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 15
+          "lineCount": 11
         }
       ],
       "classes": [
@@ -572,11 +708,9 @@
             "updateUserBalance",
             "updateUser"
           ],
-          "properties": [
-            "LOGGER"
-          ],
+          "properties": [],
           "exported": true,
-          "lineCount": 80
+          "lineCount": 65
         }
       ],
       "imports": [
@@ -642,7 +776,7 @@
         "updateUser",
         "UserDAO"
       ],
-      "totalLines": 93,
+      "totalLines": 78,
       "hasStructuralAnalysis": true
     },
     "src/main/java/exception/AuctionClosedException.java": {
@@ -711,7 +845,7 @@
     },
     "src/main/java/model/auction/Auction.java": {
       "filePath": "src/main/java/model/auction/Auction.java",
-      "contentHash": "6c6c0704b03ddb7184e6daa53d02472944a4d8b97c4090cf97be03311b611bf2",
+      "contentHash": "3a3ab8c8178062c586812895ea8556386d5e51ac061a747120ead45f1932cb62",
       "functions": [
         {
           "name": "Auction",
@@ -736,15 +870,6 @@
           "name": "getSeller",
           "params": [],
           "returnType": "User",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "setSeller",
-          "params": [
-            "seller"
-          ],
-          "returnType": "void",
           "exported": true,
           "lineCount": 3
         },
@@ -891,7 +1016,7 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 61
+          "lineCount": 59
         },
         {
           "name": "addObserver",
@@ -918,7 +1043,7 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 37
+          "lineCount": 36
         },
         {
           "name": "notifyObservers",
@@ -944,20 +1069,6 @@
           "returnType": "void",
           "exported": true,
           "lineCount": 4
-        },
-        {
-          "name": "getLastActivityTime",
-          "params": [],
-          "returnType": "LocalDateTime",
-          "exported": true,
-          "lineCount": 4
-        },
-        {
-          "name": "updateActivityTime",
-          "params": [],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
         }
       ],
       "classes": [
@@ -967,7 +1078,6 @@
             "Auction",
             "getItem",
             "getSeller",
-            "setSeller",
             "getStartingPrice",
             "getCurrentPrice",
             "setStartingPrice",
@@ -991,9 +1101,7 @@
             "removeBidsOfUser",
             "notifyObservers",
             "notifyAutoBidExpired",
-            "notifyObservers",
-            "getLastActivityTime",
-            "updateActivityTime"
+            "notifyObservers"
           ],
           "properties": [
             "item",
@@ -1005,16 +1113,14 @@
             "endTime",
             "endTimeEpoch",
             "status",
-            "reason",
             "bidHistory",
-            "lastActivityTime",
             "observers",
             "lock",
             "autoBids",
             "isAutoBidding"
           ],
           "exported": true,
-          "lineCount": 439
+          "lineCount": 420
         }
       ],
       "imports": [
@@ -1089,7 +1195,6 @@
         "Auction",
         "getItem",
         "getSeller",
-        "setSeller",
         "getStartingPrice",
         "getCurrentPrice",
         "setStartingPrice",
@@ -1114,11 +1219,9 @@
         "notifyObservers",
         "notifyAutoBidExpired",
         "notifyObservers",
-        "getLastActivityTime",
-        "updateActivityTime",
         "Auction"
       ],
-      "totalLines": 454,
+      "totalLines": 435,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/auction/AuctionObserver.java": {
@@ -1154,12 +1257,12 @@
     },
     "src/main/java/model/auction/AuctionStatus.java": {
       "filePath": "src/main/java/model/auction/AuctionStatus.java",
-      "contentHash": "d78aaf76ce039a1d9d39824acfd03250e3311c6e2f32e48d4df7878b69a38a4f",
+      "contentHash": "2352ecea035e2168fc2fff20403471501d4b1be3f593c47ff627bf4409bb4297",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 10,
+      "totalLines": 20,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/auction/AuctionSubject.java": {
@@ -1293,7 +1396,7 @@
     },
     "src/main/java/model/base/Entity.java": {
       "filePath": "src/main/java/model/base/Entity.java",
-      "contentHash": "5ac9a58afb9b9baa52e97cf260168ceaf0a398140bffc90030a1030e2cc2f75e",
+      "contentHash": "cd11a32f2c7a7060fc751c1731df8f04a88907ea89ead475b119d96884e36819",
       "functions": [
         {
           "name": "Entity",
@@ -1309,15 +1412,6 @@
           "returnType": "String",
           "exported": true,
           "lineCount": 3
-        },
-        {
-          "name": "setId",
-          "params": [
-            "id"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
         }
       ],
       "classes": [
@@ -1325,15 +1419,14 @@
           "name": "Entity",
           "methods": [
             "Entity",
-            "getId",
-            "setId"
+            "getId"
           ],
           "properties": [
             "serialVersionUID",
             "id"
           ],
           "exported": true,
-          "lineCount": 17
+          "lineCount": 14
         }
       ],
       "imports": [
@@ -1347,15 +1440,14 @@
       "exports": [
         "Entity",
         "getId",
-        "setId",
         "Entity"
       ],
-      "totalLines": 20,
+      "totalLines": 17,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/item/Arts.java": {
       "filePath": "src/main/java/model/item/Arts.java",
-      "contentHash": "4e7bbef5d97e47e60ec10a6c6eb33660a43943656a22aa6630d02a2d97b60c7c",
+      "contentHash": "37695f74c9eed95c53b43bebf6b3ba3ccbc20e82c391f764dacbb3653b925001",
       "functions": [
         {
           "name": "Arts",
@@ -1363,67 +1455,17 @@
             "id",
             "name",
             "description",
-            "owner",
-            "artist",
-            "creationYear"
+            "owner"
           ],
           "exported": true,
-          "lineCount": 6
+          "lineCount": 3
         },
         {
-          "name": "getArtist",
+          "name": "getTypeString",
           "params": [],
           "returnType": "String",
           "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "setArtist",
-          "params": [
-            "artist"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "getCreationYear",
-          "params": [],
-          "returnType": "int",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "setCreationYear",
-          "params": [
-            "creationYear"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "isAuthenticated",
-          "params": [],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "setAuthenticated",
-          "params": [
-            "authenticated"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "getDetails",
-          "params": [],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 5
+          "lineCount": 4
         }
       ],
       "classes": [
@@ -1431,21 +1473,11 @@
           "name": "Arts",
           "methods": [
             "Arts",
-            "getArtist",
-            "setArtist",
-            "getCreationYear",
-            "setCreationYear",
-            "isAuthenticated",
-            "setAuthenticated",
-            "getDetails"
+            "getTypeString"
           ],
-          "properties": [
-            "artist",
-            "creationYear",
-            "isAuthenticated"
-          ],
+          "properties": [],
           "exported": true,
-          "lineCount": 30
+          "lineCount": 11
         }
       ],
       "imports": [
@@ -1458,21 +1490,15 @@
       ],
       "exports": [
         "Arts",
-        "getArtist",
-        "setArtist",
-        "getCreationYear",
-        "setCreationYear",
-        "isAuthenticated",
-        "setAuthenticated",
-        "getDetails",
+        "getTypeString",
         "Arts"
       ],
-      "totalLines": 34,
+      "totalLines": 15,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/item/Electronics.java": {
       "filePath": "src/main/java/model/item/Electronics.java",
-      "contentHash": "65c369e2f79b8b5b1673e4d120c94ae4794669e445533fb687a987993aa0ca18",
+      "contentHash": "38f465ad1aac4f81514986f0c512b45ef0a9b045ebd6101cdaeac3f2cfa9f100",
       "functions": [
         {
           "name": "Electronics",
@@ -1480,47 +1506,13 @@
             "id",
             "name",
             "description",
-            "owner",
-            "brand",
-            "warrantyMonths"
+            "owner"
           ],
           "exported": true,
-          "lineCount": 5
-        },
-        {
-          "name": "getBrand",
-          "params": [],
-          "returnType": "String",
-          "exported": true,
           "lineCount": 3
         },
         {
-          "name": "setBrand",
-          "params": [
-            "brand"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "getWarrantyMonths",
-          "params": [],
-          "returnType": "int",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "setWarrantyMonths",
-          "params": [
-            "warrantyMonths"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "getDetails",
+          "name": "getTypeString",
           "params": [],
           "returnType": "String",
           "exported": true,
@@ -1532,18 +1524,11 @@
           "name": "Electronics",
           "methods": [
             "Electronics",
-            "getBrand",
-            "setBrand",
-            "getWarrantyMonths",
-            "setWarrantyMonths",
-            "getDetails"
+            "getTypeString"
           ],
-          "properties": [
-            "brand",
-            "warrantyMonths"
-          ],
+          "properties": [],
           "exported": true,
-          "lineCount": 33
+          "lineCount": 11
         }
       ],
       "imports": [
@@ -1556,19 +1541,15 @@
       ],
       "exports": [
         "Electronics",
-        "getBrand",
-        "setBrand",
-        "getWarrantyMonths",
-        "setWarrantyMonths",
-        "getDetails",
+        "getTypeString",
         "Electronics"
       ],
-      "totalLines": 37,
+      "totalLines": 15,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/item/Item.java": {
       "filePath": "src/main/java/model/item/Item.java",
-      "contentHash": "97b84c91643556a99b518ebf512f52d7ec53a034bdc6c9510005f71fa1fc6586",
+      "contentHash": "24c885e53473bea93908c8bc10794f8ce66f1577fc46b15898dd7bfb716f78bd",
       "functions": [
         {
           "name": "Item",
@@ -1579,7 +1560,7 @@
             "owner"
           ],
           "exported": true,
-          "lineCount": 7
+          "lineCount": 6
         },
         {
           "name": "getName",
@@ -1630,23 +1611,7 @@
           "lineCount": 1
         },
         {
-          "name": "getImagePath",
-          "params": [],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "setImagePath",
-          "params": [
-            "imagePath"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "getDetails",
+          "name": "getTypeString",
           "params": [],
           "returnType": "String",
           "exported": true,
@@ -1664,18 +1629,15 @@
             "setDescription",
             "getOwner",
             "setOwner",
-            "getImagePath",
-            "setImagePath",
-            "getDetails"
+            "getTypeString"
           ],
           "properties": [
             "name",
             "description",
-            "owner",
-            "imagePath"
+            "owner"
           ],
           "exported": true,
-          "lineCount": 30
+          "lineCount": 23
         }
       ],
       "imports": [
@@ -1700,53 +1662,89 @@
         "setDescription",
         "getOwner",
         "setOwner",
-        "getImagePath",
-        "setImagePath",
-        "getDetails",
+        "getTypeString",
         "Item"
       ],
-      "totalLines": 35,
+      "totalLines": 28,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/model/item/ItemFactory.java": {
-      "filePath": "src/main/java/model/item/ItemFactory.java",
-      "contentHash": "3d18bd1040609664f132d46d996c099519d361960a11bac378955583cd5ab67f",
+    "src/main/java/model/item/ItemBuilder.java": {
+      "filePath": "src/main/java/model/item/ItemBuilder.java",
+      "contentHash": "cf2ccb02a3c980f098b552c6524490ffaf91858f0ae8b30e7b285152cb07b2c2",
       "functions": [
         {
-          "name": "createItem",
+          "name": "setType",
           "params": [
-            "itemType",
-            "id",
-            "name",
-            "description",
-            "owner",
-            "extra1",
-            "extra2"
+            "itemType"
           ],
+          "returnType": "ItemBuilder",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "setId",
+          "params": [
+            "id"
+          ],
+          "returnType": "ItemBuilder",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "setName",
+          "params": [
+            "name"
+          ],
+          "returnType": "ItemBuilder",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "setDescription",
+          "params": [
+            "description"
+          ],
+          "returnType": "ItemBuilder",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "setOwner",
+          "params": [
+            "owner"
+          ],
+          "returnType": "ItemBuilder",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "build",
+          "params": [],
           "returnType": "Item",
           "exported": true,
           "lineCount": 14
-        },
-        {
-          "name": "getItemTypeString",
-          "params": [
-            "item"
-          ],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 5
         }
       ],
       "classes": [
         {
-          "name": "ItemFactory",
+          "name": "ItemBuilder",
           "methods": [
-            "createItem",
-            "getItemTypeString"
+            "setType",
+            "setId",
+            "setName",
+            "setDescription",
+            "setOwner",
+            "build"
           ],
-          "properties": [],
+          "properties": [
+            "itemType",
+            "id",
+            "name",
+            "description",
+            "owner"
+          ],
           "exported": true,
-          "lineCount": 23
+          "lineCount": 47
         }
       ],
       "imports": [
@@ -1758,16 +1756,20 @@
         }
       ],
       "exports": [
-        "createItem",
-        "getItemTypeString",
-        "ItemFactory"
+        "setType",
+        "setId",
+        "setName",
+        "setDescription",
+        "setOwner",
+        "build",
+        "ItemBuilder"
       ],
-      "totalLines": 27,
+      "totalLines": 52,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/item/Vehicle.java": {
       "filePath": "src/main/java/model/item/Vehicle.java",
-      "contentHash": "99e40c01c9f5ad194d1136b5381055caede2975a72592d2ae19cfc4257280437",
+      "contentHash": "966a6039a44f244da2c61489d0b33153a44aa5e96bff4b5e231c374332e1fa1c",
       "functions": [
         {
           "name": "Vehicle",
@@ -1775,67 +1777,17 @@
             "id",
             "name",
             "description",
-            "owner",
-            "engineType",
-            "mileage"
+            "owner"
           ],
           "exported": true,
-          "lineCount": 6
+          "lineCount": 3
         },
         {
-          "name": "getEngineType",
+          "name": "getTypeString",
           "params": [],
           "returnType": "String",
           "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "setEngineType",
-          "params": [
-            "engineType"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "getMileage",
-          "params": [],
-          "returnType": "int",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "setMileage",
-          "params": [
-            "mileage"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "hasServiceHistory",
-          "params": [],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "setHasServiceHistory",
-          "params": [
-            "hasServiceHistory"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "getDetails",
-          "params": [],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 5
+          "lineCount": 4
         }
       ],
       "classes": [
@@ -1843,21 +1795,11 @@
           "name": "Vehicle",
           "methods": [
             "Vehicle",
-            "getEngineType",
-            "setEngineType",
-            "getMileage",
-            "setMileage",
-            "hasServiceHistory",
-            "setHasServiceHistory",
-            "getDetails"
+            "getTypeString"
           ],
-          "properties": [
-            "engineType",
-            "mileage",
-            "hasServiceHistory"
-          ],
+          "properties": [],
           "exported": true,
-          "lineCount": 31
+          "lineCount": 11
         }
       ],
       "imports": [
@@ -1870,16 +1812,10 @@
       ],
       "exports": [
         "Vehicle",
-        "getEngineType",
-        "setEngineType",
-        "getMileage",
-        "setMileage",
-        "hasServiceHistory",
-        "setHasServiceHistory",
-        "getDetails",
+        "getTypeString",
         "Vehicle"
       ],
-      "totalLines": 35,
+      "totalLines": 15,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/user/Admin.java": {
@@ -2056,12 +1992,12 @@
     },
     "src/main/java/model/user/Role.java": {
       "filePath": "src/main/java/model/user/Role.java",
-      "contentHash": "714b7acaa76b99a1871c3b7cf471f3bd27385a80c05757635ace7428210320d2",
+      "contentHash": "bb8051cbfedf85ae16219be43df47c200c5d796a2ff0003e116e69d963ecc6b6",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 8,
+      "totalLines": 18,
       "hasStructuralAnalysis": true
     },
     "src/main/java/model/user/Seller.java": {
@@ -3208,7 +3144,7 @@
     },
     "src/main/java/server/ClientHandler.java": {
       "filePath": "src/main/java/server/ClientHandler.java",
-      "contentHash": "289180ad1b08a220c9ac69cd4e31fb3e531210d839f5ac1d32898022f2e9405e",
+      "contentHash": "570b2b1234a766825353ae9d870628f4660389badbf8e29a161cac7302704090",
       "functions": [
         {
           "name": "ClientHandler",
@@ -3219,6 +3155,34 @@
           ],
           "exported": true,
           "lineCount": 8
+        },
+        {
+          "name": "getAuthHandler",
+          "params": [],
+          "returnType": "AuthHandler",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getAuctionHandler",
+          "params": [],
+          "returnType": "AuctionHandler",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getAdminHandler",
+          "params": [],
+          "returnType": "AdminHandler",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getFinancialHandler",
+          "params": [],
+          "returnType": "FinancialHandler",
+          "exported": true,
+          "lineCount": 1
         },
         {
           "name": "getLoggedInUser",
@@ -3265,7 +3229,7 @@
           ],
           "returnType": "void",
           "exported": false,
-          "lineCount": 79
+          "lineCount": 3
         },
         {
           "name": "cleanup",
@@ -3298,6 +3262,10 @@
           "name": "ClientHandler",
           "methods": [
             "ClientHandler",
+            "getAuthHandler",
+            "getAuctionHandler",
+            "getAdminHandler",
+            "getFinancialHandler",
             "getLoggedInUser",
             "setLoggedInUser",
             "getCurrentRoomIds",
@@ -3319,10 +3287,11 @@
             "authHandler",
             "auctionHandler",
             "adminHandler",
-            "financialHandler"
+            "financialHandler",
+            "commandRegistry"
           ],
           "exported": true,
-          "lineCount": 187
+          "lineCount": 119
         }
       ],
       "imports": [
@@ -3413,6 +3382,10 @@
       ],
       "exports": [
         "ClientHandler",
+        "getAuthHandler",
+        "getAuctionHandler",
+        "getAdminHandler",
+        "getFinancialHandler",
         "getLoggedInUser",
         "setLoggedInUser",
         "getCurrentRoomIds",
@@ -3422,7 +3395,121 @@
         "sendData",
         "ClientHandler"
       ],
-      "totalLines": 209,
+      "totalLines": 141,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/server/command/Command.java": {
+      "filePath": "src/main/java/server/command/Command.java",
+      "contentHash": "41ab1179635b110665b1059f2f654d909964a257aa71c34e27d8ec622b102433",
+      "functions": [],
+      "classes": [
+        {
+          "name": "Command",
+          "methods": [
+            "execute"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "imports": [
+        {
+          "source": "server.ClientHandler",
+          "specifiers": [
+            "ClientHandler"
+          ]
+        }
+      ],
+      "exports": [
+        "Command"
+      ],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/server/command/CommandRegistry.java": {
+      "filePath": "src/main/java/server/command/CommandRegistry.java",
+      "contentHash": "ca06aa44a0cb8f5696f6f44eafce6761ea3eadc472ac4297f7e8f4cd1a9818a4",
+      "functions": [
+        {
+          "name": "CommandRegistry",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "initCommands",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 58
+        },
+        {
+          "name": "executeCommand",
+          "params": [
+            "cmd",
+            "parts",
+            "client"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [
+        {
+          "name": "CommandRegistry",
+          "methods": [
+            "CommandRegistry",
+            "initCommands",
+            "executeCommand"
+          ],
+          "properties": [
+            "LOGGER",
+            "commands"
+          ],
+          "exported": true,
+          "lineCount": 76
+        }
+      ],
+      "imports": [
+        {
+          "source": "server.ClientHandler",
+          "specifiers": [
+            "ClientHandler"
+          ]
+        },
+        {
+          "source": "shared.Protocol",
+          "specifiers": [
+            "Protocol"
+          ]
+        },
+        {
+          "source": "java.util.HashMap",
+          "specifiers": [
+            "HashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.logging.Logger",
+          "specifiers": [
+            "Logger"
+          ]
+        }
+      ],
+      "exports": [
+        "CommandRegistry",
+        "executeCommand",
+        "CommandRegistry"
+      ],
+      "totalLines": 88,
       "hasStructuralAnalysis": true
     },
     "src/main/java/server/handler/AdminHandler.java": {
@@ -3577,7 +3664,7 @@
     },
     "src/main/java/server/handler/AuctionHandler.java": {
       "filePath": "src/main/java/server/handler/AuctionHandler.java",
-      "contentHash": "fd7e6b01071ea40edf0a495b28da1ca56887492022aef52f1c53b3990e132bea",
+      "contentHash": "4a2abdad2f85b892c7615a8eb87c3cb6f1e627b6dc64387e3219e56b66347b20",
       "functions": [
         {
           "name": "AuctionHandler",
@@ -3614,7 +3701,7 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 32
+          "lineCount": 37
         },
         {
           "name": "handleUpdateItem",
@@ -3701,7 +3788,7 @@
             "manager"
           ],
           "exported": true,
-          "lineCount": 183
+          "lineCount": 188
         }
       ],
       "imports": [
@@ -3778,7 +3865,7 @@
         "handleLeaveRoom",
         "AuctionHandler"
       ],
-      "totalLines": 202,
+      "totalLines": 207,
       "hasStructuralAnalysis": true
     },
     "src/main/java/server/handler/AuthHandler.java": {
@@ -3981,7 +4068,7 @@
     },
     "src/main/java/service/AdminService.java": {
       "filePath": "src/main/java/service/AdminService.java",
-      "contentHash": "d1d7a10abfd558955f8293aec420351a8ec11cd8282c3a31db700955efd90f12",
+      "contentHash": "d7a2d1d1eb49952fc8753cbe6d3d68e963ab42bf200639152a669d43b0eb9700",
       "functions": [
         {
           "name": "AdminService",
@@ -4037,7 +4124,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 30
+          "lineCount": 34
         }
       ],
       "classes": [
@@ -4056,7 +4143,7 @@
             "instance"
           ],
           "exported": true,
-          "lineCount": 79
+          "lineCount": 83
         }
       ],
       "imports": [
@@ -4129,12 +4216,12 @@
         "updateAuctionForce",
         "AdminService"
       ],
-      "totalLines": 98,
+      "totalLines": 102,
       "hasStructuralAnalysis": true
     },
     "src/main/java/service/AuctionManager.java": {
       "filePath": "src/main/java/service/AuctionManager.java",
-      "contentHash": "626d8ce48dca7f99fd0ca64401e0f4af347fe73ddb88398626b4dab2aa27e399",
+      "contentHash": "642a7fc7d5006c78ecddff6c5829cd3f0d6df49694eb3a700f6ecc23e2685025",
       "functions": [
         {
           "name": "AuctionManager",
@@ -4204,7 +4291,7 @@
           ],
           "returnType": "boolean",
           "exported": true,
-          "lineCount": 27
+          "lineCount": 33
         },
         {
           "name": "registerAuction",
@@ -4276,7 +4363,7 @@
             "auctionFinishedCallback"
           ],
           "exported": true,
-          "lineCount": 169
+          "lineCount": 175
         }
       ],
       "imports": [
@@ -4391,7 +4478,7 @@
         "concludeAuction",
         "AuctionManager"
       ],
-      "totalLines": 193,
+      "totalLines": 199,
       "hasStructuralAnalysis": true
     },
     "src/main/java/service/UserService.java": {
@@ -4535,7 +4622,7 @@
     },
     "src/main/java/shared/GlobalExceptionHandler.java": {
       "filePath": "src/main/java/shared/GlobalExceptionHandler.java",
-      "contentHash": "6feac1482da4c3f7472c70314c0968ffe16e83ff114f4d2e0f524e46509b339e",
+      "contentHash": "a27c59d0b3d160dbd0f451501363d94a8824ea4eb97ae636414f96e4a9ea2eb6",
       "functions": [
         {
           "name": "setupHandler",
@@ -4681,7 +4768,7 @@
     },
     "src/main/java/view/controller/admin/AdminAuctionManagementController.java": {
       "filePath": "src/main/java/view/controller/admin/AdminAuctionManagementController.java",
-      "contentHash": "4140fd9858a5d3ce711cd9b5c23cede3b8adee4e3757c3eb9fb172bf5e8e0958",
+      "contentHash": "e7c8c39e36282e9379b27375734243b45ef55db8e1dba3d8959514464561956a",
       "functions": [
         {
           "name": "initialize",
@@ -4691,7 +4778,49 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 100
+          "lineCount": 9
+        },
+        {
+          "name": "loadAuctions",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "configureColumns",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "configureViewColumn",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "configureActionColumn",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "registerDeleteListener",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "registerAuctionListListener",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
         },
         {
           "name": "goToDashboard",
@@ -4735,6 +4864,12 @@
           "name": "AdminAuctionManagementController",
           "methods": [
             "initialize",
+            "loadAuctions",
+            "configureColumns",
+            "configureViewColumn",
+            "configureActionColumn",
+            "registerDeleteListener",
+            "registerAuctionListListener",
             "goToDashboard",
             "goToUserManagement",
             "logoutClicked",
@@ -4753,7 +4888,7 @@
             "colAction"
           ],
           "exported": true,
-          "lineCount": 150
+          "lineCount": 164
         }
       ],
       "imports": [
@@ -4848,19 +4983,19 @@
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
         },
         {
-          "source": "view.utility.StatusDisplayHelper",
+          "source": "view.utility.display.StatusDisplayHelper",
           "specifiers": [
             "StatusDisplayHelper"
           ]
@@ -4888,12 +5023,12 @@
         "initialize",
         "AdminAuctionManagementController"
       ],
-      "totalLines": 176,
+      "totalLines": 190,
       "hasStructuralAnalysis": true
     },
     "src/main/java/view/controller/admin/AdminDashboardController.java": {
       "filePath": "src/main/java/view/controller/admin/AdminDashboardController.java",
-      "contentHash": "d64b90899445493f88e32d4dfae1972f2ef4987f10f808a995b9ba7a17e0e6a1",
+      "contentHash": "388ad97cfec5dd277263a0a8329a1075ed1fec9f3ccc21787510cf5b2f8d0f01",
       "functions": [
         {
           "name": "initialize",
@@ -4903,7 +5038,42 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 58
+          "lineCount": 8
+        },
+        {
+          "name": "configureAuctionColumns",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "configureUserColumns",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "registerAuctionListListener",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "registerUserListListener",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "loadDashboardData",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
         },
         {
           "name": "goToUserManagement",
@@ -4938,6 +5108,11 @@
           "name": "AdminDashboardController",
           "methods": [
             "initialize",
+            "configureAuctionColumns",
+            "configureUserColumns",
+            "registerAuctionListListener",
+            "registerUserListListener",
+            "loadDashboardData",
             "goToUserManagement",
             "goToAuctionManagement",
             "logoutClicked"
@@ -4960,7 +5135,7 @@
             "colUserStatus"
           ],
           "exported": true,
-          "lineCount": 119
+          "lineCount": 133
         }
       ],
       "imports": [
@@ -5067,13 +5242,13 @@
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
         },
         {
-          "source": "view.utility.StatusDisplayHelper",
+          "source": "view.utility.display.StatusDisplayHelper",
           "specifiers": [
             "StatusDisplayHelper"
           ]
@@ -5095,12 +5270,12 @@
         "initialize",
         "AdminDashboardController"
       ],
-      "totalLines": 145,
+      "totalLines": 159,
       "hasStructuralAnalysis": true
     },
     "src/main/java/view/controller/admin/AdminUserManagementController.java": {
       "filePath": "src/main/java/view/controller/admin/AdminUserManagementController.java",
-      "contentHash": "a469c0fff994516a4df6139b816fe07e901812bcef69c5d677e1124962268551",
+      "contentHash": "45deabc4a520e27acc811fe36563e81f1c579fb890db81ca99d7538752b52146",
       "functions": [
         {
           "name": "initialize",
@@ -5110,7 +5285,42 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 122
+          "lineCount": 8
+        },
+        {
+          "name": "configureColumns",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "configureActionColumn",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 63
+        },
+        {
+          "name": "registerResponseListeners",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "registerUserListListener",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "loadUsers",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
         },
         {
           "name": "goToDashboard",
@@ -5154,6 +5364,11 @@
           "name": "AdminUserManagementController",
           "methods": [
             "initialize",
+            "configureColumns",
+            "configureActionColumn",
+            "registerResponseListeners",
+            "registerUserListListener",
+            "loadUsers",
             "goToDashboard",
             "goToAuctionManagement",
             "logoutClicked",
@@ -5171,7 +5386,7 @@
             "colAction"
           ],
           "exported": true,
-          "lineCount": 161
+          "lineCount": 174
         }
       ],
       "imports": [
@@ -5278,19 +5493,19 @@
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
         },
         {
-          "source": "view.utility.StatusDisplayHelper",
+          "source": "view.utility.display.StatusDisplayHelper",
           "specifiers": [
             "StatusDisplayHelper"
           ]
@@ -5312,12 +5527,12 @@
         "initialize",
         "AdminUserManagementController"
       ],
-      "totalLines": 188,
+      "totalLines": 201,
       "hasStructuralAnalysis": true
     },
     "src/main/java/view/controller/auction/InRoomController.java": {
       "filePath": "src/main/java/view/controller/auction/InRoomController.java",
-      "contentHash": "94670ec2bd6bf0f146e25a3e7e33516064f55e098f55300c8d4e3409095ba84f",
+      "contentHash": "18155127e62bf841403ec2c203d534ef1f9e69688312378b23334e91c73df4fd",
       "functions": [
         {
           "name": "initialize",
@@ -5327,7 +5542,42 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 24
+          "lineCount": 8
+        },
+        {
+          "name": "configureChart",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "configureHistoryTable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "configureNotificationTable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "initializeDefaultViewState",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "registerBidAmountShortcut",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
         },
         {
           "name": "setAuction",
@@ -5336,7 +5586,7 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 85
+          "lineCount": 84
         },
         {
           "name": "registerNetworkListeners",
@@ -5384,7 +5634,7 @@
           "params": [],
           "returnType": "void",
           "exported": false,
-          "lineCount": 25
+          "lineCount": 24
         },
         {
           "name": "cleanupRoom",
@@ -5409,7 +5659,7 @@
           ],
           "returnType": "void",
           "exported": false,
-          "lineCount": 42
+          "lineCount": 40
         }
       ],
       "classes": [
@@ -5417,6 +5667,11 @@
           "name": "InRoomController",
           "methods": [
             "initialize",
+            "configureChart",
+            "configureHistoryTable",
+            "configureNotificationTable",
+            "initializeDefaultViewState",
+            "registerBidAmountShortcut",
             "setAuction",
             "registerNetworkListeners",
             "updateTimeLabel",
@@ -5453,10 +5708,11 @@
             "currentTopBidder",
             "currentHighestPrice",
             "roomHelper",
+            "commandService",
             "isExiting"
           ],
           "exported": true,
-          "lineCount": 396
+          "lineCount": 412
         }
       ],
       "imports": [
@@ -5539,25 +5795,31 @@
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.AuctionRoomHelper",
+          "source": "view.utility.auction.AuctionRoomCommandService",
+          "specifiers": [
+            "AuctionRoomCommandService"
+          ]
+        },
+        {
+          "source": "view.utility.auction.AuctionRoomHelper",
           "specifiers": [
             "AuctionRoomHelper"
           ]
         },
         {
-          "source": "view.utility.ChartHelper",
+          "source": "view.utility.display.ChartHelper",
           "specifiers": [
             "ChartHelper"
           ]
         },
         {
-          "source": "view.utility.WrappingTextCellFactory",
+          "source": "view.utility.table.WrappingTextCellFactory",
           "specifiers": [
             "WrappingTextCellFactory"
           ]
@@ -5588,12 +5850,12 @@
         "exitRoom",
         "InRoomController"
       ],
-      "totalLines": 427,
+      "totalLines": 444,
       "hasStructuralAnalysis": true
     },
     "src/main/java/view/controller/auction/RoomMenuChoiceController.java": {
       "filePath": "src/main/java/view/controller/auction/RoomMenuChoiceController.java",
-      "contentHash": "b93f6c885a123f7d465c1a5f1af057d8e431e7efa878fffd51470cd780da6a30",
+      "contentHash": "8b85c36370cd431c89a911799cfbd4ac2e6b379db5fd9e253a1429ea531c2ac7",
       "functions": [
         {
           "name": "initialize",
@@ -5603,7 +5865,35 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 41
+          "lineCount": 8
+        },
+        {
+          "name": "configureSellerActionsVisibility",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "configureAuctionTable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "configureOpenRoomAction",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "registerAuctionListListener",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
         },
         {
           "name": "setupContextMenu",
@@ -5636,6 +5926,10 @@
           "name": "RoomMenuChoiceController",
           "methods": [
             "initialize",
+            "configureSellerActionsVisibility",
+            "configureAuctionTable",
+            "configureOpenRoomAction",
+            "registerAuctionListListener",
             "setupContextMenu",
             "backToBaseMenu",
             "goToCreateItem"
@@ -5656,7 +5950,7 @@
             "btnCreateAuction"
           ],
           "exported": true,
-          "lineCount": 75
+          "lineCount": 90
         }
       ],
       "imports": [
@@ -5721,19 +6015,19 @@
           ]
         },
         {
-          "source": "view.utility.AuctionNetworkHelper",
+          "source": "view.utility.auction.AuctionNetworkHelper",
           "specifiers": [
             "AuctionNetworkHelper"
           ]
         },
         {
-          "source": "view.utility.AuctionTableConfigurator",
+          "source": "view.utility.auction.AuctionTableConfigurator",
           "specifiers": [
             "AuctionTableConfigurator"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
@@ -5755,12 +6049,12 @@
         "initialize",
         "RoomMenuChoiceController"
       ],
-      "totalLines": 95,
+      "totalLines": 110,
       "hasStructuralAnalysis": true
     },
     "src/main/java/view/controller/auction/SellerInRoomController.java": {
       "filePath": "src/main/java/view/controller/auction/SellerInRoomController.java",
-      "contentHash": "5b082c44b9d545f34be6e5d21c0645f7dd6e1657eb3647b6e332eb9f615a64a1",
+      "contentHash": "2e55bf50f4ee02277353ff6609ea6027a4dc2e14c7d3908b7c616ce8f8d3c857",
       "functions": [
         {
           "name": "initialize",
@@ -5770,21 +6064,7 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 31
-        },
-        {
-          "name": "handleKickUser",
-          "params": [],
-          "returnType": "void",
-          "exported": false,
-          "lineCount": 92
-        },
-        {
-          "name": "registerNetworkListeners",
-          "params": [],
-          "returnType": "void",
-          "exported": false,
-          "lineCount": 58
+          "lineCount": 7
         },
         {
           "name": "setAuction",
@@ -5793,7 +6073,7 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 83
+          "lineCount": 12
         },
         {
           "name": "cleanupRoom",
@@ -5809,7 +6089,106 @@
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 12
+          "lineCount": 10
+        },
+        {
+          "name": "configureChart",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "configureBidHistoryTable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "configureNotificationTable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "addKickButtonForAdmin",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "showParticipantManagement",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "resetRoomHelper",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "registerNetworkListeners",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "handleNewBidBroadcast",
+          "params": [
+            "message"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 30
+        },
+        {
+          "name": "handleAuctionFinishedBroadcast",
+          "params": [
+            "message"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "handleParticipantsBroadcast",
+          "params": [
+            "message"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "restoreAuctionState",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 47
+        },
+        {
+          "name": "updateTimeLabel",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "updatePriceLabels",
+          "params": [
+            "price"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
         },
         {
           "name": "updateIncrementDisplay",
@@ -5818,7 +6197,33 @@
           ],
           "returnType": "void",
           "exported": false,
-          "lineCount": 4
+          "lineCount": 8
+        },
+        {
+          "name": "addNotification",
+          "params": [
+            "content"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "addNotification",
+          "params": [
+            "content",
+            "time"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getCurrentStage",
+          "params": [],
+          "returnType": "Stage",
+          "exported": false,
+          "lineCount": 7
         }
       ],
       "classes": [
@@ -5826,14 +6231,29 @@
           "name": "SellerInRoomController",
           "methods": [
             "initialize",
-            "handleKickUser",
-            "registerNetworkListeners",
             "setAuction",
             "cleanupRoom",
             "exitRoom",
-            "updateIncrementDisplay"
+            "configureChart",
+            "configureBidHistoryTable",
+            "configureNotificationTable",
+            "addKickButtonForAdmin",
+            "showParticipantManagement",
+            "resetRoomHelper",
+            "registerNetworkListeners",
+            "handleNewBidBroadcast",
+            "handleAuctionFinishedBroadcast",
+            "handleParticipantsBroadcast",
+            "restoreAuctionState",
+            "updateTimeLabel",
+            "updatePriceLabels",
+            "updateIncrementDisplay",
+            "addNotification",
+            "addNotification",
+            "getCurrentStage"
           ],
           "properties": [
+            "TIME_FORMATTER",
             "lblRoomId",
             "totalTimeLabel",
             "lblCurrentPrice",
@@ -5849,19 +6269,20 @@
             "notificationTableView",
             "colNotifTime",
             "colNotifContent",
-            "priceSeries",
             "bidHistory",
             "roomNotifications",
+            "activeParticipants",
+            "commandService",
+            "priceSeries",
             "bidCount",
             "auction",
             "currentAuctionId",
             "currentHighestPrice",
             "roomHelper",
-            "activeParticipants",
             "isExiting"
           ],
           "exported": true,
-          "lineCount": 322
+          "lineCount": 299
         }
       ],
       "imports": [
@@ -5920,6 +6341,12 @@
           ]
         },
         {
+          "source": "javafx.scene.control.Button",
+          "specifiers": [
+            "Button"
+          ]
+        },
+        {
           "source": "javafx.scene.control.Label",
           "specifiers": [
             "Label"
@@ -5944,9 +6371,15 @@
           ]
         },
         {
-          "source": "network.ClientNetworkManager",
+          "source": "model.auction.Auction",
           "specifiers": [
-            "ClientNetworkManager"
+            "Auction"
+          ]
+        },
+        {
+          "source": "model.auction.BidTransaction",
+          "specifiers": [
+            "BidTransaction"
           ]
         },
         {
@@ -5956,31 +6389,49 @@
           ]
         },
         {
+          "source": "network.SessionManager",
+          "specifiers": [
+            "SessionManager"
+          ]
+        },
+        {
           "source": "shared.Protocol",
           "specifiers": [
             "Protocol"
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.AuctionRoomHelper",
+          "source": "view.utility.auction.AuctionRoomCommandService",
+          "specifiers": [
+            "AuctionRoomCommandService"
+          ]
+        },
+        {
+          "source": "view.utility.auction.AuctionRoomHelper",
           "specifiers": [
             "AuctionRoomHelper"
           ]
         },
         {
-          "source": "view.utility.ChartHelper",
+          "source": "view.utility.display.ChartHelper",
           "specifiers": [
             "ChartHelper"
           ]
         },
         {
-          "source": "view.utility.WrappingTextCellFactory",
+          "source": "view.utility.auction.ParticipantManagementDialog",
+          "specifiers": [
+            "ParticipantManagementDialog"
+          ]
+        },
+        {
+          "source": "view.utility.table.WrappingTextCellFactory",
           "specifiers": [
             "WrappingTextCellFactory"
           ]
@@ -5989,6 +6440,24 @@
           "source": "java.net.URL",
           "specifiers": [
             "URL"
+          ]
+        },
+        {
+          "source": "java.time.LocalTime",
+          "specifiers": [
+            "LocalTime"
+          ]
+        },
+        {
+          "source": "java.time.format.DateTimeFormatter",
+          "specifiers": [
+            "DateTimeFormatter"
+          ]
+        },
+        {
+          "source": "java.util.Arrays",
+          "specifiers": [
+            "Arrays"
           ]
         },
         {
@@ -6005,12 +6474,12 @@
         "exitRoom",
         "SellerInRoomController"
       ],
-      "totalLines": 356,
+      "totalLines": 338,
       "hasStructuralAnalysis": true
     },
     "src/main/java/view/controller/auth/LoginController.java": {
       "filePath": "src/main/java/view/controller/auth/LoginController.java",
-      "contentHash": "502ca6f7ac8e4e1265c0785678e794017e60005c0a4a41a15229006e5f0889d2",
+      "contentHash": "483cd790497884063403f8e8a829051bd5ef08f811972d9c350f5fa077b12f31",
       "functions": [
         {
           "name": "initialize",
@@ -6105,13 +6574,13 @@
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
@@ -6126,7 +6595,7 @@
     },
     "src/main/java/view/controller/auth/RegisterController.java": {
       "filePath": "src/main/java/view/controller/auth/RegisterController.java",
-      "contentHash": "1ddb6f41e58b86324d1ade4d274d44153a3c22bbab6749771db7e1a842dbf9a6",
+      "contentHash": "9ed392853c98189f6e702ca5e9c8b034d13b3d35cec70c35105e2c15ff1975a6",
       "functions": [
         {
           "name": "initialize",
@@ -6248,13 +6717,13 @@
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
@@ -6269,7 +6738,7 @@
     },
     "src/main/java/view/controller/menu/AssetsListController.java": {
       "filePath": "src/main/java/view/controller/menu/AssetsListController.java",
-      "contentHash": "4599bffbf7a940c8eb9669cd643fde395b03e318d5ca392d9efa02302fb65e63",
+      "contentHash": "e8e25089914264c0ace4f27db1cdb079a76e4041c6bfa0ddc8525ce505bff8c2",
       "functions": [
         {
           "name": "initialize",
@@ -6472,43 +6941,43 @@
           ]
         },
         {
-          "source": "view.utility.AuctionNetworkHelper",
+          "source": "view.utility.auction.AuctionNetworkHelper",
           "specifiers": [
             "AuctionNetworkHelper"
           ]
         },
         {
-          "source": "view.utility.AuctionTableConfigurator",
+          "source": "view.utility.auction.AuctionTableConfigurator",
           "specifiers": [
             "AuctionTableConfigurator"
           ]
         },
         {
-          "source": "view.utility.MenuHelper",
+          "source": "view.utility.navigation.MenuHelper",
           "specifiers": [
             "MenuHelper"
           ]
         },
         {
-          "source": "view.utility.NotificationMenuHandler",
+          "source": "view.utility.notification.NotificationMenuHandler",
           "specifiers": [
             "NotificationMenuHandler"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
         },
         {
-          "source": "view.utility.WindowManager",
+          "source": "view.utility.navigation.WindowManager",
           "specifiers": [
             "WindowManager"
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
@@ -6535,7 +7004,7 @@
     },
     "src/main/java/view/controller/menu/BaseMenuController.java": {
       "filePath": "src/main/java/view/controller/menu/BaseMenuController.java",
-      "contentHash": "654cd925164a0a839bcb54cb776f4721c36cbd4801178044a7a39cdd1591f72c",
+      "contentHash": "84a9304cdc3f0a45925e1876703433af610d94af3a00316347a94e524671a66b",
       "functions": [
         {
           "name": "initialize",
@@ -6728,55 +7197,55 @@
           ]
         },
         {
-          "source": "view.utility.AuctionTableConfigurator",
+          "source": "view.utility.auction.AuctionTableConfigurator",
           "specifiers": [
             "AuctionTableConfigurator"
           ]
         },
         {
-          "source": "view.utility.MenuHelper",
+          "source": "view.utility.navigation.MenuHelper",
           "specifiers": [
             "MenuHelper"
           ]
         },
         {
-          "source": "view.utility.NotificationFilterHelper",
+          "source": "view.utility.notification.NotificationFilterHelper",
           "specifiers": [
             "NotificationFilterHelper"
           ]
         },
         {
-          "source": "view.utility.NotificationMenuHandler",
+          "source": "view.utility.notification.NotificationMenuHandler",
           "specifiers": [
             "NotificationMenuHandler"
           ]
         },
         {
-          "source": "view.utility.RoleBasedFilterHelper",
+          "source": "view.utility.auction.RoleBasedFilterHelper",
           "specifiers": [
             "RoleBasedFilterHelper"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
         },
         {
-          "source": "view.utility.WindowManager",
+          "source": "view.utility.navigation.WindowManager",
           "specifiers": [
             "WindowManager"
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.WrappingTextCellFactory",
+          "source": "view.utility.table.WrappingTextCellFactory",
           "specifiers": [
             "WrappingTextCellFactory"
           ]
@@ -6803,7 +7272,7 @@
     },
     "src/main/java/view/controller/menu/UserInfoController.java": {
       "filePath": "src/main/java/view/controller/menu/UserInfoController.java",
-      "contentHash": "b07df297bf2a1d4647dd38ad0e1564161fb0a363dd0c1d60e7cb0a90153d2ad3",
+      "contentHash": "dd1a6550653ce1d6a02e6370c4951cf67d2cd66020b76145aae659dc8e7bea35",
       "functions": [
         {
           "name": "initialize",
@@ -6926,7 +7395,7 @@
     },
     "src/main/java/view/controller/seller/CreateItemController.java": {
       "filePath": "src/main/java/view/controller/seller/CreateItemController.java",
-      "contentHash": "ab1485f4d71eb07024fea85a8701499bb3a4a7915e17532c4d7825a350ef10a3",
+      "contentHash": "bc343136d0a5216c53191f4310bc983ca266600fbd2cd98a177d97dbd6117a96",
       "functions": [
         {
           "name": "initialize",
@@ -7020,7 +7489,7 @@
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
@@ -7059,7 +7528,7 @@
     },
     "src/main/java/view/controller/seller/SellerAuctionListController.java": {
       "filePath": "src/main/java/view/controller/seller/SellerAuctionListController.java",
-      "contentHash": "ad9c25eadd7f1f4387c4587768873ca85afdd3f98c40bd7a455de68d375015b3",
+      "contentHash": "87c78b271dca97d7f094a263e83711e7bf1bc760e46811564ebeb501553cad61",
       "functions": [
         {
           "name": "initialize",
@@ -7197,19 +7666,19 @@
           ]
         },
         {
-          "source": "view.utility.AlertHelper",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
             "AlertHelper"
           ]
         },
         {
-          "source": "view.utility.SceneManager",
+          "source": "view.utility.navigation.SceneManager",
           "specifiers": [
             "SceneManager"
           ]
         },
         {
-          "source": "view.utility.AuctionTableConfigurator",
+          "source": "view.utility.auction.AuctionTableConfigurator",
           "specifiers": [
             "AuctionTableConfigurator"
           ]
@@ -7356,111 +7825,9 @@
       "totalLines": 48,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/AlertHelper.java": {
-      "filePath": "src/main/java/view/utility/AlertHelper.java",
-      "contentHash": "3c542b1e41b311d66263ab714f8f2bf0fc37e6947cdedbdc56f114dae4fd628b",
-      "functions": [
-        {
-          "name": "showInfo",
-          "params": [
-            "title",
-            "content"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "showWarning",
-          "params": [
-            "title",
-            "content"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "showError",
-          "params": [
-            "title",
-            "content"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "showConfirmation",
-          "params": [
-            "title",
-            "content"
-          ],
-          "returnType": "Optional<ButtonType>",
-          "exported": true,
-          "lineCount": 7
-        },
-        {
-          "name": "showAlert",
-          "params": [
-            "title",
-            "content",
-            "type"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 7
-        }
-      ],
-      "classes": [
-        {
-          "name": "AlertHelper",
-          "methods": [
-            "showInfo",
-            "showWarning",
-            "showError",
-            "showConfirmation",
-            "showAlert"
-          ],
-          "properties": [],
-          "exported": true,
-          "lineCount": 33
-        }
-      ],
-      "imports": [
-        {
-          "source": "javafx.scene.control.Alert",
-          "specifiers": [
-            "Alert"
-          ]
-        },
-        {
-          "source": "javafx.scene.control.ButtonType",
-          "specifiers": [
-            "ButtonType"
-          ]
-        },
-        {
-          "source": "java.util.Optional",
-          "specifiers": [
-            "Optional"
-          ]
-        }
-      ],
-      "exports": [
-        "showInfo",
-        "showWarning",
-        "showError",
-        "showConfirmation",
-        "showAlert",
-        "AlertHelper"
-      ],
-      "totalLines": 45,
-      "hasStructuralAnalysis": true
-    },
-    "src/main/java/view/utility/AuctionContextMenuHelper.java": {
-      "filePath": "src/main/java/view/utility/AuctionContextMenuHelper.java",
-      "contentHash": "6cdfe80b6f9777cabe0b57749d62b9c0731f80eeb2e359d39b99f416ed1262aa",
+    "src/main/java/view/utility/auction/AuctionContextMenuHelper.java": {
+      "filePath": "src/main/java/view/utility/auction/AuctionContextMenuHelper.java",
+      "contentHash": "39d6d6c903f7cad0854284151f7e09278b6aabbe6c5327ff69e774b75ff87433",
       "functions": [
         {
           "name": "setupContextMenu",
@@ -7604,6 +7971,18 @@
           ]
         },
         {
+          "source": "view.utility.display.AlertHelper",
+          "specifiers": [
+            "AlertHelper"
+          ]
+        },
+        {
+          "source": "view.utility.validation.ValidationHelper",
+          "specifiers": [
+            "ValidationHelper"
+          ]
+        },
+        {
           "source": "java.time.Duration",
           "specifiers": [
             "Duration"
@@ -7620,12 +7999,12 @@
         "setupContextMenu",
         "AuctionContextMenuHelper"
       ],
-      "totalLines": 163,
+      "totalLines": 166,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/AuctionNetworkHelper.java": {
-      "filePath": "src/main/java/view/utility/AuctionNetworkHelper.java",
-      "contentHash": "5ab4097c6929434dfef33081c657ef257ad66b432a5f4f67897a29cc9e16969a",
+    "src/main/java/view/utility/auction/AuctionNetworkHelper.java": {
+      "filePath": "src/main/java/view/utility/auction/AuctionNetworkHelper.java",
+      "contentHash": "16d58f15dd88dbf9d5da51cb80e0031ebf789466f99c5ee8a34aef801ac4b5a8",
       "functions": [
         {
           "name": "registerAuctionListListener",
@@ -7721,6 +8100,12 @@
           ]
         },
         {
+          "source": "view.utility.notification.NotificationFilterHelper",
+          "specifiers": [
+            "NotificationFilterHelper"
+          ]
+        },
+        {
           "source": "java.util.function.Predicate",
           "specifiers": [
             "Predicate"
@@ -7734,12 +8119,124 @@
         "requestAuctionList",
         "AuctionNetworkHelper"
       ],
-      "totalLines": 84,
+      "totalLines": 85,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/AuctionRoomHelper.java": {
-      "filePath": "src/main/java/view/utility/AuctionRoomHelper.java",
-      "contentHash": "40229d5bc288e3c1d94a2149a62498d043fb7514cdb995960c20093aa0d17d61",
+    "src/main/java/view/utility/auction/AuctionRoomCommandService.java": {
+      "filePath": "src/main/java/view/utility/auction/AuctionRoomCommandService.java",
+      "contentHash": "1663d57a71d7f5de0943590fa8da6f9f712afc9fc466fc7f30c25f886545d56a",
+      "functions": [
+        {
+          "name": "AuctionRoomCommandService",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "AuctionRoomCommandService",
+          "params": [
+            "networkManager"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "joinRoom",
+          "params": [
+            "auctionId"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "placeBid",
+          "params": [
+            "auctionId",
+            "amount"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "enableAutoBid",
+          "params": [
+            "auctionId",
+            "maxBid"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cancelAutoBid",
+          "params": [
+            "auctionId"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "kickUser",
+          "params": [
+            "auctionId",
+            "username"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "AuctionRoomCommandService",
+          "methods": [
+            "AuctionRoomCommandService",
+            "AuctionRoomCommandService",
+            "joinRoom",
+            "placeBid",
+            "enableAutoBid",
+            "cancelAutoBid",
+            "kickUser"
+          ],
+          "properties": [
+            "networkManager"
+          ],
+          "exported": true,
+          "lineCount": 35
+        }
+      ],
+      "imports": [
+        {
+          "source": "network.ClientNetworkManager",
+          "specifiers": [
+            "ClientNetworkManager"
+          ]
+        },
+        {
+          "source": "shared.Protocol",
+          "specifiers": [
+            "Protocol"
+          ]
+        }
+      ],
+      "exports": [
+        "AuctionRoomCommandService",
+        "joinRoom",
+        "placeBid",
+        "enableAutoBid",
+        "cancelAutoBid",
+        "kickUser",
+        "AuctionRoomCommandService"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/auction/AuctionRoomHelper.java": {
+      "filePath": "src/main/java/view/utility/auction/AuctionRoomHelper.java",
+      "contentHash": "426fb451436119158f5bce09a088a427752f5b3dc9e65530418a8b37fb9a2ee0",
       "functions": [
         {
           "name": "AuctionRoomHelper",
@@ -7964,6 +8461,12 @@
           ]
         },
         {
+          "source": "view.utility.navigation.SceneManager",
+          "specifiers": [
+            "SceneManager"
+          ]
+        },
+        {
           "source": "java.time.LocalDateTime",
           "specifiers": [
             "LocalDateTime"
@@ -7989,12 +8492,12 @@
         "registerRoomKickedListener",
         "AuctionRoomHelper"
       ],
-      "totalLines": 197,
+      "totalLines": 198,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/AuctionTableConfigurator.java": {
-      "filePath": "src/main/java/view/utility/AuctionTableConfigurator.java",
-      "contentHash": "96cd02c034954849162230cc68c64431e8a4a5c33a22be4b8675a16b3ab7dc90",
+    "src/main/java/view/utility/auction/AuctionTableConfigurator.java": {
+      "filePath": "src/main/java/view/utility/auction/AuctionTableConfigurator.java",
+      "contentHash": "3e8fc569dc72aa763d3eb3cb3749213fa5ab97085b9c135ecb2dfcfbfde02f7e",
       "functions": [
         {
           "name": "configure",
@@ -8060,6 +8563,12 @@
           ]
         },
         {
+          "source": "view.utility.display.StatusDisplayHelper",
+          "specifiers": [
+            "StatusDisplayHelper"
+          ]
+        },
+        {
           "source": "java.time.format.DateTimeFormatter",
           "specifiers": [
             "DateTimeFormatter"
@@ -8070,159 +8579,138 @@
         "configure",
         "AuctionTableConfigurator"
       ],
-      "totalLines": 77,
+      "totalLines": 78,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/ChartHelper.java": {
-      "filePath": "src/main/java/view/utility/ChartHelper.java",
-      "contentHash": "dab6d6064022f0b5f2150b053df6c7fa3f334d15bb96877af1a59e9c9a119e45",
+    "src/main/java/view/utility/auction/ParticipantManagementDialog.java": {
+      "filePath": "src/main/java/view/utility/auction/ParticipantManagementDialog.java",
+      "contentHash": "7401575448c06a0c0f98a5e7064aa718f5b7ade36ce0dbea78c4b98a192f2ed4",
       "functions": [
         {
-          "name": "configureAreaChart",
-          "params": [
-            "chart"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 45
-        },
-        {
-          "name": "updateXAxisBounds",
-          "params": [
-            "chart",
-            "bidCount"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 7
-        },
-        {
-          "name": "calculateMinIncrement",
-          "params": [
-            "currentPrice"
-          ],
-          "returnType": "double",
-          "exported": true,
-          "lineCount": 6
-        },
-        {
-          "name": "formatTime",
-          "params": [
-            "totalSeconds"
-          ],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "formatDouble",
-          "params": [
-            "val"
-          ],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 5
-        }
-      ],
-      "classes": [
-        {
-          "name": "ChartHelper",
-          "methods": [
-            "configureAreaChart",
-            "updateXAxisBounds",
-            "calculateMinIncrement",
-            "formatTime",
-            "formatDouble"
-          ],
-          "properties": [],
-          "exported": true,
-          "lineCount": 89
-        }
-      ],
-      "imports": [
-        {
-          "source": "javafx.scene.chart.NumberAxis",
-          "specifiers": [
-            "NumberAxis"
-          ]
-        }
-      ],
-      "exports": [
-        "configureAreaChart",
-        "updateXAxisBounds",
-        "calculateMinIncrement",
-        "formatTime",
-        "formatDouble",
-        "ChartHelper"
-      ],
-      "totalLines": 98,
-      "hasStructuralAnalysis": true
-    },
-    "src/main/java/view/utility/MenuHelper.java": {
-      "filePath": "src/main/java/view/utility/MenuHelper.java",
-      "contentHash": "fbaef6d15241520c818258a21d86559bb2b5c598aa7ea0612c7e34f8f878f02f",
-      "functions": [
-        {
-          "name": "handleTransaction",
+          "name": "ParticipantManagementDialog",
           "params": [],
-          "returnType": "void",
           "exported": true,
-          "lineCount": 9
+          "lineCount": 2
         },
         {
-          "name": "showAmountDialog",
+          "name": "show",
           "params": [
-            "title",
-            "header"
-          ],
-          "returnType": "Optional<String>",
-          "exported": false,
-          "lineCount": 20
-        },
-        {
-          "name": "setupTransactionButton",
-          "params": [
-            "btn"
+            "owner",
+            "participants",
+            "onKickUser"
           ],
           "returnType": "void",
           "exported": true,
-          "lineCount": 12
-        },
-        {
-          "name": "setupBalanceLabel",
-          "params": [
-            "balanceLabel"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 7
+          "lineCount": 43
         }
       ],
       "classes": [
         {
-          "name": "MenuHelper",
+          "name": "ParticipantManagementDialog",
           "methods": [
-            "handleTransaction",
-            "showAmountDialog",
-            "setupTransactionButton",
-            "setupBalanceLabel"
+            "ParticipantManagementDialog",
+            "show"
           ],
           "properties": [],
           "exported": true,
-          "lineCount": 63
+          "lineCount": 98
         }
       ],
       "imports": [
         {
-          "source": "javafx.scene.control.TextInputDialog",
+          "source": "javafx.collections.ObservableList",
           "specifiers": [
-            "TextInputDialog"
+            "ObservableList"
           ]
         },
         {
-          "source": "network.ClientNetworkManager",
+          "source": "javafx.geometry.Insets",
           "specifiers": [
-            "ClientNetworkManager"
+            "Insets"
+          ]
+        },
+        {
+          "source": "javafx.geometry.Pos",
+          "specifiers": [
+            "Pos"
+          ]
+        },
+        {
+          "source": "javafx.scene.Scene",
+          "specifiers": [
+            "Scene"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.Alert",
+          "specifiers": [
+            "Alert"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.Button",
+          "specifiers": [
+            "Button"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.ButtonType",
+          "specifiers": [
+            "ButtonType"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.Label",
+          "specifiers": [
+            "Label"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.ListCell",
+          "specifiers": [
+            "ListCell"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.ListView",
+          "specifiers": [
+            "ListView"
+          ]
+        },
+        {
+          "source": "javafx.scene.layout.HBox",
+          "specifiers": [
+            "HBox"
+          ]
+        },
+        {
+          "source": "javafx.scene.layout.Priority",
+          "specifiers": [
+            "Priority"
+          ]
+        },
+        {
+          "source": "javafx.scene.layout.Region",
+          "specifiers": [
+            "Region"
+          ]
+        },
+        {
+          "source": "javafx.scene.layout.VBox",
+          "specifiers": [
+            "VBox"
+          ]
+        },
+        {
+          "source": "javafx.stage.Modality",
+          "specifiers": [
+            "Modality"
+          ]
+        },
+        {
+          "source": "javafx.stage.Stage",
+          "specifiers": [
+            "Stage"
           ]
         },
         {
@@ -8232,166 +8720,9 @@
           ]
         },
         {
-          "source": "shared.Protocol",
+          "source": "view.utility.display.AlertHelper",
           "specifiers": [
-            "Protocol"
-          ]
-        },
-        {
-          "source": "java.util.Optional",
-          "specifiers": [
-            "Optional"
-          ]
-        }
-      ],
-      "exports": [
-        "handleTransaction",
-        "setupTransactionButton",
-        "setupBalanceLabel",
-        "MenuHelper"
-      ],
-      "totalLines": 77,
-      "hasStructuralAnalysis": true
-    },
-    "src/main/java/view/utility/NotificationFilterHelper.java": {
-      "filePath": "src/main/java/view/utility/NotificationFilterHelper.java",
-      "contentHash": "8a2ed07132b23da5ca89ff29c88b58bbded8e21ebd61cdbe1ed34037604ac372",
-      "functions": [
-        {
-          "name": "NotificationFilterHelper",
-          "params": [],
-          "exported": true,
-          "lineCount": 1
-        },
-        {
-          "name": "registerNotificationListeners",
-          "params": [
-            "tableAuctions"
-          ],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 52
-        },
-        {
-          "name": "ensureGlobalListenerRegistered",
-          "params": [],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 3
-        },
-        {
-          "name": "registerGlobalListListener",
-          "params": [],
-          "returnType": "void",
-          "exported": false,
-          "lineCount": 4
-        },
-        {
-          "name": "findInLatestList",
-          "params": [
-            "auctionId"
-          ],
-          "returnType": "Auction",
-          "exported": false,
-          "lineCount": 10
-        },
-        {
-          "name": "handleNotification",
-          "params": [
-            "auctionId",
-            "table",
-            "notificationAction"
-          ],
-          "returnType": "void",
-          "exported": false,
-          "lineCount": 43
-        },
-        {
-          "name": "pushStartNotification",
-          "params": [
-            "auction"
-          ],
-          "returnType": "void",
-          "exported": false,
-          "lineCount": 13
-        },
-        {
-          "name": "pushFinishedNotification",
-          "params": [
-            "auction",
-            "winner",
-            "finalPrice"
-          ],
-          "returnType": "void",
-          "exported": false,
-          "lineCount": 13
-        },
-        {
-          "name": "pushNewBidNotification",
-          "params": [
-            "auction",
-            "topBidder",
-            "newPrice"
-          ],
-          "returnType": "void",
-          "exported": false,
-          "lineCount": 23
-        }
-      ],
-      "classes": [
-        {
-          "name": "NotificationFilterHelper",
-          "methods": [
-            "NotificationFilterHelper",
-            "registerNotificationListeners",
-            "ensureGlobalListenerRegistered",
-            "registerGlobalListListener",
-            "findInLatestList",
-            "handleNotification",
-            "pushStartNotification",
-            "pushFinishedNotification",
-            "pushNewBidNotification"
-          ],
-          "properties": [
-            "startListener",
-            "finishedListener",
-            "newBidListener",
-            "latestAllAuctions",
-            "globalListListener"
-          ],
-          "exported": true,
-          "lineCount": 196
-        }
-      ],
-      "imports": [
-        {
-          "source": "javafx.scene.control.TableView",
-          "specifiers": [
-            "TableView"
-          ]
-        },
-        {
-          "source": "model.auction.Auction",
-          "specifiers": [
-            "Auction"
-          ]
-        },
-        {
-          "source": "network.ClientNetworkManager",
-          "specifiers": [
-            "ClientNetworkManager"
-          ]
-        },
-        {
-          "source": "network.NotificationManager",
-          "specifiers": [
-            "NotificationManager"
-          ]
-        },
-        {
-          "source": "java.util.List",
-          "specifiers": [
-            "List"
+            "AlertHelper"
           ]
         },
         {
@@ -8402,129 +8733,15 @@
         }
       ],
       "exports": [
-        "registerNotificationListeners",
-        "ensureGlobalListenerRegistered",
-        "NotificationFilterHelper"
+        "show",
+        "ParticipantManagementDialog"
       ],
-      "totalLines": 216,
+      "totalLines": 125,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/NotificationMenuHandler.java": {
-      "filePath": "src/main/java/view/utility/NotificationMenuHandler.java",
-      "contentHash": "48e7c629b4c4685b1b79783a7838751fbe92b41d13cecba8716d1239a6a9cc22",
-      "functions": [
-        {
-          "name": "NotificationMenuHandler",
-          "params": [
-            "darkOverlay",
-            "notificationMenu",
-            "menuWidth"
-          ],
-          "exported": true,
-          "lineCount": 21
-        },
-        {
-          "name": "toggleMenu",
-          "params": [],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 7
-        },
-        {
-          "name": "openMenu",
-          "params": [],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 21
-        },
-        {
-          "name": "closeMenu",
-          "params": [],
-          "returnType": "void",
-          "exported": true,
-          "lineCount": 24
-        },
-        {
-          "name": "isOpen",
-          "params": [],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 3
-        }
-      ],
-      "classes": [
-        {
-          "name": "NotificationMenuHandler",
-          "methods": [
-            "NotificationMenuHandler",
-            "toggleMenu",
-            "openMenu",
-            "closeMenu",
-            "isOpen"
-          ],
-          "properties": [
-            "darkOverlay",
-            "notificationMenu",
-            "menuWidth",
-            "isOpen",
-            "currentAnimation"
-          ],
-          "exported": true,
-          "lineCount": 90
-        }
-      ],
-      "imports": [
-        {
-          "source": "javafx.animation.KeyFrame",
-          "specifiers": [
-            "KeyFrame"
-          ]
-        },
-        {
-          "source": "javafx.animation.KeyValue",
-          "specifiers": [
-            "KeyValue"
-          ]
-        },
-        {
-          "source": "javafx.animation.Timeline",
-          "specifiers": [
-            "Timeline"
-          ]
-        },
-        {
-          "source": "javafx.scene.control.ScrollPane",
-          "specifiers": [
-            "ScrollPane"
-          ]
-        },
-        {
-          "source": "javafx.scene.layout.Pane",
-          "specifiers": [
-            "Pane"
-          ]
-        },
-        {
-          "source": "javafx.util.Duration",
-          "specifiers": [
-            "Duration"
-          ]
-        }
-      ],
-      "exports": [
-        "NotificationMenuHandler",
-        "toggleMenu",
-        "openMenu",
-        "closeMenu",
-        "isOpen",
-        "NotificationMenuHandler"
-      ],
-      "totalLines": 104,
-      "hasStructuralAnalysis": true
-    },
-    "src/main/java/view/utility/RoleBasedFilterHelper.java": {
-      "filePath": "src/main/java/view/utility/RoleBasedFilterHelper.java",
-      "contentHash": "4d66f6dbc999365e1bc38f5703f0699b7a86c2f28b3688bbe7eeb71ec83234a0",
+    "src/main/java/view/utility/auction/RoleBasedFilterHelper.java": {
+      "filePath": "src/main/java/view/utility/auction/RoleBasedFilterHelper.java",
+      "contentHash": "6283138c91ba66d3843637916c7e10981792ac79151e9100effe8720e6d1cc1f",
       "functions": [
         {
           "name": "RoleBasedFilterHelper",
@@ -8670,9 +8887,363 @@
       "totalLines": 120,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/SceneManager.java": {
-      "filePath": "src/main/java/view/utility/SceneManager.java",
-      "contentHash": "1b88d33c770bfdb8f2b46350b826461d0c4dc9d89e097525355b8cb63e932e40",
+    "src/main/java/view/utility/display/AlertHelper.java": {
+      "filePath": "src/main/java/view/utility/display/AlertHelper.java",
+      "contentHash": "cda9b1f2e4a83301c8f2117be486e778086d86a654fecae476a941f2113cdd6c",
+      "functions": [
+        {
+          "name": "showInfo",
+          "params": [
+            "title",
+            "content"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "showWarning",
+          "params": [
+            "title",
+            "content"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "showError",
+          "params": [
+            "title",
+            "content"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "showConfirmation",
+          "params": [
+            "title",
+            "content"
+          ],
+          "returnType": "Optional<ButtonType>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "showAlert",
+          "params": [
+            "title",
+            "content",
+            "type"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "AlertHelper",
+          "methods": [
+            "showInfo",
+            "showWarning",
+            "showError",
+            "showConfirmation",
+            "showAlert"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "imports": [
+        {
+          "source": "javafx.scene.control.Alert",
+          "specifiers": [
+            "Alert"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.ButtonType",
+          "specifiers": [
+            "ButtonType"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "showInfo",
+        "showWarning",
+        "showError",
+        "showConfirmation",
+        "showAlert",
+        "AlertHelper"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/display/ChartHelper.java": {
+      "filePath": "src/main/java/view/utility/display/ChartHelper.java",
+      "contentHash": "9caffe422fd187fae001324f5a1bb504c7ea7da6edc7de9da47ce39747c12f17",
+      "functions": [
+        {
+          "name": "configureAreaChart",
+          "params": [
+            "chart"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 45
+        },
+        {
+          "name": "updateXAxisBounds",
+          "params": [
+            "chart",
+            "bidCount"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "calculateMinIncrement",
+          "params": [
+            "currentPrice"
+          ],
+          "returnType": "double",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "formatTime",
+          "params": [
+            "totalSeconds"
+          ],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "formatDouble",
+          "params": [
+            "val"
+          ],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [
+        {
+          "name": "ChartHelper",
+          "methods": [
+            "configureAreaChart",
+            "updateXAxisBounds",
+            "calculateMinIncrement",
+            "formatTime",
+            "formatDouble"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 89
+        }
+      ],
+      "imports": [
+        {
+          "source": "javafx.scene.chart.NumberAxis",
+          "specifiers": [
+            "NumberAxis"
+          ]
+        }
+      ],
+      "exports": [
+        "configureAreaChart",
+        "updateXAxisBounds",
+        "calculateMinIncrement",
+        "formatTime",
+        "formatDouble",
+        "ChartHelper"
+      ],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/display/StatusDisplayHelper.java": {
+      "filePath": "src/main/java/view/utility/display/StatusDisplayHelper.java",
+      "contentHash": "51a50e974da2f3acbec9d3112cd0911a9e1669905cefd2437abfc524fd33215a",
+      "functions": [
+        {
+          "name": "formatAuctionStatus",
+          "params": [
+            "statusName"
+          ],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "formatItemType",
+          "params": [
+            "className"
+          ],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "formatUserRole",
+          "params": [
+            "roleName"
+          ],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "formatUserStatus",
+          "params": [
+            "isActive"
+          ],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "StatusDisplayHelper",
+          "methods": [
+            "formatAuctionStatus",
+            "formatItemType",
+            "formatUserRole",
+            "formatUserStatus"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 46
+        }
+      ],
+      "imports": [],
+      "exports": [
+        "formatAuctionStatus",
+        "formatItemType",
+        "formatUserRole",
+        "formatUserStatus",
+        "StatusDisplayHelper"
+      ],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/navigation/MenuHelper.java": {
+      "filePath": "src/main/java/view/utility/navigation/MenuHelper.java",
+      "contentHash": "fcceb5506b6e79846219ffb9307a9c822e48b129a639dbca090db7c62fe30664",
+      "functions": [
+        {
+          "name": "handleTransaction",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "showAmountDialog",
+          "params": [
+            "title",
+            "header"
+          ],
+          "returnType": "Optional<String>",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "setupTransactionButton",
+          "params": [
+            "btn"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "setupBalanceLabel",
+          "params": [
+            "balanceLabel"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "MenuHelper",
+          "methods": [
+            "handleTransaction",
+            "showAmountDialog",
+            "setupTransactionButton",
+            "setupBalanceLabel"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 63
+        }
+      ],
+      "imports": [
+        {
+          "source": "javafx.scene.control.TextInputDialog",
+          "specifiers": [
+            "TextInputDialog"
+          ]
+        },
+        {
+          "source": "network.ClientNetworkManager",
+          "specifiers": [
+            "ClientNetworkManager"
+          ]
+        },
+        {
+          "source": "network.SessionManager",
+          "specifiers": [
+            "SessionManager"
+          ]
+        },
+        {
+          "source": "shared.Protocol",
+          "specifiers": [
+            "Protocol"
+          ]
+        },
+        {
+          "source": "view.utility.display.AlertHelper",
+          "specifiers": [
+            "AlertHelper"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "handleTransaction",
+        "setupTransactionButton",
+        "setupBalanceLabel",
+        "MenuHelper"
+      ],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/navigation/SceneManager.java": {
+      "filePath": "src/main/java/view/utility/navigation/SceneManager.java",
+      "contentHash": "c6d51a29f5667eab5530b5a936f828e4ac290db264a8aba0d3c4009251f3235f",
       "functions": [
         {
           "name": "switchScene",
@@ -8933,162 +9504,9 @@
       "totalLines": 206,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/StatusDisplayHelper.java": {
-      "filePath": "src/main/java/view/utility/StatusDisplayHelper.java",
-      "contentHash": "a1993b3067d0241d9e30ce681472b511c6e39c3d4041e7286c794e168457afb8",
-      "functions": [
-        {
-          "name": "formatAuctionStatus",
-          "params": [
-            "statusName"
-          ],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 11
-        },
-        {
-          "name": "formatItemType",
-          "params": [
-            "className"
-          ],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 9
-        },
-        {
-          "name": "formatUserRole",
-          "params": [
-            "roleName"
-          ],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 9
-        },
-        {
-          "name": "formatUserStatus",
-          "params": [
-            "isActive"
-          ],
-          "returnType": "String",
-          "exported": true,
-          "lineCount": 3
-        }
-      ],
-      "classes": [
-        {
-          "name": "StatusDisplayHelper",
-          "methods": [
-            "formatAuctionStatus",
-            "formatItemType",
-            "formatUserRole",
-            "formatUserStatus"
-          ],
-          "properties": [],
-          "exported": true,
-          "lineCount": 50
-        }
-      ],
-      "imports": [],
-      "exports": [
-        "formatAuctionStatus",
-        "formatItemType",
-        "formatUserRole",
-        "formatUserStatus",
-        "StatusDisplayHelper"
-      ],
-      "totalLines": 58,
-      "hasStructuralAnalysis": true
-    },
-    "src/main/java/view/utility/ValidationHelper.java": {
-      "filePath": "src/main/java/view/utility/ValidationHelper.java",
-      "contentHash": "6358255bf6d83d5a6b046bba04ad50d0589cf3fc429ba246f5c99c5fd75314d9",
-      "functions": [
-        {
-          "name": "isValidUsername",
-          "params": [
-            "username"
-          ],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 4
-        },
-        {
-          "name": "isStrongPassword",
-          "params": [
-            "password"
-          ],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 4
-        },
-        {
-          "name": "isValidStartPrice",
-          "params": [
-            "priceStr"
-          ],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 8
-        },
-        {
-          "name": "isValidDuration",
-          "params": [
-            "durationStr"
-          ],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 8
-        },
-        {
-          "name": "isEmpty",
-          "params": [
-            "value"
-          ],
-          "returnType": "boolean",
-          "exported": true,
-          "lineCount": 3
-        }
-      ],
-      "classes": [
-        {
-          "name": "ValidationHelper",
-          "methods": [
-            "isValidUsername",
-            "isStrongPassword",
-            "isValidStartPrice",
-            "isValidDuration",
-            "isEmpty"
-          ],
-          "properties": [
-            "USERNAME_REGEX",
-            "PASSWORD_REGEX"
-          ],
-          "exported": true,
-          "lineCount": 55
-        }
-      ],
-      "imports": [
-        {
-          "source": "java.util.regex.Pattern",
-          "specifiers": [
-            "Pattern"
-          ]
-        }
-      ],
-      "exports": [
-        "isValidUsername",
-        "isStrongPassword",
-        "isValidStartPrice",
-        "isValidDuration",
-        "isEmpty",
-        "ValidationHelper"
-      ],
-      "totalLines": 63,
-      "hasStructuralAnalysis": true
-    },
-    "src/main/java/view/utility/WindowManager.java": {
-      "filePath": "src/main/java/view/utility/WindowManager.java",
-      "contentHash": "82332c9ba3bf11e853a5af816993a42893d5f247a21905b40b9476b6c3392965",
+    "src/main/java/view/utility/navigation/WindowManager.java": {
+      "filePath": "src/main/java/view/utility/navigation/WindowManager.java",
+      "contentHash": "6432499d9f873545b8d9b73bb360c12aa0ab7dc7c78e686488cf6cf0f74f0c64",
       "functions": [
         {
           "name": "openWindow",
@@ -9236,9 +9654,284 @@
       "totalLines": 101,
       "hasStructuralAnalysis": true
     },
-    "src/main/java/view/utility/WrappingTextCellFactory.java": {
-      "filePath": "src/main/java/view/utility/WrappingTextCellFactory.java",
-      "contentHash": "bd4def29978b8e767c55ce93c8d6549463021d8b93af05c1d3647244c03e48ba",
+    "src/main/java/view/utility/notification/NotificationFilterHelper.java": {
+      "filePath": "src/main/java/view/utility/notification/NotificationFilterHelper.java",
+      "contentHash": "13d7953f0b3eb7461fb7f3df4237104ef6cdc2cf5bcd7a42dc9792473553e872",
+      "functions": [
+        {
+          "name": "NotificationFilterHelper",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "registerNotificationListeners",
+          "params": [
+            "tableAuctions"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 52
+        },
+        {
+          "name": "ensureGlobalListenerRegistered",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "registerGlobalListListener",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "findInLatestList",
+          "params": [
+            "auctionId"
+          ],
+          "returnType": "Auction",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "handleNotification",
+          "params": [
+            "auctionId",
+            "table",
+            "notificationAction"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 43
+        },
+        {
+          "name": "pushStartNotification",
+          "params": [
+            "auction"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "pushFinishedNotification",
+          "params": [
+            "auction",
+            "winner",
+            "finalPrice"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "pushNewBidNotification",
+          "params": [
+            "auction",
+            "topBidder",
+            "newPrice"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 23
+        }
+      ],
+      "classes": [
+        {
+          "name": "NotificationFilterHelper",
+          "methods": [
+            "NotificationFilterHelper",
+            "registerNotificationListeners",
+            "ensureGlobalListenerRegistered",
+            "registerGlobalListListener",
+            "findInLatestList",
+            "handleNotification",
+            "pushStartNotification",
+            "pushFinishedNotification",
+            "pushNewBidNotification"
+          ],
+          "properties": [
+            "startListener",
+            "finishedListener",
+            "newBidListener",
+            "latestAllAuctions",
+            "globalListListener"
+          ],
+          "exported": true,
+          "lineCount": 196
+        }
+      ],
+      "imports": [
+        {
+          "source": "javafx.scene.control.TableView",
+          "specifiers": [
+            "TableView"
+          ]
+        },
+        {
+          "source": "model.auction.Auction",
+          "specifiers": [
+            "Auction"
+          ]
+        },
+        {
+          "source": "network.ClientNetworkManager",
+          "specifiers": [
+            "ClientNetworkManager"
+          ]
+        },
+        {
+          "source": "network.NotificationManager",
+          "specifiers": [
+            "NotificationManager"
+          ]
+        },
+        {
+          "source": "view.utility.auction.RoleBasedFilterHelper",
+          "specifiers": [
+            "RoleBasedFilterHelper"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.function.Consumer",
+          "specifiers": [
+            "Consumer"
+          ]
+        }
+      ],
+      "exports": [
+        "registerNotificationListeners",
+        "ensureGlobalListenerRegistered",
+        "NotificationFilterHelper"
+      ],
+      "totalLines": 217,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/notification/NotificationMenuHandler.java": {
+      "filePath": "src/main/java/view/utility/notification/NotificationMenuHandler.java",
+      "contentHash": "b19c820c82620af7abdae0320041117c9690d2656e8c55afe851ca8fd18a55e0",
+      "functions": [
+        {
+          "name": "NotificationMenuHandler",
+          "params": [
+            "darkOverlay",
+            "notificationMenu",
+            "menuWidth"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "toggleMenu",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "openMenu",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "closeMenu",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "isOpen",
+          "params": [],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "NotificationMenuHandler",
+          "methods": [
+            "NotificationMenuHandler",
+            "toggleMenu",
+            "openMenu",
+            "closeMenu",
+            "isOpen"
+          ],
+          "properties": [
+            "darkOverlay",
+            "notificationMenu",
+            "menuWidth",
+            "isOpen",
+            "currentAnimation"
+          ],
+          "exported": true,
+          "lineCount": 90
+        }
+      ],
+      "imports": [
+        {
+          "source": "javafx.animation.KeyFrame",
+          "specifiers": [
+            "KeyFrame"
+          ]
+        },
+        {
+          "source": "javafx.animation.KeyValue",
+          "specifiers": [
+            "KeyValue"
+          ]
+        },
+        {
+          "source": "javafx.animation.Timeline",
+          "specifiers": [
+            "Timeline"
+          ]
+        },
+        {
+          "source": "javafx.scene.control.ScrollPane",
+          "specifiers": [
+            "ScrollPane"
+          ]
+        },
+        {
+          "source": "javafx.scene.layout.Pane",
+          "specifiers": [
+            "Pane"
+          ]
+        },
+        {
+          "source": "javafx.util.Duration",
+          "specifiers": [
+            "Duration"
+          ]
+        }
+      ],
+      "exports": [
+        "NotificationMenuHandler",
+        "toggleMenu",
+        "openMenu",
+        "closeMenu",
+        "isOpen",
+        "NotificationMenuHandler"
+      ],
+      "totalLines": 104,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/table/WrappingTextCellFactory.java": {
+      "filePath": "src/main/java/view/utility/table/WrappingTextCellFactory.java",
+      "contentHash": "88a0aa16eedb42f3b14d95a6a84f6b22e207845d0b7c5a1dacf4dcdbb52ab0f1",
       "functions": [
         {
           "name": "call",
@@ -9298,6 +9991,93 @@
         "WrappingTextCellFactory"
       ],
       "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/java/view/utility/validation/ValidationHelper.java": {
+      "filePath": "src/main/java/view/utility/validation/ValidationHelper.java",
+      "contentHash": "ef76832260f489fc63280bf3cc08e8ed54e6ec01367caf96a37414896f0005b9",
+      "functions": [
+        {
+          "name": "isValidUsername",
+          "params": [
+            "username"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "isStrongPassword",
+          "params": [
+            "password"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "isValidStartPrice",
+          "params": [
+            "priceStr"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "isValidDuration",
+          "params": [
+            "durationStr"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "isEmpty",
+          "params": [
+            "value"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "ValidationHelper",
+          "methods": [
+            "isValidUsername",
+            "isStrongPassword",
+            "isValidStartPrice",
+            "isValidDuration",
+            "isEmpty"
+          ],
+          "properties": [
+            "USERNAME_REGEX",
+            "PASSWORD_REGEX"
+          ],
+          "exported": true,
+          "lineCount": 55
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.regex.Pattern",
+          "specifiers": [
+            "Pattern"
+          ]
+        }
+      ],
+      "exports": [
+        "isValidUsername",
+        "isStrongPassword",
+        "isValidStartPrice",
+        "isValidDuration",
+        "isEmpty",
+        "ValidationHelper"
+      ],
+      "totalLines": 63,
       "hasStructuralAnalysis": true
     },
     "src/main/resources/META-INF/MANIFEST.MF": {
@@ -9442,17 +10222,117 @@
     },
     "src/main/resources/view/styles.css": {
       "filePath": "src/main/resources/view/styles.css",
-      "contentHash": "6b60435494838cd4457df41387018427606e53f9d16adfd9a629a5c09ceb5082",
+      "contentHash": "a6c52d552eddc3d74b7935e7153509c8841926eadb3654deebb28903822609d6",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 640,
+      "totalLines": 11,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/admin/admin.css": {
+      "filePath": "src/main/resources/view/styles/admin/admin.css",
+      "contentHash": "77f5ce8701be338829c50772e849228553423c41830a2ad2dabdf6eb42b1ea75",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 87,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/auction/room.css": {
+      "filePath": "src/main/resources/view/styles/auction/room.css",
+      "contentHash": "1b6206cfccce26fcf28ce97c1deb46aeca540e699b0f58ac1bbe333d75bbbd3b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/base/theme.css": {
+      "filePath": "src/main/resources/view/styles/base/theme.css",
+      "contentHash": "a9f40b49b3a8ce715f11e13e497c8bb64ba4df70465eeab8fffb5bd46b6e76f4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/chart/chart.css": {
+      "filePath": "src/main/resources/view/styles/chart/chart.css",
+      "contentHash": "63d9ec8eceffab34e11ac3fdfafeb7ade853ac6d9046dc4e6fba76f3414e8e77",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/components/buttons.css": {
+      "filePath": "src/main/resources/view/styles/components/buttons.css",
+      "contentHash": "9b612eb678eadf7e8a95f95a09a950e8ee001bbc145d070efe263b097831be42",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 140,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/components/forms.css": {
+      "filePath": "src/main/resources/view/styles/components/forms.css",
+      "contentHash": "3f850b53d4cd39ead3e50ca5946f714c0dee1d6986f4220be93ebf44bbf6f720",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 72,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/components/misc.css": {
+      "filePath": "src/main/resources/view/styles/components/misc.css",
+      "contentHash": "9fdb84f3c188f220fcbe0e183e5250a66d83466e89edc3b754e9771860fd502b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/components/scroll.css": {
+      "filePath": "src/main/resources/view/styles/components/scroll.css",
+      "contentHash": "1755ee4cdf37a74cd15533a6e74c225f29bfa2c1eb7d8fd66258b425393f67d4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/navigation/menu.css": {
+      "filePath": "src/main/resources/view/styles/navigation/menu.css",
+      "contentHash": "49f0f23c5b550f58c2e79d2585bff90182273bf42b5a0f634b8d5fe1a971e27b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 93,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/resources/view/styles/table/table-view.css": {
+      "filePath": "src/main/resources/view/styles/table/table-view.css",
+      "contentHash": "5d347b9d2a0d07df7f3b09c4d9831d767f592c928140e71d9362af52d419980a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61,
       "hasStructuralAnalysis": false
     },
     "src/test/java/model/auction/AuctionConcurrencyTest.java": {
       "filePath": "src/test/java/model/auction/AuctionConcurrencyTest.java",
-      "contentHash": "dcb7d77dbf71a83fe1af427b92507ac71dab64babc9569949aaeffa6f1fbdf40",
+      "contentHash": "51168dadf8322f72c64663893de9aa6b9934ddb48e3be0b95a1f13614f21bc61",
       "functions": [
         {
           "name": "setUp",
