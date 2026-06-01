@@ -13,10 +13,11 @@ import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import network.NotificationManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
-import view.utility.AuctionRoomHelper;
-import view.utility.ChartHelper;
-import view.utility.WrappingTextCellFactory;
+import view.utility.display.AlertHelper;
+import view.utility.auction.AuctionRoomCommandService;
+import view.utility.auction.AuctionRoomHelper;
+import view.utility.display.ChartHelper;
+import view.utility.table.WrappingTextCellFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -92,30 +93,50 @@ public class InRoomController implements Initializable {
     private String currentTopBidder = "Chưa có";
     private double currentHighestPrice = 0;
     private AuctionRoomHelper roomHelper;
+    private final AuctionRoomCommandService commandService = new AuctionRoomCommandService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configureChart();
+        configureHistoryTable();
+        configureNotificationTable();
+        initializeDefaultViewState();
+        registerBidAmountShortcut();
+    }
+
+    private void configureChart() {
         priceSeries = new XYChart.Series<>();
         priceSeries.setName("Diễn biến giá ($)");
         priceChart.getData().add(priceSeries);
         ChartHelper.configureAreaChart(priceChart);
+    }
 
         // Cấu hình bảng lịch sử giá
+    private void configureHistoryTable() {
         colHistoryRound.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("round"));
         colHistoryPrice.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("price"));
         historyTableView.setItems(historyData);
+    }
 
         // Cấu hình bảng thông báo (DRY: dùng WrappingTextCellFactory)
+    private void configureNotificationTable() {
         colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
         colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
         colNotifContent.setCellFactory(new WrappingTextCellFactory());
         notificationTableView.setItems(roomNotifications);
         notificationTableView.setFixedCellSize(-1);
+    }
 
-        if (topBidderLabel != null)
+    private void initializeDefaultViewState() {
+        if (topBidderLabel != null) {
             topBidderLabel.setText(currentTopBidder);
-        if (bidAmountField != null)
+        }
+    }
+
+    private void registerBidAmountShortcut() {
+        if (bidAmountField != null) {
             bidAmountField.setOnAction(event -> handlePlaceBid());
+        }
     }
 
     public void setAuction(model.auction.Auction auction) {
@@ -174,7 +195,7 @@ public class InRoomController implements Initializable {
                     String timeStr = tx.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                     roomNotifications.add(0,
                             new NotificationManager.NotificationItem("📢 [" + auction.getItem().getName() + "] - Lượt #"
-                                    + bidCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + view.utility.ChartHelper.formatDouble(tx.getBidAmount()),
+                                    + bidCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + view.utility.display.ChartHelper.formatDouble(tx.getBidAmount()),
                                     timeStr));
                 }
             }
@@ -198,8 +219,7 @@ public class InRoomController implements Initializable {
 
         updateBalanceDisplay(network.SessionManager.getInstance().getBalance());
 
-        if (!ClientNetworkManager.getInstance()
-                .sendData(Protocol.REQ_JOIN_ROOM + Protocol.DELIMITER + currentAuctionId)) {
+        if (!commandService.joinRoom(currentAuctionId)) {
             LOGGER.warning("❌ Không thể tham gia phòng: Lỗi kết nối mạng.");
         }
     }
@@ -241,7 +261,7 @@ public class InRoomController implements Initializable {
                         roomNotifications.add(0,
                                 new NotificationManager.NotificationItem(
                                         "📢 [" + auction.getItem().getName() + "] Cập nhật giá: "
-                                                + topBidder + " - $" + view.utility.ChartHelper.formatDouble(newPrice),
+                                                + topBidder + " - $" + view.utility.display.ChartHelper.formatDouble(newPrice),
                                         timeStr));
                     });
                 }
@@ -261,9 +281,9 @@ public class InRoomController implements Initializable {
                             .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
                     roomNotifications.add(0,
                             new NotificationManager.NotificationItem("🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: "
-                                    + finalWinner + " ($" + view.utility.ChartHelper.formatDouble(finalPrice) + ")", timeStr));
+                                    + finalWinner + " ($" + view.utility.display.ChartHelper.formatDouble(finalPrice) + ")", timeStr));
                     AlertHelper.showInfo("Kết quả đấu giá",
-                            "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + view.utility.ChartHelper.formatDouble(finalPrice));
+                            "Người chiến thắng: " + finalWinner + "\nGiá cuối: $" + view.utility.display.ChartHelper.formatDouble(finalPrice));
                     if (!network.SessionManager.getInstance().isAdmin())
                         exitRoom(null);
                 });
@@ -320,7 +340,7 @@ public class InRoomController implements Initializable {
     private void updateBalanceDisplay(double balance) {
         Platform.runLater(() -> {
             if (balanceLabel != null)
-                balanceLabel.setText(view.utility.ChartHelper.formatDouble(balance) + " $");
+                balanceLabel.setText(view.utility.display.ChartHelper.formatDouble(balance) + " $");
         });
     }
 
@@ -328,9 +348,9 @@ public class InRoomController implements Initializable {
         double roundedIncrement = ChartHelper.calculateMinIncrement(currentPrice);
         Platform.runLater(() -> {
             if (bidIncrementLabel != null)
-                bidIncrementLabel.setText(view.utility.ChartHelper.formatDouble(roundedIncrement) + " $");
+                bidIncrementLabel.setText(view.utility.display.ChartHelper.formatDouble(roundedIncrement) + " $");
             if (bidAmountField != null)
-                bidAmountField.setPromptText("Tối thiểu: " + view.utility.ChartHelper.formatDouble(currentPrice + roundedIncrement));
+                bidAmountField.setPromptText("Tối thiểu: " + view.utility.display.ChartHelper.formatDouble(currentPrice + roundedIncrement));
         });
     }
 
@@ -338,20 +358,19 @@ public class InRoomController implements Initializable {
     private void handlePlaceBid() {
         try {
             String bidText = bidAmountField.getText().trim();
-            if (view.utility.ValidationHelper.isEmpty(bidText))
+            if (view.utility.validation.ValidationHelper.isEmpty(bidText))
                 return;
             if (currentAuctionId == null) {
                 AlertHelper.showWarning("Lỗi", "Chưa xác định được phòng đấu giá!");
                 return;
             }
-            if (!view.utility.ValidationHelper.isValidStartPrice(bidText)) {
+            if (!view.utility.validation.ValidationHelper.isValidStartPrice(bidText)) {
                 AlertHelper.showWarning("Lỗi dữ liệu", "Vui lòng nhập số tiền hợp lệ và lớn hơn 0!");
                 return;
             }
 
             double amount = Double.parseDouble(bidText);
-            if (!ClientNetworkManager.getInstance()
-                    .sendData(Protocol.REQ_BID + Protocol.DELIMITER + currentAuctionId + Protocol.DELIMITER + amount)) {
+            if (!commandService.placeBid(currentAuctionId, amount)) {
                 AlertHelper.showError("Lỗi kết nối", "Không thể đặt giá. Vui lòng kiểm tra kết nối mạng!");
             }
             bidAmountField.clear();
@@ -399,8 +418,7 @@ public class InRoomController implements Initializable {
                     if (maxBid <= 0) {
                         AlertHelper.showWarning("Lỗi", "Vui lòng nhập số lớn hơn 0!");
                     } else {
-                        if (!ClientNetworkManager.getInstance().sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER
-                                + currentAuctionId + Protocol.DELIMITER + maxBid)) {
+                        if (!commandService.enableAutoBid(currentAuctionId, maxBid)) {
                             AlertHelper.showError("Lỗi kết nối", "Không thể đăng ký auto-bid!");
                             btn.setSelected(false);
                             btn.setText("Tắt");
@@ -415,8 +433,7 @@ public class InRoomController implements Initializable {
             btn.setText("Tắt");
         } else {
             btn.setText("Tắt");
-            if (!ClientNetworkManager.getInstance().sendData(
-                    Protocol.REQ_AUTOBID + Protocol.DELIMITER + currentAuctionId + Protocol.DELIMITER + "CANCEL")) {
+            if (!commandService.cancelAutoBid(currentAuctionId)) {
                 AlertHelper.showError("Lỗi kết nối", "Không thể hủy đăng ký auto-bid!");
                 btn.setSelected(true);
                 btn.setText("Bật");

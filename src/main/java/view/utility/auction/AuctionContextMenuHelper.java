@@ -1,4 +1,4 @@
-package view.utility;
+package view.utility.auction;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -18,6 +18,9 @@ import model.auction.Auction;
 import network.ClientNetworkManager;
 import network.SessionManager;
 import shared.Protocol;
+import view.utility.display.AlertHelper;
+import view.utility.validation.ValidationHelper;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 

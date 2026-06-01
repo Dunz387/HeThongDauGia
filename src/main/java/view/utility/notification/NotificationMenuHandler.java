@@ -1,4 +1,4 @@
-package view.utility;
+package view.utility.notification;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;

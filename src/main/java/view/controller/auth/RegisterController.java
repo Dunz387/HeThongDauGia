@@ -12,8 +12,8 @@ import java.util.ResourceBundle;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
-import view.utility.SceneManager;
+import view.utility.display.AlertHelper;
+import view.utility.navigation.SceneManager;
 
 public class RegisterController implements Initializable {
 
@@ -36,18 +36,18 @@ public class RegisterController implements Initializable {
         String password = txtPassword.getText().trim();
 
         // ÁP DỤNG VALIDATION MỚI (Mật khẩu 8 ký tự, Tên đăng nhập hợp lệ)
-        if (view.utility.ValidationHelper.isEmpty(username) || view.utility.ValidationHelper.isEmpty(password)) {
+        if (view.utility.validation.ValidationHelper.isEmpty(username) || view.utility.validation.ValidationHelper.isEmpty(password)) {
             AlertHelper.showWarning("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!");
             return;
         }
 
-        if (!view.utility.ValidationHelper.isValidUsername(username)) {
+        if (!view.utility.validation.ValidationHelper.isValidUsername(username)) {
             AlertHelper.showWarning("Tên đăng nhập không hợp lệ", 
                 "Tên đăng nhập phải từ 3-20 ký tự, chỉ chứa chữ cái, số và dấu gạch dưới.");
             return;
         }
 
-        if (!view.utility.ValidationHelper.isStrongPassword(password)) {
+        if (!view.utility.validation.ValidationHelper.isStrongPassword(password)) {
             AlertHelper.showWarning("Mật khẩu yếu", 
                 "Mật khẩu phải từ 8 ký tự trở lên, bao gồm ít nhất 1 chữ cái và 1 chữ số.");
             return;

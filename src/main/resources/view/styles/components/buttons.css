@@ -1,0 +1,139 @@
+/* Shared button variants. */
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #ea7f33, #d46b20);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI";
+    -fx-background-radius: 10;
+    -fx-padding: 12 30;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.35), 10, 0, 0, 3);
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #f59542, #ea7f33);
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.5), 14, 0, 0, 5);
+    -fx-translate-y: -1;
+}
+
+.btn-primary:pressed {
+    -fx-background-color: linear-gradient(to right, #c05e18, #a84f12);
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.2), 4, 0, 0, 1);
+}
+
+.btn-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #666666;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-border-color: #ea7f33;
+    -fx-text-fill: #ea7f33;
+}
+
+.btn-gold {
+    -fx-background-color: linear-gradient(to right, #d4cd3d, #c4b82e);
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-font-family: "Segoe UI";
+    -fx-background-radius: 25;
+    -fx-padding: 14 36;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(212, 205, 61, 0.4), 10, 0, 0, 3);
+}
+
+.btn-gold:hover {
+    -fx-background-color: linear-gradient(to right, #e0d94a, #d4cd3d);
+    -fx-effect: dropshadow(gaussian, rgba(212, 205, 61, 0.6), 14, 0, 0, 5);
+    -fx-translate-y: -1;
+}
+
+.btn-accent {
+    -fx-background-color: #ea7f33;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.btn-accent:hover {
+    -fx-background-color: #f59542;
+}
+
+.btn-outline-dark {
+    -fx-background-color: transparent;
+    -fx-border-color: #333333;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #333333;
+    -fx-font-size: 13px;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.btn-outline-dark:hover {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: white;
+}
+
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI";
+    -fx-background-radius: 6;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
+    -fx-translate-y: -1;
+}
+
+.btn-danger:pressed {
+    -fx-background-color: #a93226;
+}
+
+.btn-success {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI";
+    -fx-background-radius: 6;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+
+.btn-success:hover {
+    -fx-background-color: #219a52;
+    -fx-translate-y: -1;
+}
+
+.btn-warning {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI";
+    -fx-background-radius: 6;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+
+.btn-warning:hover {
+    -fx-background-color: #e67e22;
+}

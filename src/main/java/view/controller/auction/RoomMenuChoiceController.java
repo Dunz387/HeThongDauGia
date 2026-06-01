@@ -10,9 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.auction.Auction;
-import view.utility.AuctionNetworkHelper;
-import view.utility.AuctionTableConfigurator;
-import view.utility.SceneManager;
+import view.utility.auction.AuctionNetworkHelper;
+import view.utility.auction.AuctionTableConfigurator;
+import view.utility.navigation.SceneManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,6 +36,14 @@ public class RoomMenuChoiceController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configureSellerActionsVisibility();
+        configureAuctionTable();
+        configureOpenRoomAction();
+        registerAuctionListListener();
+        setupContextMenu();
+    }
+
+    private void configureSellerActionsVisibility() {
         if (!network.SessionManager.getInstance().isSeller()) {
             if (sellerActionBox != null) {
                 sellerActionBox.setVisible(false);
@@ -43,10 +51,15 @@ public class RoomMenuChoiceController implements Initializable {
             }
         }
         // Cấu hình bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
+    }
+
+    private void configureAuctionTable() {
         AuctionTableConfigurator.configure(colId, colName, colDescription, colType, colPrice,
                 colBidCount, colHighestBidder, colEndTime, colStatus, colSeller);
+    }
 
         // Nhấp đúp để vào phòng đấu giá
+    private void configureOpenRoomAction() {
         tableAuctions.setRowFactory(tv -> {
             TableRow<Auction> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -56,12 +69,12 @@ public class RoomMenuChoiceController implements Initializable {
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
                     
                     if (network.SessionManager.getInstance().isBidder() || network.SessionManager.getInstance().isAdmin()) {
-                        view.utility.WindowManager.openInRoomWindow(selectedAuction, currentStage);
+                        view.utility.navigation.WindowManager.openInRoomWindow(selectedAuction, currentStage);
                     } else if (network.SessionManager.getInstance().isSeller()) {
                         if (selectedAuction.getSeller() != null && selectedAuction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
-                            view.utility.WindowManager.openSellerInRoomWindow(selectedAuction, currentStage);
+                            view.utility.navigation.WindowManager.openSellerInRoomWindow(selectedAuction, currentStage);
                         } else {
-                            view.utility.AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
+                            view.utility.display.AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
                         }
                     }
                 }
@@ -70,14 +83,16 @@ public class RoomMenuChoiceController implements Initializable {
         });
 
         // Đăng ký lắng nghe với bộ lọc theo Role (SRP: delegate sang RoleBasedFilterHelper)
-        AuctionNetworkHelper.registerAuctionListListener(tableAuctions, view.utility.RoleBasedFilterHelper.getRoomFilter());
+    }
+
+    private void registerAuctionListListener() {
+        AuctionNetworkHelper.registerAuctionListListener(tableAuctions, view.utility.auction.RoleBasedFilterHelper.getRoomFilter());
 
         // Thêm Context Menu cho tính năng Sửa/Xóa của Seller/Admin
-        setupContextMenu();
     }
 
     private void setupContextMenu() {
-        view.utility.AuctionContextMenuHelper.setupContextMenu(tableAuctions);
+        view.utility.auction.AuctionContextMenuHelper.setupContextMenu(tableAuctions);
     }
 
     @FXML
@@ -89,6 +104,6 @@ public class RoomMenuChoiceController implements Initializable {
     @FXML
     private void goToCreateItem(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-        view.utility.WindowManager.openCreateItemWindow(stage);
+        view.utility.navigation.WindowManager.openCreateItemWindow(stage);
     }
 }

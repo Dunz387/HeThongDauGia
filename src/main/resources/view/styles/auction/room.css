@@ -1,0 +1,14 @@
+/* Auction room specific controls. */
+.timer-large {
+    -fx-text-fill: #ea7f33;
+    -fx-font-size: 32px;
+    -fx-font-weight: 900;
+    -fx-font-family: "Segoe UI";
+}
+
+.timer-small {
+    -fx-text-fill: #d4cd3d;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI";
+}

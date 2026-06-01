@@ -10,13 +10,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.auction.Auction;
-import view.utility.AuctionNetworkHelper;
-import view.utility.AuctionTableConfigurator;
-import view.utility.MenuHelper;
-import view.utility.NotificationMenuHandler;
-import view.utility.SceneManager;
-import view.utility.WindowManager;
-import view.utility.AlertHelper;
+import view.utility.auction.AuctionNetworkHelper;
+import view.utility.auction.AuctionTableConfigurator;
+import view.utility.navigation.MenuHelper;
+import view.utility.notification.NotificationMenuHandler;
+import view.utility.navigation.SceneManager;
+import view.utility.navigation.WindowManager;
+import view.utility.display.AlertHelper;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -78,14 +78,14 @@ public class AssetsListController implements Initializable {
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
 
         // Đăng ký lắng nghe danh sách đấu giá từ Server với bộ lọc theo Role (SRP: delegate sang RoleBasedFilterHelper)
-        AuctionNetworkHelper.registerAuctionListListener(tableAssets, view.utility.RoleBasedFilterHelper.getAssetsFilter());
+        AuctionNetworkHelper.registerAuctionListListener(tableAssets, view.utility.auction.RoleBasedFilterHelper.getAssetsFilter());
 
         // Cấu hình bảng thông báo
         if (tableNotifications != null) {
             colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
             colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
 
-            colNotifContent.setCellFactory(new view.utility.WrappingTextCellFactory());
+            colNotifContent.setCellFactory(new view.utility.table.WrappingTextCellFactory());
 
             tableNotifications.setItems(network.NotificationManager.getInstance().getNotifications());
             tableNotifications.setFixedCellSize(-1); // Tự động giãn dòng
@@ -95,11 +95,11 @@ public class AssetsListController implements Initializable {
         setupNetworkListeners();
         
         // Đăng ký nhận thông báo real-time (tương tự như BaseMenu)
-        view.utility.NotificationFilterHelper.registerNotificationListeners(tableAssets);
+        view.utility.notification.NotificationFilterHelper.registerNotificationListeners(tableAssets);
     }
 
     private void setupContextMenu() {
-        view.utility.AuctionContextMenuHelper.setupContextMenu(tableAssets);
+        view.utility.auction.AuctionContextMenuHelper.setupContextMenu(tableAssets);
     }
 
     private void setupNetworkListeners() {
@@ -158,7 +158,7 @@ public class AssetsListController implements Initializable {
     @FXML
     private void openChoiceMenu(ActionEvent event) {
         if (!network.SessionManager.getInstance().isSeller()) {
-            view.utility.AlertHelper.showWarning("Quyền truy cập",
+            view.utility.display.AlertHelper.showWarning("Quyền truy cập",
                     "Chỉ người bán (Seller) mới có thể tạo phiên đấu giá!");
             return;
         }

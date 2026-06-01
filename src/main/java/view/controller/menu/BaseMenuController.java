@@ -11,15 +11,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.auction.Auction;
-import view.utility.AuctionTableConfigurator;
-import view.utility.MenuHelper;
-import view.utility.NotificationFilterHelper;
-import view.utility.NotificationMenuHandler;
-import view.utility.RoleBasedFilterHelper;
-import view.utility.SceneManager;
-import view.utility.WindowManager;
-import view.utility.AlertHelper;
-import view.utility.WrappingTextCellFactory;
+import view.utility.auction.AuctionTableConfigurator;
+import view.utility.navigation.MenuHelper;
+import view.utility.notification.NotificationFilterHelper;
+import view.utility.notification.NotificationMenuHandler;
+import view.utility.auction.RoleBasedFilterHelper;
+import view.utility.navigation.SceneManager;
+import view.utility.navigation.WindowManager;
+import view.utility.display.AlertHelper;
+import view.utility.table.WrappingTextCellFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -87,16 +87,16 @@ public class BaseMenuController implements Initializable {
                     Stage currentStage = (Stage) tableAuctions.getScene().getWindow();
 
                     if (network.SessionManager.getInstance().isBidder()) {
-                        view.utility.WindowManager.openInRoomWindow(selectedAuction, currentStage);
+                        view.utility.navigation.WindowManager.openInRoomWindow(selectedAuction, currentStage);
                     } else if (network.SessionManager.getInstance().isSeller()) {
                         if (selectedAuction.getSeller() != null && selectedAuction.getSeller().getId()
                                 .equals(network.SessionManager.getInstance().getUserId())) {
-                            view.utility.WindowManager.openSellerInRoomWindow(selectedAuction, currentStage);
+                            view.utility.navigation.WindowManager.openSellerInRoomWindow(selectedAuction, currentStage);
                         } else {
                             AlertHelper.showWarning("Cảnh báo", "Bạn chỉ có thể xem phòng đấu giá của chính mình!");
                         }
                     } else if (network.SessionManager.getInstance().isAdmin()) {
-                        view.utility.WindowManager.openInRoomWindow(selectedAuction, currentStage);
+                        view.utility.navigation.WindowManager.openInRoomWindow(selectedAuction, currentStage);
                     } else {
                         AlertHelper.showWarning("Quyền truy cập", "Bạn không có quyền tham gia!");
                     }
@@ -106,7 +106,7 @@ public class BaseMenuController implements Initializable {
         });
 
         // Đăng ký lắng nghe danh sách đấu giá từ Server với bộ lọc theo Role (SRP: delegate sang RoleBasedFilterHelper)
-        view.utility.AuctionNetworkHelper.registerAuctionListListener(tableAuctions, RoleBasedFilterHelper.getRoomFilter());
+        view.utility.auction.AuctionNetworkHelper.registerAuctionListListener(tableAuctions, RoleBasedFilterHelper.getRoomFilter());
 
         // Cấu hình bảng thông báo
         if (tableNotifications != null) {

@@ -9,29 +9,36 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
+import model.auction.Auction;
+import model.auction.BidTransaction;
 import network.NotificationManager;
+import network.SessionManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
-import view.utility.AuctionRoomHelper;
-import view.utility.ChartHelper;
-import view.utility.WrappingTextCellFactory;
+import view.utility.display.AlertHelper;
+import view.utility.auction.AuctionRoomCommandService;
+import view.utility.auction.AuctionRoomHelper;
+import view.utility.display.ChartHelper;
+import view.utility.auction.ParticipantManagementDialog;
+import view.utility.table.WrappingTextCellFactory;
 
 import java.net.URL;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
- * Controller cho màn hình Seller theo dõi phiên đấu giá của mình.
- * Chỉ xem, không đặt giá.
- * 
- * [DESIGN PATTERN APPLIED]
- * - Model-View-Controller (MVC): Đóng vai trò là Controller điều khiển luồng dữ liệu từ Model (Auction, Notification) để cập nhật View (SellerInRoomView.fxml).
+ * Controller for the seller/admin view inside an auction room.
+ * UI rendering stays here; room commands and participant popup are delegated.
  */
 public class SellerInRoomController implements Initializable {
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     @FXML private Label lblRoomId;
     @FXML private Label totalTimeLabel;
     @FXML private Label lblCurrentPrice;
@@ -44,290 +51,43 @@ public class SellerInRoomController implements Initializable {
     @FXML private Label lblParticipants;
     @FXML private Label lblRounds;
     @FXML private Label topBidderLabel;
-
     @FXML private TableView<NotificationManager.NotificationItem> notificationTableView;
     @FXML private TableColumn<NotificationManager.NotificationItem, String> colNotifTime;
     @FXML private TableColumn<NotificationManager.NotificationItem, String> colNotifContent;
 
+    private final ObservableList<double[]> bidHistory = FXCollections.observableArrayList();
+    private final ObservableList<NotificationManager.NotificationItem> roomNotifications = FXCollections.observableArrayList();
+    private final ObservableList<String> activeParticipants = FXCollections.observableArrayList();
+    private final AuctionRoomCommandService commandService = new AuctionRoomCommandService();
+
     private XYChart.Series<Number, Number> priceSeries;
-    private ObservableList<double[]> bidHistory = FXCollections.observableArrayList();
-    private ObservableList<NotificationManager.NotificationItem> roomNotifications = FXCollections.observableArrayList();
     private int bidCount = 0;
-    private model.auction.Auction auction;
-    private String currentAuctionId = null;
+    private Auction auction;
+    private String currentAuctionId;
     private double currentHighestPrice = 0;
     private AuctionRoomHelper roomHelper;
-    private final ObservableList<String> activeParticipants = FXCollections.observableArrayList();
+    private boolean isExiting = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        priceSeries = new XYChart.Series<>();
-        priceSeries.setName("Biến động giá ($)");
-        priceChart.getData().add(priceSeries);
-        ChartHelper.configureAreaChart(priceChart);
-
-        // Bảng lịch sử giá
-        colRound.setCellValueFactory(cd -> new SimpleIntegerProperty((int) cd.getValue()[0]).asObject());
-        colBidPrice.setCellValueFactory(cd -> new SimpleDoubleProperty(cd.getValue()[1]).asObject());
-        tableBidHistory.setItems(bidHistory);
-
-        // Bảng thông báo (DRY: WrappingTextCellFactory)
-        colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
-        colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
-        colNotifContent.setCellFactory(new WrappingTextCellFactory());
-        notificationTableView.setItems(roomNotifications);
-
-        // Nút Kick User cho Admin
-        if (network.SessionManager.getInstance().isAdmin()) {
-            javafx.scene.control.Button btnKick = new javafx.scene.control.Button("Đuổi người dùng");
-            btnKick.getStyleClass().setAll("btn-danger");
-            btnKick.setStyle("-fx-font-weight: bold; -fx-padding: 5 15;");
-            btnKick.setOnAction(e -> handleKickUser());
-            Platform.runLater(() -> {
-                if (lblRoomId != null && lblRoomId.getParent() instanceof javafx.scene.layout.VBox) {
-                    ((javafx.scene.layout.VBox) lblRoomId.getParent()).getChildren().add(btnKick);
-                }
-            });
-        }
+        configureChart();
+        configureBidHistoryTable();
+        configureNotificationTable();
+        addKickButtonForAdmin();
     }
 
-    private void handleKickUser() {
-        Stage popupStage = new Stage();
-        popupStage.setTitle("Quản lý người dùng trong phòng");
-        popupStage.initOwner(priceChart.getScene().getWindow());
-        popupStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
-
-        javafx.scene.layout.VBox layout = new javafx.scene.layout.VBox(15);
-        layout.setPadding(new javafx.geometry.Insets(20));
-        layout.setStyle("-fx-background-color: #faf9f0;");
-
-        Label titleLabel = new Label("👥 Người dùng trong phòng");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-font-family: 'Segoe UI';");
-
-        javafx.scene.control.ListView<String> listView = new javafx.scene.control.ListView<>(activeParticipants);
-        listView.setPrefHeight(300);
-        listView.setPrefWidth(350);
-        listView.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e8e8e0;");
-
-        listView.setCellFactory(param -> new javafx.scene.control.ListCell<String>() {
-            private final javafx.scene.layout.HBox hbox = new javafx.scene.layout.HBox(10);
-            private final Label nameLabel = new Label();
-            private final javafx.scene.control.Button kickBtn = new javafx.scene.control.Button("Đuổi");
-            private final javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
-
-            {
-                hbox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-                kickBtn.getStyleClass().setAll("btn-danger");
-                kickBtn.setStyle("-fx-font-size: 11px; -fx-padding: 3 10; -fx-font-weight: bold; -fx-cursor: hand;");
-                nameLabel.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-weight: 500; -fx-text-fill: #333333;");
-                hbox.getChildren().addAll(nameLabel, spacer, kickBtn);
-            }
-
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    nameLabel.setText(item);
-                    String currentUsername = network.SessionManager.getInstance().getUsername();
-                    if (item.equals(currentUsername)) {
-                        kickBtn.setVisible(false);
-                    } else {
-                        kickBtn.setVisible(true);
-                        kickBtn.setOnAction(e -> {
-                            javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
-                            confirm.setTitle("Xác nhận đuổi");
-                            confirm.setHeaderText(null);
-                            confirm.setContentText("Bạn có chắc chắn muốn đuổi '" + item + "' khỏi phòng?");
-                            confirm.initOwner(popupStage);
-                            confirm.showAndWait().ifPresent(response -> {
-                                if (response == javafx.scene.control.ButtonType.OK) {
-                                    ClientNetworkManager.getInstance().sendData(
-                                        Protocol.REQ_KICK_USER + Protocol.DELIMITER + currentAuctionId + Protocol.DELIMITER + item
-                                    );
-                                    AlertHelper.showInfo("Thành công", "Đã gửi yêu cầu đuổi " + item);
-                                }
-                            });
-                        });
-                    }
-                    setGraphic(hbox);
-                }
-            }
-        });
-
-        Label placeholder = new Label("Chưa có người dùng nào khác");
-        placeholder.setStyle("-fx-text-fill: #999; -fx-font-family: 'Segoe UI';");
-        listView.setPlaceholder(placeholder);
-
-        javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("Đóng");
-        closeBtn.getStyleClass().setAll("btn-primary");
-        closeBtn.setStyle("-fx-padding: 6 18; -fx-font-weight: bold; -fx-cursor: hand;");
-        closeBtn.setOnAction(e -> popupStage.close());
-
-        javafx.scene.layout.HBox btnContainer = new javafx.scene.layout.HBox(closeBtn);
-        btnContainer.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
-
-        layout.getChildren().addAll(titleLabel, listView, btnContainer);
-
-        javafx.scene.Scene scene = new javafx.scene.Scene(layout);
-        try {
-            java.net.URL cssResource = getClass().getResource("/view/styles.css");
-            if (cssResource != null) {
-                scene.getStylesheets().add(cssResource.toExternalForm());
-            }
-        } catch (Exception ignored) {}
-
-        popupStage.setScene(scene);
-        popupStage.show();
-    }
-
-    private void registerNetworkListeners() {
-        roomHelper.registerRoomListener(Protocol.BROADCAST_NEW_BID, (message) -> {
-            String[] parts = message.split(Protocol.DELIMITER);
-            if (parts.length >= 4 && java.util.Objects.equals(parts[1], currentAuctionId)) {
-                double newPrice = Double.parseDouble(parts[2]);
-                String topBidder = parts[3];
-                currentHighestPrice = newPrice;
-
-                Platform.runLater(() -> {
-                    lblCurrentPrice.setText(ChartHelper.formatDouble(newPrice) + " $");
-                    lblEarnings.setText(ChartHelper.formatDouble(newPrice) + " $");
-                    topBidderLabel.setText(topBidder);
-                    bidCount++;
-                    ChartHelper.updateXAxisBounds(priceChart, bidCount);
-                    priceChart.setAnimated(true);
-                    priceSeries.getData().add(new XYChart.Data<>(bidCount, newPrice));
-                    bidHistory.add(0, new double[]{bidCount, newPrice});
-                    lblRounds.setText(String.valueOf(bidCount));
-                    updateIncrementDisplay(newPrice);
-                    if (auction != null) {
-                        String msg = "📢 [" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": " + topBidder + " vừa đặt $" + ChartHelper.formatDouble(newPrice);
-                        String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
-                        roomNotifications.add(0, new NotificationManager.NotificationItem(msg, timeStr));
-                        // Không gọi NotificationManager.addNotification() ở đây
-                        // vì NotificationFilterHelper đã xử lý đẩy thông báo lên BaseMenu (tránh trùng lặp)
-                    }
-                });
-            }
-        });
-
-        roomHelper.registerRoomListener(Protocol.BROADCAST_AUCTION_FINISHED, (message) -> {
-            String[] parts = message.split(Protocol.DELIMITER);
-            if (parts.length >= 2 && java.util.Objects.equals(parts[1], currentAuctionId)) {
-                String winner = parts.length > 2 ? parts[2] : "Không có";
-                double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
-                Platform.runLater(() -> {
-                    if (roomHelper != null) roomHelper.stopTimer();
-                    lblCurrentPrice.setText(ChartHelper.formatDouble(finalPrice) + " $");
-                    topBidderLabel.setText(winner);
-                    String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
-                    roomNotifications.add(0, new NotificationManager.NotificationItem(
-                        "🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: " + winner + " ($" + ChartHelper.formatDouble(finalPrice) + ")", timeStr));
-                    AlertHelper.showInfo("Phiên đấu giá kết thúc!", "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + ChartHelper.formatDouble(finalPrice) + " $");
-                    if (!network.SessionManager.getInstance().isAdmin()) exitRoom(null);
-                });
-            }
-        });
-
-        roomHelper.registerRoomListener(Protocol.BROADCAST_PARTICIPANTS, (message) -> {
-            String[] parts = message.split(Protocol.DELIMITER);
-            if (parts.length >= 3 && java.util.Objects.equals(parts[1], currentAuctionId)) {
-                Platform.runLater(() -> {
-                    activeParticipants.clear();
-                    activeParticipants.addAll(java.util.Arrays.asList(parts).subList(3, parts.length));
-                });
-            }
-        });
-    }
-
-    public void setAuction(model.auction.Auction auction) {
+    public void setAuction(Auction auction) {
         this.auction = auction;
         this.currentAuctionId = auction.getId();
-        if (lblRoomId != null) lblRoomId.setText("ID phòng: " + auction.getId());
-
-        // Dọn dẹp helper cũ nếu có (tránh timer cũ chạy ngầm)
-        if (roomHelper != null) {
-            roomHelper.cleanup();
+        if (lblRoomId != null) {
+            lblRoomId.setText("ID phong: " + auction.getId());
         }
 
-        // Khởi tạo helper (DRY)
-        roomHelper = new AuctionRoomHelper(currentAuctionId);
-        roomHelper.setOnTimeUpdate(() -> {
-            if (totalTimeLabel != null) totalTimeLabel.setText(ChartHelper.formatTime(roomHelper.getTotalTimeRemaining()));
-        });
-
-        if (auction.getEndTimeEpoch() > 0) {
-            roomHelper.initTimer(auction.getEndTimeEpoch());
-            roomHelper.startTimer();
-        } else if (auction.getEndTime() != null) {
-            roomHelper.initTimer(auction.getEndTime());
-            roomHelper.startTimer();
-        }
-
-        // Common listeners via helper
-        roomHelper.registerTimeExtendedListener(() -> {
-            if (totalTimeLabel != null) totalTimeLabel.setText(ChartHelper.formatTime(roomHelper.getTotalTimeRemaining()));
-            String timeStr = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
-            roomNotifications.add(0, new NotificationManager.NotificationItem("⏳ Thời gian được gia hạn", timeStr));
-        });
-        roomHelper.registerParticipantsListener(count -> { if (lblParticipants != null) lblParticipants.setText(count + " người"); });
-        roomHelper.registerRoomKickedListener(() -> exitRoom(null));
-
+        resetRoomHelper();
         registerNetworkListeners();
-
-        ClientNetworkManager.getInstance().sendData(Protocol.REQ_JOIN_ROOM + Protocol.DELIMITER + currentAuctionId);
-
-        // Khôi phục dữ liệu
-        Platform.runLater(() -> {
-            priceChart.setAnimated(false);
-            priceSeries.getData().clear();
-            bidHistory.clear();
-            priceSeries.getData().add(new XYChart.Data<>(0, auction.getStartingPrice()));
-
-            java.util.List<model.auction.BidTransaction> history = auction.getBidHistory();
-            this.bidCount = 0;
-            if (history != null) {
-                for (model.auction.BidTransaction tx : history) {
-                    this.bidCount++;
-                    priceSeries.getData().add(new XYChart.Data<>(bidCount, tx.getBidAmount()));
-                    bidHistory.add(0, new double[]{bidCount, tx.getBidAmount()});
-                }
-            }
-
-            if (auction.getHighestBidder() != null) {
-                currentHighestPrice = auction.getCurrentPrice();
-                if (lblCurrentPrice != null) lblCurrentPrice.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
-                if (lblEarnings != null) lblEarnings.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
-                if (topBidderLabel != null) topBidderLabel.setText(auction.getHighestBidder().getUsername());
-                if (lblRounds != null) lblRounds.setText(String.valueOf(bidCount));
-            } else {
-                currentHighestPrice = auction.getStartingPrice();
-                if (lblCurrentPrice != null) lblCurrentPrice.setText(ChartHelper.formatDouble(currentHighestPrice) + " $");
-                if (lblEarnings != null) lblEarnings.setText("0 $");
-                if (topBidderLabel != null) topBidderLabel.setText("Chưa có");
-                if (lblRounds != null) lblRounds.setText("0");
-            }
-
-            roomNotifications.clear();
-            if (history != null) {
-                int tempCount = 0;
-                for (model.auction.BidTransaction tx : history) {
-                    tempCount++;
-                    String timeStr = tx.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
-                    roomNotifications.add(0, new NotificationManager.NotificationItem(
-                        "📢 [" + auction.getItem().getName() + "] - Lượt #" + tempCount + ": " + tx.getBidder().getUsername() + " đã đặt $" + ChartHelper.formatDouble(tx.getBidAmount()), timeStr));
-                }
-            }
-
-            ChartHelper.updateXAxisBounds(priceChart, bidCount);
-            updateIncrementDisplay(currentHighestPrice);
-        });
+        commandService.joinRoom(currentAuctionId);
+        restoreAuctionState();
     }
-
-    private boolean isExiting = false;
 
     public void cleanupRoom() {
         if (roomHelper != null) {
@@ -337,19 +97,241 @@ public class SellerInRoomController implements Initializable {
 
     @FXML
     public void exitRoom(ActionEvent event) {
-        if (isExiting) return;
+        if (isExiting) {
+            return;
+        }
         isExiting = true;
         if (roomHelper != null) {
-            Stage stage = null;
-            if (priceChart != null && priceChart.getScene() != null && priceChart.getScene().getWindow() instanceof Stage) {
-                stage = (Stage) priceChart.getScene().getWindow();
+            roomHelper.exitRoom(getCurrentStage());
+        }
+    }
+
+    private void configureChart() {
+        priceSeries = new XYChart.Series<>();
+        priceSeries.setName("Bien dong gia ($)");
+        priceChart.getData().add(priceSeries);
+        ChartHelper.configureAreaChart(priceChart);
+    }
+
+    private void configureBidHistoryTable() {
+        colRound.setCellValueFactory(cd -> new SimpleIntegerProperty((int) cd.getValue()[0]).asObject());
+        colBidPrice.setCellValueFactory(cd -> new SimpleDoubleProperty(cd.getValue()[1]).asObject());
+        tableBidHistory.setItems(bidHistory);
+    }
+
+    private void configureNotificationTable() {
+        colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
+        colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
+        colNotifContent.setCellFactory(new WrappingTextCellFactory());
+        notificationTableView.setItems(roomNotifications);
+    }
+
+    private void addKickButtonForAdmin() {
+        if (!SessionManager.getInstance().isAdmin()) {
+            return;
+        }
+        Button btnKick = new Button("Duoi nguoi dung");
+        btnKick.getStyleClass().setAll("btn-danger");
+        btnKick.setStyle("-fx-font-weight: bold; -fx-padding: 5 15;");
+        btnKick.setOnAction(e -> showParticipantManagement());
+        Platform.runLater(() -> {
+            if (lblRoomId != null && lblRoomId.getParent() instanceof javafx.scene.layout.VBox parent) {
+                parent.getChildren().add(btnKick);
             }
-            roomHelper.exitRoom(stage);
+        });
+    }
+
+    private void showParticipantManagement() {
+        ParticipantManagementDialog.show(getCurrentStage(), activeParticipants,
+                username -> commandService.kickUser(currentAuctionId, username));
+    }
+
+    private void resetRoomHelper() {
+        if (roomHelper != null) {
+            roomHelper.cleanup();
+        }
+
+        roomHelper = new AuctionRoomHelper(currentAuctionId);
+        roomHelper.setOnTimeUpdate(this::updateTimeLabel);
+
+        if (auction.getEndTimeEpoch() > 0) {
+            roomHelper.initTimer(auction.getEndTimeEpoch());
+            roomHelper.startTimer();
+        } else if (auction.getEndTime() != null) {
+            roomHelper.initTimer(auction.getEndTime());
+            roomHelper.startTimer();
+        }
+
+        roomHelper.registerTimeExtendedListener(() -> {
+            updateTimeLabel();
+            addNotification("Thoi gian duoc gia han");
+        });
+        roomHelper.registerParticipantsListener(count -> {
+            if (lblParticipants != null) {
+                lblParticipants.setText(count + " nguoi");
+            }
+        });
+        roomHelper.registerRoomKickedListener(() -> exitRoom(null));
+    }
+
+    private void registerNetworkListeners() {
+        roomHelper.registerRoomListener(Protocol.BROADCAST_NEW_BID, this::handleNewBidBroadcast);
+        roomHelper.registerRoomListener(Protocol.BROADCAST_AUCTION_FINISHED, this::handleAuctionFinishedBroadcast);
+        roomHelper.registerRoomListener(Protocol.BROADCAST_PARTICIPANTS, this::handleParticipantsBroadcast);
+    }
+
+    private void handleNewBidBroadcast(String message) {
+        String[] parts = message.split(Protocol.DELIMITER);
+        if (parts.length < 4 || !java.util.Objects.equals(parts[1], currentAuctionId)) {
+            return;
+        }
+
+        double newPrice = Double.parseDouble(parts[2]);
+        String topBidder = parts[3];
+        currentHighestPrice = newPrice;
+
+        Platform.runLater(() -> {
+            updatePriceLabels(newPrice);
+            if (topBidderLabel != null) {
+                topBidderLabel.setText(topBidder);
+            }
+            bidCount++;
+            ChartHelper.updateXAxisBounds(priceChart, bidCount);
+            priceChart.setAnimated(true);
+            priceSeries.getData().add(new XYChart.Data<>(bidCount, newPrice));
+            bidHistory.add(0, new double[]{bidCount, newPrice});
+            if (lblRounds != null) {
+                lblRounds.setText(String.valueOf(bidCount));
+            }
+            updateIncrementDisplay(newPrice);
+            if (auction != null) {
+                addNotification("[" + auction.getItem().getName() + "] - Luot #" + bidCount + ": "
+                        + topBidder + " vua dat $" + ChartHelper.formatDouble(newPrice));
+            }
+        });
+    }
+
+    private void handleAuctionFinishedBroadcast(String message) {
+        String[] parts = message.split(Protocol.DELIMITER);
+        if (parts.length < 2 || !java.util.Objects.equals(parts[1], currentAuctionId)) {
+            return;
+        }
+
+        String winner = parts.length > 2 ? parts[2] : "Khong co";
+        double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
+        Platform.runLater(() -> {
+            if (roomHelper != null) {
+                roomHelper.stopTimer();
+            }
+            updatePriceLabels(finalPrice);
+            if (topBidderLabel != null) {
+                topBidderLabel.setText(winner);
+            }
+            addNotification("PHIEN DAU GIA KET THUC! Nguoi thang: "
+                    + winner + " ($" + ChartHelper.formatDouble(finalPrice) + ")");
+            AlertHelper.showInfo("Phien dau gia ket thuc!",
+                    "Nguoi chien thang: " + winner + "\nGia cuoi cung: " + ChartHelper.formatDouble(finalPrice) + " $");
+            if (!SessionManager.getInstance().isAdmin()) {
+                exitRoom(null);
+            }
+        });
+    }
+
+    private void handleParticipantsBroadcast(String message) {
+        String[] parts = message.split(Protocol.DELIMITER);
+        if (parts.length >= 3 && java.util.Objects.equals(parts[1], currentAuctionId)) {
+            Platform.runLater(() -> {
+                activeParticipants.clear();
+                activeParticipants.addAll(Arrays.asList(parts).subList(3, parts.length));
+            });
+        }
+    }
+
+    private void restoreAuctionState() {
+        Platform.runLater(() -> {
+            priceChart.setAnimated(false);
+            priceSeries.getData().clear();
+            bidHistory.clear();
+            roomNotifications.clear();
+            priceSeries.getData().add(new XYChart.Data<>(0, auction.getStartingPrice()));
+
+            bidCount = 0;
+            if (auction.getBidHistory() != null) {
+                for (BidTransaction tx : auction.getBidHistory()) {
+                    bidCount++;
+                    priceSeries.getData().add(new XYChart.Data<>(bidCount, tx.getBidAmount()));
+                    bidHistory.add(0, new double[]{bidCount, tx.getBidAmount()});
+                    addNotification("[" + auction.getItem().getName() + "] - Luot #" + bidCount + ": "
+                            + tx.getBidder().getUsername() + " da dat $" + ChartHelper.formatDouble(tx.getBidAmount()),
+                            tx.getTimestamp().format(TIME_FORMATTER));
+                }
+            }
+
+            if (auction.getHighestBidder() != null) {
+                currentHighestPrice = auction.getCurrentPrice();
+                updatePriceLabels(currentHighestPrice);
+                if (topBidderLabel != null) {
+                    topBidderLabel.setText(auction.getHighestBidder().getUsername());
+                }
+                if (lblRounds != null) {
+                    lblRounds.setText(String.valueOf(bidCount));
+                }
+            } else {
+                currentHighestPrice = auction.getStartingPrice();
+                updatePriceLabels(currentHighestPrice);
+                if (lblEarnings != null) {
+                    lblEarnings.setText("0 $");
+                }
+                if (topBidderLabel != null) {
+                    topBidderLabel.setText("Chua co");
+                }
+                if (lblRounds != null) {
+                    lblRounds.setText("0");
+                }
+            }
+
+            ChartHelper.updateXAxisBounds(priceChart, bidCount);
+            updateIncrementDisplay(currentHighestPrice);
+        });
+    }
+
+    private void updateTimeLabel() {
+        if (totalTimeLabel != null && roomHelper != null) {
+            totalTimeLabel.setText(ChartHelper.formatTime(roomHelper.getTotalTimeRemaining()));
+        }
+    }
+
+    private void updatePriceLabels(double price) {
+        if (lblCurrentPrice != null) {
+            lblCurrentPrice.setText(ChartHelper.formatDouble(price) + " $");
+        }
+        if (lblEarnings != null) {
+            lblEarnings.setText(ChartHelper.formatDouble(price) + " $");
         }
     }
 
     private void updateIncrementDisplay(double currentPrice) {
         double roundedIncrement = ChartHelper.calculateMinIncrement(currentPrice);
-        Platform.runLater(() -> { if (lblMinStep != null) lblMinStep.setText(ChartHelper.formatDouble(roundedIncrement) + " $"); });
+        Platform.runLater(() -> {
+            if (lblMinStep != null) {
+                lblMinStep.setText(ChartHelper.formatDouble(roundedIncrement) + " $");
+            }
+        });
+    }
+
+    private void addNotification(String content) {
+        addNotification(content, LocalTime.now().format(TIME_FORMATTER));
+    }
+
+    private void addNotification(String content, String time) {
+        roomNotifications.add(0, new NotificationManager.NotificationItem(content, time));
+    }
+
+    private Stage getCurrentStage() {
+        if (priceChart != null && priceChart.getScene() != null
+                && priceChart.getScene().getWindow() instanceof Stage stage) {
+            return stage;
+        }
+        return null;
     }
 }

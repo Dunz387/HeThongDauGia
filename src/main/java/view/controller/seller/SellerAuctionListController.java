@@ -13,9 +13,9 @@ import javafx.stage.Stage;
 import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
-import view.utility.SceneManager;
-import view.utility.AuctionTableConfigurator;
+import view.utility.display.AlertHelper;
+import view.utility.navigation.SceneManager;
+import view.utility.auction.AuctionTableConfigurator;
 
 import java.net.URL;
 import java.util.ResourceBundle;

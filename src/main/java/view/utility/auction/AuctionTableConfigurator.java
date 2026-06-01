@@ -1,10 +1,11 @@
-package view.utility;
+package view.utility.auction;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn;
 import model.auction.Auction;
+import view.utility.display.StatusDisplayHelper;
 
 import java.time.format.DateTimeFormatter;
 

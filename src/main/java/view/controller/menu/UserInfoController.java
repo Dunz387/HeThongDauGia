@@ -52,7 +52,7 @@ public class UserInfoController implements Initializable {
         if (auctionList == null) return;
         
         // SRP: delegate sang RoleBasedFilterHelper để đồng bộ logic với bảng tài sản
-        long count = view.utility.RoleBasedFilterHelper.countAssets(auctionList);
+        long count = view.utility.auction.RoleBasedFilterHelper.countAssets(auctionList);
             
         javafx.application.Platform.runLater(() -> {
             lblAssetsCount.setText(count + " sản phẩm");

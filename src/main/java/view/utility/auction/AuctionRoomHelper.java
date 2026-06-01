@@ -1,4 +1,4 @@
-package view.utility;
+package view.utility.auction;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -7,6 +7,7 @@ import javafx.util.Duration;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.navigation.SceneManager;
 
 import java.time.LocalDateTime;
 
@@ -187,7 +188,7 @@ public class AuctionRoomHelper {
             String[] parts = message.split(Protocol.DELIMITER);
             if (parts.length >= 3 && java.util.Objects.equals(parts[1], auctionId)) {
                 Platform.runLater(() -> {
-                    view.utility.AlertHelper.showWarning("Rời phòng", parts[2]);
+                    view.utility.display.AlertHelper.showWarning("Rời phòng", parts[2]);
                     if (onKicked != null) onKicked.run();
                 });
             }

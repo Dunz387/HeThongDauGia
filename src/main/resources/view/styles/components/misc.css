@@ -1,0 +1,28 @@
+/* Small shared controls. */
+.hyperlink {
+    -fx-text-fill: #ea7f33;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI";
+    -fx-cursor: hand;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #d46b20;
+}
+
+.hyperlink:visited {
+    -fx-text-fill: #ea7f33;
+}
+
+.separator .line {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1 0 0 0;
+}
+
+.tooltip {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-size: 12px;
+}

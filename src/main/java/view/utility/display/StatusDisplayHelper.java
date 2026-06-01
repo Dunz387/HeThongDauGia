@@ -1,4 +1,4 @@
-package view.utility;
+package view.utility.display;
 
 /**
  * Helper class tập trung logic hiển thị trạng thái (SRP + OCP).

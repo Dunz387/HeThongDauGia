@@ -1,0 +1,86 @@
+/* Admin dashboard and management screens. */
+.stat-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-border-color: #e8e8e0;
+    -fx-border-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 8, 0, 0, 2);
+}
+
+.stat-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.15), 12, 0, 0, 4);
+}
+
+.stat-value {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+    -fx-font-family: "Segoe UI";
+}
+
+.stat-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI";
+}
+
+.stat-icon {
+    -fx-font-size: 28px;
+}
+
+.badge-active {
+    -fx-background-color: rgba(39, 174, 96, 0.15);
+    -fx-text-fill: #27ae60;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 12;
+    -fx-padding: 4 12;
+}
+
+.badge-inactive {
+    -fx-background-color: rgba(231, 76, 60, 0.15);
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 12;
+    -fx-padding: 4 12;
+}
+
+.badge-running {
+    -fx-background-color: rgba(234, 127, 51, 0.15);
+    -fx-text-fill: #ea7f33;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 12;
+    -fx-padding: 4 12;
+}
+
+.badge-finished {
+    -fx-background-color: rgba(149, 165, 166, 0.2);
+    -fx-text-fill: #7f8c8d;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 12;
+    -fx-padding: 4 12;
+}
+
+.admin-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-border-color: #e8e8e0;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
+}
+
+.admin-title {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 26px;
+    -fx-font-weight: 900;
+    -fx-font-family: "Segoe UI";
+}
+
+.admin-subtitle {
+    -fx-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+}

@@ -1,9 +1,10 @@
-package view.utility;
+package view.utility.notification;
 
 import javafx.scene.control.TableView;
 import model.auction.Auction;
 import network.ClientNetworkManager;
 import network.NotificationManager;
+import view.utility.auction.RoleBasedFilterHelper;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -184,7 +185,7 @@ public class NotificationFilterHelper {
         }
         if (shouldNotify) {
             NotificationManager.getInstance()
-                    .addNotification("🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! [" + auction.getItem().getName() + "] - Người thắng: " + winner + " ($" + view.utility.ChartHelper.formatDouble(finalPrice) + ")");
+                    .addNotification("🏁 PHIÊN ĐẤU GIÁ KẾT THÚC! [" + auction.getItem().getName() + "] - Người thắng: " + winner + " ($" + view.utility.display.ChartHelper.formatDouble(finalPrice) + ")");
         }
     }
 
@@ -209,7 +210,7 @@ public class NotificationFilterHelper {
         if (shouldNotify) {
             int round = (auction.getBidHistory() != null ? auction.getBidHistory().size() : 0) + 1;
             NotificationManager.getInstance()
-                    .addNotification("📢 [" + auction.getItem().getName() + "] - Lượt #" + round + ": " + topBidder + " vừa đặt $" + view.utility.ChartHelper.formatDouble(newPrice));
+                    .addNotification("📢 [" + auction.getItem().getName() + "] - Lượt #" + round + ": " + topBidder + " vừa đặt $" + view.utility.display.ChartHelper.formatDouble(newPrice));
         }
     }
 }

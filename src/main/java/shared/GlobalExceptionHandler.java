@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
             e.printStackTrace(pw);
             String exceptionText = sw.toString();
 
-            view.utility.AlertHelper.showError("Lỗi Hệ Thống", 
+            view.utility.display.AlertHelper.showError("Lỗi Hệ Thống", 
                 "Đã xảy ra lỗi không mong muốn:\n" + e.getMessage() + 
                 "\n\nVui lòng liên hệ quản trị viên.");
         });

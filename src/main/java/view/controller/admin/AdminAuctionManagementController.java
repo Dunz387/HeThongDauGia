@@ -15,9 +15,9 @@ import javafx.stage.Stage;
 import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
-import view.utility.SceneManager;
-import view.utility.StatusDisplayHelper;
+import view.utility.display.AlertHelper;
+import view.utility.navigation.SceneManager;
+import view.utility.display.StatusDisplayHelper;
 
 import java.net.URL;
 import java.util.Optional;
@@ -71,7 +71,7 @@ public class AdminAuctionManagementController implements Initializable {
                 btnView.setOnAction(event -> {
                     Auction auction = getTableView().getItems().get(getIndex());
                     Stage stage = (Stage) btnView.getScene().getWindow();
-                    view.utility.WindowManager.openSellerInRoomWindow(auction, stage);
+                    view.utility.navigation.WindowManager.openSellerInRoomWindow(auction, stage);
                 });
             }
 

@@ -1,4 +1,4 @@
-package view.utility;
+package view.utility.auction;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -7,6 +7,7 @@ import javafx.scene.control.TableView;
 import model.auction.Auction;
 import network.ClientNetworkManager;
 import shared.Protocol;
+import view.utility.notification.NotificationFilterHelper;
 
 import java.util.function.Predicate;
 

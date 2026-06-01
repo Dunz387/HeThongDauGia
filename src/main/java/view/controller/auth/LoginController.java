@@ -8,8 +8,8 @@ import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import network.SessionManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
-import view.utility.SceneManager;
+import view.utility.display.AlertHelper;
+import view.utility.navigation.SceneManager;
 
 public class LoginController {
 
@@ -56,7 +56,7 @@ public class LoginController {
         String username = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
 
-        if (view.utility.ValidationHelper.isEmpty(username) || view.utility.ValidationHelper.isEmpty(password)) {
+        if (view.utility.validation.ValidationHelper.isEmpty(username) || view.utility.validation.ValidationHelper.isEmpty(password)) {
             AlertHelper.showWarning("Lỗi", "Vui lòng nhập đủ tài khoản và mật khẩu!");
             return;
         }

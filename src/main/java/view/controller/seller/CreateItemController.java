@@ -7,7 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
+import view.utility.display.AlertHelper;
 import javafx.scene.control.ChoiceBox;
 import javafx.fxml.Initializable;
 
@@ -39,19 +39,19 @@ public class CreateItemController implements Initializable {
         String duration = txtDuration.getText().trim();
         String itemTypeDisplay = choiceType.getValue();
 
-        if (view.utility.ValidationHelper.isEmpty(itemName) || view.utility.ValidationHelper.isEmpty(startPrice) || 
-            view.utility.ValidationHelper.isEmpty(duration) || itemTypeDisplay == null) {
+        if (view.utility.validation.ValidationHelper.isEmpty(itemName) || view.utility.validation.ValidationHelper.isEmpty(startPrice) || 
+            view.utility.validation.ValidationHelper.isEmpty(duration) || itemTypeDisplay == null) {
             AlertHelper.showWarning("Lỗi", "Vui lòng nhập đầy đủ thông tin!");
             return;
         }
 
         // Kiểm tra tính hợp lệ của số liệu
-        if (!view.utility.ValidationHelper.isValidStartPrice(startPrice)) {
+        if (!view.utility.validation.ValidationHelper.isValidStartPrice(startPrice)) {
             AlertHelper.showWarning("Lỗi dữ liệu", "Giá khởi điểm phải là một số thực lớn hơn 0.");
             return;
         }
 
-        if (!view.utility.ValidationHelper.isValidDuration(duration)) {
+        if (!view.utility.validation.ValidationHelper.isValidDuration(duration)) {
             AlertHelper.showWarning("Lỗi dữ liệu", "Thời lượng phiên phải là số nguyên (phút) và lớn hơn 0.");
             return;
         }
@@ -84,7 +84,7 @@ public class CreateItemController implements Initializable {
                     AlertHelper.showInfo("Thành công", "Đã đăng bán sản phẩm lên sàn!");
                     Stage mainStage = (Stage) currentStage.getOwner();
                     currentStage.close();
-                    view.utility.WindowManager.openSellerAuctionListWindow(mainStage);
+                    view.utility.navigation.WindowManager.openSellerAuctionListWindow(mainStage);
                 } else {
                     AlertHelper.showError("Thất bại", parts.length >= 3 ? parts[2] : "Lỗi không xác định");
                 }

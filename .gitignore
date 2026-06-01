@@ -38,3 +38,5 @@ local.properties
 *.pid
 *.seed
 *.pid.lock
+# Added by code-review-graph
+.code-review-graph/

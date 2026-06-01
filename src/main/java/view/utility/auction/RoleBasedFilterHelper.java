@@ -1,4 +1,4 @@
-package view.utility;
+package view.utility.auction;
 
 import model.auction.Auction;
 import model.auction.AuctionStatus;

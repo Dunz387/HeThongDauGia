@@ -1,4 +1,4 @@
-package view.utility;
+package view.utility.navigation;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

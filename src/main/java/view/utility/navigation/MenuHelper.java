@@ -1,9 +1,10 @@
-package view.utility;
+package view.utility.navigation;
 
 import javafx.scene.control.TextInputDialog;
 import network.ClientNetworkManager;
 import network.SessionManager;
 import shared.Protocol;
+import view.utility.display.AlertHelper;
 
 import java.util.Optional;
 

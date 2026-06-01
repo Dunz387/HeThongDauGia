@@ -1,0 +1,17 @@
+/* Shared light theme tokens and label defaults. */
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-base: #ffffff;
+    -fx-background: #f8f8f5;
+}
+
+.label {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-family: "Segoe UI";
+}
+
+.label-field {
+    -fx-text-fill: #555555;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}

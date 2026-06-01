@@ -17,9 +17,9 @@ import model.user.Seller;
 import model.user.User;
 import network.ClientNetworkManager;
 import shared.Protocol;
-import view.utility.AlertHelper;
-import view.utility.SceneManager;
-import view.utility.StatusDisplayHelper;
+import view.utility.display.AlertHelper;
+import view.utility.navigation.SceneManager;
+import view.utility.display.StatusDisplayHelper;
 
 import java.net.URL;
 import java.util.ResourceBundle;

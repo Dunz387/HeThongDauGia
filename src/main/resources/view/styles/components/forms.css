@@ -1,0 +1,71 @@
+/* Text input and picker controls. */
+.text-field,
+.password-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d0d0d0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #1a1a1a;
+    -fx-prompt-text-fill: #aaaaaa;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-padding: 10 14;
+    -fx-pref-height: 40;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 4, 0, 0, 1);
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #ea7f33;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(234, 127, 51, 0.25), 8, 0, 0, 0);
+}
+
+.text-area {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-border-color: #d0d0d0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.text-area .content {
+    -fx-background-color: #ffffff;
+}
+
+.text-area:focused {
+    -fx-border-color: #ea7f33;
+}
+
+.choice-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d0d0d0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+}
+
+.choice-box .label {
+    -fx-text-fill: #1a1a1a;
+}
+
+.choice-box:focused {
+    -fx-border-color: #ea7f33;
+}
+
+.toggle-button {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #666666;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #ea7f33;
+    -fx-text-fill: white;
+}
