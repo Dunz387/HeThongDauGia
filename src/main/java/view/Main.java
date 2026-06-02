@@ -10,15 +10,16 @@ import network.ClientNetworkManager;
 import java.util.logging.Logger;
 
 /**
- * Entry point chính của ứng dụng.
- * Kết hợp khởi tạo mạng, xử lý ngoại lệ, và khởi chạy giao diện Login.
+ * Entry point chính của ứng dụng. Kết hợp khởi tạo mạng, xử lý ngoại lệ, và
+ * khởi chạy giao diện Login.
  */
 public class Main extends Application {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(java.util.Objects.requireNonNull(getClass().getResource("/view/auth/Login.fxml")));
+        Parent root = FXMLLoader
+                .load(java.util.Objects.requireNonNull(getClass().getResource("/view/auth/Login.fxml")));
         Scene scene = new Scene(root, 950, 560);
 
         primaryStage.setTitle("Login");
