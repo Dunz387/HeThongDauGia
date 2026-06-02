@@ -16,10 +16,10 @@ jobs:
         include:
           - os: windows-latest
             profile: package-windows
-            artifact-name: HeThongDauGia-Windows
+            artifact-name: HeThongDauGiaClient-Windows
           - os: macos-latest
             profile: package-mac
-            artifact-name: HeThongDauGia-macOS
+            artifact-name: HeThongDauGiaClient-macOS
 
     runs-on: ${{ matrix.os }}
     name: Build on ${{ matrix.os }}
@@ -58,41 +58,41 @@ jobs:
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: HeThongDauGia-Windows
+          name: HeThongDauGiaClient-Windows
           path: artifacts/windows
 
       - name: Download macOS artifact
         uses: actions/download-artifact@v4
         with:
-          name: HeThongDauGia-macOS
+          name: HeThongDauGiaClient-macOS
           path: artifacts/macos
 
       - name: Create ZIP archives
         run: |
           cd artifacts/windows
-          zip -r ../../HeThongDauGia-Windows.zip .
+          zip -r ../../HeThongDauGiaClient-Windows.zip HeThongDauGiaClient
           cd ../macos
-          zip -r ../../HeThongDauGia-macOS.zip .
+          zip -r ../../HeThongDauGiaClient-macOS.zip HeThongDauGiaClient.app
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
           body: |
-            ## He Thong Dau Gia - ${{ github.ref_name }}
+            ## Hệ Thống Đấu Giá - Client - ${{ github.ref_name }}
 
-            ### Downloads
-            - **Windows**: `HeThongDauGia-Windows.zip` - Giai nen va chay file `.exe`
-            - **macOS**: `HeThongDauGia-macOS.zip` - Giai nen va chay file `.app`
+            ### Tải về (Downloads)
+            - **Windows**: `HeThongDauGiaClient-Windows.zip` (Giải nén và chạy file `HeThongDauGiaClient/HeThongDauGiaClient.exe`)
+            - **macOS**: `HeThongDauGiaClient-macOS.zip` (Giải nén và chạy ứng dụng `HeThongDauGiaClient.app`)
 
-            ### Huong dan su dung
-            1. Tai file ZIP tuong ung voi he dieu hanh
-            2. Giai nen vao thu muc bat ky
-            3. Chay `HeThongDauGiaServer` truoc, sau do chay `HeThongDauGiaClient`
+            ### Hướng dẫn sử dụng
+            1. Tải file ZIP tương ứng với hệ điều hành của bạn.
+            2. Giải nén vào một thư mục bất kỳ.
+            3. Chạy file thực thi của Client để khởi động ứng dụng.
 
-            > **Luu y**: Ung dung da bao gom JRE, khong can cai dat Java.
+            > **Lưu ý**: Ứng dụng đã được đóng gói kèm theo Java Runtime Environment (JRE) tương thích, nên người dùng không cần cài đặt sẵn Java trên máy.
           files: |
-            HeThongDauGia-Windows.zip
-            HeThongDauGia-macOS.zip
+            HeThongDauGiaClient-Windows.zip
+            HeThongDauGiaClient-macOS.zip
           draft: false
           prerelease: false
