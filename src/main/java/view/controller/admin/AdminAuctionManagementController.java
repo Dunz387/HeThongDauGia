@@ -48,12 +48,12 @@ public class AdminAuctionManagementController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        configureColumns();
-        configureViewColumn();
-        configureActionColumn();
-        registerDeleteListener();
-        registerAuctionListListener();
-        loadAuctions();
+        configureColumns(); // cấu hình các cột dữ liệu
+        configureViewColumn(); // cấu hình cột nút "Chi tiết"
+        configureActionColumn(); // cấu hình cột nút "Xóa"
+        registerDeleteListener(); // đăng ký lắng nghe phản hồi xóa
+        registerAuctionListListener(); // đăng ký lắng nghe danh sách phiên đấu giá
+        loadAuctions(); // tải danh sách phiên đấu giá từ server khi khởi tạo giao diện
     }
 
     private void loadAuctions() {
@@ -62,15 +62,17 @@ public class AdminAuctionManagementController implements Initializable {
 
     private void configureColumns() {
         // === CẤU HÌNH CÁC CỘT BẢNG ===
-        colSTT.setCellValueFactory(
-                cellData -> new SimpleIntegerProperty(tableAuctions.getItems().indexOf(cellData.getValue()) + 1)
-                        .asObject());
+        // Cột STT: hiển thị số thứ tự dựa trên vị trí của item trong TableView
+        colSTT.setCellValueFactory(cellData -> new SimpleIntegerProperty(tableAuctions.getItems().indexOf(cellData.getValue()) + 1).asObject());
+        // Cột ID: hiển thị ID phiên đấu giá
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
+        // Cột Tên Sản Phẩm: hiển thị tên sản phẩm
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getName()));
-        colPrice.setCellValueFactory(
-                cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
-        colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(
-                StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
+        // Cột Giá Hiện Tại: hiển thị giá hiện tại của phiên đấu giá
+        colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCurrentPrice()).asObject());
+        // Cột Trạng Thái: hiển thị trạng thái của phiên đấu giá
+        colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(StatusDisplayHelper.formatAuctionStatus(cellData.getValue().getStatus().name())));
+        // Cột Người Đấu Giá Cao Nhất: hiển thị tên người đấu giá cao nhất hoặc "Chưa có" nếu chưa có ai đặt giá
         colBidder.setCellValueFactory(cellData -> {
             var bidder = cellData.getValue().getHighestBidder();
             return new SimpleStringProperty(bidder != null ? bidder.getUsername() : "Chưa có");

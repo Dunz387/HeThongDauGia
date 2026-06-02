@@ -47,12 +47,15 @@ public class AdminUserManagementController implements Initializable {
 
     private void configureColumns() {
         // === CẤU HÌNH CÁC CỘT BẢNG ===
-        colSTT.setCellValueFactory(cellData ->
-                new SimpleIntegerProperty(tableUsers.getItems().indexOf(cellData.getValue()) + 1).asObject());
+        // Cột STT: hiển thị số thứ tự dựa trên vị trí của item trong TableView
+        colSTT.setCellValueFactory(cellData ->new SimpleIntegerProperty(tableUsers.getItems().indexOf(cellData.getValue()) + 1).asObject());
+        // Cột ID: hiển thị ID của người dùng
         colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
+        // Cột Tên Người Dùng: hiển thị tên người dùng
         colUsername.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        colRole.setCellValueFactory(cellData ->
-                new SimpleStringProperty(StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
+        // Cột Vai Trò: hiển thị vai trò của người dùng
+        colRole.setCellValueFactory(cellData ->new SimpleStringProperty(StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
+        // Cột Số Dư: hiển thị số dư của người dùng nếu là Bidder hoặc Seller, nếu không hiển thị 0
         colBalance.setCellValueFactory(cellData -> {
             User u = cellData.getValue();
             double balance = 0.0;
@@ -60,6 +63,7 @@ public class AdminUserManagementController implements Initializable {
             else if (u instanceof Seller) balance = ((Seller) u).getBalance();
             return new SimpleDoubleProperty(balance).asObject();
         });
+        // Cột Trạng Thái: hiển thị trạng thái của người dùng
         colStatus.setCellValueFactory(cellData ->
                 new SimpleStringProperty(StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
     }
