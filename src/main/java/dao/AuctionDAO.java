@@ -6,12 +6,9 @@ import model.user.Bidder;
 import model.user.Seller;
 import model.user.User;
 
-import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AuctionDAO extends BaseDAO {
 
