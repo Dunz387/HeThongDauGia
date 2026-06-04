@@ -1,25 +1,15 @@
 package view.controller.admin;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
-import model.user.Bidder;
-import model.user.Seller;
 import model.user.User;
-import network.ClientNetworkManager;
-import shared.Protocol;
-import view.utility.display.AlertHelper;
-import view.utility.navigation.SceneManager;
-import view.utility.display.StatusDisplayHelper;
+import view.utility.admin.AdminNavigation;
+import view.utility.admin.AdminTableColumns;
+import view.utility.admin.AdminUserManagementSupport;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,170 +26,43 @@ public class AdminUserManagementController implements Initializable {
     @FXML private TableColumn<User, String> colStatus;
     @FXML private TableColumn<User, Void> colAction;
 
+    private AdminUserManagementSupport support;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        configureColumns();
-        configureActionColumn();
-        registerResponseListeners();
-        registerUserListListener();
-        loadUsers();
+        AdminTableColumns.configureUserManagementColumns(
+                tableUsers,
+                colSTT,
+                colId,
+                colUsername,
+                colRole,
+                colBalance,
+                colStatus
+        );
+
+        support = new AdminUserManagementSupport(tableUsers, colAction);
+        support.configureActionColumn();
+        support.registerListeners();
+        support.load();
     }
-
-    private void configureColumns() {
-        // === CẤU HÌNH CÁC CỘT BẢNG ===
-        // Cột STT: hiển thị số thứ tự dựa trên vị trí của item trong TableView
-        colSTT.setCellValueFactory(cellData ->new SimpleIntegerProperty(tableUsers.getItems().indexOf(cellData.getValue()) + 1).asObject());
-        // Cột ID: hiển thị ID của người dùng
-        colId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
-        // Cột Tên Người Dùng: hiển thị tên người dùng
-        colUsername.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        // Cột Vai Trò: hiển thị vai trò của người dùng
-        colRole.setCellValueFactory(cellData ->new SimpleStringProperty(StatusDisplayHelper.formatUserRole(cellData.getValue().getRole().name())));
-        // Cột Số Dư: hiển thị số dư của người dùng nếu là Bidder hoặc Seller, nếu không hiển thị 0
-        colBalance.setCellValueFactory(cellData -> {
-            User u = cellData.getValue();
-            double balance = 0.0;
-            if (u instanceof Bidder) balance = ((Bidder) u).getBalance();
-            else if (u instanceof Seller) balance = ((Seller) u).getBalance();
-            return new SimpleDoubleProperty(balance).asObject();
-        });
-        // Cột Trạng Thái: hiển thị trạng thái của người dùng
-        colStatus.setCellValueFactory(cellData ->
-                new SimpleStringProperty(StatusDisplayHelper.formatUserStatus(cellData.getValue().isActive())));
-    }
-
-    private void configureActionColumn() {
-        // === CẤU HÌNH CỘT HÀNH ĐỘNG ===
-        colAction.setCellFactory(col -> new TableCell<>() {
-            private final Button btnToggle = new Button();
-            private final Button btnEditBalance = new Button("💰 Sửa tiền");
-            private final HBox container = new HBox(8, btnToggle, btnEditBalance);
-
-            {
-                btnToggle.setOnAction(event -> {
-                    User user = getTableView().getItems().get(getIndex());
-                    boolean currentlyActive = user.isActive();
-                    String request = Protocol.REQ_BAN_USER + Protocol.DELIMITER
-                            + user.getId() + Protocol.DELIMITER
-                            + (!currentlyActive);
-                    ClientNetworkManager.getInstance().sendData(request);
-                });
-
-                btnEditBalance.setOnAction(event -> {
-                    User user = getTableView().getItems().get(getIndex());
-                    double currentVal = (user instanceof Bidder ? ((Bidder)user).getBalance() : (user instanceof Seller ? ((Seller)user).getBalance() : 0.0));
-                    TextInputDialog dialog = new TextInputDialog(String.format("%.0f", currentVal));
-                    dialog.setTitle("Điều chỉnh số dư");
-                    dialog.setHeaderText("Người dùng: " + user.getUsername());
-                    dialog.setContentText("Nhập số dư mới ($):");
-
-                    dialog.showAndWait().ifPresent(input -> {
-                        try {
-                            double newBalance = Double.parseDouble(input);
-                            String request = Protocol.REQ_UPDATE_USER_BALANCE + Protocol.DELIMITER 
-                                    + user.getId() + Protocol.DELIMITER + newBalance;
-                            ClientNetworkManager.getInstance().sendData(request);
-                        } catch (NumberFormatException e) {
-                            AlertHelper.showError("Lỗi", "Vui lòng nhập số hợp lệ!");
-                        }
-                    });
-                });
-                
-                btnEditBalance.getStyleClass().setAll("btn-primary");
-                container.setAlignment(javafx.geometry.Pos.CENTER);
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= getTableView().getItems().size()) {
-                    setGraphic(null);
-                } else {
-                    User user = getTableView().getItems().get(getIndex());
-                    if ("ADMIN".equals(user.getRole().name())) {
-                        setGraphic(null);
-                    } else {
-                        if (user.isActive()) {
-                            btnToggle.setText("🔒 Khóa");
-                            btnToggle.getStyleClass().setAll("btn-danger");
-                        } else {
-                            btnToggle.setText("🔓 Mở khóa");
-                            btnToggle.getStyleClass().setAll("btn-success");
-                        }
-                        setGraphic(container);
-                    }
-                }
-            }
-        });
-    }
-
-    private void registerResponseListeners() {
-        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_BAN_USER, (response) -> {
-            String[] parts = response.split(Protocol.DELIMITER);
-            Platform.runLater(() -> {
-                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                    // Cập nhật lại danh sách ngay lập tức
-                    ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
-                    AlertHelper.showInfo("Hệ thống", "Đã cập nhật trạng thái người dùng thành công!");
-                } else {
-                    AlertHelper.showError("Lỗi", parts.length >= 3 ? parts[2] : "Không thể thực hiện thao tác");
-                }
-            });
-        });
-
-        ClientNetworkManager.getInstance().registerListener(Protocol.REQ_UPDATE_USER_BALANCE, (response) -> {
-            String[] parts = response.split(Protocol.DELIMITER);
-            Platform.runLater(() -> {
-                if (parts.length > 1 && parts[1].equals(Protocol.RES_SUCCESS)) {
-                    ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
-                    AlertHelper.showInfo("Hệ thống", "Đã cập nhật số dư người dùng thành công!");
-                } else {
-                    AlertHelper.showError("Lỗi", parts.length >= 3 ? parts[2] : "Không thể cập nhật số dư");
-                }
-            });
-        });
-    }
-
-    private void registerUserListListener() {
-        ClientNetworkManager.getInstance().clearUserListListeners();
-        ClientNetworkManager.getInstance().addUserListListener((listFromServer) -> {
-            if (listFromServer != null) {
-                Platform.runLater(() -> {
-                    ObservableList<User> data = FXCollections.observableArrayList(listFromServer);
-                    tableUsers.setItems(data);
-                    System.out.println("✅ [Admin] Đã cập nhật danh sách " + listFromServer.size() + " người dùng.");
-                });
-            }
-        });
-    }
-
-    private void loadUsers() {
-        ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
-    }
-
-    // === ĐIỀU HƯỚNG ===
 
     @FXML
     private void goToDashboard(ActionEvent event) {
-        Stage stage = (Stage) menuBar.getScene().getWindow();
-        SceneManager.goToAdminDashboard(stage);
+        AdminNavigation.goToDashboard(menuBar);
     }
 
     @FXML
     private void goToAuctionManagement(ActionEvent event) {
-        Stage stage = (Stage) menuBar.getScene().getWindow();
-        SceneManager.goToAdminAuctionManagement(stage);
+        AdminNavigation.goToAuctionManagement(menuBar);
     }
 
     @FXML
     private void logoutClicked(ActionEvent event) {
-        ClientNetworkManager.getInstance().logout();
-        Stage stage = (Stage) menuBar.getScene().getWindow();
-        SceneManager.goToLogin(stage);
+        AdminNavigation.logout(menuBar);
     }
 
     @FXML
     private void refreshData(ActionEvent event) {
-        ClientNetworkManager.getInstance().sendData(Protocol.REQ_GET_USERS);
+        support.load();
     }
 }
