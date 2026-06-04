@@ -1,6 +1,6 @@
 package view.utility.auction;
 
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 
 /**

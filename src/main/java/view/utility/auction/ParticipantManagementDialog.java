@@ -16,7 +16,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import network.SessionManager;
+import network.session.SessionManager;
 import view.utility.display.AlertHelper;
 
 import java.util.function.Consumer;

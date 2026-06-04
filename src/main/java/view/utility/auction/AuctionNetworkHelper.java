@@ -5,7 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import model.auction.Auction;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.notification.NotificationFilterHelper;
 

@@ -1,5 +1,6 @@
-package dao;
+package dao.auction;
 
+import dao.core.BaseDAO;
 import model.auction.Auction;
 import model.auction.AuctionStatus;
 import model.user.Bidder;

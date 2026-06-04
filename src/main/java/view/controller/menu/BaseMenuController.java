@@ -11,7 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import model.auction.Auction;
-import network.NotificationManager;
+import network.notification.NotificationManager;
 import view.utility.auction.AuctionNetworkHelper;
 import view.utility.auction.RoleBasedFilterHelper;
 import view.utility.menu.MenuNavigationSupport;

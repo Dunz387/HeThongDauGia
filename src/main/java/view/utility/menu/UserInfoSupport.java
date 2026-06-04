@@ -3,8 +3,8 @@ package view.utility.menu;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import model.auction.Auction;
-import network.ClientNetworkManager;
-import network.SessionManager;
+import network.client.ClientNetworkManager;
+import network.session.SessionManager;
 import shared.Protocol;
 import view.utility.auction.RoleBasedFilterHelper;
 

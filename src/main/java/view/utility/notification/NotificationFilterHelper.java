@@ -2,8 +2,8 @@ package view.utility.notification;
 
 import javafx.scene.control.TableView;
 import model.auction.Auction;
-import network.ClientNetworkManager;
-import network.NotificationManager;
+import network.client.ClientNetworkManager;
+import network.notification.NotificationManager;
 import view.utility.auction.RoleBasedFilterHelper;
 
 import java.util.List;
@@ -162,9 +162,9 @@ public class NotificationFilterHelper {
     /** Đẩy thông báo phiên bắt đầu (đã lọc theo vai trò) */
     private static void pushStartNotification(Auction auction) {
         boolean shouldNotify = RoleBasedFilterHelper.shouldReceiveNotification(auction);
-        if (!shouldNotify && network.SessionManager.getInstance().isSeller()) {
+        if (!shouldNotify && network.session.SessionManager.getInstance().isSeller()) {
             if (auction.getSeller() != null &&
-                auction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                auction.getSeller().getId().equals(network.session.SessionManager.getInstance().getUserId())) {
                 shouldNotify = true;
             }
         }
@@ -177,9 +177,9 @@ public class NotificationFilterHelper {
     /** Đẩy thông báo phiên kết thúc (đã lọc theo vai trò) */
     private static void pushFinishedNotification(Auction auction, String winner, double finalPrice) {
         boolean shouldNotify = RoleBasedFilterHelper.shouldReceiveNotification(auction);
-        if (!shouldNotify && network.SessionManager.getInstance().isSeller()) {
+        if (!shouldNotify && network.session.SessionManager.getInstance().isSeller()) {
             if (auction.getSeller() != null &&
-                auction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                auction.getSeller().getId().equals(network.session.SessionManager.getInstance().getUserId())) {
                 shouldNotify = true;
             }
         }
@@ -194,15 +194,15 @@ public class NotificationFilterHelper {
         boolean shouldNotify = RoleBasedFilterHelper.shouldReceiveNotification(auction);
         // Nếu đây là lượt bid ĐẦU TIÊN của chính Bidder này, data trên client có thể chưa đồng bộ kịp (hasParticipated = false)
         // Ta cần ép buộc hiển thị thông báo để họ biết mình vừa đặt giá thành công
-        if (!shouldNotify && network.SessionManager.getInstance().isBidder()) {
-            if (topBidder.equals(network.SessionManager.getInstance().getUsername())) {
+        if (!shouldNotify && network.session.SessionManager.getInstance().isBidder()) {
+            if (topBidder.equals(network.session.SessionManager.getInstance().getUsername())) {
                 shouldNotify = true;
             }
         }
         // Seller fallback: seller always receives bids on their own auction
-        if (!shouldNotify && network.SessionManager.getInstance().isSeller()) {
+        if (!shouldNotify && network.session.SessionManager.getInstance().isSeller()) {
             if (auction.getSeller() != null &&
-                auction.getSeller().getId().equals(network.SessionManager.getInstance().getUserId())) {
+                auction.getSeller().getId().equals(network.session.SessionManager.getInstance().getUserId())) {
                 shouldNotify = true;
             }
         }

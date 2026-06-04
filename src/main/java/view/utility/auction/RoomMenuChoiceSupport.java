@@ -6,7 +6,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.auction.Auction;
-import network.SessionManager;
+import network.session.SessionManager;
 import view.utility.display.AlertHelper;
 import view.utility.navigation.WindowManager;
 

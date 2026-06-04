@@ -1,4 +1,4 @@
-package network;
+package network.client;
 
 import java.io.ObjectInputStream;
 import java.util.logging.Level;

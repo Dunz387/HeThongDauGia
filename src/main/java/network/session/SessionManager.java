@@ -1,4 +1,4 @@
-package network;
+package network.session;
 
 import javafx.beans.property.*;
 import model.user.Role;

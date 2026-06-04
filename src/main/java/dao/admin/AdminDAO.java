@@ -1,4 +1,6 @@
-package dao;
+package dao.admin;
+
+import dao.core.DBConnection;
 
 import java.sql.*;
 

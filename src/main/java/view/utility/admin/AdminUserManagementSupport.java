@@ -10,7 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import model.user.User;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.display.AlertHelper;
 

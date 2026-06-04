@@ -1,8 +1,9 @@
-package network;
+package network.notification;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.application.Platform;
+import network.session.SessionManager;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,10 +51,10 @@ public class NotificationManager {
         
         // 1. Lưu xuống DB để persistent (nếu đã login)
         if (userId != null) {
-            dao.NotificationDAO.saveNotification(userId, message, "GLOBAL");
+            dao.notification.NotificationDAO.saveNotification(userId, message, "GLOBAL");
         } else {
             // Thông báo hệ thống chung
-            dao.NotificationDAO.saveNotification(null, message, "SYSTEM");
+            dao.notification.NotificationDAO.saveNotification(null, message, "SYSTEM");
         }
 
         // 2. Cập nhật UI ngay lập tức
@@ -67,7 +68,7 @@ public class NotificationManager {
 
     // Tải thông báo từ database khi người dùng đăng nhập
     public void loadFromDatabase(String userId) {
-        List<NotificationItem> dbNotifs = dao.NotificationDAO.loadNotifications(userId);
+        List<NotificationItem> dbNotifs = dao.notification.NotificationDAO.loadNotifications(userId);
         Platform.runLater(() -> {
             notifications.clear();
             notifications.addAll(dbNotifs);

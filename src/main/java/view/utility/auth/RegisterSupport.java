@@ -2,7 +2,7 @@ package view.utility.auth;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.display.AlertHelper;
 import view.utility.navigation.SceneManager;

@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 
 import java.util.logging.Logger;
 

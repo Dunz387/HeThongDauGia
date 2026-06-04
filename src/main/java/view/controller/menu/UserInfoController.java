@@ -6,7 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import view.utility.menu.UserInfoSupport;
 
 import java.net.URL;

@@ -2,8 +2,8 @@ package server.handler;
 
 import model.user.Admin;
 import model.user.User;
-import service.AdminService;
-import service.UserService;
+import service.admin.AdminService;
+import service.user.UserService;
 import shared.Protocol;
 import server.AuctionServer;
 

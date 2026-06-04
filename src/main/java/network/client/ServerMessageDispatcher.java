@@ -1,7 +1,8 @@
-package network;
+package network.client;
 
 import model.auction.Auction;
 import model.user.User;
+import network.session.SessionManager;
 import shared.Protocol;
 
 import java.util.List;

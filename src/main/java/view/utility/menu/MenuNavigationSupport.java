@@ -2,8 +2,8 @@ package view.utility.menu;
 
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
-import network.SessionManager;
+import network.client.ClientNetworkManager;
+import network.session.SessionManager;
 import view.utility.auction.AuctionNetworkHelper;
 import view.utility.display.AlertHelper;
 import view.utility.navigation.SceneManager;

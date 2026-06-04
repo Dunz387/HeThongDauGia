@@ -5,7 +5,7 @@ import server.handler.AdminHandler;
 import server.handler.AuctionHandler;
 import server.handler.AuthHandler;
 import server.handler.FinancialHandler;
-import service.AuctionManager;
+import service.auction.AuctionManager;
 import shared.Protocol;
 
 import java.io.ObjectInputStream;

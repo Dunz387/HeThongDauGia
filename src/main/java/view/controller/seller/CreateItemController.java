@@ -5,7 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.display.AlertHelper;
 import javafx.scene.control.ChoiceBox;

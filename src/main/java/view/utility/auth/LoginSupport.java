@@ -2,9 +2,9 @@ package view.utility.auth;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
-import network.NotificationManager;
-import network.SessionManager;
+import network.client.ClientNetworkManager;
+import network.notification.NotificationManager;
+import network.session.SessionManager;
 import shared.Protocol;
 import view.utility.display.AlertHelper;
 import view.utility.navigation.SceneManager;

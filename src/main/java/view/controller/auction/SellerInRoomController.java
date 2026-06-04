@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import model.auction.Auction;
-import network.NotificationManager;
+import network.notification.NotificationManager;
 import view.utility.auction.SellerAuctionRoomSupport;
 
 import java.net.URL;

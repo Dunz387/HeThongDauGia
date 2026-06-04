@@ -1,4 +1,4 @@
-package network;
+package network.client;
 
 import model.auction.Auction;
 import model.user.User;

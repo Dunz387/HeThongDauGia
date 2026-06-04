@@ -1,12 +1,13 @@
-package service;
+package service.auction;
 
-import dao.AuctionDAO;
-import dao.DatabaseManager;
-import dao.UserDAO;
+import dao.admin.AdminDAO;
+import dao.auction.AuctionDAO;
+import dao.core.DatabaseManager;
 import model.auction.Auction;
 import model.auction.AuctionStatus;
 import model.user.Bidder;
 import model.user.User;
+import service.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,15 +16,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Quản lý logic đấu giá: CRUD Auction, xử lý bid, giám sát phiên.
  * Đã tách User/Admin logic sang UserService và AdminService (SRP).
  */
 public class AuctionManager {
-    private static final Logger LOGGER = Logger.getLogger(AuctionManager.class.getName());
     private static final AuctionManager instance = new AuctionManager();
     private final List<Auction> auctions;
     private final ScheduledExecutorService scheduler;
@@ -77,7 +75,7 @@ public class AuctionManager {
             if (a != null && a.getItem().getOwner().getId().equals(sellerId)) {
                 if (a.getStatus() != AuctionStatus.FINISHED && a.getBidHistory().isEmpty()) {
                     auctions.remove(a);
-                    return dao.AdminDAO.deleteAuctionForce(auctionId);
+                    return AdminDAO.deleteAuctionForce(auctionId);
                 }
             }
             return false;
@@ -89,28 +87,7 @@ public class AuctionManager {
             Auction a = getAuctionById(auctionId);
             if (a != null && a.getItem().getOwner().getId().equals(sellerId)) {
                 if (a.getStatus() != AuctionStatus.FINISHED && a.getBidHistory().isEmpty()) {
-                    a.getItem().setName(newName);
-                    a.getItem().setDescription(newDesc);
-
-                    String currentType = a.getItem().getTypeString();
-
-                    if (!currentType.equalsIgnoreCase(newType)) {
-                        model.item.Item newItem = new model.item.ItemBuilder()
-                                .setType(newType)
-                                .setId(a.getItem().getId())
-                                .setName(newName)
-                                .setDescription(newDesc)
-                                .setOwner(a.getItem().getOwner())
-                                .build();
-                        try {
-                            java.lang.reflect.Field itemField = Auction.class.getDeclaredField("item");
-                            itemField.setAccessible(true);
-                            itemField.set(a, newItem);
-                        } catch (Exception e) {
-                             LOGGER.log(Level.SEVERE, "Lỗi đổi loại sản phẩm", e);
-                        }
-                    }
-
+                    AuctionItemUpdater.updateItem(a, newName, newDesc, newType);
                     return AuctionDAO.updateAuction(a);
                 }
             }
@@ -129,19 +106,7 @@ public class AuctionManager {
     }
 
     public String processBid(Bidder bidder, Auction auction, double bidAmount) {
-        if (auction == null || bidder == null) return "Lỗi dữ liệu";
-        if (auction.getStatus() != AuctionStatus.RUNNING) return "Phiên đã kết thúc";
-        try {
-            auction.placeBid(bidder, bidAmount);
-            AuctionDAO.updateAuction(auction);
-            java.util.List<model.auction.BidTransaction> history = auction.getBidHistory();
-            if (!history.isEmpty()) {
-                dao.AuctionDAO.saveBidTransaction(history.get(history.size() - 1));
-            }
-            return "Thành công!";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        return AuctionBidService.processBid(bidder, auction, bidAmount);
     }
 
     public void stopManager() {
@@ -164,36 +129,6 @@ public class AuctionManager {
     }
 
     public synchronized void concludeAuction(Auction auction) {
-        if (auction != null && auction.getStatus() == AuctionStatus.RUNNING) {
-            auction.setStatus(AuctionStatus.FINISHED);
-
-            User seller = auction.getSeller();
-
-            Bidder highestBidder = auction.getHighestBidder();
-            if (highestBidder != null) {
-                double winPrice = auction.getCurrentPrice();
-
-                if (highestBidder.deductBalance(winPrice)) {
-                    UserDAO.updateUserBalance(highestBidder.getId(), highestBidder.getBalance());
-
-                    auction.getItem().setOwner(highestBidder);
-                    // Không cập nhật seller_id trong DB - giữ nguyên người bán gốc
-
-                    if (seller instanceof model.user.Seller) {
-                        ((model.user.Seller) seller).receivePayment(winPrice);
-                        UserDAO.updateUserBalance(seller.getId(), ((model.user.Seller) seller).getBalance());
-                    }
-                    LOGGER.info(String.format("💰 [THANH TOÁN] Đã chuyển %.2f từ %s cho %s",
-                        winPrice, highestBidder.getUsername(), (seller != null ? seller.getUsername() : "Hệ thống")));
-                }
-            }
-
-            AuctionDAO.updateAuction(auction);
-            LOGGER.info(String.format("✅ [AuctionManager] Phiên %s đã kết thúc.", auction.getId()));
-
-            if (auctionFinishedCallback != null) {
-                auctionFinishedCallback.accept(auction, seller);
-            }
-        }
+        AuctionSettlementService.concludeAuction(auction, auctionFinishedCallback);
     }
 }

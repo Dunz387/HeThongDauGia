@@ -1,6 +1,7 @@
-package dao;
+package dao.notification;
 
-import network.NotificationManager;
+import dao.core.DBConnection;
+import network.notification.NotificationManager;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

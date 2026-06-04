@@ -3,6 +3,7 @@ package server.handler;
 import model.user.Bidder;
 import model.user.Seller;
 import model.user.User;
+import dao.user.UserDAO;
 import shared.Protocol;
 
 import java.util.logging.Logger;
@@ -31,7 +32,7 @@ public class FinancialHandler {
             if (getUser() instanceof Bidder) {
                 Bidder bidder = (Bidder) getUser();
                 bidder.addBalance(amount);
-                dao.UserDAO.updateUserBalance(bidder.getId(), bidder.getBalance());
+                UserDAO.updateUserBalance(bidder.getId(), bidder.getBalance());
                 clientHandler.sendData(Protocol.REQ_DEPOSIT + Protocol.DELIMITER + Protocol.RES_SUCCESS);
                 clientHandler.sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + bidder.getAvailableBalance());
             } else {
@@ -52,7 +53,7 @@ public class FinancialHandler {
             if (getUser() instanceof Seller) {
                 Seller seller = (Seller) getUser();
                 if (seller.deductBalance(amount)) {
-                    dao.UserDAO.updateUserBalance(seller.getId(), seller.getBalance());
+                    UserDAO.updateUserBalance(seller.getId(), seller.getBalance());
                     clientHandler.sendData(Protocol.REQ_WITHDRAW + Protocol.DELIMITER + Protocol.RES_SUCCESS);
                     clientHandler.sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + seller.getBalance());
                 } else {

@@ -17,14 +17,21 @@ Phạm vi hiện tại tập trung vào ứng dụng desktop JavaFX, server sock
 
 ## Môi Trường Chạy Và Yêu Cầu Cài Đặt
 
-Yêu cầu cài đặt:
+Có 2 cách chạy sản phẩm:
+
+1. Chạy bản phát hành dành cho người dùng cuối bằng file `client.exe` trong file zip ở GitHub Release.
+2. Chạy từ mã nguồn bằng JDK và Maven.
+
+Với bản release zip trên Windows, máy người dùng không cần cài JVM/JDK riêng. File zip đã được đóng gói bằng `jpackage`, nên runtime Java cần thiết đã nằm trong thư mục ứng dụng.
+
+Nếu chạy từ mã nguồn, cần cài:
 
 - JDK 25
 - Maven 3.9+ khuyến nghị
 - Hệ điều hành: Windows, Linux hoặc macOS
 - Môi trường desktop có hỗ trợ JavaFX UI
 
-Kiểm tra môi trường:
+Kiểm tra môi trường khi chạy từ mã nguồn:
 
 ```bash
 java -version
@@ -108,22 +115,57 @@ mvn -Ppackage-mac package
 
 Ghi chú: hiện `pom.xml` chưa có profile `jpackage` riêng cho Linux. Trên Linux nên chạy trực tiếp bằng Maven hoặc bổ sung profile Linux nếu cần đóng gói app-image.
 
-## Hướng Dẫn Chạy Server/Client
+## Hướng Dẫn Chạy Sản Phẩm
 
-Thứ tự chạy cụ thể:
+### Cách 1.1: Chạy bản release bằng `client.exe` trên Windows
+
+Cách này dành cho người dùng chỉ muốn mở ứng dụng, không cần cài Java, JDK, Maven hoặc JavaFX.
+
+1. Vào mục **Releases** của repository.
+2. Tải file zip ở tag release mới nhất.
+3. Giải nén file zip ra một thư mục bất kỳ.
+4. Mở thư mục vừa giải nén và chạy file `client.exe`.
+5. Đăng ký tài khoản `SELLER` hoặc `BIDDER`, sau đó đăng nhập để sử dụng.
+
+Lưu ý:
+
+- Không chạy trực tiếp `client.exe` khi file vẫn còn nằm trong file zip. Cần giải nén trước.
+- Không xóa các thư mục/file đi kèm `client.exe`, vì đó là runtime và thư viện mà ứng dụng cần để chạy.
+- Nếu Windows SmartScreen cảnh báo, chọn **More info** rồi **Run anyway** nếu bạn chắc chắn file được tải từ release chính thức của repository.
+- Bản `client.exe` mặc định kết nối tới server đã cấu hình sẵn trong ứng dụng. Nếu server đang tắt hoặc không truy cập được, client sẽ không đăng nhập/kết nối được.
+
+### Cách 1.2: Chạy bản release bằng `client.app` trên macOS
+
+Cách này áp dụng cho người dùng macOS muốn chạy trực tiếp bản đóng gói, không cần cài JVM/JDK riêng.
+
+1. Vào mục **Releases** của repository.
+2. Tải file zip ở tag release mới nhất.
+3. Giải nén file zip ra một thư mục bất kỳ.
+4. Mở thư mục vừa giải nén và chạy `client.app`.
+5. Đăng ký tài khoản `SELLER` hoặc `BIDDER`, sau đó đăng nhập để sử dụng.
+
+Lưu ý:
+
+- Nếu macOS chặn ứng dụng do Gatekeeper, vào `System Settings` để cho phép mở ứng dụng hoặc chuột phải vào `client.app` rồi chọn `Open` ở lần chạy đầu tiên.
+- Không xóa các file/thư mục đi kèm `client.app`, vì đó là runtime và thư viện mà ứng dụng cần để chạy.
+- Bản `client.app` mặc định kết nối tới server đã cấu hình sẵn trong ứng dụng. Nếu server đang tắt hoặc không truy cập được, client sẽ không đăng nhập/kết nối được.
+
+### Cách 2: Chạy từ mã nguồn khi phát triển
+
+Thứ tự chạy:
 
 1. Mở terminal thứ nhất và chạy Server.
 2. Chờ Server báo đang lắng nghe cổng `8080`.
 3. Mở terminal thứ hai và chạy Client.
 4. Đăng ký tài khoản `SELLER` hoặc `BIDDER`, sau đó đăng nhập để sử dụng.
 
-Chạy Server bằng Maven, dùng được trên Windows/Linux/macOS:
+Chạy Server bằng Maven:
 
 ```bash
 mvn org.codehaus.mojo:exec-maven-plugin:3.1.0:java -Dexec.mainClass=server.AuctionServer
 ```
 
-Chạy Client JavaFX bằng Maven, dùng được trên Windows/Linux/macOS:
+Chạy Client JavaFX bằng Maven:
 
 ```bash
 mvn javafx:run

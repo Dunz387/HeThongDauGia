@@ -1,4 +1,4 @@
-package dao;
+package dao.core;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

@@ -5,7 +5,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.util.Duration;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.navigation.SceneManager;
 

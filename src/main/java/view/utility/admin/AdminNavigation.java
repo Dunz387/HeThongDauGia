@@ -2,7 +2,7 @@ package view.utility.admin;
 
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import view.utility.navigation.SceneManager;
 
 public final class AdminNavigation {

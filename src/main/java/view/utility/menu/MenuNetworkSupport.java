@@ -2,7 +2,7 @@ package view.utility.menu;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 import view.utility.display.AlertHelper;
 

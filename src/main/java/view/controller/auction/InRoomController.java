@@ -10,7 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import model.auction.Auction;
-import network.NotificationManager;
+import network.notification.NotificationManager;
 import view.utility.auction.BidderAuctionRoomSupport;
 
 import java.net.URL;

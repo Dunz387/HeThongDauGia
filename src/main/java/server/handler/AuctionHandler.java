@@ -1,35 +1,32 @@
 package server.handler;
 
 import model.auction.Auction;
-import model.auction.AuctionStatus;
-import model.user.Bidder;
-import model.user.Seller;
 import model.user.User;
-import service.AuctionManager;
-import shared.Protocol;
 import server.AuctionServer;
+import server.ClientHandler;
+import service.auction.AuctionManager;
+import shared.Protocol;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Xử lý các request đấu giá: CRUD Item, Bid, AutoBid, JoinRoom, LeaveRoom. Tách
- * từ ClientHandler để tuân thủ SRP.
+ * Router xử lý request đấu giá và delegate phần nghiệp vụ sang helper chuyên trách.
  */
 public class AuctionHandler {
     private static final Logger LOGGER = Logger.getLogger(AuctionHandler.class.getName());
-    private final server.ClientHandler clientHandler;
+    private final ClientHandler clientHandler;
     private final AuctionServer server;
     private final AuctionManager manager;
+    private final AuctionItemRequestHandler itemHandler;
+    private final AuctionBidRequestHandler bidHandler;
 
-    public AuctionHandler(server.ClientHandler clientHandler, AuctionServer server, AuctionManager manager) {
+    public AuctionHandler(ClientHandler clientHandler, AuctionServer server, AuctionManager manager) {
         this.clientHandler = clientHandler;
         this.server = server;
         this.manager = manager;
-    }
-
-    private User getUser() {
-        return clientHandler.getLoggedInUser();
+        this.itemHandler = new AuctionItemRequestHandler(clientHandler, server, manager);
+        this.bidHandler = new AuctionBidRequestHandler(clientHandler, manager);
     }
 
     public void handleGetAuctions() {
@@ -39,159 +36,31 @@ public class AuctionHandler {
     }
 
     public void handleCreateItem(String name, String priceStr, String durStr, String itemType, String itemDesc) {
-        if (!(getUser() instanceof Seller)) {
-            clientHandler.sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL
-                    + Protocol.DELIMITER + "Chỉ người bán mới được tạo phiên đấu giá!");
-            return;
-        }
-        try {
-            double price = Double.parseDouble(priceStr);
-            int dur = Integer.parseInt(durStr);
-            Seller owner = (Seller) getUser();
-            String desc = (itemDesc != null) ? itemDesc : "Mô tả sản phẩm";
-
-            model.item.Item item = new model.item.ItemBuilder()
-                    .setType(itemType)
-                    .setId("IT-" + System.currentTimeMillis())
-                    .setName(name)
-                    .setDescription(desc)
-                    .setOwner(owner)
-                    .build();
-            Auction auction = new Auction("AUC-" + System.currentTimeMillis(), item, price, 10.0,
-                    java.time.LocalDateTime.now().plusMinutes(dur));
-            auction.setStatus(AuctionStatus.RUNNING);
-            auction.addObserver(server);
-            manager.registerAuction(auction);
-
-            clientHandler.sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-            server.broadcastAuctionList();
-
-            String startMessage = Protocol.BROADCAST_AUCTION_START + Protocol.DELIMITER + auction.getId()
-                    + Protocol.DELIMITER + dur;
-            server.broadcast(startMessage);
-            LOGGER.info(String.format("📢 [BROADCAST] Phiên đấu giá bắt đầu: %s | Thời gian: %d phút", auction.getId(),
-                    dur));
-        } catch (Exception e) {
-            clientHandler.sendData(Protocol.REQ_CREATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL);
-        }
+        itemHandler.handleCreateItem(name, priceStr, durStr, itemType, itemDesc);
     }
 
-    public void handleUpdateItem(String auctionId, String newName, String newDesc, String newType, String newPriceStr,
-            String newDurStr) {
-        try {
-            if (getUser() instanceof model.user.Admin) {
-                double newPrice = Double.parseDouble(newPriceStr);
-                int newDur = Integer.parseInt(newDurStr);
-                if (service.AdminService.getInstance().updateAuctionForce(auctionId, newName, newDesc, newType,
-                        newPrice, newDur)) {
-                    clientHandler.sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-                    server.broadcastAuctionList();
-                } else {
-                    clientHandler.sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL
-                            + Protocol.DELIMITER + "Lỗi cập nhật (không tìm thấy phiên).");
-                }
-            } else if (getUser() instanceof Seller) {
-                if (manager.updateAuctionBySeller(auctionId, getUser().getId(), newName, newDesc, newType)) {
-                    clientHandler.sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-                    server.broadcastAuctionList();
-                } else {
-                    clientHandler.sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL
-                            + Protocol.DELIMITER + "Không thể sửa (đã có người đặt giá hoặc sai quyền).");
-                }
-            } else {
-                clientHandler.sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL
-                        + Protocol.DELIMITER + "Bạn không có quyền thực hiện!");
-            }
-        } catch (Exception e) {
-            clientHandler.sendData(Protocol.REQ_UPDATE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL
-                    + Protocol.DELIMITER + "Dữ liệu không hợp lệ.");
-        }
+    public void handleUpdateItem(String auctionId, String newName, String newDesc, String newType,
+            String newPriceStr, String newDurStr) {
+        itemHandler.handleUpdateItem(auctionId, newName, newDesc, newType, newPriceStr, newDurStr);
     }
 
     public void handleDeleteItem(String auctionId) {
-        if (getUser() instanceof Seller) {
-            if (manager.deleteAuctionBySeller(auctionId, getUser().getId())) {
-                clientHandler.sendData(Protocol.REQ_DELETE_ITEM + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-                server.broadcastAuctionList();
-            } else {
-                clientHandler.sendData(Protocol.REQ_DELETE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL
-                        + Protocol.DELIMITER + "Không thể xóa (đã có người đặt giá hoặc sai quyền).");
-            }
-        } else {
-            clientHandler.sendData(Protocol.REQ_DELETE_ITEM + Protocol.DELIMITER + Protocol.RES_FAIL
-                    + Protocol.DELIMITER + "Chỉ người bán mới được xóa!");
-        }
+        itemHandler.handleDeleteItem(auctionId);
     }
 
     public void handleBid(String auctionId, String amountStr) {
-        try {
-            if (!(getUser() instanceof Bidder)) {
-                clientHandler.sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER
-                        + "Chỉ người mua mới được đặt giá!");
-                return;
-            }
-            double amount = Double.parseDouble(amountStr);
-            Bidder bidder = (Bidder) getUser();
-            Auction auction = manager.getAuctionById(auctionId);
-            if (auction == null) {
-                clientHandler.sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER
-                        + "Không tìm thấy sản phẩm!");
-                return;
-            }
-            String result = manager.processBid(bidder, auction, amount);
-            if (result.equals("Thành công!")) {
-                clientHandler.sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_SUCCESS);
-                clientHandler.sendData(Protocol.RES_UPDATE_BALANCE + Protocol.DELIMITER + bidder.getAvailableBalance());
-            } else {
-                clientHandler.sendData(
-                        Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER + result);
-            }
-        } catch (Exception e) {
-            clientHandler.sendData(Protocol.REQ_BID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER
-                    + "Lỗi hệ thống đặt giá.");
-        }
+        bidHandler.handleBid(auctionId, amountStr);
     }
 
     public void handleAutoBid(String auctionId, String maxBidStr, String incrementStr) {
-        try {
-            if (!(getUser() instanceof Bidder)) {
-                clientHandler.sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL
-                        + Protocol.DELIMITER + "Chỉ người mua mới được đặt auto-bid!");
-                return;
-            }
-            Bidder bidder = (Bidder) getUser();
-            Auction auction = manager.getAuctionById(auctionId);
-            if (auction == null) {
-                clientHandler.sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL
-                        + Protocol.DELIMITER + "Không tìm thấy sản phẩm!");
-                return;
-            }
-            if ("CANCEL".equalsIgnoreCase(maxBidStr)) {
-                auction.cancelAutoBid(bidder);
-                clientHandler.sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_SUCCESS
-                        + Protocol.DELIMITER + "CANCEL");
-                return;
-            }
-            double maxBid = Double.parseDouble(maxBidStr);
-            double increment = 0.0;
-            if (incrementStr != null && !incrementStr.trim().isEmpty()) {
-                increment = Double.parseDouble(incrementStr);
-            }
-            auction.registerAutoBid(bidder, maxBid, increment);
-            clientHandler.sendData(
-                    Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_SUCCESS + Protocol.DELIMITER + "REGISTER");
-        } catch (Exception e) {
-            clientHandler.sendData(Protocol.REQ_AUTOBID + Protocol.DELIMITER + Protocol.RES_FAIL + Protocol.DELIMITER
-                    + "Lỗi hệ thống auto-bid.");
-        }
+        bidHandler.handleAutoBid(auctionId, maxBidStr, incrementStr);
     }
 
     public void handleJoinRoom(String auctionId) {
         if (!clientHandler.getCurrentRoomIds().contains(auctionId)) {
             clientHandler.getCurrentRoomIds().add(auctionId);
             server.joinRoom(auctionId, clientHandler);
-            LOGGER.info(String.format("👤 User %s đã vào phòng %s",
-                    (getUser() != null ? getUser().getUsername() : "Guest"), auctionId));
+            LOGGER.info(String.format("User %s đã vào phòng %s", username(), auctionId));
         }
     }
 
@@ -199,8 +68,12 @@ public class AuctionHandler {
         if (clientHandler.getCurrentRoomIds().contains(auctionId)) {
             server.leaveRoom(auctionId, clientHandler);
             clientHandler.getCurrentRoomIds().remove(auctionId);
-            LOGGER.info(String.format("👤 User %s đã rời phòng %s",
-                    (getUser() != null ? getUser().getUsername() : "Guest"), auctionId));
+            LOGGER.info(String.format("User %s đã rời phòng %s", username(), auctionId));
         }
+    }
+
+    private String username() {
+        User user = clientHandler.getLoggedInUser();
+        return user != null ? user.getUsername() : "Guest";
     }
 }

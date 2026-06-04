@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import model.auction.Auction;
 import model.user.User;
-import network.ClientNetworkManager;
+import network.client.ClientNetworkManager;
 import shared.Protocol;
 
 import java.util.List;

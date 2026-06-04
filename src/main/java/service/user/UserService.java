@@ -1,20 +1,16 @@
-package service;
+package service.user;
 
-import dao.UserDAO;
-import model.user.Bidder;
-import model.user.Seller;
+import dao.user.UserDAO;
 import model.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Service chuyên quản lý User: xác thực, đăng ký, truy vấn danh sách.
  * Tách từ AuctionManager để tuân thủ SRP.
  */
 public class UserService {
-    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
     private static final UserService instance = new UserService();
     private final List<User> users;
 
@@ -58,12 +54,7 @@ public class UserService {
             for (User u : users) {
                 if (u.getUsername().equals(username)) return false;
             }
-            User newUser;
-            if ("SELLER".equals(role)) {
-                newUser = new Seller("U-" + System.currentTimeMillis(), username, password, 0.0);
-            } else {
-                newUser = new Bidder("U-" + System.currentTimeMillis(), username, password, 100000.0);
-            }
+            User newUser = UserFactory.create(username, password, role);
             users.add(newUser);
             UserDAO.saveUser(newUser);
             return true;

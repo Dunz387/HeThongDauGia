@@ -4,7 +4,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import network.NotificationManager;
+import network.notification.NotificationManager;
 
 /**
  * Factory tạo cell tự động xuống dòng cho bảng thông báo.

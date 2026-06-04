@@ -1,5 +1,6 @@
-package dao;
+package dao.user;
 
+import dao.core.BaseDAO;
 import model.user.Admin;
 import model.user.Bidder;
 import model.user.Seller;

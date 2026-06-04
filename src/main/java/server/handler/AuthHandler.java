@@ -1,7 +1,7 @@
 package server.handler;
 
 import model.user.User;
-import service.UserService;
+import service.user.UserService;
 import shared.Protocol;
 import server.AuctionServer;
 

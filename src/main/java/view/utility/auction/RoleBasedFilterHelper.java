@@ -2,7 +2,7 @@ package view.utility.auction;
 
 import model.auction.Auction;
 import model.auction.AuctionStatus;
-import network.SessionManager;
+import network.session.SessionManager;
 
 import java.util.function.Predicate;
 

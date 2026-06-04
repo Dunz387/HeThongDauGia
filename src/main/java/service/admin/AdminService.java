@@ -1,23 +1,22 @@
-package service;
+package service.admin;
 
-import dao.AdminDAO;
-import dao.AuctionDAO;
-import dao.UserDAO;
+import dao.admin.AdminDAO;
+import dao.auction.AuctionDAO;
+import dao.user.UserDAO;
 import model.auction.Auction;
 import model.auction.AuctionStatus;
 import model.user.Bidder;
 import model.user.Seller;
 import model.user.User;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import service.auction.AuctionItemUpdater;
+import service.auction.AuctionManager;
+import service.user.UserService;
 
 /**
  * Service chuyên xử lý các thao tác quản trị (Admin).
  * Tách từ AuctionManager để tuân thủ SRP.
  */
 public class AdminService {
-    private static final Logger LOGGER = Logger.getLogger(AdminService.class.getName());
     private static final AdminService instance = new AdminService();
 
     private AdminService() {}
@@ -67,28 +66,7 @@ public class AdminService {
     public boolean updateAuctionForce(String auctionId, String newName, String newDesc, String newType, double newPrice, int newDur) {
         Auction a = AuctionManager.getInstance().getAuctionById(auctionId);
         if (a != null) {
-            a.getItem().setName(newName);
-            a.getItem().setDescription(newDesc);
-
-            String currentType = a.getItem().getTypeString();
-
-            if (!currentType.equalsIgnoreCase(newType)) {
-                model.item.Item newItem = new model.item.ItemBuilder()
-                        .setType(newType)
-                        .setId(a.getItem().getId())
-                        .setName(newName)
-                        .setDescription(newDesc)
-                        .setOwner(a.getItem().getOwner())
-                        .build();
-                try {
-                    java.lang.reflect.Field itemField = Auction.class.getDeclaredField("item");
-                    itemField.setAccessible(true);
-                    itemField.set(a, newItem);
-                } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Lỗi đổi loại sản phẩm", e);
-                }
-            }
-
+            AuctionItemUpdater.updateItem(a, newName, newDesc, newType);
             a.setStartingPrice(newPrice);
             if (a.getBidHistory().isEmpty()) {
                 a.setCurrentPrice(newPrice);
