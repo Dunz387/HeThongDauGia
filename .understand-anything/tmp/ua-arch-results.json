@@ -1,0 +1,363 @@
+{
+  "dirGroups": {
+    ".github/workflows": [
+      "pipeline:.github/workflows/ci.yml",
+      "pipeline:.github/workflows/qodana_code_quality.yml",
+      "pipeline:.github/workflows/release.yml"
+    ],
+    ".idea": [
+      "config:.idea/misc.xml",
+      "config:.idea/vcs.xml",
+      "config:.idea/workspace.xml"
+    ],
+    ".understand-anything": [
+      "config:.understand-anything/config.json",
+      "config:.understand-anything/fingerprints.json",
+      "config:.understand-anything/knowledge-graph.json",
+      "config:.understand-anything/meta.json",
+      "config:.understand-anything/.understandignore"
+    ],
+    ".vscode": [
+      "config:.vscode/java-formatter.xml",
+      "config:.vscode/launch.json",
+      "config:.vscode/settings.json"
+    ],
+    ".": [
+      "document:README.md",
+      "document:REFACTOR.md",
+      "config:pom.xml",
+      "config:qodana.yaml",
+      "config:.gitignore",
+      "document:2026-Bài-tập-lớn.pdf",
+      "table:auction.db",
+      "config:HeThongDauGia.iml",
+      "document:UML.png"
+    ],
+    "src/main/resources": [
+      "file:src/main/resources/view/styles/components/buttons.css",
+      "file:src/main/resources/view/styles/components/forms.css",
+      "file:src/main/resources/view/styles/components/misc.css",
+      "file:src/main/resources/view/styles/components/scroll.css",
+      "file:src/main/resources/META-INF/MANIFEST.MF",
+      "file:src/main/resources/view/admin/AdminAuctionManagement.fxml",
+      "file:src/main/resources/view/admin/AdminDashboard.fxml",
+      "file:src/main/resources/view/admin/AdminUserManagement.fxml",
+      "file:src/main/resources/view/auction/InRoomView.fxml",
+      "file:src/main/resources/view/auction/RoomMenuChoice.fxml",
+      "file:src/main/resources/view/auction/SellerInRoomView.fxml",
+      "file:src/main/resources/view/auction/smiling-face-with-sunglasses-emoji-clipart-lg.png",
+      "file:src/main/resources/view/auth/Login.fxml",
+      "file:src/main/resources/view/auth/LoginImage.jpg",
+      "file:src/main/resources/view/auth/Register.fxml",
+      "file:src/main/resources/view/auth/register.jpg",
+      "file:src/main/resources/view/menu/AssetsList.fxml",
+      "file:src/main/resources/view/menu/banner.jpg",
+      "file:src/main/resources/view/menu/BaseMenu.fxml",
+      "file:src/main/resources/view/menu/UserInforView.fxml",
+      "file:src/main/resources/view/seller/CreateItem.fxml",
+      "file:src/main/resources/view/seller/SellerAuctionList.fxml",
+      "file:src/main/resources/view/styles.css",
+      "file:src/main/resources/view/styles/admin/admin.css",
+      "file:src/main/resources/view/styles/auction/room.css",
+      "file:src/main/resources/view/styles/base/theme.css",
+      "file:src/main/resources/view/styles/chart/chart.css",
+      "file:src/main/resources/view/styles/navigation/menu.css",
+      "file:src/main/resources/view/styles/table/table-view.css"
+    ],
+    ".understand-anything/tmp": [
+      "file:.understand-anything/tmp/scan-project-patched.mjs"
+    ],
+    "src/main/java/dao": [
+      "file:src/main/java/dao/AdminDAO.java",
+      "file:src/main/java/dao/AuctionDAO.java",
+      "file:src/main/java/dao/BaseDAO.java",
+      "file:src/main/java/dao/DatabaseManager.java",
+      "file:src/main/java/dao/DBConnection.java",
+      "file:src/main/java/dao/NotificationDAO.java",
+      "file:src/main/java/dao/UserDAO.java"
+    ],
+    "src/main/java/exception": [
+      "file:src/main/java/exception/AuctionClosedException.java",
+      "file:src/main/java/exception/InvalidBidException.java"
+    ],
+    "src/main/java/model/auction": [
+      "file:src/main/java/model/auction/Auction.java",
+      "file:src/main/java/model/auction/AuctionObserver.java",
+      "file:src/main/java/model/auction/AuctionStatus.java",
+      "file:src/main/java/model/auction/AuctionSubject.java",
+      "file:src/main/java/model/auction/BidTransaction.java"
+    ],
+    "src/main/java/model/base": [
+      "file:src/main/java/model/base/Entity.java"
+    ],
+    "src/main/java/model/item": [
+      "file:src/main/java/model/item/Arts.java",
+      "file:src/main/java/model/item/Electronics.java",
+      "file:src/main/java/model/item/Item.java",
+      "file:src/main/java/model/item/ItemBuilder.java",
+      "file:src/main/java/model/item/Vehicle.java"
+    ],
+    "src/main/java/model/user": [
+      "file:src/main/java/model/user/Admin.java",
+      "file:src/main/java/model/user/Bidder.java",
+      "file:src/main/java/model/user/Role.java",
+      "file:src/main/java/model/user/Seller.java",
+      "file:src/main/java/model/user/User.java"
+    ],
+    "src/main/java/network": [
+      "file:src/main/java/network/ClientNetworkManager.java",
+      "file:src/main/java/network/NotificationManager.java",
+      "file:src/main/java/network/SessionManager.java"
+    ],
+    "src/main/java/server": [
+      "file:src/main/java/server/AuctionServer.java",
+      "file:src/main/java/server/ClientHandler.java"
+    ],
+    "src/main/java/server/command": [
+      "file:src/main/java/server/command/Command.java",
+      "file:src/main/java/server/command/CommandRegistry.java"
+    ],
+    "src/main/java/server/handler": [
+      "file:src/main/java/server/handler/AdminHandler.java",
+      "file:src/main/java/server/handler/AuctionHandler.java",
+      "file:src/main/java/server/handler/AuthHandler.java",
+      "file:src/main/java/server/handler/FinancialHandler.java"
+    ],
+    "src/main/java/service": [
+      "file:src/main/java/service/AdminService.java",
+      "file:src/main/java/service/AuctionManager.java",
+      "file:src/main/java/service/UserService.java"
+    ],
+    "src/main/java/shared": [
+      "file:src/main/java/shared/GlobalExceptionHandler.java",
+      "file:src/main/java/shared/Protocol.java"
+    ],
+    "src/main/java/view/controller/admin": [
+      "file:src/main/java/view/controller/admin/AdminAuctionManagementController.java",
+      "file:src/main/java/view/controller/admin/AdminDashboardController.java",
+      "file:src/main/java/view/controller/admin/AdminUserManagementController.java"
+    ],
+    "src/main/java/view/controller/auction": [
+      "file:src/main/java/view/controller/auction/InRoomController.java",
+      "file:src/main/java/view/controller/auction/RoomMenuChoiceController.java",
+      "file:src/main/java/view/controller/auction/SellerInRoomController.java"
+    ],
+    "src/main/java/view/controller/auth": [
+      "file:src/main/java/view/controller/auth/LoginController.java",
+      "file:src/main/java/view/controller/auth/RegisterController.java"
+    ],
+    "src/main/java/view/controller/menu": [
+      "file:src/main/java/view/controller/menu/AssetsListController.java",
+      "file:src/main/java/view/controller/menu/BaseMenuController.java",
+      "file:src/main/java/view/controller/menu/UserInfoController.java"
+    ],
+    "src/main/java/view": [
+      "file:src/main/java/view/Launcher.java",
+      "file:src/main/java/view/Main.java"
+    ],
+    "src/main/java/view/controller/seller": [
+      "file:src/main/java/view/controller/seller/CreateItemController.java",
+      "file:src/main/java/view/controller/seller/SellerAuctionListController.java"
+    ],
+    "src/main/java/view/utility/auction": [
+      "file:src/main/java/view/utility/auction/AuctionContextMenuHelper.java",
+      "file:src/main/java/view/utility/auction/AuctionNetworkHelper.java",
+      "file:src/main/java/view/utility/auction/AuctionRoomCommandService.java",
+      "file:src/main/java/view/utility/auction/AuctionRoomHelper.java",
+      "file:src/main/java/view/utility/auction/AuctionTableConfigurator.java",
+      "file:src/main/java/view/utility/auction/ParticipantManagementDialog.java",
+      "file:src/main/java/view/utility/auction/RoleBasedFilterHelper.java"
+    ],
+    "src/main/java/view/utility/display": [
+      "file:src/main/java/view/utility/display/AlertHelper.java",
+      "file:src/main/java/view/utility/display/ChartHelper.java",
+      "file:src/main/java/view/utility/display/StatusDisplayHelper.java"
+    ],
+    "src/main/java/view/utility/navigation": [
+      "file:src/main/java/view/utility/navigation/MenuHelper.java",
+      "file:src/main/java/view/utility/navigation/SceneManager.java",
+      "file:src/main/java/view/utility/navigation/WindowManager.java"
+    ],
+    "src/main/java/view/utility/notification": [
+      "file:src/main/java/view/utility/notification/NotificationFilterHelper.java",
+      "file:src/main/java/view/utility/notification/NotificationMenuHandler.java"
+    ],
+    "src/main/java/view/utility/table": [
+      "file:src/main/java/view/utility/table/WrappingTextCellFactory.java"
+    ],
+    "src/main/java/view/utility/validation": [
+      "file:src/main/java/view/utility/validation/ValidationHelper.java"
+    ],
+    "src/test": [
+      "file:src/test/java/model/auction/AuctionConcurrencyTest.java",
+      "file:src/test/java/model/user/BidderTest.java",
+      "file:src/test/java/model/user/SellerTest.java"
+    ]
+  },
+  "typeGroups": {
+    "pipeline": [
+      "pipeline:.github/workflows/ci.yml",
+      "pipeline:.github/workflows/qodana_code_quality.yml",
+      "pipeline:.github/workflows/release.yml"
+    ],
+    "config": [
+      "config:.idea/misc.xml",
+      "config:.idea/vcs.xml",
+      "config:.idea/workspace.xml",
+      "config:.understand-anything/config.json",
+      "config:.understand-anything/fingerprints.json",
+      "config:.understand-anything/knowledge-graph.json",
+      "config:.understand-anything/meta.json",
+      "config:.vscode/java-formatter.xml",
+      "config:.vscode/launch.json",
+      "config:.vscode/settings.json",
+      "config:pom.xml",
+      "config:qodana.yaml",
+      "config:.gitignore",
+      "config:.understand-anything/.understandignore",
+      "config:HeThongDauGia.iml"
+    ],
+    "document": [
+      "document:README.md",
+      "document:REFACTOR.md",
+      "document:2026-Bài-tập-lớn.pdf",
+      "document:UML.png"
+    ],
+    "file": [
+      "file:src/main/resources/view/styles/components/buttons.css",
+      "file:src/main/resources/view/styles/components/forms.css",
+      "file:src/main/resources/view/styles/components/misc.css",
+      "file:src/main/resources/view/styles/components/scroll.css",
+      "file:.understand-anything/tmp/scan-project-patched.mjs",
+      "file:src/main/java/dao/AdminDAO.java",
+      "file:src/main/java/dao/AuctionDAO.java",
+      "file:src/main/java/dao/BaseDAO.java",
+      "file:src/main/java/dao/DatabaseManager.java",
+      "file:src/main/java/dao/DBConnection.java",
+      "file:src/main/java/dao/NotificationDAO.java",
+      "file:src/main/java/dao/UserDAO.java",
+      "file:src/main/java/exception/AuctionClosedException.java",
+      "file:src/main/java/exception/InvalidBidException.java",
+      "file:src/main/java/model/auction/Auction.java",
+      "file:src/main/java/model/auction/AuctionObserver.java",
+      "file:src/main/java/model/auction/AuctionStatus.java",
+      "file:src/main/java/model/auction/AuctionSubject.java",
+      "file:src/main/java/model/auction/BidTransaction.java",
+      "file:src/main/java/model/base/Entity.java",
+      "file:src/main/java/model/item/Arts.java",
+      "file:src/main/java/model/item/Electronics.java",
+      "file:src/main/java/model/item/Item.java",
+      "file:src/main/java/model/item/ItemBuilder.java",
+      "file:src/main/java/model/item/Vehicle.java",
+      "file:src/main/java/model/user/Admin.java",
+      "file:src/main/java/model/user/Bidder.java",
+      "file:src/main/java/model/user/Role.java",
+      "file:src/main/java/model/user/Seller.java",
+      "file:src/main/java/model/user/User.java",
+      "file:src/main/java/network/ClientNetworkManager.java",
+      "file:src/main/java/network/NotificationManager.java",
+      "file:src/main/java/network/SessionManager.java",
+      "file:src/main/java/server/AuctionServer.java",
+      "file:src/main/java/server/ClientHandler.java",
+      "file:src/main/java/server/command/Command.java",
+      "file:src/main/java/server/command/CommandRegistry.java",
+      "file:src/main/java/server/handler/AdminHandler.java",
+      "file:src/main/java/server/handler/AuctionHandler.java",
+      "file:src/main/java/server/handler/AuthHandler.java",
+      "file:src/main/java/server/handler/FinancialHandler.java",
+      "file:src/main/java/service/AdminService.java",
+      "file:src/main/java/service/AuctionManager.java",
+      "file:src/main/java/service/UserService.java",
+      "file:src/main/java/shared/GlobalExceptionHandler.java",
+      "file:src/main/java/shared/Protocol.java",
+      "file:src/main/java/view/controller/admin/AdminAuctionManagementController.java",
+      "file:src/main/java/view/controller/admin/AdminDashboardController.java",
+      "file:src/main/java/view/controller/admin/AdminUserManagementController.java",
+      "file:src/main/java/view/controller/auction/InRoomController.java",
+      "file:src/main/java/view/controller/auction/RoomMenuChoiceController.java",
+      "file:src/main/java/view/controller/auction/SellerInRoomController.java",
+      "file:src/main/java/view/controller/auth/LoginController.java",
+      "file:src/main/java/view/controller/auth/RegisterController.java",
+      "file:src/main/java/view/controller/menu/AssetsListController.java",
+      "file:src/main/java/view/controller/menu/BaseMenuController.java",
+      "file:src/main/java/view/Launcher.java",
+      "file:src/main/java/view/Main.java",
+      "file:src/main/java/view/controller/menu/UserInfoController.java",
+      "file:src/main/java/view/controller/seller/CreateItemController.java",
+      "file:src/main/java/view/controller/seller/SellerAuctionListController.java",
+      "file:src/main/java/view/utility/auction/AuctionContextMenuHelper.java",
+      "file:src/main/java/view/utility/auction/AuctionNetworkHelper.java",
+      "file:src/main/java/view/utility/auction/AuctionRoomCommandService.java",
+      "file:src/main/java/view/utility/auction/AuctionRoomHelper.java",
+      "file:src/main/java/view/utility/auction/AuctionTableConfigurator.java",
+      "file:src/main/java/view/utility/auction/ParticipantManagementDialog.java",
+      "file:src/main/java/view/utility/auction/RoleBasedFilterHelper.java",
+      "file:src/main/java/view/utility/display/AlertHelper.java",
+      "file:src/main/java/view/utility/display/ChartHelper.java",
+      "file:src/main/java/view/utility/display/StatusDisplayHelper.java",
+      "file:src/main/java/view/utility/navigation/MenuHelper.java",
+      "file:src/main/java/view/utility/navigation/SceneManager.java",
+      "file:src/main/java/view/utility/navigation/WindowManager.java",
+      "file:src/main/java/view/utility/notification/NotificationFilterHelper.java",
+      "file:src/main/java/view/utility/notification/NotificationMenuHandler.java",
+      "file:src/main/java/view/utility/table/WrappingTextCellFactory.java",
+      "file:src/main/java/view/utility/validation/ValidationHelper.java",
+      "file:src/main/resources/META-INF/MANIFEST.MF",
+      "file:src/main/resources/view/admin/AdminAuctionManagement.fxml",
+      "file:src/main/resources/view/admin/AdminDashboard.fxml",
+      "file:src/main/resources/view/admin/AdminUserManagement.fxml",
+      "file:src/main/resources/view/auction/InRoomView.fxml",
+      "file:src/main/resources/view/auction/RoomMenuChoice.fxml",
+      "file:src/main/resources/view/auction/SellerInRoomView.fxml",
+      "file:src/main/resources/view/auction/smiling-face-with-sunglasses-emoji-clipart-lg.png",
+      "file:src/main/resources/view/auth/Login.fxml",
+      "file:src/main/resources/view/auth/LoginImage.jpg",
+      "file:src/main/resources/view/auth/Register.fxml",
+      "file:src/main/resources/view/auth/register.jpg",
+      "file:src/main/resources/view/menu/AssetsList.fxml",
+      "file:src/main/resources/view/menu/banner.jpg",
+      "file:src/main/resources/view/menu/BaseMenu.fxml",
+      "file:src/main/resources/view/menu/UserInforView.fxml",
+      "file:src/main/resources/view/seller/CreateItem.fxml",
+      "file:src/main/resources/view/seller/SellerAuctionList.fxml",
+      "file:src/main/resources/view/styles.css",
+      "file:src/main/resources/view/styles/admin/admin.css",
+      "file:src/main/resources/view/styles/auction/room.css",
+      "file:src/main/resources/view/styles/base/theme.css",
+      "file:src/main/resources/view/styles/chart/chart.css",
+      "file:src/main/resources/view/styles/navigation/menu.css",
+      "file:src/main/resources/view/styles/table/table-view.css",
+      "file:src/test/java/model/auction/AuctionConcurrencyTest.java",
+      "file:src/test/java/model/user/BidderTest.java",
+      "file:src/test/java/model/user/SellerTest.java"
+    ],
+    "table": [
+      "table:auction.db"
+    ]
+  },
+  "interGroupImports": {
+    ".github/workflows": {
+      ".": 2
+    },
+    ".idea": {
+      ".": 1
+    },
+    ".vscode": {
+      ".vscode": 1
+    }
+  },
+  "dirFanOut": {
+    ".github/workflows": [
+      "."
+    ],
+    ".idea": [
+      "."
+    ]
+  },
+  "dirFanIn": {
+    ".": [
+      ".github/workflows",
+      ".idea"
+    ]
+  }
+}

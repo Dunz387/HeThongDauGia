@@ -1,39 +1,27 @@
 package network;
 
-import shared.Protocol;
 import model.auction.Auction;
 import model.user.User;
+import shared.Protocol;
 
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClientNetworkManager {
-    private static final Logger LOGGER = Logger.getLogger(ClientNetworkManager.class.getName());
-    private static volatile ClientNetworkManager instance; // T18: volatile cho thread-safe
-    private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private static volatile ClientNetworkManager instance;
 
-    // Danh sách các listener xử lý tin nhắn text từ Server
-    private Map<String, List<Consumer<String>>> messageListeners = new ConcurrentHashMap<>();
-    private List<Consumer<List<Auction>>> auctionListListeners = new CopyOnWriteArrayList<>();
-    private List<Consumer<List<User>>> userListListeners = new CopyOnWriteArrayList<>();
-    private List<Consumer<Double>> balanceListeners = new CopyOnWriteArrayList<>();
+    private final ClientConnection connection;
+    private final ClientListenerRegistry listeners;
+    private final ServerMessageDispatcher dispatcher;
 
-    // Lưu tạm cờ (header) để phân loại danh sách nhận từ Server
-    private volatile String pendingListHeader = null;
+    private ClientNetworkManager() {
+        this.connection = new ClientConnection();
+        this.listeners = new ClientListenerRegistry();
+        this.dispatcher = new ServerMessageDispatcher(listeners);
+    }
 
-    private ClientNetworkManager() {}
-
-    // Khởi tạo Singleton an toàn (Thread-safe)
+    // Đảm bảo chỉ có một instance của ClientNetworkManager tồn tại (Singleton pattern)
     public static ClientNetworkManager getInstance() {
         if (instance == null) {
             synchronized (ClientNetworkManager.class) {
@@ -45,64 +33,40 @@ public class ClientNetworkManager {
         return instance;
     }
 
+    // Kiểm tra kết nối hiện tại với server
     public synchronized boolean isConnected() {
-        return socket != null && !socket.isClosed() && socket.isConnected();
+        return connection.isConnected();
     }
 
+    // Kết nối đến server với địa chỉ IP và cổng được cung cấp.
     public synchronized boolean connect(String ip, int port) {
         if (isConnected()) {
-            LOGGER.info("ℹ️ Đã có kết nối sẵn sàng.");
             return true;
         }
-        try {
-            socket = new Socket(ip, port);
-            socket.setSoTimeout(0); // Không timeout cho việc đọc
-            out = new ObjectOutputStream(socket.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(socket.getInputStream());
 
-            startListeningThread();
-            LOGGER.info("✅ Đã kết nối thành công tới Server!");
-            return true;
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "❌ Lỗi kết nối tới Server: " + e.getMessage());
+        if (!connection.connect(ip, port)) {
             return false;
         }
+
+        startListeningThread(connection.getInputStream());
+        return true;
     }
 
+    // Gửi dữ liệu đến server
     public synchronized boolean sendData(Object data) {
-        try {
-            if (out != null && socket != null && !socket.isClosed()) {
-                out.writeObject(data);
-                out.reset(); // Xóa cache để tránh lỗi tham chiếu và rò rỉ bộ nhớ
-                out.flush();
-                return true;
-            } else {
-                LOGGER.warning("⚠️ Không thể gửi dữ liệu: Chưa kết nối tới Server.");
-                return false;
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "❌ Lỗi gửi dữ liệu", e);
-            disconnect(); // Ngắt kết nối nếu xảy ra lỗi nghiêm trọng
-            return false;
+        boolean sent = connection.sendData(data);
+        if (!sent && connection.isConnected()) {
+            disconnect();
         }
+        return sent;
     }
 
+    // Ngắt kết nối khỏi server
     public synchronized void disconnect() {
-        try {
-            if (out != null) out.close();
-            if (in != null) in.close();
-            if (socket != null) socket.close();
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Lỗi khi đóng kết nối", e);
-        } finally {
-            out = null;
-            in = null;
-            socket = null;
-            LOGGER.info("🔌 Đã ngắt kết nối tới Server.");
-        }
+        connection.close();
     }
 
+    // Đăng xuất khỏi hệ thống
     public synchronized void logout() {
         if (isConnected()) {
             sendData(Protocol.REQ_LOGOUT);
@@ -110,136 +74,59 @@ public class ClientNetworkManager {
         SessionManager.getInstance().clearSession();
     }
 
-    // Đăng ký listener để xử lý các lệnh dạng chuỗi
+    // Đăng ký một listener cho một lệnh cụ thể
     public void registerListener(String command, Consumer<String> listener) {
-        messageListeners.computeIfAbsent(command, k -> new CopyOnWriteArrayList<>()).add(listener);
+        listeners.registerListener(command, listener);
     }
 
-    /**
-     * Hủy đăng ký listener cho một command cụ thể.
-     * Quan trọng khi Controller bị dispose để tránh memory leak.
-     */
+    // Hủy đăng ký một listener cho một lệnh cụ thể
     public void removeListener(String command, Consumer<String> listener) {
-        List<Consumer<String>> listeners = messageListeners.get(command);
-        if (listeners != null) {
-            listeners.remove(listener);
-        }
+        listeners.removeListener(command, listener);
     }
 
-    /**
-     * Xóa TẤT CẢ listener cho một command. Dùng khi cần reset hoàn toàn.
-     */
+    // Xóa tất cả listener cho một lệnh cụ thể
     public void clearListeners(String command) {
-        messageListeners.remove(command);
+        listeners.clearListeners(command);
     }
 
-    // Đăng ký listener để nhận danh sách phiên đấu giá
+    // Các phương thức tiện ích để đăng ký listener cho các loại dữ liệu cụ thể như danh sách đấu giá, danh sách người dùng và số dư
     public void addAuctionListListener(Consumer<List<Auction>> listener) {
-        auctionListListeners.add(listener);
+        listeners.addAuctionListListener(listener);
     }
 
     public void removeAuctionListListener(Consumer<List<Auction>> listener) {
-        auctionListListeners.remove(listener);
+        listeners.removeAuctionListListener(listener);
     }
 
     public void clearAuctionListListeners() {
-        auctionListListeners.clear();
+        listeners.clearAuctionListListeners();
     }
 
-
-    // Đăng ký listener để nhận danh sách người dùng
     public void addUserListListener(Consumer<List<User>> listener) {
-        userListListeners.add(listener);
+        listeners.addUserListListener(listener);
     }
 
     public void removeUserListListener(Consumer<List<User>> listener) {
-        userListListeners.remove(listener);
+        listeners.removeUserListListener(listener);
     }
 
     public void clearUserListListeners() {
-        userListListeners.clear();
+        listeners.clearUserListListeners();
     }
 
     public void addBalanceListener(Consumer<Double> listener) {
-        balanceListeners.add(listener);
+        listeners.addBalanceListener(listener);
     }
 
     public void removeBalanceListener(Consumer<Double> listener) {
-        balanceListeners.remove(listener);
+        listeners.removeBalanceListener(listener);
     }
 
-    @SuppressWarnings("unchecked")
-    private void startListeningThread() {
-        Thread listenerThread = new Thread(() -> {
-            try {
-                Object serverData;
-                while ((serverData = in.readObject()) != null) {
-                    if (serverData instanceof String) {
-                        String message = (String) serverData;
-                        String[] parts = message.split(Protocol.DELIMITER);
-                        String command = parts[0];
-
-                        // Nếu là header báo hiệu danh sách sắp đến, lưu lại để phân loại
-                        if (command.equals(Protocol.RES_AUCTION_LIST) || command.equals(Protocol.RES_USER_LIST)) {
-                            pendingListHeader = command;
-                        }
-
-                        // Kích hoạt tất cả listener tương ứng với lệnh
-                        List<Consumer<String>> listeners = messageListeners.get(command);
-                        if (listeners != null) {
-                            for (Consumer<String> listener : listeners) {
-                                try {
-                                    listener.accept(message);
-                                } catch (Exception e) {
-                                    LOGGER.log(Level.WARNING, "❌ Lỗi trong listener [" + command + "]", e);
-                                }
-                            }
-                        }
-
-                        // Xử lý lệnh cập nhật số dư từ Server
-                        if (command.equals(Protocol.RES_UPDATE_BALANCE) && parts.length >= 2) {
-                            double newBalance = Double.parseDouble(parts[1]);
-                            SessionManager.getInstance().updateBalance(newBalance);
-                            for (Consumer<Double> listener : balanceListeners) {
-                                listener.accept(newBalance);
-                            }
-                        }
-                        
-                        // Xử lý lệnh FORCE_LOGOUT qua listener pattern (không gọi thẳng View)
-                        // Logic UI sẽ được đăng ký bởi LoginController thông qua registerListener()
-                    } else if (serverData instanceof List) {
-                        // Phân loại List dựa trên header đã nhận trước đó
-                        String header = pendingListHeader;
-                        pendingListHeader = null; // Reset ngay sau khi dùng
-
-                        if (Protocol.RES_USER_LIST.equals(header)) {
-                            // Phát danh sách người dùng tới các listener
-                            List<User> userList = (List<User>) serverData;
-                            for (Consumer<List<User>> listener : userListListeners) {
-                                try {
-                                    listener.accept(userList);
-                                } catch (Exception e) {
-                                    LOGGER.log(Level.WARNING, "❌ Lỗi trong userListListener", e);
-                                }
-                            }
-                        } else {
-                            // Phát danh sách phiên đấu giá tới các listener
-                            List<Auction> auctionList = (List<Auction>) serverData;
-                            for (Consumer<List<Auction>> listener : auctionListListeners) {
-                                try {
-                                    listener.accept(auctionList);
-                                } catch (Exception e) {
-                                    LOGGER.log(Level.WARNING, "❌ Lỗi trong auctionListListener", e);
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "❌ Mất kết nối tới Server", e);
-                disconnect();
-            }
-        });
+    private void startListeningThread(ObjectInputStream in) {
+        Thread listenerThread = new Thread(
+                new ServerListenerTask(in, dispatcher, this::disconnect),
+                "client-server-listener"
+        );
         listenerThread.setDaemon(true);
         listenerThread.start();
     }

@@ -1,0 +1,987 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 8,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "src/main/resources/view/styles/base/theme.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 17,
+      "nonEmptyLines": 15,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/styles/chart/chart.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 65,
+      "nonEmptyLines": 52,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/styles/navigation/menu.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 92,
+      "nonEmptyLines": 79,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/styles/table/table-view.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 60,
+      "nonEmptyLines": 50,
+      "metrics": {}
+    },
+    {
+      "path": "src/test/java/model/auction/AuctionConcurrencyTest.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 146,
+      "nonEmptyLines": 124,
+      "functions": [
+        {
+          "name": "setUp",
+          "startLine": 26,
+          "endLine": 33,
+          "params": []
+        },
+        {
+          "name": "testConcurrentBiddingSameAmount",
+          "startLine": 35,
+          "endLine": 83,
+          "params": []
+        },
+        {
+          "name": "testSequentialBiddingIncrements",
+          "startLine": 85,
+          "endLine": 145,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "AuctionConcurrencyTest",
+          "startLine": 20,
+          "endLine": 146,
+          "methods": [
+            "setUp",
+            "testConcurrentBiddingSameAmount",
+            "testSequentialBiddingIncrements"
+          ],
+          "properties": [
+            "auction",
+            "testItem",
+            "seller"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "setUp",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "testConcurrentBiddingSameAmount",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "testSequentialBiddingIncrements",
+          "line": 85,
+          "isDefault": false
+        },
+        {
+          "name": "AuctionConcurrencyTest",
+          "line": 20,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setUp",
+          "callee": "new Seller",
+          "lineNumber": 28
+        },
+        {
+          "caller": "setUp",
+          "callee": "new Electronics",
+          "lineNumber": 29
+        },
+        {
+          "caller": "setUp",
+          "callee": "new Auction",
+          "lineNumber": 31
+        },
+        {
+          "caller": "setUp",
+          "callee": "LocalDateTime.now().plusHours",
+          "lineNumber": 31
+        },
+        {
+          "caller": "setUp",
+          "callee": "LocalDateTime.now",
+          "lineNumber": 31
+        },
+        {
+          "caller": "setUp",
+          "callee": "auction.setStatus",
+          "lineNumber": 32
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "Executors.newFixedThreadPool",
+          "lineNumber": 38
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "new CountDownLatch",
+          "lineNumber": 39
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "new CountDownLatch",
+          "lineNumber": 40
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "new ArrayList<>",
+          "lineNumber": 42
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "new Bidder",
+          "lineNumber": 44
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "bidders.add",
+          "lineNumber": 45
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "new AtomicInteger",
+          "lineNumber": 48
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "new AtomicInteger",
+          "lineNumber": 49
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "executorService.submit",
+          "lineNumber": 56
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "latch.await",
+          "lineNumber": 58
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "auction.placeBid",
+          "lineNumber": 59
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "successfulBids.incrementAndGet",
+          "lineNumber": 60
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "failedBids.incrementAndGet",
+          "lineNumber": 62
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "Thread.currentThread().interrupt",
+          "lineNumber": 64
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "Thread.currentThread",
+          "lineNumber": 64
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "doneLatch.countDown",
+          "lineNumber": 66
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "latch.countDown",
+          "lineNumber": 71
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "doneLatch.await",
+          "lineNumber": 72
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "executorService.shutdown",
+          "lineNumber": 74
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "assertEquals",
+          "lineNumber": 77
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "successfulBids.get",
+          "lineNumber": 77
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "assertEquals",
+          "lineNumber": 78
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "failedBids.get",
+          "lineNumber": 78
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "assertNotNull",
+          "lineNumber": 80
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "auction.getHighestBidder",
+          "lineNumber": 80
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "assertEquals",
+          "lineNumber": 81
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "auction.getCurrentPrice",
+          "lineNumber": 81
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "assertEquals",
+          "lineNumber": 82
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "auction.getBidHistory().size",
+          "lineNumber": 82
+        },
+        {
+          "caller": "testConcurrentBiddingSameAmount",
+          "callee": "auction.getBidHistory",
+          "lineNumber": 82
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "Executors.newFixedThreadPool",
+          "lineNumber": 89
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "new CountDownLatch",
+          "lineNumber": 90
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "new CountDownLatch",
+          "lineNumber": 91
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "new ArrayList<>",
+          "lineNumber": 93
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "new Bidder",
+          "lineNumber": 95
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "bidders.add",
+          "lineNumber": 96
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "bidders.get",
+          "lineNumber": 101
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "executorService.submit",
+          "lineNumber": 102
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "latch.await",
+          "lineNumber": 104
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "auction.getCurrentPrice",
+          "lineNumber": 109
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "auction.getDynamicIncrement",
+          "lineNumber": 109
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "auction.placeBid",
+          "lineNumber": 110
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "Thread.sleep",
+          "lineNumber": 114
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "Thread.currentThread().interrupt",
+          "lineNumber": 121
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "Thread.currentThread",
+          "lineNumber": 121
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "doneLatch.countDown",
+          "lineNumber": 123
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "latch.countDown",
+          "lineNumber": 128
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "doneLatch.await",
+          "lineNumber": 129
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "executorService.shutdown",
+          "lineNumber": 130
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "assertEquals",
+          "lineNumber": 133
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "auction.getBidHistory().size",
+          "lineNumber": 133
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "auction.getBidHistory",
+          "lineNumber": 133
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "auction.getBidHistory",
+          "lineNumber": 136
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "assertTrue",
+          "lineNumber": 139
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "tx.getBidAmount",
+          "lineNumber": 139
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "tx.getBidAmount",
+          "lineNumber": 140
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "assertEquals",
+          "lineNumber": 144
+        },
+        {
+          "caller": "testSequentialBiddingIncrements",
+          "callee": "auction.getCurrentPrice",
+          "lineNumber": 144
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/test/java/model/user/BidderTest.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 70,
+      "nonEmptyLines": 60,
+      "functions": [
+        {
+          "name": "setUp",
+          "startLine": 10,
+          "endLine": 13,
+          "params": []
+        },
+        {
+          "name": "testAddBalance_Success",
+          "startLine": 15,
+          "endLine": 21,
+          "params": []
+        },
+        {
+          "name": "testAddBalance_ZeroOrNegative",
+          "startLine": 23,
+          "endLine": 31,
+          "params": []
+        },
+        {
+          "name": "testLockBalance_Success",
+          "startLine": 33,
+          "endLine": 40,
+          "params": []
+        },
+        {
+          "name": "testLockBalance_Insufficient",
+          "startLine": 42,
+          "endLine": 49,
+          "params": []
+        },
+        {
+          "name": "testDeductBalance_Success",
+          "startLine": 51,
+          "endLine": 59,
+          "params": []
+        },
+        {
+          "name": "testDeductBalance_InsufficientLocked",
+          "startLine": 61,
+          "endLine": 69,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "BidderTest",
+          "startLine": 7,
+          "endLine": 70,
+          "methods": [
+            "setUp",
+            "testAddBalance_Success",
+            "testAddBalance_ZeroOrNegative",
+            "testLockBalance_Success",
+            "testLockBalance_Insufficient",
+            "testDeductBalance_Success",
+            "testDeductBalance_InsufficientLocked"
+          ],
+          "properties": [
+            "bidder"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "setUp",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "testAddBalance_Success",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "testAddBalance_ZeroOrNegative",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "testLockBalance_Success",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "testLockBalance_Insufficient",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "testDeductBalance_Success",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "testDeductBalance_InsufficientLocked",
+          "line": 61,
+          "isDefault": false
+        },
+        {
+          "name": "BidderTest",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setUp",
+          "callee": "new Bidder",
+          "lineNumber": 12
+        },
+        {
+          "caller": "testAddBalance_Success",
+          "callee": "bidder.addBalance",
+          "lineNumber": 18
+        },
+        {
+          "caller": "testAddBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 19
+        },
+        {
+          "caller": "testAddBalance_Success",
+          "callee": "bidder.getBalance",
+          "lineNumber": 19
+        },
+        {
+          "caller": "testAddBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 20
+        },
+        {
+          "caller": "testAddBalance_Success",
+          "callee": "bidder.getAvailableBalance",
+          "lineNumber": 20
+        },
+        {
+          "caller": "testAddBalance_ZeroOrNegative",
+          "callee": "bidder.addBalance",
+          "lineNumber": 26
+        },
+        {
+          "caller": "testAddBalance_ZeroOrNegative",
+          "callee": "assertEquals",
+          "lineNumber": 27
+        },
+        {
+          "caller": "testAddBalance_ZeroOrNegative",
+          "callee": "bidder.getBalance",
+          "lineNumber": 27
+        },
+        {
+          "caller": "testAddBalance_ZeroOrNegative",
+          "callee": "bidder.addBalance",
+          "lineNumber": 29
+        },
+        {
+          "caller": "testAddBalance_ZeroOrNegative",
+          "callee": "assertEquals",
+          "lineNumber": 30
+        },
+        {
+          "caller": "testAddBalance_ZeroOrNegative",
+          "callee": "bidder.getBalance",
+          "lineNumber": 30
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "assertTrue",
+          "lineNumber": 36
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "bidder.lockBalance",
+          "lineNumber": 36
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 37
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "bidder.getBalance",
+          "lineNumber": 37
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 38
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "bidder.getAvailableBalance",
+          "lineNumber": 38
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 39
+        },
+        {
+          "caller": "testLockBalance_Success",
+          "callee": "bidder.getLockedBalance",
+          "lineNumber": 39
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "assertFalse",
+          "lineNumber": 45
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "bidder.lockBalance",
+          "lineNumber": 45
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "assertEquals",
+          "lineNumber": 46
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "bidder.getBalance",
+          "lineNumber": 46
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "assertEquals",
+          "lineNumber": 47
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "bidder.getAvailableBalance",
+          "lineNumber": 47
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "assertEquals",
+          "lineNumber": 48
+        },
+        {
+          "caller": "testLockBalance_Insufficient",
+          "callee": "bidder.getLockedBalance",
+          "lineNumber": 48
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "bidder.lockBalance",
+          "lineNumber": 54
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "assertTrue",
+          "lineNumber": 55
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "bidder.deductBalance",
+          "lineNumber": 55
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 56
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "bidder.getBalance",
+          "lineNumber": 56
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 57
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "bidder.getAvailableBalance",
+          "lineNumber": 57
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 58
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "bidder.getLockedBalance",
+          "lineNumber": 58
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "bidder.lockBalance",
+          "lineNumber": 64
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "assertFalse",
+          "lineNumber": 65
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "bidder.deductBalance",
+          "lineNumber": 65
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "assertEquals",
+          "lineNumber": 66
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "bidder.getBalance",
+          "lineNumber": 66
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "assertEquals",
+          "lineNumber": 67
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "bidder.getAvailableBalance",
+          "lineNumber": 67
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "assertEquals",
+          "lineNumber": 68
+        },
+        {
+          "caller": "testDeductBalance_InsufficientLocked",
+          "callee": "bidder.getLockedBalance",
+          "lineNumber": 68
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 7,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/test/java/model/user/SellerTest.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 45,
+      "nonEmptyLines": 37,
+      "functions": [
+        {
+          "name": "setUp",
+          "startLine": 10,
+          "endLine": 13,
+          "params": []
+        },
+        {
+          "name": "testDeductBalance_Success",
+          "startLine": 15,
+          "endLine": 20,
+          "params": []
+        },
+        {
+          "name": "testDeductBalance_Insufficient",
+          "startLine": 22,
+          "endLine": 27,
+          "params": []
+        },
+        {
+          "name": "testDeductBalance_ZeroOrNegative",
+          "startLine": 29,
+          "endLine": 37,
+          "params": []
+        },
+        {
+          "name": "testReceivePayment_Success",
+          "startLine": 39,
+          "endLine": 44,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "SellerTest",
+          "startLine": 7,
+          "endLine": 45,
+          "methods": [
+            "setUp",
+            "testDeductBalance_Success",
+            "testDeductBalance_Insufficient",
+            "testDeductBalance_ZeroOrNegative",
+            "testReceivePayment_Success"
+          ],
+          "properties": [
+            "seller"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "setUp",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "testDeductBalance_Success",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "testDeductBalance_Insufficient",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "testDeductBalance_ZeroOrNegative",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "testReceivePayment_Success",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "SellerTest",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setUp",
+          "callee": "new Seller",
+          "lineNumber": 12
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "assertTrue",
+          "lineNumber": 18
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "seller.deductBalance",
+          "lineNumber": 18
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "assertEquals",
+          "lineNumber": 19
+        },
+        {
+          "caller": "testDeductBalance_Success",
+          "callee": "seller.getBalance",
+          "lineNumber": 19
+        },
+        {
+          "caller": "testDeductBalance_Insufficient",
+          "callee": "assertFalse",
+          "lineNumber": 25
+        },
+        {
+          "caller": "testDeductBalance_Insufficient",
+          "callee": "seller.deductBalance",
+          "lineNumber": 25
+        },
+        {
+          "caller": "testDeductBalance_Insufficient",
+          "callee": "assertEquals",
+          "lineNumber": 26
+        },
+        {
+          "caller": "testDeductBalance_Insufficient",
+          "callee": "seller.getBalance",
+          "lineNumber": 26
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "assertFalse",
+          "lineNumber": 32
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "seller.deductBalance",
+          "lineNumber": 32
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "assertEquals",
+          "lineNumber": 33
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "seller.getBalance",
+          "lineNumber": 33
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "assertFalse",
+          "lineNumber": 35
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "seller.deductBalance",
+          "lineNumber": 35
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "assertEquals",
+          "lineNumber": 36
+        },
+        {
+          "caller": "testDeductBalance_ZeroOrNegative",
+          "callee": "seller.getBalance",
+          "lineNumber": 36
+        },
+        {
+          "caller": "testReceivePayment_Success",
+          "callee": "seller.receivePayment",
+          "lineNumber": 42
+        },
+        {
+          "caller": "testReceivePayment_Success",
+          "callee": "assertEquals",
+          "lineNumber": 43
+        },
+        {
+          "caller": "testReceivePayment_Success",
+          "callee": "seller.getBalance",
+          "lineNumber": 43
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "UML.png",
+      "language": "png",
+      "fileCategory": "code",
+      "totalLines": 5485,
+      "nonEmptyLines": 5472,
+      "metrics": {}
+    }
+  ]
+}

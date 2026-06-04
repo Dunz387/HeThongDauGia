@@ -1,0 +1,35 @@
+{
+  "projectRoot": "D:\\1_Dung\\LapTrinhNangCao\\BaiTapLon\\HeThongDauGia",
+  "batchFiles": [
+    {
+      "path": ".understand-anything/config.json",
+      "language": "json",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/fingerprints.json",
+      "language": "json",
+      "sizeLines": 10665,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/knowledge-graph.json",
+      "language": "json",
+      "sizeLines": 19497,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/meta.json",
+      "language": "json",
+      "sizeLines": 5,
+      "fileCategory": "config"
+    }
+  ],
+  "batchImportData": {
+    ".understand-anything/config.json": [],
+    ".understand-anything/fingerprints.json": [],
+    ".understand-anything/knowledge-graph.json": [],
+    ".understand-anything/meta.json": []
+  }
+}

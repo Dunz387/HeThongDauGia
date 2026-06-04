@@ -1,0 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+const projectRoot = 'D:\\1_Dung\\LapTrinhNangCao\\BaiTapLon\\HeThongDauGia';
+const batchesJsonPath = path.join(projectRoot, '.understand-anything', 'intermediate', 'batches.json');
+const batchesData = JSON.parse(fs.readFileSync(batchesJsonPath, 'utf8'));
+const batchIndex = 5;
+const batch = batchesData.batches.find(b => b.batchIndex === batchIndex);
+const output = { projectRoot: projectRoot, batchFiles: batch.files, batchImportData: batch.batchImportData || {}, neighborMap: batch.neighborMap || {} };
+const tmpDir = path.join(projectRoot, '.understand-anything', 'tmp');
+if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+fs.writeFileSync(path.join(tmpDir, `ua-file-analyzer-input-${batchIndex}.json`), JSON.stringify(output, null, 2));

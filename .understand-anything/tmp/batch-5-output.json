@@ -1,0 +1,53 @@
+{
+  "nodes": [
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Tài liệu giới thiệu tổng quan về ứng dụng Hệ thống Đấu giá trực tuyến theo mô hình Client/Server, bao gồm các công nghệ sử dụng, kiến trúc hệ thống và hướng dẫn chung.",
+      "tags": [
+        "documentation",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:REFACTOR.md",
+      "type": "document",
+      "name": "REFACTOR.md",
+      "filePath": "REFACTOR.md",
+      "summary": "Tài liệu mô tả chi tiết kế hoạch cải thiện và tái cấu trúc (refactor) mã nguồn dự án, tập trung vào việc tách trách nhiệm (controller/domain), xử lý lỗi và bổ sung test.",
+      "tags": [
+        "documentation",
+        "development"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "config:pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "pom.xml",
+      "summary": "Cấu hình Maven của dự án, định nghĩa các thư viện phụ thuộc cốt lõi như OpenJFX, SQLite JDBC, Gson, JUnit và thiết lập quy trình build.",
+      "tags": [
+        "configuration",
+        "build-system"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "config:qodana.yaml",
+      "type": "config",
+      "name": "qodana.yaml",
+      "filePath": "qodana.yaml",
+      "summary": "Cấu hình công cụ phân tích mã tĩnh Qodana, xác định phiên bản linter và JDK sử dụng để giám sát, tự động kiểm tra chất lượng mã nguồn.",
+      "tags": [
+        "configuration",
+        "ci-cd"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": []
+}

@@ -1,0 +1,1315 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "src/main/java/view/utility/notification/NotificationFilterHelper.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 216,
+      "nonEmptyLines": 195,
+      "functions": [
+        {
+          "name": "NotificationFilterHelper",
+          "startLine": 23,
+          "endLine": 23,
+          "params": []
+        },
+        {
+          "name": "registerNotificationListeners",
+          "startLine": 35,
+          "endLine": 86,
+          "params": [
+            "tableAuctions"
+          ]
+        },
+        {
+          "name": "ensureGlobalListenerRegistered",
+          "startLine": 95,
+          "endLine": 97,
+          "params": []
+        },
+        {
+          "name": "registerGlobalListListener",
+          "startLine": 99,
+          "endLine": 102,
+          "params": []
+        },
+        {
+          "name": "findInLatestList",
+          "startLine": 104,
+          "endLine": 113,
+          "params": [
+            "auctionId"
+          ]
+        },
+        {
+          "name": "handleNotification",
+          "startLine": 118,
+          "endLine": 160,
+          "params": [
+            "auctionId",
+            "table",
+            "notificationAction"
+          ]
+        },
+        {
+          "name": "pushStartNotification",
+          "startLine": 163,
+          "endLine": 175,
+          "params": [
+            "auction"
+          ]
+        },
+        {
+          "name": "pushFinishedNotification",
+          "startLine": 178,
+          "endLine": 190,
+          "params": [
+            "auction",
+            "winner",
+            "finalPrice"
+          ]
+        },
+        {
+          "name": "pushNewBidNotification",
+          "startLine": 193,
+          "endLine": 215,
+          "params": [
+            "auction",
+            "topBidder",
+            "newPrice"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "NotificationFilterHelper",
+          "startLine": 21,
+          "endLine": 216,
+          "methods": [
+            "NotificationFilterHelper",
+            "registerNotificationListeners",
+            "ensureGlobalListenerRegistered",
+            "registerGlobalListListener",
+            "findInLatestList",
+            "handleNotification",
+            "pushStartNotification",
+            "pushFinishedNotification",
+            "pushNewBidNotification"
+          ],
+          "properties": [
+            "startListener",
+            "finishedListener",
+            "newBidListener",
+            "latestAllAuctions",
+            "globalListListener"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "registerNotificationListeners",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "ensureGlobalListenerRegistered",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "NotificationFilterHelper",
+          "line": 21,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "registerGlobalListListener",
+          "lineNumber": 36
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance().removeListener",
+          "lineNumber": 40
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 40
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "message.split",
+          "lineNumber": 43
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "javafx.application.Platform.runLater",
+          "lineNumber": 46
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "handleNotification",
+          "lineNumber": 47
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "pushStartNotification",
+          "lineNumber": 48
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance().registerListener",
+          "lineNumber": 51
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 51
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance().removeListener",
+          "lineNumber": 55
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 55
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "message.split",
+          "lineNumber": 58
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "Double.parseDouble",
+          "lineNumber": 62
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "javafx.application.Platform.runLater",
+          "lineNumber": 63
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "handleNotification",
+          "lineNumber": 64
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "pushFinishedNotification",
+          "lineNumber": 65
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance().registerListener",
+          "lineNumber": 68
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 68
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance().removeListener",
+          "lineNumber": 72
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 72
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "message.split",
+          "lineNumber": 75
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "Double.parseDouble",
+          "lineNumber": 78
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "javafx.application.Platform.runLater",
+          "lineNumber": 80
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "handleNotification",
+          "lineNumber": 81
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "pushNewBidNotification",
+          "lineNumber": 82
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance().registerListener",
+          "lineNumber": 85
+        },
+        {
+          "caller": "registerNotificationListeners",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 85
+        },
+        {
+          "caller": "ensureGlobalListenerRegistered",
+          "callee": "registerGlobalListListener",
+          "lineNumber": 96
+        },
+        {
+          "caller": "registerGlobalListListener",
+          "callee": "ClientNetworkManager.getInstance().removeAuctionListListener",
+          "lineNumber": 100
+        },
+        {
+          "caller": "registerGlobalListListener",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 100
+        },
+        {
+          "caller": "registerGlobalListListener",
+          "callee": "ClientNetworkManager.getInstance().addAuctionListListener",
+          "lineNumber": 101
+        },
+        {
+          "caller": "registerGlobalListListener",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 101
+        },
+        {
+          "caller": "findInLatestList",
+          "callee": "a.getId().equals",
+          "lineNumber": 107
+        },
+        {
+          "caller": "findInLatestList",
+          "callee": "a.getId",
+          "lineNumber": 107
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "registerGlobalListListener",
+          "lineNumber": 120
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "findInLatestList",
+          "lineNumber": 122
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "table.getItems",
+          "lineNumber": 125
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "table.getItems",
+          "lineNumber": 126
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "a.getId().equals",
+          "lineNumber": 127
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "a.getId",
+          "lineNumber": 127
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "notificationAction.accept",
+          "lineNumber": 135
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "new Consumer<>",
+          "lineNumber": 138
+        },
+        {
+          "caller": "accept",
+          "callee": "javafx.application.Platform.runLater",
+          "lineNumber": 141
+        },
+        {
+          "caller": "accept",
+          "callee": "item.getId().equals",
+          "lineNumber": 145
+        },
+        {
+          "caller": "accept",
+          "callee": "item.getId",
+          "lineNumber": 145
+        },
+        {
+          "caller": "accept",
+          "callee": "notificationAction.accept",
+          "lineNumber": 152
+        },
+        {
+          "caller": "accept",
+          "callee": "ClientNetworkManager.getInstance().removeAuctionListListener",
+          "lineNumber": 153
+        },
+        {
+          "caller": "accept",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 153
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "ClientNetworkManager.getInstance().addAuctionListListener",
+          "lineNumber": 158
+        },
+        {
+          "caller": "handleNotification",
+          "callee": "ClientNetworkManager.getInstance",
+          "lineNumber": 158
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "RoleBasedFilterHelper.shouldReceiveNotification",
+          "lineNumber": 164
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "network.SessionManager.getInstance().isSeller",
+          "lineNumber": 165
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 165
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "auction.getSeller",
+          "lineNumber": 166
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "auction.getSeller().getId().equals",
+          "lineNumber": 167
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "auction.getSeller().getId",
+          "lineNumber": 167
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "auction.getSeller",
+          "lineNumber": 167
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "network.SessionManager.getInstance().getUserId",
+          "lineNumber": 167
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 167
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "NotificationManager.getInstance().addNotification",
+          "lineNumber": 172
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "NotificationManager.getInstance",
+          "lineNumber": 172
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "auction.getItem().getName",
+          "lineNumber": 173
+        },
+        {
+          "caller": "pushStartNotification",
+          "callee": "auction.getItem",
+          "lineNumber": 173
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "RoleBasedFilterHelper.shouldReceiveNotification",
+          "lineNumber": 179
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "network.SessionManager.getInstance().isSeller",
+          "lineNumber": 180
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 180
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "auction.getSeller",
+          "lineNumber": 181
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "auction.getSeller().getId().equals",
+          "lineNumber": 182
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "auction.getSeller().getId",
+          "lineNumber": 182
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "auction.getSeller",
+          "lineNumber": 182
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "network.SessionManager.getInstance().getUserId",
+          "lineNumber": 182
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 182
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "NotificationManager.getInstance().addNotification",
+          "lineNumber": 187
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "NotificationManager.getInstance",
+          "lineNumber": 187
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "auction.getItem().getName",
+          "lineNumber": 188
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "auction.getItem",
+          "lineNumber": 188
+        },
+        {
+          "caller": "pushFinishedNotification",
+          "callee": "view.utility.display.ChartHelper.formatDouble",
+          "lineNumber": 188
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "RoleBasedFilterHelper.shouldReceiveNotification",
+          "lineNumber": 194
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance().isBidder",
+          "lineNumber": 197
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 197
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "topBidder.equals",
+          "lineNumber": 198
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance().getUsername",
+          "lineNumber": 198
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 198
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance().isSeller",
+          "lineNumber": 203
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 203
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getSeller",
+          "lineNumber": 204
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getSeller().getId().equals",
+          "lineNumber": 205
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getSeller().getId",
+          "lineNumber": 205
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getSeller",
+          "lineNumber": 205
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance().getUserId",
+          "lineNumber": 205
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "network.SessionManager.getInstance",
+          "lineNumber": 205
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getBidHistory",
+          "lineNumber": 211
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getBidHistory().size",
+          "lineNumber": 211
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getBidHistory",
+          "lineNumber": 211
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "NotificationManager.getInstance().addNotification",
+          "lineNumber": 212
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "NotificationManager.getInstance",
+          "lineNumber": 212
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getItem().getName",
+          "lineNumber": 213
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "auction.getItem",
+          "lineNumber": 213
+        },
+        {
+          "caller": "pushNewBidNotification",
+          "callee": "view.utility.display.ChartHelper.formatDouble",
+          "lineNumber": 213
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 9,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/view/utility/notification/NotificationMenuHandler.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 103,
+      "nonEmptyLines": 84,
+      "functions": [
+        {
+          "name": "NotificationMenuHandler",
+          "startLine": 23,
+          "endLine": 43,
+          "params": [
+            "darkOverlay",
+            "notificationMenu",
+            "menuWidth"
+          ]
+        },
+        {
+          "name": "toggleMenu",
+          "startLine": 45,
+          "endLine": 51,
+          "params": []
+        },
+        {
+          "name": "openMenu",
+          "startLine": 53,
+          "endLine": 73,
+          "params": []
+        },
+        {
+          "name": "closeMenu",
+          "startLine": 75,
+          "endLine": 98,
+          "params": []
+        },
+        {
+          "name": "isOpen",
+          "startLine": 100,
+          "endLine": 102,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "NotificationMenuHandler",
+          "startLine": 14,
+          "endLine": 103,
+          "methods": [
+            "NotificationMenuHandler",
+            "toggleMenu",
+            "openMenu",
+            "closeMenu",
+            "isOpen"
+          ],
+          "properties": [
+            "darkOverlay",
+            "notificationMenu",
+            "menuWidth",
+            "isOpen",
+            "currentAnimation"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "NotificationMenuHandler",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "toggleMenu",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "openMenu",
+          "line": 53,
+          "isDefault": false
+        },
+        {
+          "name": "closeMenu",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "isOpen",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "NotificationMenuHandler",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "NotificationMenuHandler",
+          "callee": "this.notificationMenu.setTranslateX",
+          "lineNumber": 32
+        },
+        {
+          "caller": "NotificationMenuHandler",
+          "callee": "this.notificationMenu.setVisible",
+          "lineNumber": 33
+        },
+        {
+          "caller": "NotificationMenuHandler",
+          "callee": "this.darkOverlay.setOpacity",
+          "lineNumber": 34
+        },
+        {
+          "caller": "NotificationMenuHandler",
+          "callee": "this.darkOverlay.setVisible",
+          "lineNumber": 35
+        },
+        {
+          "caller": "NotificationMenuHandler",
+          "callee": "this.darkOverlay.setOnMouseClicked",
+          "lineNumber": 38
+        },
+        {
+          "caller": "NotificationMenuHandler",
+          "callee": "event.getTarget",
+          "lineNumber": 39
+        },
+        {
+          "caller": "NotificationMenuHandler",
+          "callee": "closeMenu",
+          "lineNumber": 40
+        },
+        {
+          "caller": "toggleMenu",
+          "callee": "closeMenu",
+          "lineNumber": 47
+        },
+        {
+          "caller": "toggleMenu",
+          "callee": "openMenu",
+          "lineNumber": 49
+        },
+        {
+          "caller": "openMenu",
+          "callee": "notificationMenu.setVisible",
+          "lineNumber": 59
+        },
+        {
+          "caller": "openMenu",
+          "callee": "darkOverlay.setVisible",
+          "lineNumber": 60
+        },
+        {
+          "caller": "openMenu",
+          "callee": "currentAnimation.stop",
+          "lineNumber": 63
+        },
+        {
+          "caller": "openMenu",
+          "callee": "new Timeline",
+          "lineNumber": 66
+        },
+        {
+          "caller": "openMenu",
+          "callee": "new KeyFrame",
+          "lineNumber": 67
+        },
+        {
+          "caller": "openMenu",
+          "callee": "Duration.seconds",
+          "lineNumber": 67
+        },
+        {
+          "caller": "openMenu",
+          "callee": "new KeyValue",
+          "lineNumber": 68
+        },
+        {
+          "caller": "openMenu",
+          "callee": "darkOverlay.opacityProperty",
+          "lineNumber": 68
+        },
+        {
+          "caller": "openMenu",
+          "callee": "new KeyValue",
+          "lineNumber": 69
+        },
+        {
+          "caller": "openMenu",
+          "callee": "notificationMenu.translateXProperty",
+          "lineNumber": 69
+        },
+        {
+          "caller": "openMenu",
+          "callee": "currentAnimation.play",
+          "lineNumber": 72
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "currentAnimation.stop",
+          "lineNumber": 81
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "new Timeline",
+          "lineNumber": 84
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "new KeyFrame",
+          "lineNumber": 85
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "Duration.seconds",
+          "lineNumber": 85
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "new KeyValue",
+          "lineNumber": 86
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "darkOverlay.opacityProperty",
+          "lineNumber": 86
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "new KeyValue",
+          "lineNumber": 87
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "notificationMenu.translateXProperty",
+          "lineNumber": 87
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "currentAnimation.setOnFinished",
+          "lineNumber": 90
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "darkOverlay.setVisible",
+          "lineNumber": 93
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "notificationMenu.setVisible",
+          "lineNumber": 94
+        },
+        {
+          "caller": "closeMenu",
+          "callee": "currentAnimation.play",
+          "lineNumber": 97
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/view/utility/table/WrappingTextCellFactory.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 34,
+      "functions": [
+        {
+          "name": "call",
+          "startLine": 14,
+          "endLine": 35,
+          "params": [
+            "tc"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "WrappingTextCellFactory",
+          "startLine": 13,
+          "endLine": 36,
+          "methods": [
+            "call"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "call",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "WrappingTextCellFactory",
+          "line": 13,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "call",
+          "callee": "new TableCell<>",
+          "lineNumber": 16
+        },
+        {
+          "caller": "call",
+          "callee": "new Text",
+          "lineNumber": 17
+        },
+        {
+          "caller": "call",
+          "callee": "textNode.wrappingWidthProperty().bind",
+          "lineNumber": 19
+        },
+        {
+          "caller": "call",
+          "callee": "textNode.wrappingWidthProperty",
+          "lineNumber": 19
+        },
+        {
+          "caller": "call",
+          "callee": "tc.widthProperty().subtract",
+          "lineNumber": 19
+        },
+        {
+          "caller": "call",
+          "callee": "tc.widthProperty",
+          "lineNumber": 19
+        },
+        {
+          "caller": "call",
+          "callee": "textNode.setStyle",
+          "lineNumber": 20
+        },
+        {
+          "caller": "call",
+          "callee": "setGraphic",
+          "lineNumber": 21
+        },
+        {
+          "caller": "updateItem",
+          "callee": "super.updateItem",
+          "lineNumber": 25
+        },
+        {
+          "caller": "updateItem",
+          "callee": "textNode.setText",
+          "lineNumber": 27
+        },
+        {
+          "caller": "updateItem",
+          "callee": "setGraphic",
+          "lineNumber": 28
+        },
+        {
+          "caller": "updateItem",
+          "callee": "textNode.setText",
+          "lineNumber": 30
+        },
+        {
+          "caller": "updateItem",
+          "callee": "setGraphic",
+          "lineNumber": 31
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/view/utility/validation/ValidationHelper.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 62,
+      "nonEmptyLines": 53,
+      "functions": [
+        {
+          "name": "isValidUsername",
+          "startLine": 19,
+          "endLine": 22,
+          "params": [
+            "username"
+          ]
+        },
+        {
+          "name": "isStrongPassword",
+          "startLine": 27,
+          "endLine": 30,
+          "params": [
+            "password"
+          ]
+        },
+        {
+          "name": "isValidStartPrice",
+          "startLine": 35,
+          "endLine": 42,
+          "params": [
+            "priceStr"
+          ]
+        },
+        {
+          "name": "isValidDuration",
+          "startLine": 47,
+          "endLine": 54,
+          "params": [
+            "durationStr"
+          ]
+        },
+        {
+          "name": "isEmpty",
+          "startLine": 59,
+          "endLine": 61,
+          "params": [
+            "value"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "ValidationHelper",
+          "startLine": 8,
+          "endLine": 62,
+          "methods": [
+            "isValidUsername",
+            "isStrongPassword",
+            "isValidStartPrice",
+            "isValidDuration",
+            "isEmpty"
+          ],
+          "properties": [
+            "USERNAME_REGEX",
+            "PASSWORD_REGEX"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "isValidUsername",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "isStrongPassword",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "isValidStartPrice",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "isValidDuration",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "isEmpty",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "ValidationHelper",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isValidUsername",
+          "callee": "Pattern.matches",
+          "lineNumber": 21
+        },
+        {
+          "caller": "isStrongPassword",
+          "callee": "Pattern.matches",
+          "lineNumber": 29
+        },
+        {
+          "caller": "isValidStartPrice",
+          "callee": "Double.parseDouble",
+          "lineNumber": 37
+        },
+        {
+          "caller": "isValidDuration",
+          "callee": "Integer.parseInt",
+          "lineNumber": 49
+        },
+        {
+          "caller": "isEmpty",
+          "callee": "value.trim().isEmpty",
+          "lineNumber": 60
+        },
+        {
+          "caller": "isEmpty",
+          "callee": "value.trim",
+          "lineNumber": 60
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/resources/META-INF/MANIFEST.MF",
+      "language": "mf",
+      "fileCategory": "code",
+      "totalLines": 3,
+      "nonEmptyLines": 2,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/admin/AdminAuctionManagement.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 72,
+      "nonEmptyLines": 68,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/admin/AdminDashboard.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 150,
+      "nonEmptyLines": 144,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/admin/AdminUserManagement.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 71,
+      "nonEmptyLines": 67,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auction/InRoomView.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 131,
+      "nonEmptyLines": 121,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auction/RoomMenuChoice.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 60,
+      "nonEmptyLines": 56,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auction/SellerInRoomView.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 133,
+      "nonEmptyLines": 129,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auction/smiling-face-with-sunglasses-emoji-clipart-lg.png",
+      "language": "png",
+      "fileCategory": "code",
+      "totalLines": 124,
+      "nonEmptyLines": 124,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auth/Login.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 97,
+      "nonEmptyLines": 88,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auth/LoginImage.jpg",
+      "language": "jpg",
+      "fileCategory": "code",
+      "totalLines": 101,
+      "nonEmptyLines": 43,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auth/Register.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 99,
+      "nonEmptyLines": 89,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/auth/register.jpg",
+      "language": "jpg",
+      "fileCategory": "code",
+      "totalLines": 102,
+      "nonEmptyLines": 46,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/menu/AssetsList.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 147,
+      "nonEmptyLines": 135,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/menu/banner.jpg",
+      "language": "jpg",
+      "fileCategory": "code",
+      "totalLines": 453,
+      "nonEmptyLines": 396,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/menu/BaseMenu.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 204,
+      "nonEmptyLines": 192,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/menu/UserInforView.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 83,
+      "nonEmptyLines": 73,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/seller/CreateItem.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 84,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/seller/SellerAuctionList.fxml",
+      "language": "fxml",
+      "fileCategory": "code",
+      "totalLines": 75,
+      "nonEmptyLines": 71,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/styles.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 10,
+      "nonEmptyLines": 10,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/styles/admin/admin.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 86,
+      "nonEmptyLines": 75,
+      "metrics": {}
+    },
+    {
+      "path": "src/main/resources/view/styles/auction/room.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 14,
+      "nonEmptyLines": 13,
+      "metrics": {}
+    }
+  ]
+}

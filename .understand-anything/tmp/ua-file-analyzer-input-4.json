@@ -1,0 +1,29 @@
+{
+  "projectRoot": "D:\\\\1_Dung\\\\LapTrinhNangCao\\\\BaiTapLon\\\\HeThongDauGia",
+  "batchFiles": [
+    {
+      "path": ".vscode/java-formatter.xml",
+      "language": "xml",
+      "sizeLines": 382,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".vscode/launch.json",
+      "language": "json",
+      "sizeLines": 17,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "language": "json",
+      "sizeLines": 21,
+      "fileCategory": "config"
+    }
+  ],
+  "batchImportData": {
+    ".vscode/java-formatter.xml": [],
+    ".vscode/launch.json": [],
+    ".vscode/settings.json": []
+  },
+  "neighborMap": {}
+}

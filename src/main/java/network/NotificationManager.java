@@ -27,18 +27,23 @@ public class NotificationManager {
         public String getTime() { return time; }
     }
 
+    // Danh sách thông báo hiển thị trên UI
     private final ObservableList<NotificationItem> notifications = FXCollections.observableArrayList();
 
+    // Private constructor để đảm bảo singleton
     private NotificationManager() {}
 
+    // Lấy instance của NotificationManager
     public static NotificationManager getInstance() {
         return instance;
     }
 
+    // Lấy danh sách thông báo để bind với UI
     public ObservableList<NotificationItem> getNotifications() {
         return notifications;
     }
 
+    // Thêm một thông báo mới
     public void addNotification(String message) {
         String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         String userId = SessionManager.getInstance().getUserId();
@@ -60,6 +65,7 @@ public class NotificationManager {
         });
     }
 
+    // Tải thông báo từ database khi người dùng đăng nhập
     public void loadFromDatabase(String userId) {
         List<NotificationItem> dbNotifs = dao.NotificationDAO.loadNotifications(userId);
         Platform.runLater(() -> {

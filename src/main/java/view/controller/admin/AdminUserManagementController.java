@@ -69,6 +69,7 @@ public class AdminUserManagementController implements Initializable {
     }
 
     private void configureActionColumn() {
+        // === CẤU HÌNH CỘT HÀNH ĐỘNG ===
         colAction.setCellFactory(col -> new TableCell<>() {
             private final Button btnToggle = new Button();
             private final Button btnEditBalance = new Button("💰 Sửa tiền");
