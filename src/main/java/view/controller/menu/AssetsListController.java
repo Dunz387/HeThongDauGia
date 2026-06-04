@@ -3,167 +3,70 @@ package view.controller.menu;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import model.auction.Auction;
+import network.NotificationManager;
+import view.utility.auction.AuctionContextMenuHelper;
 import view.utility.auction.AuctionNetworkHelper;
-import view.utility.auction.AuctionTableConfigurator;
+import view.utility.auction.RoleBasedFilterHelper;
+import view.utility.menu.MenuNavigationSupport;
+import view.utility.menu.MenuNetworkSupport;
+import view.utility.menu.MenuTableSupport;
 import view.utility.navigation.MenuHelper;
-import view.utility.notification.NotificationMenuHandler;
-import view.utility.navigation.SceneManager;
 import view.utility.navigation.WindowManager;
-import view.utility.display.AlertHelper;
+import view.utility.notification.NotificationFilterHelper;
+import view.utility.notification.NotificationMenuHandler;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AssetsListController implements Initializable {
-    @FXML
-    private Pane darkOverlay;
-    @FXML
-    private ScrollPane notificationMenu;
+    @FXML private Pane darkOverlay;
+    @FXML private ScrollPane notificationMenu;
+    @FXML private HBox menuBar;
+    @FXML private Label txtBalance;
+    @FXML private Button btnTransaction;
+    @FXML private TableView<Auction> tableAssets;
+    @FXML private TableColumn<Auction, String> colId;
+    @FXML private TableColumn<Auction, String> colItemName;
+    @FXML private TableColumn<Auction, String> colDescription;
+    @FXML private TableColumn<Auction, String> colType;
+    @FXML private TableColumn<Auction, Double> colPrice;
+    @FXML private TableColumn<Auction, Integer> colBidCount;
+    @FXML private TableColumn<Auction, String> colHighestBidder;
+    @FXML private TableColumn<Auction, String> colEndTime;
+    @FXML private TableColumn<Auction, String> colStatus;
+    @FXML private TableColumn<Auction, String> colSeller;
+    @FXML private TableView<NotificationManager.NotificationItem> tableNotifications;
+    @FXML private TableColumn<NotificationManager.NotificationItem, String> colNotifContent;
+    @FXML private TableColumn<NotificationManager.NotificationItem, String> colNotifTime;
+
     private NotificationMenuHandler notificationMenuHandler;
-
-    @FXML
-    private HBox menuBar;
-    @FXML
-    private javafx.scene.control.Label txtBalance;
-    @FXML
-    private javafx.scene.control.Button btnTransaction;
-
-    @FXML
-    private TableView<Auction> tableAssets;
-    @FXML
-    private TableColumn<Auction, String> colId;
-    @FXML
-    private TableColumn<Auction, String> colItemName;
-    @FXML
-    private TableColumn<Auction, String> colDescription;
-    @FXML
-    private TableColumn<Auction, String> colType;
-    @FXML
-    private TableColumn<Auction, Double> colPrice;
-    @FXML
-    private TableColumn<Auction, Integer> colBidCount;
-    @FXML
-    private TableColumn<Auction, String> colHighestBidder;
-    @FXML
-    private TableColumn<Auction, String> colEndTime;
-    @FXML
-    private TableColumn<Auction, String> colStatus;
-    @FXML
-    private TableColumn<Auction, String> colSeller;
-
-    // Notifications
-    @FXML
-    private TableView<network.NotificationManager.NotificationItem> tableNotifications;
-    @FXML
-    private TableColumn<network.NotificationManager.NotificationItem, String> colNotifContent;
-    @FXML
-    private TableColumn<network.NotificationManager.NotificationItem, String> colNotifTime;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         MenuHelper.setupBalanceLabel(txtBalance);
         MenuHelper.setupTransactionButton(btnTransaction);
-
-        // Cấu hình bảng thống nhất (SRP: delegate sang AuctionTableConfigurator)
-        AuctionTableConfigurator.configure(colId, colItemName, colDescription, colType, colPrice, colBidCount,
+        MenuTableSupport.configureAuctionTable(colId, colItemName, colDescription, colType, colPrice, colBidCount,
                 colHighestBidder, colEndTime, colStatus, colSeller);
-
+        MenuTableSupport.configureNotificationTable(tableNotifications, colNotifContent, colNotifTime);
         notificationMenuHandler = new NotificationMenuHandler(darkOverlay, notificationMenu, 266);
-
-        // Đăng ký lắng nghe danh sách đấu giá từ Server với bộ lọc theo Role (SRP: delegate sang RoleBasedFilterHelper)
-        AuctionNetworkHelper.registerAuctionListListener(tableAssets, view.utility.auction.RoleBasedFilterHelper.getAssetsFilter());
-
-        // Cấu hình bảng thông báo
-        if (tableNotifications != null) {
-            colNotifContent.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("content"));
-            colNotifTime.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("time"));
-
-            colNotifContent.setCellFactory(new view.utility.table.WrappingTextCellFactory());
-
-            tableNotifications.setItems(network.NotificationManager.getInstance().getNotifications());
-            tableNotifications.setFixedCellSize(-1); // Tự động giãn dòng
-        }
-
-        setupContextMenu();
-        setupNetworkListeners();
-        
-        // Đăng ký nhận thông báo real-time (tương tự như BaseMenu)
-        view.utility.notification.NotificationFilterHelper.registerNotificationListeners(tableAssets);
-    }
-
-    private void setupContextMenu() {
-        view.utility.auction.AuctionContextMenuHelper.setupContextMenu(tableAssets);
-    }
-
-    private void setupNetworkListeners() {
-        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_UPDATE_ITEM);
-        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_UPDATE_ITEM, msg -> {
-            String[] parts = msg.split(shared.Protocol.DELIMITER);
-            if (parts.length > 1) {
-                javafx.application.Platform.runLater(() -> {
-                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                            parts[1].equals(shared.Protocol.RES_SUCCESS)
-                                    ? javafx.scene.control.Alert.AlertType.INFORMATION
-                                    : javafx.scene.control.Alert.AlertType.ERROR);
-                    alert.setHeaderText("Thông báo sửa phiên đấu giá");
-                    alert.setContentText(parts.length > 2 ? parts[2]
-                            : (parts[1].equals(shared.Protocol.RES_SUCCESS) ? "Sửa thành công!" : "Sửa thất bại!"));
-                    alert.show();
-                });
-            }
-        });
-
-        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_DELETE_ITEM);
-        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_DELETE_ITEM, msg -> {
-            String[] parts = msg.split(shared.Protocol.DELIMITER);
-            if (parts.length > 1) {
-                javafx.application.Platform.runLater(() -> {
-                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                            parts[1].equals(shared.Protocol.RES_SUCCESS)
-                                    ? javafx.scene.control.Alert.AlertType.INFORMATION
-                                    : javafx.scene.control.Alert.AlertType.ERROR);
-                    alert.setHeaderText("Thông báo xóa phiên đấu giá");
-                    alert.setContentText(parts.length > 2 ? parts[2]
-                            : (parts[1].equals(shared.Protocol.RES_SUCCESS) ? "Xóa thành công!" : "Xóa thất bại!"));
-                    alert.show();
-                });
-            }
-        });
-
-        // Đăng ký lắng nghe số dư phản hồi (nếu cần alert riêng cho trang này)
-        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_DEPOSIT);
-        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_DEPOSIT, (message) -> {
-            String[] parts = message.split(shared.Protocol.DELIMITER);
-            if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
-                javafx.application.Platform.runLater(() -> AlertHelper.showInfo("Thành công", "Nạp tiền thành công!"));
-            }
-        });
-
-        network.ClientNetworkManager.getInstance().clearListeners(shared.Protocol.REQ_WITHDRAW);
-        network.ClientNetworkManager.getInstance().registerListener(shared.Protocol.REQ_WITHDRAW, (message) -> {
-            String[] parts = message.split(shared.Protocol.DELIMITER);
-            if (parts.length >= 2 && parts[1].equals(shared.Protocol.RES_SUCCESS)) {
-                javafx.application.Platform.runLater(() -> AlertHelper.showInfo("Thành công", "Rút tiền thành công!"));
-            }
-        });
+        AuctionNetworkHelper.registerAuctionListListener(tableAssets, RoleBasedFilterHelper.getAssetsFilter());
+        AuctionContextMenuHelper.setupContextMenu(tableAssets);
+        MenuNetworkSupport.registerAssetMutationResponses();
+        MenuNetworkSupport.registerTransactionResponses(false);
+        NotificationFilterHelper.registerNotificationListeners(tableAssets);
     }
 
     @FXML
     private void openChoiceMenu(ActionEvent event) {
-        if (!network.SessionManager.getInstance().isSeller()) {
-            view.utility.display.AlertHelper.showWarning("Quyền truy cập",
-                    "Chỉ người bán (Seller) mới có thể tạo phiên đấu giá!");
-            return;
-        }
-        Stage currentStage = (Stage) txtBalance.getScene().getWindow();
-        WindowManager.openCreateItemWindow(currentStage);
+        MenuNavigationSupport.openCreateAuction(txtBalance);
     }
 
     @FXML
@@ -178,28 +81,22 @@ public class AssetsListController implements Initializable {
 
     @FXML
     private void backToBaseMenuButtonClicked(ActionEvent event) {
-        Stage stage = (Stage) txtBalance.getScene().getWindow();
-        SceneManager.switchScene(stage, "/view/menu/BaseMenu.fxml", "Base Menu");
+        MenuNavigationSupport.goToBaseMenu(txtBalance);
     }
 
     @FXML
     private void backToLoiginButtonClicked(ActionEvent event) {
-        network.ClientNetworkManager.getInstance().logout();
-        Stage stage = (Stage) txtBalance.getScene().getWindow();
-        SceneManager.switchScene(stage, "/view/auth/Login.fxml", "Login");
+        MenuNavigationSupport.logoutToLogin(txtBalance);
     }
 
     @FXML
     private void backToRegisterButtonClicked(ActionEvent event) {
-        Stage stage = (Stage) txtBalance.getScene().getWindow();
-        SceneManager.switchScene(stage, "/view/auth/Register.fxml", "Register");
+        MenuNavigationSupport.goToRegister(txtBalance);
     }
 
     @FXML
     private void goToAssetsListButtonClicked(ActionEvent event) {
-        // Gửi yêu cầu làm mới danh sách tài sản
-        System.out.println("🔄 Đang làm mới danh sách tài sản...");
-        AuctionNetworkHelper.requestAuctionList();
+        MenuNavigationSupport.refreshAssetsList();
     }
 
     @FXML
