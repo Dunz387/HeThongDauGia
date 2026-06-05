@@ -3,10 +3,12 @@ package server;
 import model.auction.Auction;
 import model.auction.AuctionObserver;
 import model.user.Bidder;
+
 import server.broadcast.ServerBroadcaster;
 import server.event.AuctionEventPublisher;
 import server.notification.ClientNotifier;
 import server.room.RoomManager;
+
 import service.auction.AuctionManager;
 
 import java.io.IOException;
@@ -120,6 +122,7 @@ public class AuctionServer implements AuctionObserver {
         }
     }
 
+    // exit để tắt task server
     private void startConsoleExitListener() {
         new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
