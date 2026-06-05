@@ -191,35 +191,66 @@ Lưu ý quan trọng: client hiện đang kết nối tới địa chỉ `159.22
 
 Theo các yêu cầu trong `2026-Bài-tập-lớn.pdf` và phần hiện thực trong mã nguồn, dự án đã hoàn thành các nhóm chức năng sau:
 
+### 1. Tài khoản và phân quyền
 - Đăng ký tài khoản theo vai trò `BIDDER` hoặc `SELLER`.
 - Đăng nhập, đăng xuất và chặn đăng nhập trùng tài khoản trên nhiều client.
 - Phân quyền người dùng theo `ADMIN`, `SELLER`, `BIDDER`.
+
+### 2. Phiên đấu giá và đấu giá
 - Seller tạo phiên đấu giá với tên sản phẩm, mô tả, loại sản phẩm, giá khởi điểm và thời lượng.
 - Seller xem danh sách phiên/tài sản của mình.
 - Seller sửa hoặc xóa phiên khi chưa có người đặt giá và đúng quyền sở hữu.
 - Hỗ trợ nhiều loại sản phẩm: đồ điện tử, tác phẩm nghệ thuật, phương tiện.
-- Bidder xem danh sách phiên đấu giá.
+
+### 3. Bidder xem danh sách phiên đấu giá.
 - Bidder tham gia phòng đấu giá.
+
+### 4. Đặt giá và đấu giá
 - Bidder đặt giá trực tiếp, kiểm tra bước giá tối thiểu và số dư khả dụng.
 - Hỗ trợ tự động đặt giá (`auto-bid`) với giá trần và bước tăng.
 - Hủy auto-bid.
 - Khóa/giải phóng số dư khi đặt giá, thanh toán khi thắng đấu giá.
+
+### 5. Quản lý tài chính và kết thúc phiên đấu giá
 - Nạp tiền cho Bidder.
 - Rút tiền cho Seller.
 - Tự động kết thúc phiên khi hết thời gian.
 - Chuyển tiền cho Seller và chuyển quyền sở hữu sản phẩm cho người thắng.
+
+### 6. Real-time Notification
 - Broadcast giá mới theo thời gian thực tới các client đang online.
 - Broadcast kết thúc phiên đấu giá.
-- Gia hạn thời gian thêm 30 giây khi có bid trong khoảng cuối phiên.
+
+### 7. Quản lý người dùng
 - Theo dõi số người trong phòng đấu giá.
 - Seller/Admin có thể đuổi người dùng khỏi phòng đấu giá.
-- Admin xem danh sách người dùng.
+
+### 8. Quản lý phiên đấu giá
+- Admin xem danh sách phiên đấu giá.
+- Admin xóa phiên đấu giá.
+
+### 9. Quản lý tài khoản
 - Admin khóa/mở khóa tài khoản và ép đăng xuất người dùng bị khóa.
 - Admin cập nhật số dư người dùng khi hợp lệ.
 - Admin xem dashboard và quản lý danh sách phiên đấu giá.
 - Admin xóa phiên đấu giá.
+
+### 10. Lưu trữ dữ liệu
 - Lưu trữ dữ liệu người dùng, phiên đấu giá, lịch sử bid và thông báo bằng SQLite.
 - Khởi tạo schema database tự động nếu chưa có bảng.
-- Tách giao thức Client/Server trong `shared.Protocol`.
+
+### 11. Xử lý trường hợp đặc biệt
 - Xử lý đồng thời khi đặt giá bằng `ReentrantLock`.
-- Có unit test cho Bidder, Seller và tình huống đặt giá đồng thời.
+
+### 12. Tích hợp kiến trúc
+- Kiến trúc Client-Server.
+- Áp dụng MVC.
+- Tách giao thức Client/Server trong `shared.Protocol`.
+- Thiết lập CI/CD cơ bản trên GitHub Action
+- Unit test cho các chức năng của Bidder, Seller và tình huống đấu giá đồng thời.
+
+### 13. Chức năng nâng cao
+- Auto-bidding.
+- Gia hạn thời gian thêm 30 giây khi có bid trong khoảng cuối phiên.
+- Biểu đồ đường giá real-time.
+- Người dùng có thể tham gia nhiều hơn 1 phiên đấu giá cùng lúc, có `lockBalance` để cân bằng số dư người dùng khi tham gia nhiều phòng đấu giá.
