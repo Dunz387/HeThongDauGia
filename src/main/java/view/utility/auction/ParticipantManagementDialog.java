@@ -30,7 +30,7 @@ public final class ParticipantManagementDialog {
 
     public static void show(Stage owner, ObservableList<String> participants, Consumer<String> onKickUser) {
         Stage popupStage = new Stage();
-        popupStage.setTitle("Quan ly nguoi dung trong phong");
+        popupStage.setTitle("Quản lý người dùng trong phòng");
         if (owner != null) {
             popupStage.initOwner(owner);
         }
@@ -40,7 +40,7 @@ public final class ParticipantManagementDialog {
         layout.setPadding(new Insets(20));
         layout.setStyle("-fx-background-color: #faf9f0;");
 
-        Label titleLabel = new Label("Nguoi dung trong phong");
+        Label titleLabel = new Label("Người dùng trong phòng");
         titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-font-family: 'Segoe UI';");
 
         ListView<String> listView = new ListView<>(participants);
@@ -49,11 +49,11 @@ public final class ParticipantManagementDialog {
         listView.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e8e8e0;");
         listView.setCellFactory(param -> new ParticipantCell(popupStage, onKickUser));
 
-        Label placeholder = new Label("Chua co nguoi dung nao khac");
+        Label placeholder = new Label("Chưa có người dùng nào khác");
         placeholder.setStyle("-fx-text-fill: #999; -fx-font-family: 'Segoe UI';");
         listView.setPlaceholder(placeholder);
 
-        Button closeBtn = new Button("Dong");
+        Button closeBtn = new Button("Đóng");
         closeBtn.getStyleClass().setAll("btn-primary");
         closeBtn.setStyle("-fx-padding: 6 18; -fx-font-weight: bold; -fx-cursor: hand;");
         closeBtn.setOnAction(e -> popupStage.close());
@@ -77,7 +77,7 @@ public final class ParticipantManagementDialog {
         private final Consumer<String> onKickUser;
         private final HBox hbox = new HBox(10);
         private final Label nameLabel = new Label();
-        private final Button kickBtn = new Button("Duoi");
+        private final Button kickBtn = new Button("Đuổi");
         private final Region spacer = new Region();
 
         ParticipantCell(Stage popupStage, Consumer<String> onKickUser) {
@@ -109,14 +109,14 @@ public final class ParticipantManagementDialog {
 
         private void confirmKick(String username) {
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-            confirm.setTitle("Xac nhan duoi");
+            confirm.setTitle("Xác nhận đuổi");
             confirm.setHeaderText(null);
-            confirm.setContentText("Ban co chac chan muon duoi '" + username + "' khoi phong?");
+            confirm.setContentText("Bạn có chắc chắn muốn đuổi '" + username + "' khỏi phòng?");
             confirm.initOwner(popupStage);
             confirm.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     onKickUser.accept(username);
-                    AlertHelper.showInfo("Thanh cong", "Da gui yeu cau duoi " + username);
+                    AlertHelper.showInfo("Thành công", "Đã gửi yêu cầu đuổi " + username);
                 }
             });
         }

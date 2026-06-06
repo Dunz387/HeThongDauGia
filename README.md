@@ -352,4 +352,4 @@ Theo các yêu cầu trong `2026-Bài-tập-lớn.pdf` và phần hiện thực 
 
 ## Báo cáo bài tập lớn
 - Báo cáo: [Báo Cáo Hệ Thống Đấu Giá.pdf](https://drive.google.com/file/d/1L0SRl1IO7tfpuknwnB_ksLd5cJNwnp9z/view?usp=drive_link)
-- Video demo: [Auction demo.mp4]
+- Video demo: [Auction demo.mp4](https://drive.google.com/file/d/1mZnTWj8CZLHKfWUCXTeBU1NqdkLmdfUJ/view)

@@ -106,7 +106,7 @@ public class SellerAuctionRoomSupport {
         this.auction = auction;
         this.currentAuctionId = auction.getId();
         if (lblRoomId != null) {
-            lblRoomId.setText("ID phong: " + auction.getId());
+            lblRoomId.setText("ID phòng: " + auction.getId());
         }
 
         resetRoomHelper();
@@ -133,7 +133,7 @@ public class SellerAuctionRoomSupport {
 
     private void configureChart() {
         priceSeries = new XYChart.Series<>();
-        priceSeries.setName("Bien dong gia ($)");
+        priceSeries.setName("Biến động giá ($)");
         priceChart.getData().add(priceSeries);
         ChartHelper.configureAreaChart(priceChart);
     }
@@ -155,7 +155,7 @@ public class SellerAuctionRoomSupport {
         if (!SessionManager.getInstance().isAdmin()) {
             return;
         }
-        Button kickButton = new Button("Duoi nguoi dung");
+        Button kickButton = new Button("Đuổi người dùng");
         kickButton.getStyleClass().setAll("btn-danger");
         kickButton.setStyle("-fx-font-weight: bold; -fx-padding: 5 15;");
         kickButton.setOnAction(e -> showParticipantManagement());
@@ -189,11 +189,11 @@ public class SellerAuctionRoomSupport {
 
         roomHelper.registerTimeExtendedListener(() -> {
             updateTimeLabel();
-            addNotification("Thoi gian duoc gia han");
+            addNotification("Thời gian được gia hạn");
         });
         roomHelper.registerParticipantsListener(count -> {
             if (lblParticipants != null) {
-                lblParticipants.setText(count + " nguoi");
+                lblParticipants.setText(count + " người");
             }
         });
         roomHelper.registerRoomKickedListener(() -> exitRoom(null));
@@ -230,8 +230,8 @@ public class SellerAuctionRoomSupport {
             }
             updateIncrementDisplay(newPrice);
             if (auction != null) {
-                addNotification("[" + auction.getItem().getName() + "] - Luot #" + bidCount + ": "
-                        + topBidder + " vua dat $" + ChartHelper.formatDouble(newPrice));
+                addNotification("[" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": "
+                        + topBidder + " vừa đặt $" + ChartHelper.formatDouble(newPrice));
             }
         });
     }
@@ -242,7 +242,7 @@ public class SellerAuctionRoomSupport {
             return;
         }
 
-        String winner = parts.length > 2 ? parts[2] : "Khong co";
+        String winner = parts.length > 2 ? parts[2] : "Không có";
         double finalPrice = parts.length > 3 ? Double.parseDouble(parts[3]) : 0;
         Platform.runLater(() -> {
             if (roomHelper != null) {
@@ -252,10 +252,10 @@ public class SellerAuctionRoomSupport {
             if (topBidderLabel != null) {
                 topBidderLabel.setText(winner);
             }
-            addNotification("PHIEN DAU GIA KET THUC! Nguoi thang: "
+            addNotification("PHIÊN ĐẤU GIÁ KẾT THÚC! Người thắng: "
                     + winner + " ($" + ChartHelper.formatDouble(finalPrice) + ")");
-            AlertHelper.showInfo("Phien dau gia ket thuc!",
-                    "Nguoi chien thang: " + winner + "\nGia cuoi cung: " + ChartHelper.formatDouble(finalPrice) + " $");
+            AlertHelper.showInfo("Phiên đấu giá kết thúc!",
+                    "Người chiến thắng: " + winner + "\nGiá cuối cùng: " + ChartHelper.formatDouble(finalPrice) + " $");
             if (!SessionManager.getInstance().isAdmin()) {
                 exitRoom(null);
             }
@@ -286,8 +286,8 @@ public class SellerAuctionRoomSupport {
                     bidCount++;
                     priceSeries.getData().add(new XYChart.Data<>(bidCount, tx.getBidAmount()));
                     bidHistory.add(0, new double[]{bidCount, tx.getBidAmount()});
-                    addNotification("[" + auction.getItem().getName() + "] - Luot #" + bidCount + ": "
-                            + tx.getBidder().getUsername() + " da dat $" + ChartHelper.formatDouble(tx.getBidAmount()),
+                    addNotification("[" + auction.getItem().getName() + "] - Lượt #" + bidCount + ": "
+                            + tx.getBidder().getUsername() + " đã đặt $" + ChartHelper.formatDouble(tx.getBidAmount()),
                             tx.getTimestamp().format(TIME_FORMATTER));
                 }
             }
@@ -308,7 +308,7 @@ public class SellerAuctionRoomSupport {
                     lblEarnings.setText("0 $");
                 }
                 if (topBidderLabel != null) {
-                    topBidderLabel.setText("Chua co");
+                    topBidderLabel.setText("Chưa có");
                 }
                 if (lblRounds != null) {
                     lblRounds.setText("0");
