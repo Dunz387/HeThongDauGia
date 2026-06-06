@@ -105,6 +105,6 @@ jobs:
           files: |
             HeThongDauGiaClient-Windows.zip
             HeThongDauGiaClient-macOS.zip
-            HeThongDauGiaClient-Linux.deb
+            *.deb
           draft: false
           prerelease: false
