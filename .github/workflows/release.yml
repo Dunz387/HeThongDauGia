@@ -20,6 +20,9 @@ jobs:
           - os: macos-latest
             profile: package-mac
             artifact-name: HeThongDauGiaClient-macOS
+          - os: ubuntu-latest
+            profile: package-linux
+            artifact-name: HeThongDauGiaClient-Linux
 
     runs-on: ${{ matrix.os }}
     name: Build on ${{ matrix.os }}
@@ -67,12 +70,20 @@ jobs:
           name: HeThongDauGiaClient-macOS
           path: artifacts/macos
 
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: HeThongDauGiaClient-Linux
+          path: artifacts/linux
+
       - name: Create ZIP archives
         run: |
           cd artifacts/windows
           zip -r ../../HeThongDauGiaClient-Windows.zip HeThongDauGiaClient
           cd ../macos
           zip -r ../../HeThongDauGiaClient-macOS.zip HeThongDauGiaClient.app
+          cd ../linux
+          mv *.deb ../../
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -84,15 +95,16 @@ jobs:
             ### Tải về (Downloads)
             - **Windows**: `HeThongDauGiaClient-Windows.zip` (Giải nén và chạy file `HeThongDauGiaClient/HeThongDauGiaClient.exe`)
             - **macOS**: `HeThongDauGiaClient-macOS.zip` (Giải nén và chạy ứng dụng `HeThongDauGiaClient.app`)
+            - **Linux**: File cài đặt `.deb` (Cài đặt bằng cách click đúp hoặc chạy `sudo dpkg -i *.deb`)
 
             ### Hướng dẫn sử dụng
-            1. Tải file ZIP tương ứng với hệ điều hành của bạn.
-            2. Giải nén vào một thư mục bất kỳ.
-            3. Chạy file thực thi của Client để khởi động ứng dụng.
+            1. **Windows/macOS**: Tải file ZIP tương ứng, giải nén và chạy file thực thi để khởi động.
+            2. **Linux**: Cài đặt gói `.deb`, ứng dụng sẽ tự động được thêm vào menu hệ thống để bạn có thể tìm kiếm và mở trực tiếp.
 
             > **Lưu ý**: Ứng dụng đã được đóng gói kèm theo Java Runtime Environment (JRE) tương thích, nên người dùng không cần cài đặt sẵn Java trên máy.
           files: |
             HeThongDauGiaClient-Windows.zip
             HeThongDauGiaClient-macOS.zip
+            *.deb
           draft: false
           prerelease: false

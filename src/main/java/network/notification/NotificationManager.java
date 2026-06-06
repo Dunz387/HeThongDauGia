@@ -3,6 +3,7 @@ package network.notification;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.application.Platform;
+
 import network.session.SessionManager;
 
 import java.time.LocalDateTime;
@@ -24,15 +25,21 @@ public class NotificationManager {
             this.time = time;
         }
 
-        public String getContent() { return content; }
-        public String getTime() { return time; }
+        public String getContent() {
+            return content;
+        }
+
+        public String getTime() {
+            return time;
+        }
     }
 
     // Danh sách thông báo hiển thị trên UI
     private final ObservableList<NotificationItem> notifications = FXCollections.observableArrayList();
 
     // Private constructor để đảm bảo singleton
-    private NotificationManager() {}
+    private NotificationManager() {
+    }
 
     // Lấy instance của NotificationManager
     public static NotificationManager getInstance() {
@@ -48,7 +55,7 @@ public class NotificationManager {
     public void addNotification(String message) {
         String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         String userId = SessionManager.getInstance().getUserId();
-        
+
         // 1. Lưu xuống DB để persistent (nếu đã login)
         if (userId != null) {
             dao.notification.NotificationDAO.saveNotification(userId, message, "GLOBAL");

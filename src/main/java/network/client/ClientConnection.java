@@ -13,12 +13,10 @@ class ClientConnection {
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    // Đảm bảo chỉ có một instance của ClientConnection
     synchronized boolean isConnected() {
         return socket != null && !socket.isClosed() && socket.isConnected();
     }
 
-    // Kết nối đến server
     synchronized boolean connect(String ip, int port) {
         if (isConnected()) {
             LOGGER.info("Connection is already available.");

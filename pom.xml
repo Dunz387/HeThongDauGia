@@ -399,5 +399,91 @@
             </build>
             <properties><project.version.clean>1.0.0</project.version.clean></properties>
         </profile>
+        <!-- PROFILE CHO LINUX -->
+        <profile>
+            <id>package-linux</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-jpackage-input</id>
+                                <phase>package</phase>
+                                <goals><goal>run</goal></goals>
+                                <configuration>
+                                    <target>
+                                        <delete dir="${project.build.directory}/client-package-input" quiet="true"/>
+                                        <delete dir="${project.build.directory}/server-package-input" quiet="true"/>
+                                        <delete dir="${project.build.directory}/dist" quiet="true"/>
+                                        <mkdir dir="${project.build.directory}/client-package-input"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/client-package-input/client.jar"/>
+                                        <copy todir="${project.build.directory}/client-package-input">
+                                            <fileset dir="${project.build.directory}/libs"/>
+                                        </copy>
+                                        <mkdir dir="${project.build.directory}/server-package-input"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/server-package-input/server.jar"/>
+                                        <copy todir="${project.build.directory}/server-package-input">
+                                            <fileset dir="${project.build.directory}/libs"/>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>jpackage-client</id>
+                                <phase>package</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>${java.home}/bin/jpackage</executable>
+                                    <arguments>
+                                        <argument>--type</argument><argument>deb</argument>
+                                        <argument>--input</argument><argument>${project.build.directory}/client-package-input</argument>
+                                        <argument>--dest</argument><argument>${project.build.directory}/dist</argument>
+                                        <argument>--name</argument><argument>HeThongDauGiaClient</argument>
+                                        <argument>--main-jar</argument><argument>client.jar</argument>
+                                        <argument>--main-class</argument><argument>view.Launcher</argument>
+                                        <argument>--java-options</argument><argument>--enable-native-access=ALL-UNNAMED</argument>
+                                        <argument>--app-version</argument><argument>${project.version.clean}</argument>
+                                        <argument>--linux-shortcut</argument>
+                                        <argument>--linux-menu-group</argument><argument>Utility</argument>
+                                        <argument>--linux-deb-maintainer</argument><argument>admin@hethongdaugia.com</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>jpackage-server</id>
+                                <phase>package</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>${java.home}/bin/jpackage</executable>
+                                    <arguments>
+                                        <argument>--type</argument><argument>deb</argument>
+                                        <argument>--input</argument><argument>${project.build.directory}/server-package-input</argument>
+                                        <argument>--dest</argument><argument>${project.build.directory}/dist</argument>
+                                        <argument>--name</argument><argument>HeThongDauGiaServer</argument>
+                                        <argument>--main-jar</argument><argument>server.jar</argument>
+                                        <argument>--main-class</argument><argument>server.AuctionServer</argument>
+                                        <argument>--java-options</argument><argument>--enable-native-access=ALL-UNNAMED</argument>
+                                        <argument>--app-version</argument><argument>${project.version.clean}</argument>
+                                        <argument>--linux-deb-maintainer</argument><argument>admin@hethongdaugia.com</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties><project.version.clean>1.0.0</project.version.clean></properties>
+        </profile>
     </profiles>
 </project>
