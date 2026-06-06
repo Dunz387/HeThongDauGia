@@ -19,7 +19,7 @@ Phạm vi hiện tại tập trung vào ứng dụng desktop JavaFX, server sock
 
 Có 2 cách chạy sản phẩm:
 
-1. Chạy bản phát hành dành cho người dùng cuối bằng file `client.exe` trong file zip ở GitHub Release.
+1. Chạy bản phát hành dành cho người dùng cuối bằng file `client.exe`, `client.app` hoặc gói `.deb` trong GitHub Release.
 2. Chạy từ mã nguồn bằng JDK và Maven.
 
 Với bản release zip trên Windows, máy người dùng không cần cài JVM/JDK riêng. File zip đã được đóng gói bằng `jpackage`, nên runtime Java cần thiết đã nằm trong thư mục ứng dụng.
@@ -111,9 +111,12 @@ mvn -Ppackage-windows package
 
 # macOS
 mvn -Ppackage-mac package
+
+# Linux/Ubuntu, tạo file .deb trong target/dist
+mvn -Ppackage-linux package
 ```
 
-Ghi chú: hiện `pom.xml` chưa có profile `jpackage` riêng cho Linux. Trên Linux nên chạy trực tiếp bằng Maven hoặc bổ sung profile Linux nếu cần đóng gói app-image.
+Ghi chú: profile `package-linux` tạo gói `.deb` cho client. Khi cần chạy cả Server và Client để phát triển hoặc demo nội bộ, nên chạy trực tiếp từ mã nguồn bằng Maven theo hướng dẫn bên dưới.
 
 ## Hướng Dẫn Chạy Sản Phẩm
 
@@ -149,6 +152,37 @@ Lưu ý:
 - Nếu macOS chặn ứng dụng do Gatekeeper, vào `System Settings` để cho phép mở ứng dụng hoặc chuột phải vào `client.app` rồi chọn `Open` ở lần chạy đầu tiên.
 - Không xóa các file/thư mục đi kèm `client.app`, vì đó là runtime và thư viện mà ứng dụng cần để chạy.
 - Bản `client.app` mặc định kết nối tới server đã cấu hình sẵn trong ứng dụng. Nếu server đang tắt hoặc không truy cập được, client sẽ không đăng nhập/kết nối được.
+
+### Cách 1.3: Chạy bản release bằng gói `.deb` trên Ubuntu
+
+Cách này áp dụng cho người dùng Ubuntu muốn cài và chạy trực tiếp bản đóng gói, không cần cài JDK/Maven riêng.
+
+1. Vào mục **Releases** của repository.
+2. Tải file `.deb` dành cho Linux/Ubuntu ở tag release mới nhất.
+3. Mở terminal tại thư mục chứa file vừa tải.
+4. Cài gói bằng lệnh:
+
+```bash
+sudo apt install ./HeThongDauGiaClient_1.0.0-1_amd64.deb
+```
+
+Nếu tên file `.deb` khác, thay tên file trong lệnh trên bằng đúng tên file đã tải.
+
+Sau khi cài xong, có thể mở ứng dụng từ menu ứng dụng của Ubuntu hoặc chạy từ terminal:
+
+```bash
+HeThongDauGiaClient
+```
+
+Lưu ý:
+
+- Bản `.deb` chỉ đóng gói client. Server cần đang chạy và client phải trỏ đúng địa chỉ server.
+- Nếu `apt` báo thiếu thư viện hệ thống cho giao diện desktop, cập nhật package index rồi cài lại:
+
+```bash
+sudo apt update
+sudo apt install ./HeThongDauGiaClient_1.0.0-1_amd64.deb
+```
 
 ### Cách 2: Chạy từ mã nguồn khi phát triển
 
@@ -186,6 +220,67 @@ java -cp "target/classes:target/libs/*" view.Launcher
 ```
 
 Lưu ý quan trọng: client hiện đang kết nối tới địa chỉ `159.223.48.211:8080` trong `src/main/java/view/Main.java`. Nếu muốn chạy Server trên máy local, cần đổi địa chỉ này thành `127.0.0.1` hoặc IP máy đang chạy Server, rồi chạy Client sau Server.
+
+#### Hướng dẫn nhanh trên Ubuntu
+
+1. Cài JDK 25 và Maven. Nếu Ubuntu chưa có sẵn gói JDK 25 trong repository mặc định, có thể cài JDK 25 từ Eclipse Temurin/Adoptium hoặc Oracle JDK, sau đó kiểm tra lại `JAVA_HOME`.
+
+```bash
+sudo apt update
+sudo apt install maven git
+java -version
+mvn -version
+```
+
+2. Tải mã nguồn và vào thư mục dự án:
+
+```bash
+git clone <url-repository>
+cd HeThongDauGia
+```
+
+Nếu đã có sẵn mã nguồn, chỉ cần mở terminal tại thư mục gốc dự án.
+
+3. Build và chạy kiểm thử:
+
+```bash
+mvn clean compile
+mvn test
+```
+
+4. Chạy Server ở terminal thứ nhất:
+
+```bash
+mvn org.codehaus.mojo:exec-maven-plugin:3.1.0:java -Dexec.mainClass=server.AuctionServer
+```
+
+5. Chạy Client JavaFX ở terminal thứ hai:
+
+```bash
+mvn javafx:run
+```
+
+6. Nếu muốn chạy bằng classpath sau khi đóng gói:
+
+```bash
+mvn package
+java -cp "target/classes:target/libs/*" server.AuctionServer
+java -cp "target/classes:target/libs/*" view.Launcher
+```
+
+7. Nếu muốn tạo gói cài đặt `.deb` trên Ubuntu:
+
+```bash
+mvn -Ppackage-linux package
+ls target/dist
+sudo apt install ./target/dist/*.deb
+```
+
+Lưu ý trên Ubuntu:
+
+- Cần chạy Server trước Client.
+- Nếu chạy Server local, đổi địa chỉ server trong `src/main/java/view/Main.java` từ `159.223.48.211` sang `127.0.0.1` trước khi chạy Client.
+- Máy Ubuntu cần môi trường desktop để hiển thị JavaFX. Nếu chạy trên server không có giao diện đồ họa, chỉ nên chạy `server.AuctionServer`.
 
 ## Chức Năng Đã Hoàn Thành Theo Đề Bài
 
