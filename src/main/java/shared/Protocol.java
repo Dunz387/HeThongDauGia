@@ -57,7 +57,6 @@ public class Protocol {
     public static final String BROADCAST_NEW_BID = "NEW_BID";
     public static final String BROADCAST_AUCTION_FINISHED = "AUCTION_FINISHED";
     public static final String BROADCAST_AUCTION_START = "AUCTION_START";
-    public static final String BROADCAST_ROUND_FINISHED = "ROUND_FINISHED";
     public static final String BROADCAST_TIME_EXTENDED = "TIME_EXTENDED";
     public static final String BROADCAST_PARTICIPANTS = "PARTICIPANTS_COUNT";
     public static final String BROADCAST_ROOM_KICKED = "ROOM_KICKED";
