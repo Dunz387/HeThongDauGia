@@ -349,3 +349,7 @@ Theo các yêu cầu trong `2026-Bài-tập-lớn.pdf` và phần hiện thực 
 - Gia hạn thời gian thêm 30 giây khi có bid trong khoảng cuối phiên.
 - Biểu đồ đường giá real-time.
 - Người dùng có thể tham gia nhiều hơn 1 phiên đấu giá cùng lúc, có `lockBalance` để cân bằng số dư người dùng khi tham gia nhiều phòng đấu giá.
+
+## Báo cáo bài tập lớn
+- Báo cáo: [Báo Cáo Hệ Thống Đấu Giá.pdf](https://drive.google.com/file/d/1L0SRl1IO7tfpuknwnB_ksLd5cJNwnp9z/view?usp=drive_link)
+- Video demo: [Auction demo.mp4]
