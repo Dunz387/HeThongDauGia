@@ -416,16 +416,10 @@
                                 <configuration>
                                     <target>
                                         <delete dir="${project.build.directory}/client-package-input" quiet="true"/>
-                                        <delete dir="${project.build.directory}/server-package-input" quiet="true"/>
                                         <delete dir="${project.build.directory}/dist" quiet="true"/>
                                         <mkdir dir="${project.build.directory}/client-package-input"/>
                                         <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/client-package-input/client.jar"/>
                                         <copy todir="${project.build.directory}/client-package-input">
-                                            <fileset dir="${project.build.directory}/libs"/>
-                                        </copy>
-                                        <mkdir dir="${project.build.directory}/server-package-input"/>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/server-package-input/server.jar"/>
-                                        <copy todir="${project.build.directory}/server-package-input">
                                             <fileset dir="${project.build.directory}/libs"/>
                                         </copy>
                                     </target>
@@ -460,25 +454,7 @@
                                     </arguments>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>jpackage-server</id>
-                                <phase>package</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>${java.home}/bin/jpackage</executable>
-                                    <arguments>
-                                        <argument>--type</argument><argument>deb</argument>
-                                        <argument>--input</argument><argument>${project.build.directory}/server-package-input</argument>
-                                        <argument>--dest</argument><argument>${project.build.directory}/dist</argument>
-                                        <argument>--name</argument><argument>HeThongDauGiaServer</argument>
-                                        <argument>--main-jar</argument><argument>server.jar</argument>
-                                        <argument>--main-class</argument><argument>server.AuctionServer</argument>
-                                        <argument>--java-options</argument><argument>--enable-native-access=ALL-UNNAMED</argument>
-                                        <argument>--app-version</argument><argument>${project.version.clean}</argument>
-                                        <argument>--linux-deb-maintainer</argument><argument>admin@hethongdaugia.com</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
+
                         </executions>
                     </plugin>
                 </plugins>

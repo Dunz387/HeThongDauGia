@@ -99,12 +99,12 @@ jobs:
 
             ### Hướng dẫn sử dụng
             1. **Windows/macOS**: Tải file ZIP tương ứng, giải nén và chạy file thực thi để khởi động.
-            2. **Linux**: Cài đặt gói `.deb`, ứng dụng sẽ tự động được thêm vào menu hệ thống để bạn có thể tìm kiếm và mở trực tiếp.
+            2. **Linux**: Cài đặt gói `.deb`, ứng dụng sẽ tự động được thêm vào menu hệ thống để có thể tìm kiếm và mở trực tiếp.
 
             > **Lưu ý**: Ứng dụng đã được đóng gói kèm theo Java Runtime Environment (JRE) tương thích, nên người dùng không cần cài đặt sẵn Java trên máy.
           files: |
             HeThongDauGiaClient-Windows.zip
             HeThongDauGiaClient-macOS.zip
-            *.deb
+            HeThongDauGiaClient-Linux.deb
           draft: false
           prerelease: false
