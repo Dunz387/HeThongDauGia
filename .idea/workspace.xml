@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="sửa lại chút">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auction.db" beforeDir="false" afterPath="$PROJECT_DIR$/auction.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/auction/Auction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/InRoomController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/controller/auction/SellerInRoomController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/utility/AuctionRoomHelper.java" afterDir="false" />
-    </list>
+    <list default="true" id="a3544a20-7d62-4dc0-8147-59c24c1e8098" name="Changes" comment="sửa lại chút" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
